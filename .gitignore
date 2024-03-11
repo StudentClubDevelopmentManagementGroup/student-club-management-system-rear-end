@@ -1,0 +1,14 @@
+# 项目的构建目录
+target/
+
+# intelliJ idea 相关
+.idea
+*.iws
+*.iml
+*.ipr
+
+# 数据库
+/src/main/resources/database-config.yml
+/src/main/resources/database-test-config.yml
+
+
