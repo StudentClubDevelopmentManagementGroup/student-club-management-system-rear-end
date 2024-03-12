@@ -13,10 +13,11 @@ import org.springframework.stereotype.Component;
 public class TraceLogAspect {
     Logger logger = LoggerFactory.getLogger(TraceLogAspect.class);
 
-    /* 输出项目中所有包下的所有方法调用信息 */
-    @Around("execution(* team.project.module..controller..*(..)) ||" +
-            "execution(* team.project.module..service..*(..))    ||" +
-            "execution(* team.project.module..mapper..*(..))       " )
+    @Around("""
+        execution(* team.project.module..controller..*(..)) ||
+        execution(* team.project.module..service..*(..))    ||
+        execution(* team.project.module..mapper..*(..))
+    """)
     public Object logMethodExecution(ProceedingJoinPoint jp) throws Throwable {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
@@ -26,21 +27,23 @@ public class TraceLogAspect {
 
         try {
             Object result = jp.proceed();
-            logger.info(
-                "   class  : {} ( {} )\n" +
-                "   method : {}\n"        +
-                "   args   : {}\n"        +
-                "   return : {}"          ,
+            logger.info("""
+                   class  : {} ( {} )
+                   method : {}
+                   args   : {}
+                   return : {}\
+                """,
                 simpleClassName, className, methodName, args, result
             );
             return result;
 
         } catch (Exception e) {
-            logger.info(
-                "   class  : {} ( {} )\n" +
-                "   method : {}\n"        +
-                "   args   : {}\n"        +
-                " ! throw  : {}"          ,
+            logger.info("""
+                   class  : {} ( {} )
+                   method : {}
+                   args   : {}
+                 ! throw  : {}\
+                """,
                 simpleClassName, className, methodName, args, e.getClass().getName()
             );
             throw e;

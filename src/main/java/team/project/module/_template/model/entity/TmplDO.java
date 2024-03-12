@@ -5,8 +5,6 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 /* DO (Domain Object) 领域对象
    与数据库表结构一一对应 */
 @Data
@@ -26,9 +24,12 @@ public class TmplDO {
 
     /* 示例（与 tbl_tmp_test 表结构对应） */
     @TableId(value="id")             Long      id;
-    @TableField(value="is_deleted")  Boolean   isDeleted;
+ /* @TableField(value="is_deleted")  Boolean   deleted; // <-- java 字段名不能以is开头
     @TableField(value="create_time") Timestamp createTime;
     @TableField(value="update_time") Timestamp updateTime;
+
+    这三个字段不用对应，因为与业务逻辑无关（create_time 可能和业务逻辑有关，有关再单独处理）
+    */
 
     @TableField(value="str") String str;
 }

@@ -15,7 +15,7 @@ import java.sql.SQLException;
 /* 全局异常捕获处理的配置类 */
 @RestControllerAdvice
 public class ExceptionHandlerConfig {
-    Logger logger = LoggerFactory.getLogger("ExceptionHandlerConfig");
+    Logger logger = LoggerFactory.getLogger(ExceptionHandlerConfig.class);
 
     /* 处理任意异常 */
     @ExceptionHandler(Exception.class)

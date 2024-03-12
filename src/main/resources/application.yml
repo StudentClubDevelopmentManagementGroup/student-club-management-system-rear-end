@@ -9,10 +9,6 @@ spring:
   config:
     # 引入数据库配置（database-test-config.yml 或 database-config.yml）
     import: classpath:database-test-config.yml
-  # main:
-    # 关闭 spring-boot 启动时输出的命令行字符画
-    # banner-mode: off
-
   autoconfigure:
     # 禁用 spring-boot 的 security 自动配置，不再生成任何安全密码
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration

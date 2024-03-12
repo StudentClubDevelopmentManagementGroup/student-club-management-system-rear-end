@@ -8,6 +8,10 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module._template.service.TmplService;
 
+/**
+ * @author 写上你的名字
+ * 2024-xx-xx
+ **/
 /* 控制器模板 */
 @Tag(name="TmplController")
 @RestController
