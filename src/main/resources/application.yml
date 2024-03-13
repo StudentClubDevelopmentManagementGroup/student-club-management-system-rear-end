@@ -7,8 +7,8 @@ server:
 
 spring:
   config:
-    # 引入数据库配置（database-test-config.yml 或 database-config.yml）
-    import: classpath:database-test-config.yml
+    # 引入数据库配置（database-config.yml）
+    import: classpath:database-config.yml
   autoconfigure:
     # 禁用 spring-boot 的 security 自动配置，不再生成任何安全密码
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
@@ -29,5 +29,5 @@ mybatis-plus:
     # 关闭 mybatis-plus 启动时输出的命令行字符画
     banner: false
   configuration:
-    # 关闭下划线命名和驼峰命名的自动转换，必须使用 @TableField 注解指定数据库字段名
-     map-underscore-to-camel-case: false
+    # 关闭下划线命名和驼峰命名的自动转换，必须使用注解指定数据库字段名
+    map-underscore-to-camel-case: false

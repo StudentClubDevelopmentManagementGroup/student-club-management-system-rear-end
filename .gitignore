@@ -9,6 +9,5 @@ target/
 
 # 数据库
 /src/main/resources/database-config.yml
-/src/main/resources/database-test-config.yml
 
 

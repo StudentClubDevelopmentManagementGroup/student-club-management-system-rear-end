@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 public class TraceLogAspect {
     Logger logger = LoggerFactory.getLogger(TraceLogAspect.class);
 
+    /* 输出函数的调用情况 */
     @Around("""
         execution(* team.project.module..controller..*(..)) ||
         execution(* team.project.module..service..*(..))    ||
