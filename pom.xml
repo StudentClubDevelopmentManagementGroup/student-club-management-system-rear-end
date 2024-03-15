@@ -118,7 +118,15 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- hutool --> <!-- 请谨慎使用 hutool 工具包 -->
+        <!-- apache commons 工具包 -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>1.4</version>
+        </dependency>
+
+        <!-- hutool -->
+        <!-- 谨慎使用 hutool 工具包，先尝试使用 apache commons 工具包 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

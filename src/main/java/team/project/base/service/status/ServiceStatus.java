@@ -20,6 +20,7 @@ public enum ServiceStatus {
     NOT_FOUND            (404, "找不到资源"), /* 在服务器上找不到请求的资源 */
     REQUEST_TIMEOUT      (408, "超时"), /* 服务器等待请求时间过长 */
     CONFLICT             (409, "冲突"), /* 请求与服务器的当前状态冲突 */
+    PAYLOAD_TOO_LARGE    (413, "请求体过大"), /* 上传的文件太大 */
     UNPROCESSABLE_ENTITY (422, "无法处理"), /* 请求格式正确，但语义错误 */
     FAILED_DEPENDENCY    (424, "前请求失败"), /* 由于前一个请求失败，本次请求失败 */
     /* 服务的异常 */

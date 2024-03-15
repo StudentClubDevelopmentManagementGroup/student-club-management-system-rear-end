@@ -13,9 +13,10 @@ public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
 
+        String serverPort = ctx.getEnvironment().getProperty("server.port");
         Logger logger = LoggerFactory.getLogger(Application.class);
-        logger.info("api 说明文档：http://127.0.0.1:{}/swagger-ui/index.html",
-                ctx.getEnvironment().getProperty("server.port")
-        );
+
+        logger.info("api 说明文档：http://127.0.0.1:{}/swagger-ui/index.html", serverPort);
+        logger.info("图片存储测试：http://127.0.0.1:{}/html/test/image-storage.html", serverPort);
     }
 }
