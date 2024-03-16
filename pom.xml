@@ -118,7 +118,7 @@
             <optional>true</optional>
         </dependency>
 
-        <!-- hutool --> <!-- 请谨慎使用 hutool 工具包，能不用尽量不用 -->
+        <!-- hutool --> <!-- 请谨慎使用 hutool 工具包 -->
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-all</artifactId>

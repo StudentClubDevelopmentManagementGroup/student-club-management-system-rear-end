@@ -11,7 +11,4 @@ import java.util.List;
 public interface TmplMapper extends BaseMapper<TmplDO> {
 
     List<TmplDO> list(); /* 示例 */
-
-    /* 这里定义一些“只有本模块会使用”的方法，
-       等确定某个方法会被多个模块使用后，再把它提升到 global.mapper 包中 */
 }
