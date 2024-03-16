@@ -30,6 +30,11 @@ public class TmplController {
     @Operation(summary="查询 tmp_test 表中的所有记录")
     @GetMapping("/tmpl/list")
     Object list() {
+        //装填数据
+        ///
+
+
+        //传回前端
         return new Response<>(ServiceStatus.SUCCESS)
             .statusText("查询成功")
             .data(service.list());

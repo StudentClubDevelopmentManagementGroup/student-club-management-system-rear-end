@@ -11,6 +11,9 @@ public class TmplService {
     TmplMapper tmplMapper;  /* 示例 */
 
     public Object list() { /* 示例 */
+        //切割
+
+        //传回
         return tmplMapper.list();
     }
 }
