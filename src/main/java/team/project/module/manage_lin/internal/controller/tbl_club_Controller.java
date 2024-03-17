@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module._template.internal.service.TmplService;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import team.project.module.manage_lin.internal.service.tbl_club_Service;
 
