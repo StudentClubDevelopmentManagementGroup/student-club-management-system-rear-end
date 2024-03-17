@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>测试 - 图片存储</title>
+
+  <style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+
+    :root {
+      --color-light-green: #2eb526;
+      --color-green: #09a800;
+      --color-white: #ffffff;
+      --color-light-gray: #e7e7e7;
+    }
+
+    /* 版心 */
+    .main-container {
+      margin: 1em;
+      margin-bottom: 0;
+    }
+    .main-container:last-of-type {
+      margin: 1em;
+    }
+
+    /* 按钮 */
+    .green-btn {
+      padding: 0.25em 1em;
+      color: var(--color-white);
+      background-color: var(--color-green);
+    }
+    .green-btn:hover {
+      background-color: var(--color-light-green);
+      cursor: pointer;
+    }
+    .green-btn:active {
+      color: var(--color-light-green);
+      background-color: var(--color-light-gray);
+    }
+
+
+    /* 输入框 */
+    .green-input {
+      flex: 1;
+      padding: 0.5em;
+      outline: none;
+    }
+    .green-input[type="file"]::file-selector-button {
+      display: none;
+    }
+    .green-input[type="file"]:hover {
+      cursor: pointer;
+    }
+
+
+    /* 原子 */
+    .display-flex {
+      display: flex;
+    }
+    .flex-1 {
+      flex: 1;
+    }
+    .font-size-16px {
+      font-size: 16px;
+    }
+    .green-border {
+      border: 1.5px solid var(--color-green);
+    }
+    .margin-left-1em {
+      margin-left: 1em;
+    }
+    .border-left-none {
+      border-left: none;
+    }
+  </style>
+</head>
+
+<body>
+  <div style="height: 100vh; display: flex; flex-direction: column;">
+
+    <div class="main-container">
+      <form action="/upload-image-to-resources" method="post" enctype="multipart/form-data">
+        <div class="display-flex">
+          <button class="green-btn green-border font-size-16px" type="submit">上传图片至 /resources</button>
+          <label class="flex-1 display-flex margin-left-1em">
+            <span class="green-btn green-border font-size-16px">选择文件</span>
+            <input class="green-input green-border border-left-none "
+                   type="file" name="image-file" enctype="multipart/form-data">
+          </label>
+        </div>
+      </form>
+    </div>
+
+    <div class="main-container">
+      <form action="/get-url-to-uploaded-image-in-resources" method="get">
+        <div class="display-flex">
+          <button class="green-btn green-border font-size-16px" type="submit">从 /resources 获取图片</button>
+          <input class="green-input green-border border-left-none"
+                 type="text" name="image-file-name" placeholder="请输入图片文件名">
+        </div>
+      </form>
+    </div>
+    
+  
+    <div class="main-container flex-1 green-border">
+      
+      <img src="">
+    </div>
+
+  </div>
+
+  <script>
+
+  </script>
+</body>
+
+</html>

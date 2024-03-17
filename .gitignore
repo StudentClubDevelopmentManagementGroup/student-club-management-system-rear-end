@@ -10,4 +10,7 @@ target/
 # 数据库
 /src/main/resources/database-config.yml
 
+# 文件存储
+/src/main/resources/filestorage-config.yml
+
 
