@@ -1,10 +1,7 @@
 package team.project.module.manage_lin.internal.service;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import team.project.module.manage_lin.internal.mapper.tbl_club_Mapper;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
-
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 

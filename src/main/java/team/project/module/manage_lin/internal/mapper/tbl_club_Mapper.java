@@ -2,7 +2,6 @@ package team.project.module.manage_lin.internal.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import team.project.module._template.internal.model.entity.TmplDO;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 
 import java.util.List;
@@ -14,6 +13,5 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
     List<tbl_club_DO> findbyname(String name); /* 示例 */
 
     List<tbl_club_DO> create_club(Long departmentId, String name);
-
 
 }
