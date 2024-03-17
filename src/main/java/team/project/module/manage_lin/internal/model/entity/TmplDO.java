@@ -32,4 +32,9 @@ public class TmplDO {
     */
 
     @TableField(value="str") String str;
+
+
+
+
+
 }
