@@ -1,4 +1,4 @@
-package team.project.module._template.internal.model.query;
+package team.project.module.manage_lin.internal.model.query;
 
 import lombok.Data;
 
