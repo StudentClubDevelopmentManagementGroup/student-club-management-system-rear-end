@@ -20,7 +20,7 @@ public class GeneralExceptionHandler {
         logger.error(
             "异常类：" + exception.getClass() + "\n" +
             "信息：" + exception.getMessage() +
-            "  （该异常由通用异常处理器捕获，请考虑是否为其配备专门的异常处理器）\n"
+            "  （该异常由通用异常处理器捕获，请考虑是否为其配备专门的异常处理器）"
         );
         return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
     }

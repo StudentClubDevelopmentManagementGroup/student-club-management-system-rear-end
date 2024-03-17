@@ -23,4 +23,16 @@ public class FileStorageConfig implements WebMvcConfigurer {
         registry.addResourceHandler(uploadedFilesResourceUrlPrefix + "/**")
                 .addResourceLocations("file:" + rootFolder + uploadedFilesFolder+ "/");
     }
+
+    @Value("${file-storage.aliyun-oss.endpoint}")
+    public String aliyunOssEndpoint;
+
+    @Value("${file-storage.aliyun-oss.access-key-id}")
+    public String aliyunOssAccessKeyId;
+
+    @Value("${file-storage.aliyun-oss.access-key-secret}")
+    public String aliyunOssAccessKeySecret;
+
+    @Value("${file-storage.aliyun-oss.bucket-name}")
+    public String aliyunOssBucketName;
 }

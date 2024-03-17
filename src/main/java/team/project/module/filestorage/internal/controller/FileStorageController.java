@@ -28,12 +28,9 @@ public class FileStorageController {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
-
         String newFileName = service.uploadFileToLocalFileSystem(file);
-
         return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data("文件id：" + newFileName);
     }
-
 
     @Operation(summary="从服务器的本地文件系统获取文件")
     @GetMapping("/get-uploaded-file-from-local-file-system")
@@ -42,5 +39,24 @@ public class FileStorageController {
         @RequestParam("file-id") String fileId
     ) {
         return new RedirectView("/upload/" + fileId);
+    }
+
+    @Operation(summary="上传文件至阿里云OSS的存储空间")
+    @PostMapping("/upload-file-to-aliyun-oss-bucket")
+    Object uploadFileToAliyunOssBucket(@RequestParam("file") MultipartFile file) {
+        if (file == null || file.isEmpty()) {
+            return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
+        }
+        String newFileName = service.uploadFileToAliyunOssBucket(file);
+        return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data("文件id：" + newFileName);
+    }
+
+    @Operation(summary="从阿里云OSS的存储空间获取文件")
+    @GetMapping("/get-uploaded-file-from-aliyun-oss-bucket")
+    Object getUploadedFileFromAliyunOssBucket(
+        @NotBlank(message="未输入文件id")
+        @RequestParam("file-id") String fileId
+    ) {
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 }

@@ -38,8 +38,8 @@
       cursor: pointer;
     }
     .green-btn:active {
-      color: var(--color-light-green);
-      background-color: var(--color-light-gray);
+      color: var(--color-green);
+      background-color: var(--color-white);
     }
 
 
@@ -89,7 +89,7 @@
           <label class="flex-1 display-flex margin-left-1em">
             <span class="green-btn green-border font-size-16px">选择文件</span>
             <input name="file" type="file" enctype="multipart/form-data"
-              class="green-input green-border border-left-none">
+              class="green-input green-border border-left-none" required>
           </label>
         </div>
       </form>
@@ -100,11 +100,33 @@
         <div class="display-flex">
           <button class="green-btn green-border font-size-16px" type="submit">从服务器的本地文件系统获取文件</button>
           <input class="green-input green-border border-left-none"
-                 type="text" name="file-id" placeholder="请输入文件id">
+                 type="text" name="file-id" placeholder="请输入文件id" required>
+        </div>
+      </form>
+    </div>
+
+    <div class="main-container">
+      <form action="/upload-file-to-aliyun-oss-bucket"method="post" enctype="multipart/form-data" target="output">
+        <div class="display-flex">
+          <button type="submit" class="green-btn green-border font-size-16px">上传文件至阿里云OSS的存储空间</button>
+          <label class="flex-1 display-flex margin-left-1em">
+            <span class="green-btn green-border font-size-16px">选择文件</span>
+            <input name="file" type="file" enctype="multipart/form-data"
+              class="green-input green-border border-left-none" required>
+          </label>
         </div>
       </form>
     </div>
     
+    <div class="main-container">
+      <form action="/get-uploaded-file-from-aliyun-oss-bucket" method="get" target="output">
+        <div class="display-flex">
+          <button class="green-btn green-border font-size-16px" type="submit">从阿里云OSS的存储空间获取文件</button>
+          <input class="green-input green-border border-left-none"
+                 type="text" name="file-id" placeholder="请输入文件id" required>
+        </div>
+      </form>
+    </div>
   
     <div class="main-container flex-1 green-border">
       <iframe name="output" style="width: 100%; height: 100%; border: none;"></iframe>

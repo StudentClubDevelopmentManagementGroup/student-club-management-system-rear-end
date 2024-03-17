@@ -20,10 +20,10 @@ public class LocalFileSystemDAO {
         this.rootFolder = cfg.rootFolder;
     }
 
-    public void write(String folder, String fileName, MultipartFile file) throws IOException {
-        File targetFolder = new File(rootFolder + "/" + folder).getCanonicalFile();
-        boolean ignored = targetFolder.mkdirs();
-        File targetFile = new File(targetFolder + "/" + fileName).getCanonicalFile();
+    public void write(String targetFolder, String fileName, MultipartFile file) throws IOException {
+        File folder = new File(rootFolder + "/" + targetFolder).getCanonicalFile();
+        boolean ignored = folder.mkdirs();
+        File targetFile = new File(folder + "/" + fileName).getCanonicalFile();
         file.transferTo(targetFile);
     }
 }

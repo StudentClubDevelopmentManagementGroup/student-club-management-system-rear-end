@@ -24,8 +24,10 @@ public enum ServiceStatus {
     UNPROCESSABLE_ENTITY (422, "无法处理"), /* 请求格式正确，但语义错误 */
     FAILED_DEPENDENCY    (424, "前请求失败"), /* 由于前一个请求失败，本次请求失败 */
     /* 服务的异常 */
-    INTERNAL_SERVER_ERROR(500, "服务器内部异常"); /* 服务器遇到了不知道如何处理的情况 */
+    INTERNAL_SERVER_ERROR(500, "服务器内部异常"), /* 服务器遇到了不知道如何处理的情况 */
+    NOT_IMPLEMENTED      (501, "没有实现该功能"), /* 请求中使用了未实现的功能 */
 
+    ;
     private final int    statusCode;
     private final String statusText;
 }
