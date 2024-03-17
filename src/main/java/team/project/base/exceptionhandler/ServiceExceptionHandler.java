@@ -12,7 +12,7 @@ import team.project.base.service.exception.ServiceException;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.ServiceExceptionHandler)
 public class ServiceExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(ServiceExceptionHandler.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /* 处理 service 层抛出的自定义异常 */
     @ExceptionHandler(ServiceException.class)

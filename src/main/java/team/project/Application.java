@@ -17,6 +17,6 @@ public class Application {
         Logger logger = LoggerFactory.getLogger(Application.class);
 
         logger.info("api 说明文档：http://127.0.0.1:{}/swagger-ui/index.html", serverPort);
-        logger.info("图片存储测试：http://127.0.0.1:{}/html/test/image-storage.html", serverPort);
+        logger.info("文件存储测试：http://127.0.0.1:{}/html/test/file-storage.html", serverPort);
     }
 }

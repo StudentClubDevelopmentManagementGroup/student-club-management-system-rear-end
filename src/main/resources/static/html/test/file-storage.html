@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>测试 - 图片存储</title>
+  <title>测试 - 文件存储</title>
 
   <style>
     body {
@@ -83,33 +83,33 @@
   <div style="height: 100vh; display: flex; flex-direction: column;">
 
     <div class="main-container">
-      <form action="/upload-image-to-resources" method="post" enctype="multipart/form-data">
+      <form action="/upload-file-to-local-file-system"method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">上传图片至 /resources</button>
+          <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
           <label class="flex-1 display-flex margin-left-1em">
             <span class="green-btn green-border font-size-16px">选择文件</span>
-            <input class="green-input green-border border-left-none "
-                   type="file" name="image-file" enctype="multipart/form-data">
+            <input name="file" type="file" enctype="multipart/form-data"
+              class="green-input green-border border-left-none">
           </label>
         </div>
       </form>
     </div>
 
     <div class="main-container">
-      <form action="/get-url-to-uploaded-image-in-resources" method="get">
+      <form action="/get-uploaded-file-from-local-file-system" method="get" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">从 /resources 获取图片</button>
+          <button class="green-btn green-border font-size-16px" type="submit">从服务器的本地文件系统获取文件</button>
           <input class="green-input green-border border-left-none"
-                 type="text" name="image-file-name" placeholder="请输入图片文件名">
+                 type="text" name="file-id" placeholder="请输入文件id">
         </div>
       </form>
     </div>
     
   
     <div class="main-container flex-1 green-border">
-      
-      <img src="">
+      <iframe name="output" style="width: 100%; height: 100%; border: none;"></iframe>
     </div>
+    
 
   </div>
 

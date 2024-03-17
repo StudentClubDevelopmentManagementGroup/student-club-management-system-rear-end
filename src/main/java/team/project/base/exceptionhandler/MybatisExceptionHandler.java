@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.MybatisExceptionHandler)
 public class MybatisExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(MybatisExceptionHandler.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /* 处理 dao 层抛出的 SQL 异常 */
     @ExceptionHandler(SQLException.class)

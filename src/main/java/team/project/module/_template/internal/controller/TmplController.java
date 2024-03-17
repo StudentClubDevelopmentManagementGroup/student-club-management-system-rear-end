@@ -8,7 +8,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module._template.internal.service.TmplService;
 
-@Tag(name="TmplController")
+@Tag(name="【测试】模板示例")
 @RestController
 public class TmplController {
     @Autowired

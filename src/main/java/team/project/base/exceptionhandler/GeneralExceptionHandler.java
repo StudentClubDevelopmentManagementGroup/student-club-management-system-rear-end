@@ -12,7 +12,7 @@ import team.project.base.service.status.ServiceStatus;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.GeneralExceptionHandler)
 public class GeneralExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(GeneralExceptionHandler.class);
+    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /* 处理任意异常 */
     @ExceptionHandler(Exception.class)

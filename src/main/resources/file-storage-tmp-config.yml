@@ -1,0 +1,12 @@
+# 在这里配置文件存储，然后将文件改名为 file-storage-config.yml
+# 在 application.yml 中会引入 file-storage-config.yml
+
+file-storage:
+  # 本地文件系统
+  local-file-system:
+    # 存储所有文件和文件夹的根目录，配绝对路径
+    root-folder: D:/student-club-management-system
+    # 存储“上传的文件”的目录，以根目录为基
+    uploaded-files-folder: /upload
+    # “获取上传文件的”静态资源映射 url 前缀
+    uploaded-files-resource-url-prefix: /upload
