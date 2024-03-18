@@ -23,21 +23,27 @@ public class tbl_club_Controller {
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_clb")
     Object create_clb (Long department_id, String name) {
-        List<tbl_club_DO> result = service.create_club(department_id, name);
-        if(result!=null)
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("创建成功")
-                    .data(result);
-        else
+        int result = service.create_club(department_id, name);
+        if(result==0)
             return new Response<>(ServiceStatus.FAILED_DEPENDENCY)
-                    .statusText("创建失败")
+                .statusText("创建失败")
+                .data(result);
+
+        else if(result == 500){
+            return new Response<>(ServiceStatus.FAILED_DEPENDENCY)
+                    .statusText("已存在同院同名社团，请重新输入名字")
                     .data(result);
+        }
+        else
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("创建成功")
+                .data(result);
     }
 
     @Operation(summary="查询基地")
-    @GetMapping("/manage_all/select_clb/{name}")
-    Object select_clb(@PathVariable String name){
-        List<tbl_club_DO> result = service.findbyname(name);
+    @GetMapping("/manage_all/select_clb/{name}/{department_id}")
+    Object select_clb(@PathVariable String name ,@PathVariable Long department_id){
+        List<tbl_club_DO> result = service.findbynameBetweendepartmentId(department_id,name );
         if (result!=null)
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")

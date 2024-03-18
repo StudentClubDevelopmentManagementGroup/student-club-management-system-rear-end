@@ -10,7 +10,7 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
 
      List<tbl_club_DO> findbyname(String name);
 
-     List<tbl_club_DO> create_club(Long departmentId, String name);
+     int create_club(Long departmentId, String name);
 
-
+     List<tbl_club_DO> findbynameBetweendepartmentId(Long departmentId, String name);
 }

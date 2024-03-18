@@ -2,12 +2,23 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="team.project.module.manage_lin.internal.mapper.tbl_club_Mapper">
-    <update id="create_club"></update>
+
 
     <!-- 复杂的 sql 语句写在 xml 文件中以便维护 -->
 
     <!-- mapper.xml 文件和 mapper.java 文件可以写在同一个目录 -->
 
     <select id="findbyname" resultType="team.project.module.manage_lin.internal.model.entity.tbl_club_DO"
-            parameterType="java.lang.String"></select>
+            parameterType="java.lang.String">
+        select * from tbl_club where name = #{name}
+    </select>
+    <select id="findbynamebetweendepartmentId"
+            resultType="team.project.module.manage_lin.internal.model.entity.tbl_club_DO">
+        select * from tbl_club
+        where name = #{name} and department_id = #{departmentId}
+    </select>
+    <update id="create_club">
+        insert into tbl_club (name, state, department_id)
+        values (#{name}, 0, #{departmentId})
+    </update>
 </mapper>
