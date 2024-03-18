@@ -24,7 +24,19 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
         return tmplMapper.findbyname(name);
     }
 
-    public List<tbl_club_DO> create_club(Long departmentId, String name) {
-        return tmplMapper.create_club(departmentId, name);
+    public int create_club(Long departmentId, String name) {
+
+        if(findbynameBetweendepartmentId(departmentId,name)==null){
+
+            return tmplMapper.create_club(departmentId, name);
+        }else{
+            return 500;
+        }
+
+    }
+
+    @Override
+    public List<tbl_club_DO> findbynameBetweendepartmentId(Long departmentId, String name) {
+        return tmplMapper.findbynamebetweendepartmentId(departmentId,name);
     }
 }
