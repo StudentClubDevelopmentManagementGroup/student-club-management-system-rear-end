@@ -1,8 +1,6 @@
 package team.project.module.filestorage.internal.service;
-
 import com.aliyun.oss.ClientException;
 import com.aliyun.oss.OSSException;
-import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +11,9 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.internal.config.FileStorageConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssStorageDAO;
 import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
+import team.project.module.filestorage.internal.util.Util;
 
-import java.util.UUID;
+import java.io.IOException;
 
 @Service
 public class FileStorageService {
@@ -22,7 +21,6 @@ public class FileStorageService {
 
     @Autowired
     LocalFileSystemDAO localFileSystemDAO;
-
     @Autowired
     AliyunOssStorageDAO aliyunOssStorageDAO;
 
@@ -32,42 +30,32 @@ public class FileStorageService {
         uploadedFilesFolder = cfg.uploadedFilesFolder;
     }
 
-    public String uploadFileToLocalFileSystem(MultipartFile file) {
-        String originalFileName = file.getOriginalFilename();
-        String extension = FilenameUtils.getExtension(originalFileName);
-        String targetFolder = uploadedFilesFolder;
-        String newFileName = UUID.randomUUID().toString() + ("".equals(extension) ? "" : ".") + extension;
-
-        try {
-            localFileSystemDAO.write(targetFolder, newFileName, file);
-            return newFileName;
-        } catch (Exception e) {
-            String errStr = "上传文件到服务器本地文件系统失败";
-            logger.error(errStr, e);
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, errStr);
-        }
+    public String uploadFileToLocalFileSystem(MultipartFile file) throws IOException {
+        String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+        localFileSystemDAO.save(uploadedFilesFolder, newFilename, file);
+        return newFilename;
     }
 
-    public String uploadFileToAliyunOssBucket(MultipartFile file) {
-        String originalFileName = file.getOriginalFilename();
-        String extension = FilenameUtils.getExtension(originalFileName);
-        String targetFolder = "/test/";
-        String newFileName = UUID.randomUUID().toString() + ("".equals(extension) ? "" : ".") + extension;
-
-        String targetFilepath = targetFolder + "/" + newFileName;
-
+    public String uploadFileToCloudStorage(MultipartFile file) throws IOException {
+        String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
         try {
-            aliyunOssStorageDAO.upload(targetFilepath, file);
-            return newFileName;
-
+            return aliyunOssStorageDAO.upload(uploadedFilesFolder, newFilename, file);
         } catch (OSSException | ClientException e) {
             logger.error("""
                 上传文件到阿里云OSS的存储空间失败
                 {}""", e.getMessage());
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "上传文件到阿里云OSS的存储空间失败");
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "上传文件到阿里云OSS的存储空间失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "上传文件到云存储空间失败");
+        }
+    }
+
+    public String getUploadedFileUrlFromCloudStorage(String fileId) {
+        try {
+            return aliyunOssStorageDAO.getUrl(fileId);
+        } catch (OSSException | ClientException e) {
+            logger.error("""
+                从阿里云OSS的存储空间获取文件url失败
+                {}""", e.getMessage());
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "从云存储空间失败获取url失败");
         }
     }
 }

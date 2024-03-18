@@ -9,7 +9,6 @@ import team.project.module.filestorage.internal.config.FileStorageConfig;
 import java.io.File;
 import java.io.IOException;
 
-
 @Component
 public class LocalFileSystemDAO {
     Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -20,10 +19,9 @@ public class LocalFileSystemDAO {
         this.rootFolder = cfg.rootFolder;
     }
 
-    public void write(String targetFolder, String fileName, MultipartFile file) throws IOException {
-        File folder = new File(rootFolder + "/" + targetFolder).getCanonicalFile();
+    public void save(String targetFolder, String fileName, MultipartFile file) throws IOException {
+        File folder = new File(rootFolder + "/" + targetFolder);
         boolean ignored = folder.mkdirs();
-        File targetFile = new File(folder + "/" + fileName).getCanonicalFile();
-        file.transferTo(targetFile);
+        file.transferTo(new File(folder + "/" + fileName));
     }
 }

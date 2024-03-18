@@ -1,5 +1,6 @@
 package team.project.module.filestorage.internal.dao;
 
+import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.*;
@@ -10,6 +11,21 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.internal.config.FileStorageConfig;
 
 import java.io.IOException;
+import java.net.URL;
+import java.util.Date;
+
+/* 对象（Object）是 OSS 存储数据的基本单元，也被称为OSS的文件
+   和传统的文件系统不同，Object没有文件目录层级结构的关系，OSS通过键名（Key）唯一标识存储的Object
+   Object的命名规范如下：
+    - 使用UTF-8编码
+    - 长度必须在1~1023字符之间
+    - 不能以正斜线（/）或者反斜线（\）开头
+    - 区分大小写
+
+    默认情况下，OSS存储空间中文件的读写权限是私有，仅文件拥有者具有访问文件的权限
+    但是，文件拥有者可以通过创建签名URL的方式与第三方用户分享文件，
+    签名URL使用安全凭证的方式授权第三方用户在指定时间内下载或者预览文件
+*/
 
 @Component
 public class AliyunOssStorageDAO {
@@ -27,25 +43,40 @@ public class AliyunOssStorageDAO {
         this.bucketName      = cfg.aliyunOssBucketName;
     }
 
-    public void upload(String targetFilepath, MultipartFile file) throws IOException{
+    /* 采用简单上传的方式，上传不超过5 GB大小的文件 */
+    public String upload(String targetFolderPath, String fileName, MultipartFile file) throws IOException {
 
-        /* 将文件路径中的多个连续'/' 替换为一个'/' */
-        targetFilepath = targetFilepath.replaceAll("/+", "/");
-
-        /* DAO 向外公布的接口中，文件夹统一以'/' 开头
-           但 OSS 文件夹统一以'/' 结尾（上传的文件开头不能是'/'） */
-        if (targetFilepath.startsWith("/")) {
-            targetFilepath = targetFilepath.substring(1);
-        }
+        String fileId = generateUploadFileId(targetFolderPath, fileName);
 
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, targetFilepath, file.getInputStream());
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileId, file.getInputStream());
             PutObjectResult result = ossClient.putObject(putObjectRequest);
+
+            return fileId;
+
         } finally {
             if (ossClient != null) {
                 ossClient.shutdown();
             }
         }
+    }
+
+    public String getUrl(String fileId) {
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, fileId, HttpMethod.GET);
+        request.setExpiration(new Date(new Date().getTime() + 10 * 1000L)); /* 设置过期时间 10 分钟 */
+
+        URL url = ossClient.generatePresignedUrl(request);
+        return url.toString();
+    }
+
+
+    private static String generateUploadFileId(String targetFolderPath, String fileName) {
+        /* 将'\'替换为'/'，将多个连续'/' 替换为一个'/' */
+        String targetFilePath = (targetFolderPath + "/" + fileName).replace('\\', '/').replaceAll("/+", "/");
+        /* 去除开头的'/' */
+        return targetFilePath.startsWith("/") ? targetFilePath.substring(1) : targetFilePath;
     }
 }
