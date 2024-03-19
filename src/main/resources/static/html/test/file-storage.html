@@ -86,7 +86,7 @@
   <div style="height: 100vh; display: flex; flex-direction: column;">
 
     <div class="main-container">
-      <form action="/upload-file-to-local-file-system"method="post" enctype="multipart/form-data" target="output">
+      <form action="/upload_file_to_local_file_system"method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
           <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
           <input name="file" type="file" enctype="multipart/form-data"
@@ -96,7 +96,7 @@
     </div>
 
     <div class="main-container">
-      <form action="/upload-file-to-cloud-storage"method="post" enctype="multipart/form-data" target="output">
+      <form action="/upload_file_to_cloud_storage"method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
           <button type="submit" class="green-btn green-border font-size-16px">上传文件至云存储空间</button>
           <input name="file" type="file" enctype="multipart/form-data"
@@ -106,7 +106,7 @@
     </div>
     
     <div class="main-container">
-      <form action="/get-uploaded-file-url" method="get" target="output">
+      <form action="/get_uploaded_file_url" method="get" target="output">
         <div class="display-flex">
           <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件的URL</button>
           <input class="green-input green-border border-left-none"

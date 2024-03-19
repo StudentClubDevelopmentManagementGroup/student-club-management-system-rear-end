@@ -10,7 +10,7 @@ import team.project.base.service.status.ServiceStatus;
 
 /* 处理一般的异常 */
 @RestControllerAdvice
-@Order(ExceptionHandlerOrder.GeneralExceptionHandler)
+@Order(ExceptionHandlerOrder.generalExceptionHandler)
 public class GeneralExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

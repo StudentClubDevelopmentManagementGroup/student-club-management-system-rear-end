@@ -10,7 +10,7 @@ import team.project.base.service.exception.ServiceException;
 
 /* 处理自定义的 service 异常 */
 @RestControllerAdvice
-@Order(ExceptionHandlerOrder.ServiceExceptionHandler)
+@Order(ExceptionHandlerOrder.serviceExceptionHandler)
 public class ServiceExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

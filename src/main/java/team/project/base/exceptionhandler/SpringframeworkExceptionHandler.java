@@ -16,7 +16,7 @@ import team.project.base.service.status.ServiceStatus;
 
 /* 处理 springframework 抛出的异常 */
 @RestControllerAdvice
-@Order(ExceptionHandlerOrder.SpringframeworkExceptionHandler)
+@Order(ExceptionHandlerOrder.springframeworkExceptionHandler)
 public class SpringframeworkExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

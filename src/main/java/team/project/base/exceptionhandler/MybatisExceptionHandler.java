@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 /* 处理 mybatis-plus 抛出的异常 */
 @RestControllerAdvice
-@Order(ExceptionHandlerOrder.MybatisExceptionHandler)
+@Order(ExceptionHandlerOrder.mybatisExceptionHandler)
 public class MybatisExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
