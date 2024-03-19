@@ -8,38 +8,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.filestorage.internal.config.FileStorageConfig;
+import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssStorageDAO;
-import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
 import team.project.module.filestorage.internal.util.Util;
 
 import java.io.IOException;
 
 @Service
-public class FileStorageService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+public class AliyunOssStorageService {
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    private final String uploadedFilesFolder;
+    private final String uploadedFileIdPrefix;
     @Autowired
-    LocalFileSystemDAO localFileSystemDAO;
-    @Autowired
-    AliyunOssStorageDAO aliyunOssStorageDAO;
+    private AliyunOssStorageDAO aliyunOssStorageDAO;
 
-    String uploadedFilesFolder;
-
-    FileStorageService(FileStorageConfig cfg) {
-        uploadedFilesFolder = cfg.uploadedFilesFolder;
+    AliyunOssStorageService(AliyunOssConfig cfg) {
+        this.uploadedFilesFolder = cfg.uploadedFilesFolder;
+        this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }
 
-    public String uploadFileToLocalFileSystem(MultipartFile file) throws IOException {
+    public String upload(MultipartFile file) throws IOException {
         String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
-        localFileSystemDAO.save(uploadedFilesFolder, newFilename, file);
-        return newFilename;
-    }
 
-    public String uploadFileToCloudStorage(MultipartFile file) throws IOException {
-        String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+        String fileId = uploadedFileIdPrefix + "/" + newFilename;
+
         try {
-            return aliyunOssStorageDAO.upload(uploadedFilesFolder, newFilename, file);
+            aliyunOssStorageDAO.upload(uploadedFilesFolder + "/" + newFilename, file);
+
+            return fileId;
         } catch (OSSException | ClientException e) {
             logger.error("""
                 上传文件到阿里云OSS的存储空间失败
@@ -48,9 +45,14 @@ public class FileStorageService {
         }
     }
 
-    public String getUploadedFileUrlFromCloudStorage(String fileId) {
+    public String getUploadedFileUrl(String fileId) {
+        if ( ! fileId.startsWith(uploadedFileIdPrefix)) {
+            return null;
+        }
+
+        String fileKey = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
         try {
-            return aliyunOssStorageDAO.getUrl(fileId);
+            return aliyunOssStorageDAO.getUrl(fileKey);
         } catch (OSSException | ClientException e) {
             logger.error("""
                 从阿里云OSS的存储空间获取文件url失败

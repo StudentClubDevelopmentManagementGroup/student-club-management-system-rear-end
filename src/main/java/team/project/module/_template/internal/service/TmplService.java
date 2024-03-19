@@ -8,7 +8,7 @@ import team.project.module._template.internal.mapper.TmplMapper;
 
 @Service
 public class TmplService {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TmplMapper tmplMapper;  /* 示例 */

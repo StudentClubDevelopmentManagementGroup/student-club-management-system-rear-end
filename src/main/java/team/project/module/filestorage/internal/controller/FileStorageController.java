@@ -11,22 +11,21 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.view.RedirectView;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.filestorage.internal.service.FileStorageService;
+import team.project.module.filestorage.export.service.FileStorageIService;
 
 
 @Tag(name="【测试】文件存储")
 @RestController
 public class FileStorageController {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    FileStorageService service;
+    FileStorageIService service;
 
     @Operation(summary="上传文件至服务器的本地文件系统")
-    @PostMapping("/upload-file-to-local-file-system")
+    @PostMapping("/upload_file_to_local_file_system")
     Object uploadFileToLocalFileSystem(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
@@ -44,18 +43,9 @@ public class FileStorageController {
         }
     }
 
-    @Operation(summary="从服务器的本地文件系统获取文件")
-    @GetMapping("/get-uploaded-file-from-local-file-system")
-    Object getUploadedFileFromLocalFileSystem(
-        @NotBlank(message="未输入文件id")
-        @RequestParam("file-id") String fileId
-    ) {
-        return new RedirectView("/upload/" + fileId);
-    }
-
-    @Operation(summary="上传文件至阿里云OSS的存储空间")
-    @PostMapping("/upload-file-to-aliyun-oss-bucket")
-    Object uploadFileToAliyunOssBucket(@RequestParam("file") MultipartFile file) {
+    @Operation(summary="上传文件至云存储空间")
+    @PostMapping("/upload_file_to_cloud_storage")
+    Object uploadFileToCloudStorage(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
@@ -71,13 +61,12 @@ public class FileStorageController {
         }
     }
 
-    @Operation(summary="从阿里云OSS的存储空间获取文件")
-    @GetMapping("/get-uploaded-file-from-aliyun-oss-bucket")
+    @Operation(summary="获取访问已上传的文件的URL")
+    @GetMapping("/get_uploaded_file_url")
     Object getUploadedFileFromAliyunOssBucket(
         @NotBlank(message="未输入文件id")
         @RequestParam("file-id") String fileId
     ) {
-
-        return new Response<>(ServiceStatus.SUCCESS).data(service.getUploadedFileUrlFromCloudStorage(fileId));
+        return new Response<>(ServiceStatus.SUCCESS).data(service.getUploadedFileUrl(fileId));
     }
 }

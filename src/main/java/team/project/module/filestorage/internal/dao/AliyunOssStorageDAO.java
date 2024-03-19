@@ -8,7 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
-import team.project.module.filestorage.internal.config.FileStorageConfig;
+import team.project.module.filestorage.internal.config.AliyunOssConfig;
 
 import java.io.IOException;
 import java.net.URL;
@@ -29,31 +29,26 @@ import java.util.Date;
 
 @Component
 public class AliyunOssStorageDAO {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private String endpoint;
-    private String accessKeyId;
-    private String accessKeySecret;
-    private String bucketName;
+    private final String endpoint;
+    private final String accessKeyId;
+    private final String accessKeySecret;
+    private final String bucketName;
 
-    AliyunOssStorageDAO(FileStorageConfig cfg) {
-        this.endpoint        = cfg.aliyunOssEndpoint;
-        this.accessKeyId     = cfg.aliyunOssAccessKeyId;
-        this.accessKeySecret = cfg.aliyunOssAccessKeySecret;
-        this.bucketName      = cfg.aliyunOssBucketName;
+    AliyunOssStorageDAO(AliyunOssConfig cfg) {
+        this.endpoint        = cfg.endpoint;
+        this.accessKeyId     = cfg.accessKeyId;
+        this.accessKeySecret = cfg.accessKeySecret;
+        this.bucketName      = cfg.bucketName;
     }
 
     /* 采用简单上传的方式，上传不超过5 GB大小的文件 */
-    public String upload(String targetFolderPath, String fileName, MultipartFile file) throws IOException {
-
-        String fileId = generateUploadFileId(targetFolderPath, fileName);
-
+    public void upload(String key, MultipartFile file) throws IOException {
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
         try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, fileId, file.getInputStream());
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
             PutObjectResult result = ossClient.putObject(putObjectRequest);
-
-            return fileId;
 
         } finally {
             if (ossClient != null) {
@@ -62,21 +57,13 @@ public class AliyunOssStorageDAO {
         }
     }
 
-    public String getUrl(String fileId) {
+    public String getUrl(String key) {
         OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
 
-        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, fileId, HttpMethod.GET);
+        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
         request.setExpiration(new Date(new Date().getTime() + 10 * 1000L)); /* 设置过期时间 10 分钟 */
 
         URL url = ossClient.generatePresignedUrl(request);
         return url.toString();
-    }
-
-
-    private static String generateUploadFileId(String targetFolderPath, String fileName) {
-        /* 将'\'替换为'/'，将多个连续'/' 替换为一个'/' */
-        String targetFilePath = (targetFolderPath + "/" + fileName).replace('\\', '/').replaceAll("/+", "/");
-        /* 去除开头的'/' */
-        return targetFilePath.startsWith("/") ? targetFilePath.substring(1) : targetFilePath;
     }
 }

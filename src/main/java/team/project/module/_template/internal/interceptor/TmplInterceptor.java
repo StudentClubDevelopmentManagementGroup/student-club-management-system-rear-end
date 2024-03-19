@@ -10,7 +10,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Component
 public class TmplInterceptor implements HandlerInterceptor {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {

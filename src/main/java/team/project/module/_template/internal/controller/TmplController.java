@@ -13,7 +13,7 @@ import team.project.module._template.internal.service.TmplService;
 @Tag(name="【测试】模板示例")
 @RestController
 public class TmplController {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TmplService service; /* 示例 */
