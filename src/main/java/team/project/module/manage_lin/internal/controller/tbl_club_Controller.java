@@ -35,6 +35,14 @@ public class tbl_club_Controller {
                     .data(service.selectPageBynamebetweendepartmentId(page,departmentId,name));
     }
 
+    @Operation(summary="查询基地")
+    @GetMapping("/manage_all/select_clubwithpage")
+    Object select_clbwithpage(@RequestParam("department_id") Long departmentId,  String name, @RequestParam("page") int pagenum){
+        Page<tbl_club_DO> page = new Page<>(pagenum,20);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(service.selectPageBynamebetweendepartmentId(page,departmentId,name));
+    }
     @Operation(summary="删除基地")
     @PostMapping("/manage_all/delete_clb")
     Object delete_clb(@RequestParam("department_id") Long departmentId, String name){
