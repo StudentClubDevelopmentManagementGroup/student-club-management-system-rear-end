@@ -27,4 +27,10 @@
     <update id="reuse_club">
         update tbl_club set  state = 0 where name = #{name} and department_id = #{departmentId} and state = 1
     </update>
+    <update id="deactivate_clb">
+        update tbl_club set  state = 1 where name = #{name} and department_id = #{departmentId} and state = 0
+    </update>
+    <update id="recover_club">
+        update tbl_club set is_deleted = 0 where name = #{name} and department_id = #{departmentId} and is_deleted = 1
+    </update>
 </mapper>

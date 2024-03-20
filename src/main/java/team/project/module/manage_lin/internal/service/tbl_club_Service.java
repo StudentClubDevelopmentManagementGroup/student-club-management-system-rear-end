@@ -17,4 +17,8 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
      int delete_club(Long id, String name);
 
      int reuse_club(Long id, String name);
+
+     int deactivate_clb(Long departmentId, String name);
+
+     int recover_club(Long departmentId, String name);
 }

@@ -19,4 +19,8 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
     int delete_club(Long departmentId, String name);
 
     int reuse_club(Long departmentId, String name);
+
+    int deactivate_clb(Long departmentId, String name);
+
+    int recover_club(Long departmentId, String name);
 }

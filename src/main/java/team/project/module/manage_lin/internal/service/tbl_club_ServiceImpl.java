@@ -64,4 +64,23 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
             return tmplMapper.reuse_club(departmentId, name);
         }
     }
+
+    @Override
+    public int deactivate_clb(Long departmentId, String name) {
+        if(tmplMapper.deactivate_clb(departmentId, name)==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return tmplMapper.deactivate_clb(departmentId, name);
+        }
+    }
+
+    @Override
+    public int recover_club(Long departmentId, String name) {
+        if(tmplMapper.recover_club(departmentId, name)==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }else{
+            return tmplMapper.recover_club(departmentId, name);
+        }
+    }
 }
