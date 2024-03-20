@@ -31,10 +31,10 @@ public class tbl_club_DO {
 //            ) comment '基地表';
 
     @TableId(value="id")               Long      id;
-    @TableField(value="is_deleted")    Boolean   deleted;
-    @TableField(value="create_time")   Timestamp createTime;
-    @TableField(value="update_time")   Timestamp updateTime;
-    @TableField(value="department_id") Long      departmentId;
+    @TableField(value="is_deleted")    Boolean   is_deleted;
+    @TableField(value="create_time")   Timestamp create_time;
+    @TableField(value="update_time")   Timestamp update_time;
+    @TableField(value="department_id") Long      department_id;
     @TableField(value="name")          String    name;
     @TableField(value="state")         Integer   state;
 }
