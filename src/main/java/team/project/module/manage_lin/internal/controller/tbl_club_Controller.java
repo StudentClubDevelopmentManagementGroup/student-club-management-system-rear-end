@@ -11,15 +11,12 @@ import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import team.project.module.manage_lin.internal.model.request.tbl_club_Req;
 import team.project.module.manage_lin.internal.service.tbl_club_Service;
 
-import java.util.List;
-
 @Tag(name="tbl_club_Controller")
 @RestController
 public class tbl_club_Controller {
     @Autowired
     tbl_club_Service service;
 
-    tbl_club_Req req;
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_clb")
     Object create_clb (@RequestParam("department_id") Long departmentId, String name) {
@@ -82,6 +79,15 @@ public class tbl_club_Controller {
         service.deactivate_clb(department_id, name);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
+    }
+
+
+    @Operation(summary="首页查询")
+    @GetMapping("/manage_all/select_all")
+    Object select_all(){
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(service.findall());
     }
 
 }

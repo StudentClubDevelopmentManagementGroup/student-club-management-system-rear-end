@@ -7,6 +7,7 @@ import team.project.module.manage_lin.internal.mapper.tbl_club_Mapper;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
+import team.project.module.manage_lin.internal.model.view.tblVO;
 
 import java.util.List;
 
@@ -109,4 +110,14 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
             tmplMapper.recover_club(departmentId, name);
         }
     }
+
+    @Override
+    public Page<tblVO> findall() {
+        return null;
+    }
+
+//    @Override
+//    public Page<tblVO> findall() {
+//        tmplMapper.select(departmentId, name);
+//    }
 }

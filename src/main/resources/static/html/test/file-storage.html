@@ -3,7 +3,7 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>测试 - 图片存储</title>
+  <title>测试 - 文件存储</title>
 
   <style>
     body {
@@ -16,7 +16,9 @@
       --color-green: #09a800;
       --color-white: #ffffff;
       --color-light-gray: #e7e7e7;
+      --color-black: #000000;
     }
+
 
     /* 版心 */
     .main-container {
@@ -26,6 +28,7 @@
     .main-container:last-of-type {
       margin: 1em;
     }
+
 
     /* 按钮 */
     .green-btn {
@@ -38,8 +41,8 @@
       cursor: pointer;
     }
     .green-btn:active {
-      color: var(--color-light-green);
-      background-color: var(--color-light-gray);
+      color: var(--color-green);
+      background-color: var(--color-white);
     }
 
 
@@ -55,14 +58,14 @@
     .green-input[type="file"]:hover {
       cursor: pointer;
     }
+    .green-input::placeholder {
+      color: var(--color-black);
+    }
 
 
     /* 原子 */
     .display-flex {
       display: flex;
-    }
-    .flex-1 {
-      flex: 1;
     }
     .font-size-16px {
       font-size: 16px;
@@ -83,39 +86,40 @@
   <div style="height: 100vh; display: flex; flex-direction: column;">
 
     <div class="main-container">
-      <form action="/upload-image-to-resources" method="post" enctype="multipart/form-data">
+      <form action="/upload_file_to_local_file_system"method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">上传图片至 /resources</button>
-          <label class="flex-1 display-flex margin-left-1em">
-            <span class="green-btn green-border font-size-16px">选择文件</span>
-            <input class="green-input green-border border-left-none "
-                   type="file" name="image-file" enctype="multipart/form-data">
-          </label>
+          <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
+          <input name="file" type="file" enctype="multipart/form-data"
+              class="green-input green-border border-left-none" required>
         </div>
       </form>
     </div>
 
     <div class="main-container">
-      <form action="/get-url-to-uploaded-image-in-resources" method="get">
+      <form action="/upload_file_to_cloud_storage"method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">从 /resources 获取图片</button>
-          <input class="green-input green-border border-left-none"
-                 type="text" name="image-file-name" placeholder="请输入图片文件名">
+          <button type="submit" class="green-btn green-border font-size-16px">上传文件至云存储空间</button>
+          <input name="file" type="file" enctype="multipart/form-data"
+              class="green-input green-border border-left-none" required>
         </div>
       </form>
     </div>
     
-  
-    <div class="main-container flex-1 green-border">
-      
-      <img src="">
+    <div class="main-container">
+      <form action="/get_uploaded_file_url" method="get" target="output">
+        <div class="display-flex">
+          <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件的URL</button>
+          <input class="green-input green-border border-left-none"
+                 type="text" name="file-id" placeholder="请输入文件id" required>
+        </div>
+      </form>
     </div>
-
+  
+    <div class="main-container green-border" style="flex: 1;">
+      <iframe name="output" style="width: 100%; height: 100%; border: none; font-size: 25px;"></iframe>
+    </div>
   </div>
 
-  <script>
-
-  </script>
 </body>
 
 </html>

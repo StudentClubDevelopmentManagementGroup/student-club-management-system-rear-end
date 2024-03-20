@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import java.util.List;
+import team.project.module.manage_lin.internal.model.view.tblVO;
 
 @Service
 public  interface tbl_club_Service extends IService<tbl_club_DO> {
@@ -29,4 +30,5 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
      void recover_club(Long departmentId, String name);
 
 
+     Page<tblVO> findall();
 }
