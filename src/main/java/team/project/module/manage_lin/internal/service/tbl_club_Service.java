@@ -16,6 +16,10 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
 
      Page<tbl_club_DO> selectPageBynamebetweendepartmentId(@Param("page") Page<tbl_club_DO> page, Long departmentId, String name);
 
+     Page<tbl_club_DO> selectPageByname(@Param("page") Page<tbl_club_DO> page, String name);
+
+     Page<tbl_club_DO> selectPageBydepartmentId(@Param("page") Page<tbl_club_DO> page, Long departmentId);
+
      void delete_club(Long id, String name);
 
      void reuse_club(Long id, String name);
@@ -23,4 +27,6 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
      void deactivate_clb(Long departmentId, String name);
 
      void recover_club(Long departmentId, String name);
+
+
 }

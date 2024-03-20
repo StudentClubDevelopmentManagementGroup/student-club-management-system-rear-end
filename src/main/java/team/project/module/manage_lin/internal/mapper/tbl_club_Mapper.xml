@@ -15,6 +15,15 @@
         select * from tbl_club
         where name = #{name} and department_id = #{departmentId}
     </select>
+    <select id="selectPageByname"
+            resultType="team.project.module.manage_lin.internal.model.entity.tbl_club_DO">
+        select * from tbl_club
+        where name = #{name}
+    </select>
+    <select id="selectPageBydepartmentId" resultType="team.project.module.manage_lin.internal.model.entity.tbl_club_DO">
+        select * from tbl_club
+        where department_id = #{departmentId}
+    </select>
 
     <update id="create_club">
         insert into tbl_club (name, state, department_id)

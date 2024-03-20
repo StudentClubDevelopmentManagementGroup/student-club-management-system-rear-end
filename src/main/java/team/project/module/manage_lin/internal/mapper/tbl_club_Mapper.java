@@ -1,5 +1,6 @@
 package team.project.module.manage_lin.internal.mapper;
 
+import cn.hutool.core.date.StopWatch;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,6 +23,8 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
 
     Page<tbl_club_DO> selectPageBynamebetweendepartmentId(@Param("page") Page<tbl_club_DO> page, Long departmentId, String name);
 
+    Page<tbl_club_DO> selectPageByname(@Param("page") Page<tbl_club_DO> page,  String name);
+
 
     int delete_club(Long departmentId, String name);
 
@@ -30,4 +33,6 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
     int deactivate_clb(Long departmentId, String name);
 
     int recover_club(Long departmentId, String name);
+
+    Page<tbl_club_DO> selectPageBydepartmentId(Page<tbl_club_DO> page, Long departmentId);
 }

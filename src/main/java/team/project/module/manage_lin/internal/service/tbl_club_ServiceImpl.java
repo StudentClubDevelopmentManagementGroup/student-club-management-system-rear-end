@@ -53,6 +53,25 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
         }
     }
 
+    @Override
+    public Page<tbl_club_DO> selectPageByname(Page<tbl_club_DO> page, String name) {
+        if(tmplMapper.selectPageByname(page, name).getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return tmplMapper.selectPageByname(page, name);
+        }
+    }
+
+    @Override
+    public Page<tbl_club_DO> selectPageBydepartmentId(Page<tbl_club_DO> page, Long departmentId) {
+        if(tmplMapper.selectPageBydepartmentId(page, departmentId).getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return tmplMapper.selectPageBydepartmentId(page, departmentId);
+        }
+    }
 
     public void delete_club(Long departmentId, String name) {
         if(tmplMapper.delete_club(departmentId, name)==0){
