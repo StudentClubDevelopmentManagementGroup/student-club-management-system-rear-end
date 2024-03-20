@@ -3,11 +3,6 @@
 
 <mapper namespace="team.project.module.manage_lin.internal.mapper.tbl_club_Mapper">
 
-    <resultMap id="findbynamebetweendepartmentId" type="team.project.module.manage_lin.internal.model.entity.tbl_club_DO">
-        <result property="deleted" column="is_deleted" />
-        <result property="createTime" column="create_time" />
-        <result property="updateTime" column="update_time" />
-    </resultMap>
 
 
     <select id="findbyname" resultType="team.project.module.manage_lin.internal.model.entity.tbl_club_DO"
