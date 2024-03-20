@@ -1,5 +1,6 @@
 package team.project.module.manage_lin.internal.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,10 @@ public class tbl_club_Controller {
     @Operation(summary="查询基地")
     @GetMapping("/manage_all/select_club")
     Object select_clb(@RequestParam("department_id") Long departmentId,  String name){
+            Page<tbl_club_DO> page = new Page<>(1,20);
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.findbynameBetweendepartmentId(departmentId,name));
+                    .data(service.selectPageBynamebetweendepartmentId(page,departmentId,name));
     }
 
     @Operation(summary="删除基地")
@@ -65,4 +67,5 @@ public class tbl_club_Controller {
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
+
 }

@@ -1,4 +1,5 @@
 package team.project.module.manage_lin.internal.service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
@@ -22,14 +23,11 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
     @Autowired
     tbl_club_Mapper tmplMapper;  /* 示例 */
 
-    public List<tbl_club_DO> findbyname(String name) { /* 示例 */
-        return tmplMapper.findbyname(name);
-    }
 
-    public int create_club(Long departmentId, String name) {
+    public void create_club(Long departmentId, String name) {
 
         if(findbynameBetweendepartmentId(departmentId,name).isEmpty()){
-            return tmplMapper.create_club(departmentId, name);
+            tmplMapper.create_club(departmentId, name);
         }else{
             throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团，请重新输入名字");
         }
@@ -45,42 +43,51 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
         }
     }
 
+    @Override
+    public Page<tbl_club_DO> selectPageBynamebetweendepartmentId(Page<tbl_club_DO> page,Long departmentId, String name) {
+        if(tmplMapper.selectPageBynamebetweendepartmentId(page,departmentId, name).getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return tmplMapper.selectPageBynamebetweendepartmentId(page,departmentId, name);
+        }
+    }
 
 
-    public int delete_club(Long departmentId, String name) {
+    public void delete_club(Long departmentId, String name) {
         if(tmplMapper.delete_club(departmentId, name)==0){
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
         }else{
-            return tmplMapper.delete_club(departmentId, name);
+            tmplMapper.delete_club(departmentId, name);
         }
 
     }
 
-    public int reuse_club(Long departmentId, String name) {
+    public void reuse_club(Long departmentId, String name) {
         if(tmplMapper.reuse_club(departmentId, name)==0){
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
         }
         else {
-            return tmplMapper.reuse_club(departmentId, name);
+            tmplMapper.reuse_club(departmentId, name);
         }
     }
 
     @Override
-    public int deactivate_clb(Long departmentId, String name) {
+    public void deactivate_clb(Long departmentId, String name) {
         if(tmplMapper.deactivate_clb(departmentId, name)==0){
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
         }
         else {
-            return tmplMapper.deactivate_clb(departmentId, name);
+            tmplMapper.deactivate_clb(departmentId, name);
         }
     }
 
     @Override
-    public int recover_club(Long departmentId, String name) {
+    public void recover_club(Long departmentId, String name) {
         if(tmplMapper.recover_club(departmentId, name)==0){
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
         }else{
-            return tmplMapper.recover_club(departmentId, name);
+            tmplMapper.recover_club(departmentId, name);
         }
     }
 }

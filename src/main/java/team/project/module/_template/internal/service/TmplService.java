@@ -7,7 +7,7 @@ import team.project.module._template.internal.mapper.TmplMapper;
 @Service
 public class TmplService {
 
-    @Autowired
+
     TmplMapper tmplMapper;  /* 示例 */
 
     public Object list() { /* 示例 */

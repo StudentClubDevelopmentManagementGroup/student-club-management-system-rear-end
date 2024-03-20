@@ -1,5 +1,7 @@
 package team.project.module.manage_lin.internal.service;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import java.util.List;
@@ -8,17 +10,17 @@ import java.util.List;
 public  interface tbl_club_Service extends IService<tbl_club_DO> {
 
 
-     List<tbl_club_DO> findbyname(String name);
-
-     int create_club(Long departmentId, String name);
+     void create_club(Long departmentId, String name);
 
      List<tbl_club_DO> findbynameBetweendepartmentId(Long departmentId, String name);
 
-     int delete_club(Long id, String name);
+     Page<tbl_club_DO> selectPageBynamebetweendepartmentId(@Param("page") Page<tbl_club_DO> page, Long departmentId, String name);
 
-     int reuse_club(Long id, String name);
+     void delete_club(Long id, String name);
 
-     int deactivate_clb(Long departmentId, String name);
+     void reuse_club(Long id, String name);
 
-     int recover_club(Long departmentId, String name);
+     void deactivate_clb(Long departmentId, String name);
+
+     void recover_club(Long departmentId, String name);
 }
