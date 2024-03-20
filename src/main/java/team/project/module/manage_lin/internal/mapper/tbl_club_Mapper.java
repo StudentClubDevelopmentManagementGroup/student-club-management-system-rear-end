@@ -15,4 +15,8 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
     int create_club(Long departmentId, String name);
 
     List<tbl_club_DO> findbynamebetweendepartmentId(Long departmentId, String name);
+
+    int delete_club(Long departmentId, String name);
+
+    int reuse_club(Long departmentId, String name);
 }
