@@ -3,10 +3,7 @@ package team.project.module.manage_lin.internal.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
@@ -22,36 +19,34 @@ public class tbl_club_Controller {
 
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_clb")
-    Object create_clb (Long department_id, String name) {
-        int result = service.create_club(department_id, name);
-        if(result==0)
-            return new Response<>(ServiceStatus.FAILED_DEPENDENCY)
-                .statusText("创建失败")
-                .data(result);
-
-        else if(result == 500){
-            return new Response<>(ServiceStatus.FAILED_DEPENDENCY)
-                    .statusText("已存在同院同名社团，请重新输入名字")
-                    .data(result);
-        }
-        else
+    Object create_clb (@RequestParam("department_id") Long departmentId,  String name) {
+        service.create_club(departmentId, name);
         return new Response<>(ServiceStatus.SUCCESS)
-                .statusText("创建成功")
-                .data(result);
+                .statusText("创建成功");
     }
 
     @Operation(summary="查询基地")
-    @GetMapping("/manage_all/select_clb/{name}/{department_id}")
-    Object select_clb(@PathVariable String name ,@PathVariable Long department_id){
-        List<tbl_club_DO> result = service.findbynameBetweendepartmentId(department_id,name );
-        if (result!=null)
+    @GetMapping("/manage_all/select_club")
+    Object select_clb(@RequestParam("department_id") Long departmentId, String name){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.findbyname(name));
-        else
-            return new Response<>(ServiceStatus.FAILED_DEPENDENCY)
-                    .statusText("查询失败")
-                    .data(service.findbyname(name));
+                    .data(service.findbynameBetweendepartmentId(departmentId,name));
+    }
+
+    @Operation(summary="删除基地")
+    @PostMapping("/manage_all/delete_clb")
+    Object delete_clb(@RequestParam("department_id") Long departmentId, String name){
+        service.delete_club(departmentId,name);
+        return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("删除成功");
+    }
+
+    @Operation(summary="基地开放招人")
+    @PostMapping("/manage_all/update_clb")
+    Object update_clb(@RequestParam("department_id") Long departmentId,  String name) {
+        service.reuse_club(departmentId, name);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("修改成功");
     }
 
 }

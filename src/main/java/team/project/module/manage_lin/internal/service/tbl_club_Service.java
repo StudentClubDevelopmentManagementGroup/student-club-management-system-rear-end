@@ -13,4 +13,8 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
      int create_club(Long departmentId, String name);
 
      List<tbl_club_DO> findbynameBetweendepartmentId(Long departmentId, String name);
+
+     int delete_club(Long id, String name);
+
+     int reuse_club(Long id, String name);
 }
