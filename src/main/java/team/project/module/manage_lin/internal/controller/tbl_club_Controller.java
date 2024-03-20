@@ -37,8 +37,8 @@ public class tbl_club_Controller {
 
     @Operation(summary="查询基地")
     @GetMapping("/manage_all/select_clubwithpage")
-    Object select_clbwithpage(@RequestParam("department_id") Long departmentId,  String name, @RequestParam("page") int pagenum){
-        Page<tbl_club_DO> page = new Page<>(pagenum,20);
+    Object select_clbwithpage(@RequestParam("department_id") Long departmentId,  String name, @RequestParam("page") int pagenum,int size){
+        Page<tbl_club_DO> page = new Page<>(pagenum,size);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(service.selectPageBynamebetweendepartmentId(page,departmentId,name));
