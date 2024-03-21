@@ -6,6 +6,6 @@ import team.project.module._template.internal.model.entity.TmplDO;
 
 /* 封装对数据库的操作，是 sql 语句的直接映射 */
 @Mapper
-public interface TmplMapper2 extends BaseMapper<TmplDO> {
+public interface TmplMybatisPlusMapper extends BaseMapper<TmplDO> {
     /* 采用 mybatis-plus 的方式（只配 java 接口） */
 }

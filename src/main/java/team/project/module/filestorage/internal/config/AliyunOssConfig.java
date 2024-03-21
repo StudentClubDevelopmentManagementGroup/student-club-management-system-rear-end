@@ -3,6 +3,7 @@ package team.project.module.filestorage.internal.config;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 import team.project.module.filestorage.internal.util.Util;
 
 import java.net.UnknownHostException;
@@ -28,13 +29,14 @@ public class AliyunOssConfig {
     public String uploadedFileIdPrefix;
 
     @PostConstruct
-    private void init() throws UnknownHostException {
-        assert uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
-            && uploadedFilesFolder.startsWith("/")
-            && ! uploadedFilesFolder.endsWith("/");
-        uploadedFilesFolder = uploadedFilesFolder.substring(1);
+    private void postConstruct() {
+        /* 检测配置文件中是否存在格式不正确的项 */
+        Assert.isTrue(
+                uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
+            &&  uploadedFilesFolder.startsWith("/")
+            &&  uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
+        , "配置文件中存在格式不正确的项");
 
-        assert uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
-            && ! uploadedFileIdPrefix.endsWith("/");
+        uploadedFilesFolder = uploadedFilesFolder.substring(1);
     }
 }

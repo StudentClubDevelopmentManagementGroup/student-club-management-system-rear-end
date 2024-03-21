@@ -3,6 +3,7 @@ package team.project.module.filestorage.internal.config;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team.project.module.filestorage.internal.util.Util;
@@ -27,17 +28,15 @@ public class LocalFileSystemConfig implements WebMvcConfigurer {
     private String port;
 
     @PostConstruct
-    private void init() throws UnknownHostException {
-        assert rootFolder.equals(Util.fixPath(rootFolder))
-            && ! uploadedFilesFolder.endsWith("/");
-
-        assert uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
-            && uploadedFilesFolder.startsWith("/")
-            && ! uploadedFilesFolder.endsWith("/");
-
-        assert uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
-            && uploadedFilesFolder.startsWith("/")
-            && ! uploadedFileIdPrefix.endsWith("/");
+    private void postConstruct() throws UnknownHostException {
+        /* 检测配置文件中是否存在格式不正确的项 */
+        Assert.isTrue(
+                rootFolder.equals(Util.fixPath(rootFolder))
+            &&  uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
+            &&  uploadedFilesFolder.startsWith("/")
+            &&  uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
+            &&  uploadedFileIdPrefix.startsWith("/")
+        , "配置文件中存在格式不正确的项");
 
         baseUrl = "http://" +  InetAddress.getLocalHost().getHostAddress() + ":" + port;
     }

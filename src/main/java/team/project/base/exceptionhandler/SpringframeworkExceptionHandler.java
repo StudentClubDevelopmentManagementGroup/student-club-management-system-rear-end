@@ -26,14 +26,12 @@ public class SpringframeworkExceptionHandler {
         return new Response<>(ServiceStatus.PAYLOAD_TOO_LARGE).statusText("文件大小超过限制");
     }
 
-    /* 处理 controller 层抛出的缺少必要的请求参数异常 */
+    /* 处理 controller 层抛出的缺少必要的请求参数异常 [ begin ] */
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Object handleMissingServletRequestPartException(MissingServletRequestPartException exception) {
         return new Response<>(ServiceStatus.BAD_REQUEST).statusText("缺少必要的请求参数").data(exception.getMessage());
     }
 
-    /* 处理 controller 层抛出的入参数据不符合约束异常 ? */
-    /* 存疑：BindException 和 HandlerMethodValidationException 都是检查入参合法性？？ */
     @ExceptionHandler(BindException.class)
     public Object handleBindException(BindException exception) {
         FieldError fieldError = exception.getFieldError();
@@ -42,17 +40,17 @@ public class SpringframeworkExceptionHandler {
         return new Response<>(ServiceStatus.BAD_REQUEST).statusText("url入参数据不合约束").data(errMsg);
     }
 
-    /* 处理 controller 层抛出的入参数据不符合约束异常 ? */
-    /* 存疑：BindException 和 HandlerMethodValidationException 都是检查入参合法性？？ */
     @ExceptionHandler(HandlerMethodValidationException.class)
     public Object handleHandlerMethodValidationException(HandlerMethodValidationException exception) {
         logger.error(exception.getMessage());
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("url入参数据不合约束");
+        return new Response<>(ServiceStatus.BAD_REQUEST).statusText("url入参数据不合约束").data(exception.getMessage());
     }
+    /* 处理 controller 层抛出的缺少必要的请求参数异常 [ end ] */
 
     /* 处理访问不存在的资源（例如一个错误URL地址）时抛出的异常 */
     @ExceptionHandler(NoResourceFoundException.class)
-    public Object handleNoResourceFoundException(NoResourceFoundException exception){
+    public Object handleNoResourceFoundException(NoResourceFoundException exception) {
+        logger.warn("访问了不存在的资源：" + exception.getResourcePath());
         return new Response<>(ServiceStatus.NOT_FOUND);
     }
 }

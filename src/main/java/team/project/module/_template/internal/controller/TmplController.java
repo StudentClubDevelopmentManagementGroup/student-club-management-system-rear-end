@@ -40,11 +40,11 @@ public class TmplController {
 
     /* 示例 */
     @Operation(summary="使用 mybatis-plus 查询 tmp_test 表中的所有记录")
-    @GetMapping("/tmpl/list_2")
+    @GetMapping("/tmpl/list_mp")
     Object list2() {
         return new Response<>(ServiceStatus.SUCCESS)
             .statusText("查询成功")
-            .data(service.list2());
+            .data(service.list_mp());
     }
 
 }
