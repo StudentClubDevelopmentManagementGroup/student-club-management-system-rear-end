@@ -16,7 +16,7 @@ import java.sql.SQLException;
 public class MybatisExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /* 处理 dao 层抛出的 SQL 异常 */
+    /* 执行 SQL 出错 */
     @ExceptionHandler(SQLException.class)
     Object handleSQLException(SQLException sqlException) {
         logger.error("执行 SQL 出错\n" + sqlException.getMessage());

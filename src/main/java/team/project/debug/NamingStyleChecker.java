@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@Component
+//@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

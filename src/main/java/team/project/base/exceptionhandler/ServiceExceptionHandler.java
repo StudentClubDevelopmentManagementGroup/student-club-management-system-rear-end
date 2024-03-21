@@ -14,7 +14,6 @@ import team.project.base.service.exception.ServiceException;
 public class ServiceExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /* 处理 service 层抛出的自定义异常 */
     @ExceptionHandler(ServiceException.class)
     Object handleServiceException(ServiceException exception) {
         return new Response<>(exception.getStatus()).data(exception.getMessage());
