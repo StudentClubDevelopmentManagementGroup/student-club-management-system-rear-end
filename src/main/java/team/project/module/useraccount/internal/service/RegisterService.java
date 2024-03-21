@@ -21,22 +21,27 @@ public class RegisterService {
     public void register(RegisterReq req)
     {
         TblUserDO user = new TblUserDO();
+
         user.setUserId(req.getUserId());
         if ( ! departmentService.isDepartmentExist(req.getDepartmentId())) {
-            throw new ServiceException(ServiceStatus.BAD_REQUEST, "院系不存在");
+            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "院系不存在");
         }
+
         user.setDepartmentId(req.getDepartmentId());
         user.setPassword(req.getPassword()); /* <- 待加密 */
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setTel(req.getTel());
+
         if ("student".equals(req.getRole())) {
             user.addRole(TblUserDO.Role.ROLE_STUDENT);
         } else if ("teacher".equals(req.getRole())) {
             user.addRole(TblUserDO.Role.ROLE_TEACHER);
         } else {
-            throw new ServiceException(ServiceStatus.BAD_REQUEST, "未指定用户身份是学生或教师");
+            /* 入参校验保证程序不会执行到此处 */
+            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "未指定用户身份是学生或教师");
         }
+
         tblUserMapper.insert(user);
     }
 }

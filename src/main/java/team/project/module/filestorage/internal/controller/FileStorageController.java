@@ -2,6 +2,7 @@ package team.project.module.filestorage.internal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,8 +39,7 @@ public class FileStorageController {
 
         } catch (Exception e) {
             logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
-                .data("上传失败");
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
         }
     }
 
@@ -51,13 +51,11 @@ public class FileStorageController {
         }
         try {
             String newFileName = service.uploadFileToCloudStorage(file);
-            return new Response<>(ServiceStatus.CREATED)
-                .statusText("上传成功").data(newFileName);
+            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(newFileName);
 
         } catch (Exception e) {
             logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
-                .data("上传失败");
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
         }
     }
 
@@ -65,8 +63,13 @@ public class FileStorageController {
     @GetMapping("/get_uploaded_file_url")
     Object getUploadedFileUrl(
         @NotBlank(message="未输入文件id")
-        @RequestParam("file-id") String fileId
+        @RequestParam("file_id") String fileId
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(service.getUploadedFileUrl(fileId));
+        String url = service.getUploadedFileUrl(fileId);
+        if (url == null) {
+            return new Response<>(ServiceStatus.NOT_FOUND);
+        } else {
+            return new Response<>(ServiceStatus.SUCCESS).data(url);
+        }
     }
 }
