@@ -8,16 +8,20 @@ import lombok.Data;
 @Data
 public class tblVO {
 
-    /* 示例 */
-    @JsonProperty("department_id")
-    Long     departmentId;
     @JsonProperty("name")
     String   name;
+    @JsonProperty("department_name")
+    String   department_name;
     @JsonProperty("number")
     Integer  number=0;
-    String   manager;
+    @JsonProperty("state")
     Integer  state;
+    @JsonProperty("is_deleted")
     Boolean  is_deleted;
+    @JsonProperty("manager")
+    String   manager;
+    @JsonProperty("pagenum")
     Integer  pagenum=1;
+    @JsonProperty("size")
     Integer  size=20;
 }

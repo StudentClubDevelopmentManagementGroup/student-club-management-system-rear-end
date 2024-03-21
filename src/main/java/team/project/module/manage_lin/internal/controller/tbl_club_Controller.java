@@ -9,6 +9,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
 import team.project.module.manage_lin.internal.model.request.tbl_club_Req;
+import team.project.module.manage_lin.internal.model.view.tblVO;
 import team.project.module.manage_lin.internal.service.tbl_club_Service;
 
 @Tag(name="tbl_club_Controller")
@@ -84,10 +85,10 @@ public class tbl_club_Controller {
 
     @Operation(summary="首页查询")
     @GetMapping("/manage_all/select_all")
-    Object select_all(){
+    Object select_all(tblVO req){
+        Page<tblVO> page = new Page<>(req.getPagenum(), req.getSize());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
-                .data(service.findall());
+                .data(service.findall(page));
     }
-
 }

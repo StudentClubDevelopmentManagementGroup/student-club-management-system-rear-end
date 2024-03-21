@@ -111,13 +111,9 @@ public class tbl_club_ServiceImpl extends ServiceImpl<tbl_club_Mapper, tbl_club_
         }
     }
 
-    @Override
-    public Page<tblVO> findall() {
-        return null;
-    }
 
-//    @Override
-//    public Page<tblVO> findall() {
-//        tmplMapper.select(departmentId, name);
-//    }
+
+    public Page<tblVO> findall(Page<tblVO> page) {
+        return tmplMapper.findall(page);
+    }
 }

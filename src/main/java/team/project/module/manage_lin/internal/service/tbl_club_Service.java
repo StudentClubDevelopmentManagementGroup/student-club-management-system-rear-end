@@ -29,6 +29,5 @@ public  interface tbl_club_Service extends IService<tbl_club_DO> {
 
      void recover_club(Long departmentId, String name);
 
-
-     Page<tblVO> findall();
+     Page<tblVO> findall(@Param("page") Page<tblVO> page);
 }

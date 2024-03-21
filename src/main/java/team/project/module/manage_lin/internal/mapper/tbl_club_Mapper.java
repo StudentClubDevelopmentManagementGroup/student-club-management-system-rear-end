@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.manage_lin.internal.model.entity.tbl_club_DO;
+import team.project.module.manage_lin.internal.model.view.tblVO;
 
 import java.util.List;
 
@@ -34,4 +35,6 @@ public interface tbl_club_Mapper extends BaseMapper<tbl_club_DO> {
     int recover_club(Long departmentId, String name);
 
     Page<tbl_club_DO> selectPageBydepartmentId(Page<tbl_club_DO> page, Long departmentId);
+
+    Page<tblVO> findall(Page<tblVO> page);
 }
