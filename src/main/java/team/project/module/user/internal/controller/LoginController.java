@@ -1,4 +1,4 @@
-package team.project.module.useraccount.internal.controller;
+package team.project.module.user.internal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.useraccount.internal.service.LoginService;
+import team.project.module.user.internal.service.LoginService;
 
 @Tag(name="用户身份验证、账号管理")
 @RestController

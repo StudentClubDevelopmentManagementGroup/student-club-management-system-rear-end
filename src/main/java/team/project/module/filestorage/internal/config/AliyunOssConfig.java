@@ -6,8 +6,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
 import team.project.module.filestorage.internal.util.Util;
 
-import java.net.UnknownHostException;
-
 @Configuration
 public class AliyunOssConfig {
     @Value("${file-storage.aliyun-oss.endpoint}")
