@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="team.project.module.community_display.dao.ClubMapper">
+
+
+    <!-- 定义根据部门查询社团的方法 -->
+    <select id="selectClubsByDepartment" parameterType="Long" resultType="team.project.module.community_display.entity.Club">
+        SELECT * FROM tbl_club WHERE department_id = #{department_id}
+    </select>
+
+</mapper>

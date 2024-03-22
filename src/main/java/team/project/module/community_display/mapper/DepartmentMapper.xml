@@ -8,4 +8,9 @@
         SELECT * FROM tbl_department
     </select>
 
+    <!-- 定义根据部门查询社团的方法 -->
+    <select id="selectClubsByDepartment" resultType="team.project.module.community_display.entity.Club">
+        SELECT * FROM tbl_club WHERE department_id = #{departmentId}
+    </select>
+
 </mapper>
