@@ -1,9 +1,9 @@
-package team.project.module.useraccount.tmp.service;
+package team.project.module.user.tmp.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.module.useraccount.tmp.mapper.TblDepartmentMapper;
-import team.project.module.useraccount.tmp.model.entity.TblDepartmentDO;
+import team.project.module.user.tmp.mapper.TblDepartmentMapper;
+import team.project.module.user.tmp.model.entity.TblDepartmentDO;
 
 @Service
 public class DepartmentService {

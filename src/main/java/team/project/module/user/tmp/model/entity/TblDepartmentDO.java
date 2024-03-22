@@ -1,4 +1,4 @@
-package team.project.module.useraccount.tmp.model.entity;
+package team.project.module.user.tmp.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
