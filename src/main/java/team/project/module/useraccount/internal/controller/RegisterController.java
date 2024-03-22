@@ -23,7 +23,7 @@ public class RegisterController {
     RegisterService registerService;
 
     @Operation(summary="注册账号")
-    @PostMapping("/auth/register")
+    @PostMapping("/user/register")
     Object register(@Valid @RequestBody RegisterReq req) {
         registerService.register(req);
         return new Response<>(ServiceStatus.CREATED).statusText("注册成功");
