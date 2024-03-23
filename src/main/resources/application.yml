@@ -40,3 +40,4 @@ mybatis-plus:
     # 关闭下划线命名和驼峰命名的自动转换，必须使用注解指定数据库字段名
     map-underscore-to-camel-case: false
 
+

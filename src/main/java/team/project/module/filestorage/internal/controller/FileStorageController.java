@@ -24,7 +24,7 @@ public class FileStorageController {
     @Autowired
     FileStorageIService service;
 
-    @Operation(summary="上传文件至服务器的本地文件系统")
+    @Operation(summary="上传文件至服务器的本地文件系统", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_local_file_system")
     Object uploadFileToLocalFileSystem(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -34,16 +34,15 @@ public class FileStorageController {
         try {
             String newFileName = service.uploadFileToLocalFileSystem(file);
             return new Response<>(ServiceStatus.CREATED)
-                .statusText("上传成功").data("文件id：" + newFileName);
+                .statusText("上传成功").data(newFileName);
 
         } catch (Exception e) {
             logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
-                .data("上传失败");
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
         }
     }
 
-    @Operation(summary="上传文件至云存储空间")
+    @Operation(summary="上传文件至云存储空间", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_cloud_storage")
     Object uploadFileToCloudStorage(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
@@ -51,22 +50,25 @@ public class FileStorageController {
         }
         try {
             String newFileName = service.uploadFileToCloudStorage(file);
-            return new Response<>(ServiceStatus.CREATED)
-                .statusText("上传成功").data("文件id：" + newFileName);
+            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(newFileName);
 
         } catch (Exception e) {
             logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
-                .data("上传失败");
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
         }
     }
 
     @Operation(summary="获取访问已上传的文件的URL")
     @GetMapping("/get_uploaded_file_url")
-    Object getUploadedFileFromAliyunOssBucket(
+    Object getUploadedFileUrl(
         @NotBlank(message="未输入文件id")
-        @RequestParam("file-id") String fileId
+        @RequestParam("file_id") String fileId
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(service.getUploadedFileUrl(fileId));
+        String url = service.getUploadedFileUrl(fileId);
+        if (url == null) {
+            return new Response<>(ServiceStatus.NOT_FOUND);
+        } else {
+            return new Response<>(ServiceStatus.SUCCESS).data(url);
+        }
     }
 }
