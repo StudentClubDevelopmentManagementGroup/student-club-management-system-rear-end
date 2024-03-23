@@ -8,9 +8,9 @@ import team.project.module.user.internal.model.entity.TblUserDO;
 @Service
 public class UserInfoService {
     @Autowired
-    TblUserMapper tblUserMapper;
+    TblUserMapper userMapper;
 
     public TblUserDO getUserInfoByUserId(String userId) {
-        return tblUserMapper.selectByUserId(userId);
+        return userMapper.selectUserInfoByUserId(userId);
     }
 }

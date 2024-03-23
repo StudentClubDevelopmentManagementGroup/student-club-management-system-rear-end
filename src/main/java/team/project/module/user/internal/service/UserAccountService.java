@@ -1,7 +1,5 @@
 package team.project.module.user.internal.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
@@ -13,17 +11,15 @@ import team.project.module.user.internal.model.request.RegisterReq;
 import team.project.module.user.tmp.service.DepartmentService;
 
 @Service
-public class RegisterService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class UserAccountService {
 
     @Autowired
-    TblUserMapper tblUserMapper;
+    TblUserMapper userMapper;
 
     @Autowired
     DepartmentService departmentService;
 
-    public void register(RegisterReq req)
-    {
+    public void register(RegisterReq req) {
         TblUserDO user = new TblUserDO();
 
         user.setUserId(req.getUserId());
@@ -32,7 +28,7 @@ public class RegisterService {
         }
 
         user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- 待加密 */
+        user.setPassword(req.getPassword()); /* <- TODO: 待加密 */
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setTel(req.getTel());
@@ -48,6 +44,17 @@ public class RegisterService {
             assert false : "controller 的入参校验保证程序不会执行到此处";
         }
 
-        tblUserMapper.insert(user);
+        userMapper.insert(user);
+    }
+
+    public boolean login(String userId, String password) {
+        return userMapper.isExist(userId, password);
+    }
+
+    public void cancelAccount(String userId, String password) {
+        int result = userMapper.cancelAccountByPassword(userId, password);
+        if (result == 0) {
+            throw new ServiceException(ServiceStatus.UNAUTHORIZED, "账号或密码错误");
+        }
     }
 }

@@ -6,7 +6,6 @@ public interface UserInfoIService {
 
     /**
      * 根据学号/工号获取用户信息
-     * @param userId 学号/工号
      */
     UserInfoDTO getUserInfoByUserId(String userId);
 }

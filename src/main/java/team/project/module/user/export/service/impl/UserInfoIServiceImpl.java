@@ -15,6 +15,9 @@ public class UserInfoIServiceImpl {
     @Autowired
     UserInfoService userInfoService;
 
+    /**
+     * 通过学号/工号获取用户的信息
+     * */
     public UserInfoDTO getUserInfoByUserId(String userId) {
         TblUserDO userInfo = userInfoService.getUserInfoByUserId(userId);
 
