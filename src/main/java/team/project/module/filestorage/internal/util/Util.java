@@ -11,7 +11,6 @@ public class Util {
      *  <li> 统一使用'/'作为文件夹的分隔符
      *  <li> 合并连续的斜杠为单个斜杠
      *  <li> 并移除路径末尾的斜杠（如果存在）
-     *
      * @return 格式化后的路径字符串
      * */
     public static String fixPath(String path) {
@@ -21,7 +20,6 @@ public class Util {
 
     /**
      * 生成随机的文件名（保留文件扩展名）
-     * 
      * @return 随机文件名
      * */
     public static String generateRandomFileName(String originalFilename) {

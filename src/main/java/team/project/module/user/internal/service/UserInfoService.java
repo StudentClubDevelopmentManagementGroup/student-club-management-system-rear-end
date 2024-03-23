@@ -11,6 +11,6 @@ public class UserInfoService {
     TblUserMapper userMapper;
 
     public TblUserDO getUserInfoByUserId(String userId) {
-        return userMapper.selectUserInfoByUserId(userId);
+        return userMapper.selectOne(userId);
     }
 }

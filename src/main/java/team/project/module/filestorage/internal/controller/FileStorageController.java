@@ -16,7 +16,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.service.FileStorageIService;
 
 
-@Tag(name="【测试】文件存储")
+@Tag(name="文件存储")
 @RestController
 public class FileStorageController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
