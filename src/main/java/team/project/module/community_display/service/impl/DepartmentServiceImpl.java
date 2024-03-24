@@ -27,5 +27,22 @@ public class DepartmentServiceImpl implements DepartmentService {
         return departmentMapper.selectAll();
     }
 
+    @Override
+    public boolean addDepartment(Department department) {
+        int rowsAffected = departmentMapper.insert(department);
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public boolean deleteDepartmentByName(String name) {
+        int rowsAffected = departmentMapper.deleteDepartmentByName(name);
+        return rowsAffected > 0;
+    }
+
+    @Override
+    public boolean updateDepartment(Department department) {
+        int rowsAffected = departmentMapper.updateDepartmentName(department);
+        return rowsAffected > 0;
+    }
 
 }
