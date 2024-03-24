@@ -28,8 +28,7 @@ public class AliyunOssConfig {
 
     @PostConstruct
     private void postConstruct() {
-        /* 检测配置文件中是否存在格式不正确的项
-           统一使用（/）作为文件夹的分隔符，以斜杠开头，不以斜杠结尾，不要出现连续的斜杠 */
+        /* 检测配置文件中是否存在格式不正确的项 */
         Assert.isTrue(
                 uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
             &&  uploadedFilesFolder.startsWith("/")

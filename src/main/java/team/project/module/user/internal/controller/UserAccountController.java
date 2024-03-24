@@ -30,6 +30,16 @@ public class UserAccountController {
         return new Response<>(ServiceStatus.CREATED).statusText("注册成功");
     }
 
+    @Operation(summary="注销账号")
+    @PostMapping("/user/cancel_account")
+    Object cancelAccount(
+        @RequestParam("user_id") String userId,
+        @RequestParam("pwd")     String password
+    ) {
+        service.cancelAccount(userId, password);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("销号成功");
+    }
+
     @Operation(summary="使用密码登录")
     @PostMapping("/user/login/password")
     Object loginWithPassword(
@@ -50,13 +60,9 @@ public class UserAccountController {
         return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 
-    @Operation(summary="注销账号")
-    @PostMapping("/user/cancel_account")
-    Object cancelAccount(
-        @RequestParam("user_id") String userId,
-        @RequestParam("pwd")     String password
-    ) {
-        service.cancelAccount(userId, password);
-        return new Response<>(ServiceStatus.SUCCESS).statusText("销号成功");
+    @Operation(summary="登出")
+    @PostMapping("/user/logout")
+    Object logout() {
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 }

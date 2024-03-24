@@ -5,6 +5,10 @@
 # 为了防止暴露访问阿里云 OSS 的存储空间的 id 和 secret
 # 已将 file-storage-config.yml 添加至 .gitignore
 
+# 路径统一使用（/）作为文件夹的分隔符
+# 路径不以斜杠结尾，不要出现连续的斜杠
+# 相对路径文件夹以斜杠开头
+
 file-storage:
   # 本地文件系统
   local-file-system:
