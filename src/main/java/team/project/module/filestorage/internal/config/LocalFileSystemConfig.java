@@ -29,7 +29,9 @@ public class LocalFileSystemConfig implements WebMvcConfigurer {
 
     @PostConstruct
     private void postConstruct() throws UnknownHostException {
-        /* 检测配置文件中是否存在格式不正确的项 */
+        /* 检测配置文件中是否存在格式不正确的项
+           统一使用（/）作为文件夹的分隔符，不以斜杠结尾，不要出现连续的斜杠
+           先对路径的文件夹以斜杠开头 */
         Assert.isTrue(
                 rootFolder.equals(Util.fixPath(rootFolder))
             &&  uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
