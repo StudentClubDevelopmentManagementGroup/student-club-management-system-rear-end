@@ -48,12 +48,7 @@ public class UserAccountController {
         @RequestParam("pwd")     String password
     ) {
         LoginVO userInfo = service.login(userId, password);
-        if (userInfo != null) {
-            return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(userInfo);
-        }
-        else {
-            return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("登录失败，账号不存在或密码错误");
-        }
+        return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(userInfo);
     }
 
     @Operation(summary="使用邮箱登录")

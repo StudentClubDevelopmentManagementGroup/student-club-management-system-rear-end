@@ -45,13 +45,13 @@ public class UserAccountService {
             assert false : "controller 的入参校验保证程序不会执行到此处";
         }
 
-        userMapper.insert(user);
+        userMapper.insert(user); /* TODO: 捕获因插入不满足“唯一键”约束抛出的异常 */
     }
 
     public LoginVO login(String userId, String password) {
-        TblUserDO user = userMapper.selectOne(userId);
+        TblUserDO user = userMapper.selectOne(userId, password);
         if (user == null) {
-            return null;
+            throw new ServiceException(ServiceStatus.UNAUTHORIZED, "用户名或密码错误");
         }
 
         LoginVO.Role role = new LoginVO.Role();

@@ -2,8 +2,6 @@ package team.project.module.user.internal.model.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.enums.UserRole;
 
 @Data
 public class LoginVO {
