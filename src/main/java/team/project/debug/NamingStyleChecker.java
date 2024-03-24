@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-//@Component /* <- 开启命名风格检测 */
+@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 

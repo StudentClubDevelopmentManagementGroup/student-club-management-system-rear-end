@@ -1,4 +1,4 @@
-package team.project.module.manage_lin.internal.model.entity;
+package team.project.module.club.management.internal.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -11,7 +11,7 @@ import java.sql.Timestamp;
    与数据库表结构一一对应 */
 @Data
 @TableName("tbl_club")
-public class tbl_club_DO {
+public class TblClubDO {
 
 //    @TableField(value="str") String str;
 //    create table tbl_club (
@@ -31,10 +31,10 @@ public class tbl_club_DO {
 //            ) comment '基地表';
 
     @TableId(value="id")               Long      id;
-    @TableField(value="is_deleted")    Boolean   is_deleted;
-    @TableField(value="create_time")   Timestamp create_time;
-    @TableField(value="update_time")   Timestamp update_time;
-    @TableField(value="department_id") Long      department_id;
+    @TableField(value="is_deleted")    Boolean   isDeleted;
+    @TableField(value="create_time")   Timestamp createTime;
+    @TableField(value="update_time")   Timestamp updateTime;
+    @TableField(value="department_id") Long      departmentId;
     @TableField(value="name")          String    name;
     @TableField(value="state")         Integer   state;
 }
