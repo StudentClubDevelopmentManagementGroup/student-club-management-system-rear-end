@@ -8,6 +8,7 @@ import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.model.enums.UserRole;
 import team.project.module.user.internal.model.request.RegisterReq;
+import team.project.module.user.internal.model.view.LoginVO;
 import team.project.module.user.tmp.service.DepartmentService;
 
 @Service
@@ -47,8 +48,31 @@ public class UserAccountService {
         userMapper.insert(user);
     }
 
-    public boolean login(String userId, String password) {
-        return userMapper.isExist(userId, password);
+    public LoginVO login(String userId, String password) {
+        TblUserDO user = userMapper.selectOne(userId);
+        if (user == null) {
+            return null;
+        }
+
+        LoginVO.Role role = new LoginVO.Role();
+        role.setStudent(user.hasRole(UserRole.STUDENT));
+        role.setTeacher(user.hasRole(UserRole.TEACHER));
+        role.setClubManager(user.hasRole(UserRole.CLUB_MANAGER));
+        role.setSuperAdmin(user.hasRole(UserRole.SUPER_ADMIN));
+
+        LoginVO.Department department = new LoginVO.Department();
+        department.setDepartmentId(user.getDepartmentId());
+        department.setDepartmentName(departmentService.getNameById(user.getDepartmentId()));
+
+        LoginVO userInfo = new LoginVO();
+        userInfo.setUserId(userId);
+        userInfo.setDepartment(department);
+        userInfo.setName(user.getName());
+        userInfo.setTel(user.getTel());
+        userInfo.setEmail(user.getEmail());
+        userInfo.setRole(role);
+
+        return userInfo;
     }
 
     public void cancelAccount(String userId, String password) {

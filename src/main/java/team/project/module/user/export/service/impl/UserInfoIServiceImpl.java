@@ -5,11 +5,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
+import team.project.module.user.export.service.UserInfoIService;
 import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.service.UserInfoService;
 
 @Service
-public class UserInfoIServiceImpl {
+public class UserInfoIServiceImpl implements UserInfoIService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -31,5 +32,7 @@ public class UserInfoIServiceImpl {
 
         return result;
     }
-
+    public void addClubManagerRoleToUser(String userId) {
+        /* TODO */
+    }
 }

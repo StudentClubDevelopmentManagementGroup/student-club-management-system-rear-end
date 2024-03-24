@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.internal.model.request.RegisterReq;
+import team.project.module.user.internal.model.view.LoginVO;
 import team.project.module.user.internal.service.UserAccountService;
 
 @Tag(name="用户身份验证、账号管理")
@@ -46,11 +47,12 @@ public class UserAccountController {
         @RequestParam("user_id") String userId,
         @RequestParam("pwd")     String password
     ) {
-        if (service.login(userId, password)) {
-            return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功");
+        LoginVO userInfo = service.login(userId, password);
+        if (userInfo != null) {
+            return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(userInfo);
         }
         else {
-            return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("登录失败");
+            return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("登录失败，账号不存在或密码错误");
         }
     }
 

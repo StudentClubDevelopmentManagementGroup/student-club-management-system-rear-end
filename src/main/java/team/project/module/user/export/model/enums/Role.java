@@ -7,7 +7,7 @@ import team.project.module.user.internal.model.enums.UserRole;
 public enum Role {
     STUDENT     (UserRole.STUDENT),     /* 学生 */
     TEACHER     (UserRole.TEACHER),     /* 教师 */
-    CLUB_LEADER (UserRole.CLUB_LEADER), /* 社团负责人 */
+    CLUB_MANAGER(UserRole.CLUB_MANAGER), /* 社团负责人 */
     SUPER_ADMIN (UserRole.SUPER_ADMIN), /* 超级管理员 */
     ;
 

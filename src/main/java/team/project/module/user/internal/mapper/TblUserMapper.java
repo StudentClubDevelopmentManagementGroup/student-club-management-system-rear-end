@@ -12,8 +12,7 @@ import java.util.List;
 public interface TblUserMapper extends BaseMapper<TblUserDO> {
 
     /**
-     * 通过学号/工号和密码查询用户（密码经过 service 层加密）
-     * @return 如果用户不存在（已注销）或密码错误则返回 false；否则返回 true
+     * 通过学号/工号和密码查询用户
      * */
     default boolean isExist(String userId, String password) {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -43,6 +42,18 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<TblUserDO> userList = this.selectList(
             lambdaQueryWrapper.eq(TblUserDO::getUserId, userId)
+        );
+        return userList.size() == 1 ? userList.get(0) : null;
+    }
+
+    /**
+     * 通过学号/工号与密码查询用户信息（用作登录）
+     * */
+    default TblUserDO selectOne(String userId, String password) {
+        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+            .eq(TblUserDO::getUserId, userId)
+            .eq(TblUserDO::getPassword, password)
         );
         return userList.size() == 1 ? userList.get(0) : null;
     }

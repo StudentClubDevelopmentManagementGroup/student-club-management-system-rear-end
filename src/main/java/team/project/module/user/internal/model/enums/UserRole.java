@@ -8,7 +8,7 @@ import java.util.ArrayList;
 public enum UserRole {
     STUDENT     (0b00001, "学生"),
     TEACHER     (0b00010, "教师"),
-    CLUB_LEADER (0b00100, "社团负责人"),
+    CLUB_MANAGER(0b00100, "社团负责人"),
     SUPER_ADMIN (0b01000, "超级管理员"),
     ;
 
@@ -32,7 +32,7 @@ public enum UserRole {
         return switch (role) {
             case STUDENT     -> 0 != (userRoleCode & UserRole.STUDENT.v);
             case TEACHER     -> 0 != (userRoleCode & UserRole.TEACHER.v);
-            case CLUB_LEADER -> 0 != (userRoleCode & UserRole.CLUB_LEADER.v);
+            case CLUB_MANAGER -> 0 != (userRoleCode & UserRole.CLUB_MANAGER.v);
             case SUPER_ADMIN -> 0 != (userRoleCode & UserRole.SUPER_ADMIN.v);
         };
     }
@@ -54,7 +54,7 @@ public enum UserRole {
         switch (toAddRole) {
             case STUDENT     -> newRoleCode |= UserRole.STUDENT.v;
             case TEACHER     -> newRoleCode |= UserRole.TEACHER.v;
-            case CLUB_LEADER -> newRoleCode |= UserRole.CLUB_LEADER.v;
+            case CLUB_MANAGER -> newRoleCode |= UserRole.CLUB_MANAGER.v;
             case SUPER_ADMIN -> newRoleCode |= UserRole.SUPER_ADMIN.v;
         }
 
@@ -75,7 +75,7 @@ public enum UserRole {
         int newRoleCode = currRoleCode;
 
         switch (toRemoveRole) {
-            case CLUB_LEADER -> newRoleCode &= ~UserRole.CLUB_LEADER.v;
+            case CLUB_MANAGER -> newRoleCode &= ~UserRole.CLUB_MANAGER.v;
             case SUPER_ADMIN -> newRoleCode &= ~UserRole.SUPER_ADMIN.v;
         };
 
@@ -89,7 +89,7 @@ public enum UserRole {
 
         if (hasRole(currRoleCode, UserRole.STUDENT))     roles.add(UserRole.STUDENT.roleName);
         if (hasRole(currRoleCode, UserRole.TEACHER))     roles.add(UserRole.TEACHER.roleName);
-        if (hasRole(currRoleCode, UserRole.CLUB_LEADER)) roles.add(UserRole.CLUB_LEADER.roleName);
+        if (hasRole(currRoleCode, UserRole.CLUB_MANAGER)) roles.add(UserRole.CLUB_MANAGER.roleName);
         if (hasRole(currRoleCode, UserRole.SUPER_ADMIN)) roles.add(UserRole.SUPER_ADMIN.roleName);
 
         return roles;
