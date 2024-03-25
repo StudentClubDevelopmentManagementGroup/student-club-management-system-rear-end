@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="team.project.module.community.display.mapper.ClubMapper">
+
+    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
+    <resultMap id="Club" type="team.project.module.community.display.entity.Club">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="id"                 property="id" />
+        <result column="is_deleted"         property="isDeleted" />
+        <result column="create_time"        property="createTime" />
+        <result column="update_time"        property="updateTime" />
+        <result column="department_id"      property="departmentId" />
+        <result column="name"               property="name" />
+        <result column="state"              property="state" />
+    </resultMap>
+
+
+    <!-- 定义根据部门查询社团的方法 -->
+    <select id="selectClubsByDepartment" parameterType="Long" resultMap="Club">
+        SELECT * FROM tbl_club WHERE department_id = #{department_id}
+    </select>
+
+</mapper>
