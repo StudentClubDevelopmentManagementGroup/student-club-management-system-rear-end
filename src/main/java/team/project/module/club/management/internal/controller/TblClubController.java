@@ -75,8 +75,8 @@ public class TblClubController {
 
 
     @Operation(summary="基地停止招人")
-    @PostMapping("/manage_all/deactivate_clb")
-    Object deactivateClb(Long departmentId, String name) {
+    @PostMapping("/manage_all/deactivate_club")
+    Object deactivateClub(Long departmentId, String name) {
         service.deactivateClub(departmentId, name);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
