@@ -1,8 +1,8 @@
-package team.project.module.community_display.service.impl;
+package team.project.module.community.display.service.impl;
 
-import team.project.module.community_display.mapper.DepartmentMapper;
-import team.project.module.community_display.entity.Department;
-import team.project.module.community_display.service.DepartmentService;
+import team.project.module.community.display.entity.Department;
+import team.project.module.community.display.mapper.DepartmentMapper;
+import team.project.module.community.display.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -12,7 +12,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Autowired
-    private  DepartmentMapper departmentMapper;
+    private DepartmentMapper departmentMapper;
 
 
     public DepartmentServiceImpl(DepartmentMapper departmentMapper) {
@@ -27,7 +27,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 
     @Override
     public boolean addDepartment(Department department) {
-        int rowsAffected = departmentMapper.insert(department);
+        int rowsAffected = departmentMapper.addDepartment(department);
         return rowsAffected > 0;
     }
 

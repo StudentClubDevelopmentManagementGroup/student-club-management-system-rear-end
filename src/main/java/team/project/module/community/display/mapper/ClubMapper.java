@@ -1,8 +1,9 @@
-package team.project.module.community_display.mapper;
+package team.project.module.community.display.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import team.project.module.community_display.entity.Club;
+import org.apache.ibatis.annotations.Param;
+import team.project.module.community.display.entity.Club;
 
 import java.util.List;
 @Mapper

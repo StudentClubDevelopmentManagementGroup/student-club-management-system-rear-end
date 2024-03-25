@@ -1,10 +1,10 @@
-package team.project.module.community_display.service.impl;
+package team.project.module.community.display.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.module.community_display.mapper.ClubMapper;
-import team.project.module.community_display.entity.Club;
-import team.project.module.community_display.service.ClubService;
+import team.project.module.community.display.entity.Club;
+import team.project.module.community.display.mapper.ClubMapper;
+import team.project.module.community.display.service.ClubService;
 
 import java.util.List;
 @Service

@@ -1,4 +1,4 @@
-package team.project.module.community_display.controller;
+package team.project.module.community.display.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -6,10 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.community_display.entity.Club;
-import team.project.module.community_display.entity.Department;
-import team.project.module.community_display.service.ClubService;
-import team.project.module.community_display.service.DepartmentService;
+import team.project.module.community.display.service.DepartmentService;
+import team.project.module.community.display.entity.Club;
+import team.project.module.community.display.entity.Department;
+import team.project.module.community.display.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -19,7 +19,7 @@ import java.util.List;
 @RequestMapping("/department")
 public class DepartmentController {
     @Autowired
-    private  DepartmentService departmentService;
+    private DepartmentService departmentService;
     private ClubService clubService;
 
     public DepartmentController(DepartmentService departmentService ,ClubService clubService) {

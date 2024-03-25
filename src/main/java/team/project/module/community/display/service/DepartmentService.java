@@ -1,7 +1,6 @@
-package team.project.module.community_display.service;
+package team.project.module.community.display.service;
 
-import team.project.module.community_display.entity.Club;
-import team.project.module.community_display.entity.Department;
+import team.project.module.community.display.entity.Department;
 import java.util.List;
 
 public interface DepartmentService {
