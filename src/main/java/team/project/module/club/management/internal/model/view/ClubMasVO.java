@@ -1,5 +1,6 @@
 package team.project.module.club.management.internal.model.view;
 
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
@@ -17,13 +18,13 @@ public class ClubMasVO {
     @JsonProperty("number")
     Integer  number=0;
     @JsonProperty("state")
-    Integer  state;
+    Boolean  state;
     @JsonProperty("is_deleted")
-    Boolean  isDeleted;
+    Boolean  deleted;
     @JsonProperty("manager")
     String   manager;
     @JsonProperty("pagenum")
-    Integer  pagenum=1;
+    Integer  pageNum =1;
     @JsonProperty("size")
     Integer  size=20;
 }

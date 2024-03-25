@@ -38,4 +38,10 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
     Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId);
 
     Page<ClubMasVO> findAll(Page<ClubMasVO> page);
+
+    Page<ClubMasVO> findAllByDepartmentId(Page<ClubMasVO> page,Long departmentId);
+
+    Page<ClubMasVO> findAllByName(Page<ClubMasVO> page,String name);
+
+    Page<ClubMasVO> findAllByDepartmentIdAndName(Page<ClubMasVO> page,Long departmentId,String name);
 }

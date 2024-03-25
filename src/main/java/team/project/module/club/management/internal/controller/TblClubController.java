@@ -10,6 +10,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.view.ClubVO;
 import team.project.module.club.management.internal.service.TblClubService;
 
 @Tag(name="tbl_club_Controller")
@@ -20,8 +21,8 @@ public class TblClubController {
 
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_club")
-    Object createClub (@RequestParam("department_id") Long departmentId, String name) {
-        service.createClub(departmentId, name);
+    Object createClub (@RequestBody ClubVO req) {
+        service.createClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("创建成功");
     }
@@ -51,44 +52,59 @@ public class TblClubController {
 
     @Operation(summary="删除基地")
     @PostMapping("/manage_all/delete_club")
-    Object deleteClub(@RequestParam("department_id") Long departmentId, String name){
-        service.deleteClub(departmentId,name);
+    Object deleteClub(@RequestBody ClubVO req){
+        service.deleteClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("删除成功");
     }
 
     @Operation(summary="撤销删除基地")
     @PostMapping("/manage_all/recover_club")
-    Object recoverClub(@RequestParam("department_id") Long departmentId,  String name) {
-        service.recoverClub(departmentId, name);
+    Object recoverClub(@RequestBody ClubVO req) {
+        service.recoverClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("撤销删除成功");
     }
 
     @Operation(summary="基地开放招人")
     @PostMapping("/manage_all/reuse_club")
-    Object reuseClub(@RequestParam("department_id") Long departmentId,  String name) {
-        service.reuseClub(departmentId, name);
+    Object reuseClub(@RequestBody ClubVO req) {
+        service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
-
 
     @Operation(summary="基地停止招人")
-    @PostMapping("/manage_all/deactivate_clb")
-    Object deactivateClb(Long departmentId, String name) {
-        service.deactivateClub(departmentId, name);
+    @PostMapping("/manage_all/deactivate_club")
+    Object deactivateClub(@RequestBody ClubVO req) {
+        service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
 
-
-    @Operation(summary="首页查询")
     @GetMapping("/manage_all/select_all")
-    Object selectAll(ClubMasVO req){
+    Object selectAll(TblClubReq req) {
         Page<ClubMasVO> page = new Page<>(req.getPagenum(), req.getSize());
-        return new Response<>(ServiceStatus.SUCCESS)
-                .statusText("查询成功")
-                .data(service.findAll(page));
+        if (req.getDepartmentId() == null) {
+            if (req.getName() == null) {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAll(page));
+            } else {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByName(page, req.getName()));
+            }
+        } else {
+            if (req.getName() == null) {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByDepartmentId(page, req.getDepartmentId()));
+            } else {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByDepartmentIdAndName(page, req.getDepartmentId(), req.getName()));
+            }
+        }
     }
 }
