@@ -21,7 +21,7 @@ public class TblClubController {
 
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_club")
-    Object createClub (ClubVO req) {
+    Object createClub (@RequestBody ClubVO req) {
         service.createClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("创建成功");
@@ -52,7 +52,7 @@ public class TblClubController {
 
     @Operation(summary="删除基地")
     @PostMapping("/manage_all/delete_club")
-    Object deleteClub(ClubVO req){
+    Object deleteClub(@RequestBody ClubVO req){
         service.deleteClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("删除成功");
@@ -60,7 +60,7 @@ public class TblClubController {
 
     @Operation(summary="撤销删除基地")
     @PostMapping("/manage_all/recover_club")
-    Object recoverClub(ClubVO req) {
+    Object recoverClub(@RequestBody ClubVO req) {
         service.recoverClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("撤销删除成功");
@@ -68,7 +68,7 @@ public class TblClubController {
 
     @Operation(summary="基地开放招人")
     @PostMapping("/manage_all/reuse_club")
-    Object reuseClub(ClubVO req) {
+    Object reuseClub(@RequestBody ClubVO req) {
         service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
@@ -77,7 +77,7 @@ public class TblClubController {
 
     @Operation(summary="基地停止招人")
     @PostMapping("/manage_all/deactivate_club")
-    Object deactivateClub(ClubVO req) {
+    Object deactivateClub(@RequestBody ClubVO req) {
         service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
@@ -86,7 +86,7 @@ public class TblClubController {
 
     @Operation(summary="首页查询")
     @GetMapping("/manage_all/select_all")
-    Object selectAll(ClubMasVO req){
+    Object selectAll(@RequestBody ClubMasVO req){
         Page<ClubMasVO> page = new Page<>(req.getPagenum(), req.getSize());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
