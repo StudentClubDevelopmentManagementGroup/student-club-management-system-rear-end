@@ -30,7 +30,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         if(tmplMapper.findByNameAndDepartmentId(departmentId,name).isEmpty()){
             tmplMapper.createClub(departmentId, name);
         }else{
-            throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团");
         }
     }
 
@@ -40,7 +40,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<TblClubDO> selectByNameAndDepartmentId(Page<TblClubDO> page, Long departmentId, String name) {
         Page<TblClubDO> page1 = tmplMapper.selectByNameAndDepartmentId(page,departmentId, name);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
@@ -51,7 +51,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<TblClubDO> selectByName(Page<TblClubDO> page, String name) {
         Page<TblClubDO> page1 = tmplMapper.selectByName(page, name);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
@@ -62,7 +62,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId) {
         Page<TblClubDO> page1 = tmplMapper.selectByDepartmentId(page, departmentId);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
@@ -72,7 +72,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void deleteClub(Long departmentId, String name) {
             int result = tmplMapper.deleteClub(departmentId, name);
             if (result == 0) {
-                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败，未找到该社团");
+                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
     }
 
@@ -80,7 +80,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void reuseClub(Long departmentId, String name) {
             int result = tmplMapper.reuseClub(departmentId, name);
             if(result==0){
-                throw new ServiceException(ServiceStatus.SUCCESS, "修改失败，未找到该社团");
+                throw new ServiceException(ServiceStatus.SUCCESS, "修改失败");
             }
     }
 
@@ -88,7 +88,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void deactivateClub(Long departmentId, String name) {
         int result = tmplMapper.deactivateClub(departmentId, name);
         if(result==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
 
@@ -96,7 +96,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void recoverClub(Long departmentId, String name) {
         int result = tmplMapper.recoverClub(departmentId, name);
         if(result==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
 
@@ -108,7 +108,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<ClubMasVO> findAllByDepartmentId(Page<ClubMasVO> page,Long departmentId) {
         Page<ClubMasVO> page1 = tmplMapper.findAllByDepartmentId(page, departmentId);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
@@ -118,7 +118,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<ClubMasVO> findAllByName(Page<ClubMasVO> page,String name) {
         Page<ClubMasVO> page1 = tmplMapper.findAllByName(page, name);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
@@ -128,12 +128,13 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<ClubMasVO> findAllByDepartmentIdAndName(Page<ClubMasVO> page,Long departmentId,String name) {
         Page<ClubMasVO> page1 = tmplMapper.findAllByDepartmentIdAndName(page, departmentId, name);
         if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
             return page1;
         }
     }
+
 
 
 }

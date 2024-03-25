@@ -33,5 +33,7 @@ public  interface TblClubService extends IService<TblClubDO> {
      Page<ClubMasVO> findAllByDepartmentId(@Param("page") Page<ClubMasVO> page,Long departmentId);
      Page<ClubMasVO> findAllByName(@Param("page") Page<ClubMasVO> page,String name);
      Page<ClubMasVO> findAllByDepartmentIdAndName(@Param("page") Page<ClubMasVO> page,Long departmentId,String name);
+
+
 }
 

@@ -9,15 +9,18 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
+import team.project.module.club.management.internal.model.view.ClubManagerVO;
 import team.project.module.club.management.internal.model.view.ClubMasVO;
 import team.project.module.club.management.internal.model.view.ClubVO;
 import team.project.module.club.management.internal.service.TblClubService;
+import team.project.module.club.management.internal.service.TblUserClubService;
 
 @Tag(name="tbl_club_Controller")
 @RestController
 public class TblClubController {
     @Autowired
     TblClubService service;
+    TblUserClubService service2;
 
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_club")
@@ -81,7 +84,7 @@ public class TblClubController {
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
-
+    @Operation(summary="基地总信息")
     @GetMapping("/manage_all/select_all")
     Object selectAll(TblClubReq req) {
         Page<ClubMasVO> page = new Page<>(req.getPagenum(), req.getSize());
@@ -106,5 +109,12 @@ public class TblClubController {
                         .data(service.findAllByDepartmentIdAndName(page, req.getDepartmentId(), req.getName()));
             }
         }
+    }
+    @Operation(summary="基地设置负责人")
+    @PostMapping("/manage_all/select_manager")
+    Object selectManager(@RequestBody ClubManagerVO req) {
+        service2.setClubManager(req.getUserId(),req.getClubId());
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("设置成功");
     }
 }
