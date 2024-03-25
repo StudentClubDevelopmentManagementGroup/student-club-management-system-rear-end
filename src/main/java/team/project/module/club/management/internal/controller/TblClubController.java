@@ -10,6 +10,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.view.ClubVO;
 import team.project.module.club.management.internal.service.TblClubService;
 
 @Tag(name="tbl_club_Controller")
@@ -20,8 +21,8 @@ public class TblClubController {
 
     @Operation(summary="创建基地")
     @PostMapping("/manage_all/create_club")
-    Object createClub (@RequestParam("department_id") Long departmentId, String name) {
-        service.createClub(departmentId, name);
+    Object createClub (ClubVO req) {
+        service.createClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("创建成功");
     }
@@ -51,24 +52,24 @@ public class TblClubController {
 
     @Operation(summary="删除基地")
     @PostMapping("/manage_all/delete_club")
-    Object deleteClub(@RequestParam("department_id") Long departmentId, String name){
-        service.deleteClub(departmentId,name);
+    Object deleteClub(ClubVO req){
+        service.deleteClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("删除成功");
     }
 
     @Operation(summary="撤销删除基地")
     @PostMapping("/manage_all/recover_club")
-    Object recoverClub(@RequestParam("department_id") Long departmentId,  String name) {
-        service.recoverClub(departmentId, name);
+    Object recoverClub(ClubVO req) {
+        service.recoverClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("撤销删除成功");
     }
 
     @Operation(summary="基地开放招人")
     @PostMapping("/manage_all/reuse_club")
-    Object reuseClub(@RequestParam("department_id") Long departmentId,  String name) {
-        service.reuseClub(departmentId, name);
+    Object reuseClub(ClubVO req) {
+        service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
@@ -76,8 +77,8 @@ public class TblClubController {
 
     @Operation(summary="基地停止招人")
     @PostMapping("/manage_all/deactivate_club")
-    Object deactivateClub(@RequestParam("department_id") Long departmentId, String name) {
-        service.deactivateClub(departmentId, name);
+    Object deactivateClub(ClubVO req) {
+        service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
