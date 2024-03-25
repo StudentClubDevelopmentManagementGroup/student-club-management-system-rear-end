@@ -68,7 +68,7 @@
     </update>
 
     <select id="findAll"
-            resultType="team.project.module.club.management.internal.model.view.ClubMasVO">
+            resultMap="clubmasVO">
         SELECT
         c.name AS name,
         d.full_name AS department_name,

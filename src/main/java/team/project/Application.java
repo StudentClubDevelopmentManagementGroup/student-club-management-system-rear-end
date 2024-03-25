@@ -15,10 +15,8 @@ import java.net.UnknownHostException;
 public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
-
         String serverPort = ctx.getEnvironment().getProperty("server.port");
         Logger logger = LoggerFactory.getLogger("[临时测试用]" + Application.class);
-
         String hostAddress;
         try {
             hostAddress = InetAddress.getLocalHost().getHostAddress();
