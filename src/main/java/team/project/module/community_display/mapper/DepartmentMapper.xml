@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="team.project.module.community_display.dao.DepartmentMapper">
+<mapper namespace="team.project.module.community_display.mapper.DepartmentMapper">
 
     <!-- 查询所有院系部门 -->
     <select id="selectAll" resultType="team.project.module.community_display.entity.Department">

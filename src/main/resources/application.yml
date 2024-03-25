@@ -7,8 +7,10 @@ server:
 
 spring:
   config:
-    # 引入数据库配置（database-config.yml）
-    import: classpath:database-config.yml
+    # 引入各类配置文件（database-config.yml）
+    import:
+      - classpath:database-config.yml  # 数据库配置（database-config.yml）
+      - classpath:file-storage-config.yml  # 文件存储配置（file-storage-config.yml）
   autoconfigure:
     # 禁用 spring-boot 的 security 自动配置，不再生成任何安全密码
     exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
@@ -17,7 +19,7 @@ spring:
       # 限制单个上传文件的大小
       max-file-size: 10MB
       # 限制整个请求的大小
-      max-request-size: 10MB
+      max-request-size: 20MB
 
 
 
@@ -37,4 +39,5 @@ mybatis-plus:
   configuration:
     # 关闭下划线命名和驼峰命名的自动转换，必须使用注解指定数据库字段名
     map-underscore-to-camel-case: false
-
+    # 输出执行的 sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

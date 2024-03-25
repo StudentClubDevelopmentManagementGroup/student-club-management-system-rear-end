@@ -1,8 +1,6 @@
 package team.project.module.community_display.service.impl;
 
-import team.project.module.community_display.dao.DepartmentMapper;
-import team.project.module.community_display.dao.ClubMapper;
-import team.project.module.community_display.entity.Club;
+import team.project.module.community_display.mapper.DepartmentMapper;
 import team.project.module.community_display.entity.Department;
 import team.project.module.community_display.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;

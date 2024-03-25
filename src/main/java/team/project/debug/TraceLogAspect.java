@@ -9,11 +9,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-@Aspect /* <-- 开启切面 debug */
+// @Aspect /* <-- 开启切面 debug */
 public class TraceLogAspect {
-    Logger logger = LoggerFactory.getLogger(TraceLogAspect.class);
+    Logger logger = LoggerFactory.getLogger("[函数的调用情况]");
 
-    /* 输出函数的调用情况 */
     @Around("""
         execution(* team.project.module..controller..*(..)) ||
         execution(* team.project.module..service..*(..))    ||

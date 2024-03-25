@@ -1,25 +1,36 @@
 package team.project;
 
-import org.mybatis.spring.annotation.MapperScan;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 
-@SpringBootApplication(scanBasePackages = "team.project.module")
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+@SpringBootApplication
 @EnableAspectJAutoProxy
-//@MapperScan("team.project.module.community_display.mapper")
 public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
 
         String serverPort = ctx.getEnvironment().getProperty("server.port");
-        Logger logger = LoggerFactory.getLogger(Application.class);
+        Logger logger = LoggerFactory.getLogger("[临时测试用]" + Application.class);
 
-        logger.info("api 说明文档：http://127.0.0.1:{}/swagger-ui/index.html", serverPort);
-        logger.info("图片存储测试：http://127.0.0.1:{}/html/test/image-storage.html", serverPort);
+        String hostAddress;
+        try {
+            hostAddress = InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            hostAddress = "127.0.0.1";
+        }
+
+        logger.info(
+            """
+            api 说明文档：{}/swagger-ui/index.html
+            文件存储测试：{}/html/test/file-storage.html
+            """.replace("{}", "http://" + hostAddress + ":" + serverPort)
+        );
     }
 }

@@ -21,18 +21,18 @@ public class TmplDO {
         `update_time` datetime not null default now() on update now() comment '更新时间',
 
         `str`         varchar(96) default '' not null comment '文本',
-         primary key (`id`)
+        primary key (`id`)
     ) comment '测试用';
     */
 
     /* 示例（与 tbl_tmp_test 表结构对应） */
     @TableId(value="id")             Long      id;
-    @TableField(value="is_deleted")  Boolean   deleted; // <-- java 字段名不能以is开头
+    @TableField(value="is_deleted")  Boolean   deleted;         // <-- java 字段名不能以is开头
     @TableField(value="create_time") Timestamp createTime;
     @TableField(value="update_time") Timestamp updateTime;
 
-//    这三个字段不用对应，因为与业务逻辑无关（create_time 可能和业务逻辑有关，有关再单独处理）
-
+     /* is_deleted、create_time、update_time 这三个字段不用对应
+     因为与业务逻辑无关（create_time 可能和业务逻辑有关，有关再单独处理） */
 
     @TableField(value="str") String str;
 }
