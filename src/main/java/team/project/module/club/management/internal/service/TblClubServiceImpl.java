@@ -104,4 +104,36 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public Page<ClubMasVO> findAll(Page<ClubMasVO> page) {
         return tmplMapper.findAll(page);
     }
+
+    public Page<ClubMasVO> findAllByDepartmentId(Page<ClubMasVO> page,Long departmentId) {
+        Page<ClubMasVO> page1 = tmplMapper.findAllByDepartmentId(page, departmentId);
+        if(page1.getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return page1;
+        }
+    }
+
+    public Page<ClubMasVO> findAllByName(Page<ClubMasVO> page,String name) {
+        Page<ClubMasVO> page1 = tmplMapper.findAllByName(page, name);
+        if(page1.getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return page1;
+        }
+    }
+
+    public Page<ClubMasVO> findAllByDepartmentIdAndName(Page<ClubMasVO> page,Long departmentId,String name) {
+        Page<ClubMasVO> page1 = tmplMapper.findAllByDepartmentIdAndName(page, departmentId, name);
+        if(page1.getTotal()==0){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+        }
+        else {
+            return page1;
+        }
+    }
+
+
 }

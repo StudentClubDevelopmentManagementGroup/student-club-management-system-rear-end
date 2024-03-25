@@ -22,7 +22,6 @@ public  interface TblClubService extends IService<TblClubDO> {
 
      void deleteClub(Long departmentId, String name);
 
-
      void reuseClub(Long departmentId, String name);
 
      void deactivateClub(Long departmentId, String name);
@@ -30,5 +29,9 @@ public  interface TblClubService extends IService<TblClubDO> {
      void recoverClub(Long departmentId, String name);
 
      Page<ClubMasVO> findAll(@Param("page") Page<ClubMasVO> page);
+
+     Page<ClubMasVO> findAllByDepartmentId(@Param("page") Page<ClubMasVO> page,Long departmentId);
+     Page<ClubMasVO> findAllByName(@Param("page") Page<ClubMasVO> page,String name);
+     Page<ClubMasVO> findAllByDepartmentIdAndName(@Param("page") Page<ClubMasVO> page,Long departmentId,String name);
 }
 

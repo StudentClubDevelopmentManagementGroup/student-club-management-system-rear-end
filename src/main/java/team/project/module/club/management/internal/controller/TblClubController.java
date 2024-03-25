@@ -74,7 +74,6 @@ public class TblClubController {
                 .statusText("修改成功");
     }
 
-
     @Operation(summary="基地停止招人")
     @PostMapping("/manage_all/deactivate_club")
     Object deactivateClub(@RequestBody ClubVO req) {
@@ -83,13 +82,29 @@ public class TblClubController {
                 .statusText("修改成功");
     }
 
-
-    @Operation(summary="首页查询")
     @GetMapping("/manage_all/select_all")
-    Object selectAll(@RequestBody ClubMasVO req){
+    Object selectAll(TblClubReq req) {
         Page<ClubMasVO> page = new Page<>(req.getPagenum(), req.getSize());
-        return new Response<>(ServiceStatus.SUCCESS)
-                .statusText("查询成功")
-                .data(service.findAll(page));
+        if (req.getDepartmentId() == null) {
+            if (req.getName() == null) {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAll(page));
+            } else {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByName(page, req.getName()));
+            }
+        } else {
+            if (req.getName() == null) {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByDepartmentId(page, req.getDepartmentId()));
+            } else {
+                return new Response<>(ServiceStatus.SUCCESS)
+                        .statusText("查询成功")
+                        .data(service.findAllByDepartmentIdAndName(page, req.getDepartmentId(), req.getName()));
+            }
+        }
     }
 }
