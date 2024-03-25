@@ -15,7 +15,7 @@
 
     <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.view.ClubMasVO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
-        <result column="is_deleted"         property="isDeleted" />
+        <result column="is_deleted"         property="deleted" />
         <result column="department_id"      property="departmentId" />
         <result column="department_name"    property="departmentName" />
         <result column="name"               property="name" />
@@ -69,69 +69,21 @@
 
     <select id="findAll"
             resultMap="clubmasVO">
-        SELECT
-        c.name AS name,
-        d.full_name AS department_name,
-        c.department_id AS department_id,
-        COUNT(uc.user_id) AS number,
-        c.state AS state,
-        c.is_deleted AS is_deleted,
-        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
-        FROM tbl_club c
-        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
-        LEFT JOIN tbl_user u ON uc.user_id = u.id
-        LEFT JOIN tbl_department d ON c.department_id = d.id
-        GROUP BY c.id
+        SELECT * from view_club_manager
     </select>
     <select id="findAllByDepartmentId"
             resultMap="clubmasVO">
-        SELECT
-        c.name AS name,
-        d.full_name AS department_name,
-        c.department_id AS department_id,
-        COUNT(uc.user_id) AS number,
-        c.state AS state,
-        c.is_deleted AS is_deleted,
-        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
-        FROM tbl_club c
-        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
-        LEFT JOIN tbl_user u ON uc.user_id = u.id
-        LEFT JOIN tbl_department d ON c.department_id = d.id
-        WHERE c.department_id = #{departmentId}
-        GROUP BY c.id
+        SELECT * from view_club_manager
+        WHERE department_id = #{departmentId}
     </select>
     <select id="findAllByName"
             resultMap="clubmasVO">
-        SELECT
-        c.name AS name,
-        d.full_name AS department_name,
-        c.department_id AS department_id,
-        COUNT(uc.user_id) AS number,
-        c.state AS state,
-        c.is_deleted AS is_deleted,
-        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
-        FROM tbl_club c
-        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
-        LEFT JOIN tbl_user u ON uc.user_id = u.id
-        LEFT JOIN tbl_department d ON c.department_id = d.id
-        WHERE c.name = #{name}
-        GROUP BY c.id
+        SELECT * from view_club_manager
+        WHERE name = #{name}
     </select>
     <select id="findAllByDepartmentIdAndName"
             resultMap="clubmasVO">
-        SELECT
-        c.name AS name,
-        d.full_name AS department_name,
-        c.department_id AS department_id,
-        COUNT(uc.user_id) AS number,
-        c.state AS state,
-        c.is_deleted AS is_deleted,
-        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
-        FROM tbl_club c
-        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
-        LEFT JOIN tbl_user u ON uc.user_id = u.id
-        LEFT JOIN tbl_department d ON c.department_id = d.id
-        WHERE c.department_id = #{departmentId} and c.name = #{name}
-        GROUP BY c.id
+        SELECT * from view_club_manager
+        WHERE department_id = #{departmentId} and name = #{name}
     </select>
 </mapper>
