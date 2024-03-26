@@ -1,30 +1,22 @@
-package team.project.module.community.display.entity;
+package team.project.module.community.display.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import java.sql.Timestamp;
 
-
-import java.util.Date;
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-@ToString
 public class Club {
     private Long id;
     @TableField("is_deleted") // 指定数据库列名为 is_deleted
-    private int isDeleted;
+    private Boolean isDeleted;
     @TableField("create_time")
-    private Date createTime;
+    private Timestamp createTime;
     @TableField("updata_time")
-    private Date updateTime;
+    private Timestamp updateTime;
     @TableField("department_id")
     private Long departmentId;
     private String name;
-    private int state;
-
+    private Integer state;
 
 
 }
