@@ -12,7 +12,6 @@ import java.sql.Timestamp;
 @TableName("tbl_user_club")
 public class TblUserClubDO {
 
-
 //-- 基地成员表（用户-基地 关系表）
 //            -- 报名了社团，但还不是正式社团成员的，不存于该表
 //    drop table if exists `tbl_user_club`;

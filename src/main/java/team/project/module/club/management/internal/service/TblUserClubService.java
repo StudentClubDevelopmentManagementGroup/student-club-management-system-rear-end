@@ -5,11 +5,13 @@ import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 
 
 @Service
-public  interface TblUserClubService extends IService<TblUserClubDO> {
+public interface TblUserClubService extends IService<TblUserClubDO> {
 
 
      void setClubManager(Long userId, Long clubId);
 
      void quashClubManager(Long userId, Long clubId);
+
+
 }
 

@@ -37,6 +37,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.setManager(userId, clubId);
+            ucMapper.setUserManager(userId, clubId);
         }
     }
 
@@ -51,6 +52,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.quashManager(userId, clubId);
+            ucMapper.quashUserManager(userId, clubId);
         }
 
     }

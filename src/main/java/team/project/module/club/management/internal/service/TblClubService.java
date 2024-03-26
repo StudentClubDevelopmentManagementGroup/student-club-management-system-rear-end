@@ -7,7 +7,7 @@ import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.view.ClubMasVO;
 
 @Service
-public  interface TblClubService extends IService<TblClubDO> {
+public interface TblClubService extends IService<TblClubDO> {
 
 
      void createClub(Long departmentId, String name);
