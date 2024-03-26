@@ -11,7 +11,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.internal.model.request.RegisterReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
-import team.project.module.user.internal.service.UserAccountService;
+import team.project.module.user.internal.service.UserService;
 
 @Tag(name="用户身份验证、账号管理")
 @RestController
@@ -19,7 +19,7 @@ public class UserAccountController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    UserAccountService service;
+    UserService service;
 
     @Operation(summary="注册账号")
     @PostMapping("/user/register")
@@ -60,12 +60,12 @@ public class UserAccountController {
         return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 
-    @Operation(summary="获取所有的用户账号信息")
-    @GetMapping("/user/select_all")
+    @Operation(summary="分页查询用户账号信息")
+    @GetMapping("/user_info/paging_query")
     Object selectAll(
         @RequestParam("page_num")  int pageNum,
         @RequestParam("page_size") int pageSize
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(service.selectAll(pageNum, pageSize));
+        return new Response<>(ServiceStatus.SUCCESS).data(service.pagingQueryUserInfo(pageNum, pageSize));
     }
 }

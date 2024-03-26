@@ -17,35 +17,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserAccountService {
+public class UserService {
 
     @Autowired
     TblUserMapper userMapper;
 
     @Autowired
     DepartmentService departmentService;
-
-    UserInfoVO toUserInfoVO(TblUserDO user) {
-        UserInfoVO.Role role = new UserInfoVO.Role();
-        role.setStudent(user.hasRole(UserRole.STUDENT));
-        role.setTeacher(user.hasRole(UserRole.TEACHER));
-        role.setClubManager(user.hasRole(UserRole.CLUB_MANAGER));
-        role.setSuperAdmin(user.hasRole(UserRole.SUPER_ADMIN));
-
-        UserInfoVO.Department department = new UserInfoVO.Department();
-        department.setDepartmentId(user.getDepartmentId());
-        department.setDepartmentName(departmentService.getNameById(user.getDepartmentId()));
-
-        UserInfoVO userInfo = new UserInfoVO();
-        userInfo.setUserId(user.getUserId());
-        userInfo.setDepartment(department);
-        userInfo.setName(user.getName());
-        userInfo.setTel(user.getTel());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setRole(role);
-
-        return userInfo;
-    }
 
     public void register(RegisterReq req) {
         TblUserDO user = new TblUserDO();
@@ -81,27 +59,7 @@ public class UserAccountService {
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "用户名或密码错误");
         }
 
-        /*UserInfoVO.Role role = new UserInfoVO.Role();
-        role.setStudent(user.hasRole(UserRole.STUDENT));
-        role.setTeacher(user.hasRole(UserRole.TEACHER));
-        role.setClubManager(user.hasRole(UserRole.CLUB_MANAGER));
-        role.setSuperAdmin(user.hasRole(UserRole.SUPER_ADMIN));
-
-        UserInfoVO.Department department = new UserInfoVO.Department();
-        department.setDepartmentId(user.getDepartmentId());
-        department.setDepartmentName(departmentService.getNameById(user.getDepartmentId()));
-
-        UserInfoVO userInfo = new UserInfoVO();
-        userInfo.setUserId(userId);
-        userInfo.setDepartment(department);
-        userInfo.setName(user.getName());
-        userInfo.setTel(user.getTel());
-        userInfo.setEmail(user.getEmail());
-        userInfo.setRole(role);
-
-        return userInfo;*/
-
-        return toUserInfoVO(user);
+        return convertToUserInfoVO(user);
     }
 
     public void cancelAccount(String userId, String password) {
@@ -111,13 +69,35 @@ public class UserAccountService {
         }
     }
 
-    public PageVO<UserInfoVO> selectAll(int pageNum, int pageSize) {
+    public PageVO<UserInfoVO> pagingQueryUserInfo(int pageNum, int pageSize) {
         Page<TblUserDO> page = new Page<>(pageNum, pageSize, true);
-        List<TblUserDO> userList = userMapper.selectList(page, null);
         List<UserInfoVO> userInfoList = new ArrayList<>();
-        for (TblUserDO user : userList) {
-            userInfoList.add(toUserInfoVO(user));
+        for (TblUserDO userDO : userMapper.selectList(page, null)) {
+            userInfoList.add(convertToUserInfoVO(userDO));
         }
         return new PageVO<>(userInfoList, page);
+    }
+
+    private UserInfoVO convertToUserInfoVO(TblUserDO userDO) {
+
+        UserInfoVO.Role role = new UserInfoVO.Role();
+        role.setStudent(userDO.hasRole(UserRole.STUDENT));
+        role.setTeacher(userDO.hasRole(UserRole.TEACHER));
+        role.setClubManager(userDO.hasRole(UserRole.CLUB_MANAGER));
+        role.setSuperAdmin(userDO.hasRole(UserRole.SUPER_ADMIN));
+
+        UserInfoVO.Department department = new UserInfoVO.Department();
+        department.setDepartmentId(userDO.getDepartmentId());
+        department.setDepartmentName(departmentService.getNameById(userDO.getDepartmentId()));
+
+        UserInfoVO userInfo = new UserInfoVO();
+        userInfo.setUserId(userDO.getUserId());
+        userInfo.setDepartment(department);
+        userInfo.setName(userDO.getName());
+        userInfo.setTel(userDO.getTel());
+        userInfo.setEmail(userDO.getEmail());
+        userInfo.setRole(role);
+
+        return userInfo;
     }
 }

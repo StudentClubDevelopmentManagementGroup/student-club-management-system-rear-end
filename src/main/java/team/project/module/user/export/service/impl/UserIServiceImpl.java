@@ -5,22 +5,20 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.model.enums.Role;
+import team.project.module.user.export.service.UserIService;
+import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.service.UserInfoService;
 
 @Service
-public class UserInfoIServiceImpl implements UserInfoIService {
+public class UserIServiceImpl implements UserIService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    UserInfoService userInfoService;
+    TblUserMapper userMapper;
 
-    /**
-     * 通过学号/工号获取用户的信息
-     * */
     public UserInfoDTO getUserInfoByUserId(String userId) {
-        TblUserDO userInfo = userInfoService.getUserInfoByUserId(userId);
+        TblUserDO userInfo = userMapper.selectOne(userId);
 
         UserInfoDTO result = new UserInfoDTO();
         result.setUserId(userInfo.getUserId());
@@ -32,7 +30,12 @@ public class UserInfoIServiceImpl implements UserInfoIService {
 
         return result;
     }
-    public void addClubManagerRoleToUser(String userId) {
-        /* TODO */
+
+    public int addRoleToUser(String userId, Role roleToAdd) {
+        return userMapper.addRoleToUser(userId, roleToAdd.r);
+    }
+
+    public int removeRoleFromUser(String userId, Role roleToRemove) {
+        return userMapper.removeRoleFromUser(userId, roleToRemove.r);
     }
 }

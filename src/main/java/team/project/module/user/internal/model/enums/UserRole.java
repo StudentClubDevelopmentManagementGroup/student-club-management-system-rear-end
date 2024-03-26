@@ -1,6 +1,7 @@
 package team.project.module.user.internal.model.enums;
 
 import lombok.AllArgsConstructor;
+import org.springframework.util.Assert;
 
 import java.util.ArrayList;
 
@@ -12,7 +13,7 @@ public enum UserRole {
     SUPER_ADMIN (0b01000, "超级管理员"),
     ;
 
-    public final int    v; /* <- value */
+    public final int    value;
     public final String roleName;
 
     /**
@@ -30,10 +31,10 @@ public enum UserRole {
      * */
     public static boolean hasRole(int userRoleCode, UserRole role) {
         return switch (role) {
-            case STUDENT     -> 0 != (userRoleCode & UserRole.STUDENT.v);
-            case TEACHER     -> 0 != (userRoleCode & UserRole.TEACHER.v);
-            case CLUB_MANAGER -> 0 != (userRoleCode & UserRole.CLUB_MANAGER.v);
-            case SUPER_ADMIN -> 0 != (userRoleCode & UserRole.SUPER_ADMIN.v);
+            case STUDENT      -> 0 != (userRoleCode & UserRole.STUDENT.value);
+            case TEACHER      -> 0 != (userRoleCode & UserRole.TEACHER.value);
+            case CLUB_MANAGER -> 0 != (userRoleCode & UserRole.CLUB_MANAGER.value);
+            case SUPER_ADMIN  -> 0 != (userRoleCode & UserRole.SUPER_ADMIN.value);
         };
     }
 
@@ -44,18 +45,18 @@ public enum UserRole {
      * @return 添加角色后的新角色码（注意记得对原来旧的角色码做重新赋值）
      * */
     public static int addRole(int currRoleCode, UserRole toAddRole) {
-
-        assert   (toAddRole != UserRole.TEACHER && ! hasRole(currRoleCode, UserRole.STUDENT))
-              || (toAddRole != UserRole.STUDENT && ! hasRole(currRoleCode, UserRole.TEACHER))
-            : "学生和教师的角色是互斥的，不能同时拥有";
+        Assert.isTrue(
+           ! (   (hasRole(currRoleCode, UserRole.TEACHER) && toAddRole == UserRole.STUDENT)
+              || (hasRole(currRoleCode, UserRole.STUDENT) && toAddRole == UserRole.TEACHER))
+            ,"学生和教师的角色是互斥的，不能同时拥有");
 
         int newRoleCode = currRoleCode;
 
         switch (toAddRole) {
-            case STUDENT     -> newRoleCode |= UserRole.STUDENT.v;
-            case TEACHER     -> newRoleCode |= UserRole.TEACHER.v;
-            case CLUB_MANAGER -> newRoleCode |= UserRole.CLUB_MANAGER.v;
-            case SUPER_ADMIN -> newRoleCode |= UserRole.SUPER_ADMIN.v;
+            case STUDENT      -> newRoleCode |= UserRole.STUDENT.value;
+            case TEACHER      -> newRoleCode |= UserRole.TEACHER.value;
+            case CLUB_MANAGER -> newRoleCode |= UserRole.CLUB_MANAGER.value;
+            case SUPER_ADMIN  -> newRoleCode |= UserRole.SUPER_ADMIN.value;
         }
 
         return newRoleCode;
@@ -69,28 +70,30 @@ public enum UserRole {
      * */
     public static int removeRole(int currRoleCode, UserRole toRemoveRole) {
 
-        assert (toRemoveRole != UserRole.STUDENT && toRemoveRole != UserRole.TEACHER)
-            : "学生和教师角色无法移除";
+        Assert.isTrue((toRemoveRole != UserRole.STUDENT && toRemoveRole != UserRole.TEACHER)
+            , "学生和教师角色无法移除");
 
         int newRoleCode = currRoleCode;
 
         switch (toRemoveRole) {
-            case CLUB_MANAGER -> newRoleCode &= ~UserRole.CLUB_MANAGER.v;
-            case SUPER_ADMIN -> newRoleCode &= ~UserRole.SUPER_ADMIN.v;
+            case CLUB_MANAGER -> newRoleCode &= ~UserRole.CLUB_MANAGER.value;
+            case SUPER_ADMIN  -> newRoleCode &= ~UserRole.SUPER_ADMIN.value;
         };
 
         return newRoleCode;
     }
 
-    /* 获取已有角色描述列表 */
+    /**
+     * 获取已有角色描述列表
+     * */
     public static ArrayList<String> getExistingRoleDescriptions(int currRoleCode) {
 
         ArrayList<String> roles = new ArrayList<>();
 
-        if (hasRole(currRoleCode, UserRole.STUDENT))     roles.add(UserRole.STUDENT.roleName);
-        if (hasRole(currRoleCode, UserRole.TEACHER))     roles.add(UserRole.TEACHER.roleName);
+        if (hasRole(currRoleCode, UserRole.STUDENT))      roles.add(UserRole.STUDENT.roleName);
+        if (hasRole(currRoleCode, UserRole.TEACHER))      roles.add(UserRole.TEACHER.roleName);
         if (hasRole(currRoleCode, UserRole.CLUB_MANAGER)) roles.add(UserRole.CLUB_MANAGER.roleName);
-        if (hasRole(currRoleCode, UserRole.SUPER_ADMIN)) roles.add(UserRole.SUPER_ADMIN.roleName);
+        if (hasRole(currRoleCode, UserRole.SUPER_ADMIN))  roles.add(UserRole.SUPER_ADMIN.roleName);
 
         return roles;
     }
