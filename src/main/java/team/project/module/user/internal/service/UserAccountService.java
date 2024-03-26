@@ -11,6 +11,8 @@ import team.project.module.user.internal.model.enums.UserRole;
 import team.project.module.user.internal.model.request.RegisterReq;
 import team.project.base.mapper.PageVO;
 import team.project.module.user.internal.model.view.UserInfoVO;
+import team.project.module.user.internal.model.view.PageVO;
+import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.tmp.service.DepartmentService;
 
 import java.util.ArrayList;
