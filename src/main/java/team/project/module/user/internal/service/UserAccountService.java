@@ -1,5 +1,6 @@
 package team.project.module.user.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
@@ -8,8 +9,12 @@ import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.model.enums.UserRole;
 import team.project.module.user.internal.model.request.RegisterReq;
-import team.project.module.user.internal.model.view.LoginVO;
+import team.project.base.mapper.PageVO;
+import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.tmp.service.DepartmentService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class UserAccountService {
@@ -19,6 +24,28 @@ public class UserAccountService {
 
     @Autowired
     DepartmentService departmentService;
+
+    UserInfoVO toUserInfoVO(TblUserDO user) {
+        UserInfoVO.Role role = new UserInfoVO.Role();
+        role.setStudent(user.hasRole(UserRole.STUDENT));
+        role.setTeacher(user.hasRole(UserRole.TEACHER));
+        role.setClubManager(user.hasRole(UserRole.CLUB_MANAGER));
+        role.setSuperAdmin(user.hasRole(UserRole.SUPER_ADMIN));
+
+        UserInfoVO.Department department = new UserInfoVO.Department();
+        department.setDepartmentId(user.getDepartmentId());
+        department.setDepartmentName(departmentService.getNameById(user.getDepartmentId()));
+
+        UserInfoVO userInfo = new UserInfoVO();
+        userInfo.setUserId(user.getUserId());
+        userInfo.setDepartment(department);
+        userInfo.setName(user.getName());
+        userInfo.setTel(user.getTel());
+        userInfo.setEmail(user.getEmail());
+        userInfo.setRole(role);
+
+        return userInfo;
+    }
 
     public void register(RegisterReq req) {
         TblUserDO user = new TblUserDO();
@@ -48,23 +75,23 @@ public class UserAccountService {
         userMapper.insert(user); /* TODO: 捕获因插入不满足“唯一键”约束抛出的异常 */
     }
 
-    public LoginVO login(String userId, String password) {
+    public UserInfoVO login(String userId, String password) {
         TblUserDO user = userMapper.selectOne(userId, password);
         if (user == null) {
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "用户名或密码错误");
         }
 
-        LoginVO.Role role = new LoginVO.Role();
+        /*UserInfoVO.Role role = new UserInfoVO.Role();
         role.setStudent(user.hasRole(UserRole.STUDENT));
         role.setTeacher(user.hasRole(UserRole.TEACHER));
         role.setClubManager(user.hasRole(UserRole.CLUB_MANAGER));
         role.setSuperAdmin(user.hasRole(UserRole.SUPER_ADMIN));
 
-        LoginVO.Department department = new LoginVO.Department();
+        UserInfoVO.Department department = new UserInfoVO.Department();
         department.setDepartmentId(user.getDepartmentId());
         department.setDepartmentName(departmentService.getNameById(user.getDepartmentId()));
 
-        LoginVO userInfo = new LoginVO();
+        UserInfoVO userInfo = new UserInfoVO();
         userInfo.setUserId(userId);
         userInfo.setDepartment(department);
         userInfo.setName(user.getName());
@@ -72,7 +99,9 @@ public class UserAccountService {
         userInfo.setEmail(user.getEmail());
         userInfo.setRole(role);
 
-        return userInfo;
+        return userInfo;*/
+
+        return toUserInfoVO(user);
     }
 
     public void cancelAccount(String userId, String password) {
@@ -81,4 +110,15 @@ public class UserAccountService {
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "账号不存在或密码错误");
         }
     }
+
+    public PageVO<UserInfoVO> selectAll(int pageNum, int pageSize) {
+        Page<TblUserDO> page = new Page<>(pageNum, pageSize, true);
+        List<TblUserDO> userList = userMapper.selectList(page, null);
+        List<UserInfoVO> userInfoList = new ArrayList<>();
+        for (TblUserDO user : userList) {
+            userInfoList.add(toUserInfoVO(user));
+        }
+        return new PageVO<>(userInfoList, page);
+    }
 }
+

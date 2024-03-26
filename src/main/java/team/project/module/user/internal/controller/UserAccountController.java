@@ -6,14 +6,11 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.internal.model.request.RegisterReq;
-import team.project.module.user.internal.model.view.LoginVO;
+import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.UserAccountService;
 
 @Tag(name="用户身份验证、账号管理")
@@ -47,7 +44,7 @@ public class UserAccountController {
         @RequestParam("user_id") String userId,
         @RequestParam("pwd")     String password
     ) {
-        LoginVO userInfo = service.login(userId, password);
+        UserInfoVO userInfo = service.login(userId, password);
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(userInfo);
     }
 
@@ -61,5 +58,14 @@ public class UserAccountController {
     @PostMapping("/user/logout")
     Object logout() {
         return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    }
+
+    @Operation(summary="获取所有的用户账号信息")
+    @GetMapping("/user/select_all")
+    Object selectAll(
+        @RequestParam("page_num")  int pageNum,
+        @RequestParam("page_size") int pageSize
+    ) {
+        return new Response<>(ServiceStatus.SUCCESS).data(service.selectAll(pageNum, pageSize));
     }
 }
