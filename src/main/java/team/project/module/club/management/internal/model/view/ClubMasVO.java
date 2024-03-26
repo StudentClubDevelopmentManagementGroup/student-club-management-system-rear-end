@@ -7,13 +7,14 @@ import lombok.Data;
 
 @Data
 public class ClubMasVO {
-
     @JsonProperty("name")
     String   name;
     @JsonProperty("department_name")
     String   departmentName;
     @JsonProperty("department_id")
     Long     departmentId;
+    @JsonProperty("club_id")
+    Long     clubId;
     @JsonProperty("number")
     Integer  number=0;
     @JsonProperty("state")
@@ -22,8 +23,4 @@ public class ClubMasVO {
     Boolean  deleted;
     @JsonProperty("manager")
     String   manager;
-    @JsonProperty("pagenum")
-    Integer  pageNum =1;
-    @JsonProperty("size")
-    Integer  size=20;
 }
