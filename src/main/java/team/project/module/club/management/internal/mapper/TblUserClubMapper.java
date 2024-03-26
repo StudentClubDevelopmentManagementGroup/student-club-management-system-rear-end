@@ -16,4 +16,6 @@ int setManager(Long userId, Long clubId);
 
 int createManager(Long userId, Long clubId);
 
+int quashManager(Long userId, Long clubId);
+
 }

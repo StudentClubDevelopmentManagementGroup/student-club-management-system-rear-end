@@ -20,6 +20,7 @@ import team.project.module.club.management.internal.service.TblUserClubService;
 public class TblClubController {
     @Autowired
     TblClubService service;
+    @Autowired
     TblUserClubService service2;
 
     @Operation(summary="创建基地")
@@ -116,5 +117,14 @@ public class TblClubController {
         service2.setClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("设置成功");
+    }
+
+
+    @Operation(summary="基地撤销负责人")
+    @PostMapping("/manage_all/quash_manager")
+    Object quashManager(@RequestBody ClubManagerVO req) {
+        service2.quashClubManager(req.getUserId(),req.getClubId());
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("撤销成功");
     }
 }

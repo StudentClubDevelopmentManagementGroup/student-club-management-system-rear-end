@@ -4,11 +4,14 @@
 <mapper namespace="team.project.module.club.management.internal.mapper.TblUserClubMapper">
 
     <update id="createManager">
-        insert into tbl_user_club (role, userId, clubId)
+        insert into tbl_user_club (role, user_id, club_id)
         values (2, #{userId}, #{clubId})
     </update>
 
     <update id="setManager">
-        update tbl_user_club set role = role | 2 where userId = #{userId} and clubId = #{clubId}
+        update tbl_user_club set role = role | 2 where user_id = #{userId} and club_id = #{clubId}
+    </update>
+    <update id="quashManager">
+        update tbl_user_club set role = role &amp; ~2 where user_id = #{userId} and club_id = #{clubId}
     </update>
 </mapper>

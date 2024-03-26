@@ -12,8 +12,6 @@ public  interface TblClubService extends IService<TblClubDO> {
 
      void createClub(Long departmentId, String name);
 
-
-
      Page<TblClubDO> selectByNameAndDepartmentId(@Param("page") Page<TblClubDO> page, Long departmentId, String name);
 
      Page<TblClubDO> selectByName(@Param("page") Page<TblClubDO> page, String name);
@@ -31,9 +29,10 @@ public  interface TblClubService extends IService<TblClubDO> {
      Page<ClubMasVO> findAll(@Param("page") Page<ClubMasVO> page);
 
      Page<ClubMasVO> findAllByDepartmentId(@Param("page") Page<ClubMasVO> page,Long departmentId);
-     Page<ClubMasVO> findAllByName(@Param("page") Page<ClubMasVO> page,String name);
-     Page<ClubMasVO> findAllByDepartmentIdAndName(@Param("page") Page<ClubMasVO> page,Long departmentId,String name);
 
+     Page<ClubMasVO> findAllByName(@Param("page") Page<ClubMasVO> page,String name);
+
+     Page<ClubMasVO> findAllByDepartmentIdAndName(@Param("page") Page<ClubMasVO> page,Long departmentId,String name);
 
 }
 

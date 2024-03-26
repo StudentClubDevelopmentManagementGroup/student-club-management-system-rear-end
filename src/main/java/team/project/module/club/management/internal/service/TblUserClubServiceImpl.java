@@ -25,12 +25,12 @@ import java.util.Map;
 @Service
 public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUserClubDO> implements TblUserClubService {
     @Autowired
-    TblUserClubMapper ucMapper;  /* 示例 */
+    TblUserClubMapper ucMapper;
 
     public void setClubManager(Long userId, Long clubId) {
         Map<String, Object> userClubMap = new HashMap<>();
-        userClubMap.put("userId", userId);
-        userClubMap.put("clubId", clubId);
+        userClubMap.put("user_id", userId);
+        userClubMap.put("club_id", clubId);
         List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
         if(userList.isEmpty()){
             ucMapper.createManager(userId, clubId);
@@ -38,6 +38,21 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         else {
             ucMapper.setManager(userId, clubId);
         }
+    }
+
+    @Override
+    public void quashClubManager(Long userId, Long clubId) {
+        Map<String, Object> userClubMap = new HashMap<>();
+        userClubMap.put("user_id", userId);
+        userClubMap.put("club_id", clubId);
+        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
+        if(userList.isEmpty()){
+            throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
+        }
+        else {
+            ucMapper.quashManager(userId, clubId);
+        }
+
     }
 
 

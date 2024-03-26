@@ -8,8 +8,7 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
-/* DO (Domain Object) 领域对象
-   与数据库表结构一一对应 */
+
 @Data
 @TableName("tbl_club")
 public class TblClubDO {
