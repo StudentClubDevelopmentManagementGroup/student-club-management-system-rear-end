@@ -4,26 +4,32 @@
 <mapper namespace="team.project.module.community.display.mapper.DepartmentMapper">
 
     <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
-    <resultMap id="Department" type="team.project.module.community.display.entity.Department">
+    <resultMap id="DepartmentView" type="team.project.module.community.display.model.view.DepartmentView">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="id"                 property="id" />
-        <result column="is_deleted"         property="isDeleted" />
-        <result column="create_time"        property="createTime" />
-        <result column="update_time"        property="updateTime" />
         <result column="abbreviation"       property="abbreviation" />
         <result column="full_name"          property="fullName" />
     </resultMap>
 
     <!-- 查询所有院系部门 -->
-    <select id="selectAll" resultMap="Department">
+    <select id="selectAll" resultMap="DepartmentView">
         SELECT * FROM tbl_department
+        WHERE is_deleted = 0
     </select>
 
+
+
     <!-- 增加部门 -->
-    <insert id="addDepartment" parameterType="team.project.module.community.display.entity.Department">
+    <insert id="addDepartment" parameterType="team.project.module.community.display.model.request.AddDepartmentReq">
         INSERT INTO tbl_department (abbreviation, full_name)
-        VALUES (#{abbreviation}, #{fullName})
+        SELECT #{abbreviation}, #{fullName}
+        WHERE NOT EXISTS (
+        SELECT 1
+        FROM tbl_department
+        WHERE full_name = #{fullName} and is_deleted = 0
+        )
     </insert>
+
 
 
 <!--占位符与实体类的属性名一致，而不是数据库表中的列名-->
@@ -32,8 +38,9 @@
         UPDATE tbl_department SET is_deleted = 1 WHERE full_name = #{full_name}
     </update>
 
+
     <!-- 更改部门名称 -->
-    <update id="updateDepartmentName" parameterType="team.project.module.community.display.entity.Department">
+    <update id="updateDepartmentName" parameterType="team.project.module.community.display.model.request.AlterDepartmentNameReq">
         UPDATE tbl_department SET full_name = #{fullName} WHERE abbreviation = #{abbreviation}
     </update>
 

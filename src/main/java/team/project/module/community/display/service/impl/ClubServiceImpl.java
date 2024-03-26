@@ -2,7 +2,7 @@ package team.project.module.community.display.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.module.community.display.entity.Club;
+import team.project.module.community.display.model.entity.Club;
 import team.project.module.community.display.mapper.ClubMapper;
 import team.project.module.community.display.service.ClubService;
 
