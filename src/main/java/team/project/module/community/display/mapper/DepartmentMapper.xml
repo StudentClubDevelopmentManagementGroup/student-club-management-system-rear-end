@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="team.project.module.community.display.mapper.DepartmentMapper">
+
+    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
+    <resultMap id="Department" type="team.project.module.community.display.entity.Department">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="id"                 property="id" />
+        <result column="is_deleted"         property="isDeleted" />
+        <result column="create_time"        property="createTime" />
+        <result column="update_time"        property="updateTime" />
+        <result column="abbreviation"       property="abbreviation" />
+        <result column="full_name"          property="fullName" />
+    </resultMap>
+
+    <!-- 查询所有院系部门 -->
+    <select id="selectAll" resultMap="Department">
+        SELECT * FROM tbl_department
+    </select>
+
+    <!-- 增加部门 -->
+    <insert id="addDepartment" parameterType="team.project.module.community.display.entity.Department">
+        INSERT INTO tbl_department (abbreviation, full_name)
+        VALUES (#{abbreviation}, #{fullName})
+    </insert>
+
+
+<!--占位符与实体类的属性名一致，而不是数据库表中的列名-->
+    <!-- 逻辑删除部门 -->
+    <update id="deleteDepartmentByName" parameterType="String">
+        UPDATE tbl_department SET is_deleted = 1 WHERE full_name = #{full_name}
+    </update>
+
+    <!-- 更改部门名称 -->
+    <update id="updateDepartmentName" parameterType="team.project.module.community.display.entity.Department">
+        UPDATE tbl_department SET full_name = #{fullName} WHERE abbreviation = #{abbreviation}
+    </update>
+
+
+
+</mapper>
