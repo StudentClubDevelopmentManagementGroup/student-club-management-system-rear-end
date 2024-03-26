@@ -1,11 +1,15 @@
 package team.project.module.community.display.service.impl;
 
-import team.project.module.community.display.entity.Department;
+import team.project.module.community.display.model.entity.Department;
 import team.project.module.community.display.mapper.DepartmentMapper;
+import team.project.module.community.display.model.request.AddDepartmentReq;
+import team.project.module.community.display.model.request.AlterDepartmentNameReq;
+import team.project.module.community.display.model.view.DepartmentView;
 import team.project.module.community.display.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
+
 
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
@@ -21,13 +25,13 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public List<Department> getAllDepartments() {
+    public List<DepartmentView> getAllDepartments() {
         return departmentMapper.selectAll();
     }
 
     @Override
-    public boolean addDepartment(Department department) {
-        int rowsAffected = departmentMapper.addDepartment(department);
+    public boolean addDepartment(AddDepartmentReq adddepartmentreq) {
+        int rowsAffected = departmentMapper.addDepartment(adddepartmentreq);
         return rowsAffected > 0;
     }
 
@@ -38,9 +42,11 @@ public class DepartmentServiceImpl implements DepartmentService {
     }
 
     @Override
-    public boolean updateDepartment(Department department) {
-        int rowsAffected = departmentMapper.updateDepartmentName(department);
+    public boolean updateDepartment(AlterDepartmentNameReq alterDepartmentNameReq) {
+        int rowsAffected = departmentMapper.updateDepartmentName(alterDepartmentNameReq);
         return rowsAffected > 0;
     }
+
+
 
 }

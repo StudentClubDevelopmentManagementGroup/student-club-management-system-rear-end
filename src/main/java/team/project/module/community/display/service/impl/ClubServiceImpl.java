@@ -2,7 +2,7 @@ package team.project.module.community.display.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.module.community.display.entity.Club;
+import team.project.module.community.display.model.entity.Club;
 import team.project.module.community.display.mapper.ClubMapper;
 import team.project.module.community.display.service.ClubService;
 
@@ -18,9 +18,8 @@ public class ClubServiceImpl implements ClubService {
     }
     @Override
     public List<Club> selectClubsByDepartment(Long id){
-        //return club.selectClubsByDepartment( id);
-        List<Club> clubs = club.selectClubsByDepartment(id); // 假设这里使用了 MyBatis 进行数据库查询
-        System.out.println("Clubs for department " + id + ": " + clubs); // 打印查询到的指定院系的所有社团信息
+
+        List<Club> clubs = club.selectClubsByDepartment(id);
         return clubs;
     }
 }
