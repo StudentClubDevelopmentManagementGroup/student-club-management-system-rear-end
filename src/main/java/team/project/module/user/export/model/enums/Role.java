@@ -12,4 +12,8 @@ public enum Role {
     ;
 
     public final UserRole r; /* <- 当前枚举类，是这个枚举类的封装 */
+
+    public String getRoleName() {
+        return r.roleName;
+    }
 }

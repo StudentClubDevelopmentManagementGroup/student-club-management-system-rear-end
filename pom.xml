@@ -59,10 +59,9 @@
         <!-- Sa-Token -->
         <dependency>
             <groupId>cn.dev33</groupId>
-            <artifactId>sa-token-spring-boot-starter</artifactId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>1.37.0</version>
         </dependency>
-
 
         <!-- quartz -->
         <dependency>
