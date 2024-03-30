@@ -15,8 +15,9 @@ public class Config implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
 
-        /* 配置拦截器 */
+        /* 配置拦截器
         InterceptorRegistration registration = registry.addInterceptor(interceptor);
+        */
 
         /* 设置拦截的路径
         registration.addPathPatterns( ... );

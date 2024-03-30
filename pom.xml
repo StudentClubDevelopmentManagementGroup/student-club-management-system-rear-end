@@ -56,12 +56,18 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- Sa-Token -->
+        <!-- Sa-Token [begin] -->
         <dependency>
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>1.37.0</version>
         </dependency>
+        <dependency>    <!-- Sa-Token 整合 Redis（使用 jackson 序列化方式） -->
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+            <version>1.37.0</version>
+        </dependency>
+        <!-- Sa-Token [end] -->
 
         <!-- quartz -->
         <dependency>
@@ -95,11 +101,16 @@
         </dependency>
         <!-- mybatis-plus and mybatis [end] -->
 
-        <!-- redis -->
+        <!-- redis [begin] -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- redis [end] -->
 
         <!-- aop -->
         <dependency>
@@ -134,14 +145,6 @@
             <version>1.4</version>
         </dependency>
 
-        <!-- hutool -->
-        <!-- 谨慎使用 hutool 工具包，先尝试使用 apache commons 工具包 -->
-        <!--<dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.7.12</version>
-        </dependency>-->
-
         <!-- aliyun OSS Java SDK [begin] -->
         <dependency>
             <!-- 2024-03-17 https://help.aliyun.com/zh/oss/developer-reference/java-installation -->
@@ -162,7 +165,7 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.3</version> <!-- 不能超过 2.3.3-->
+            <version>2.3.3</version> <!-- 不能超过 2.3.3  -->
         </dependency>
         <!-- aliyun OSS Java SDK [end] -->
     </dependencies>

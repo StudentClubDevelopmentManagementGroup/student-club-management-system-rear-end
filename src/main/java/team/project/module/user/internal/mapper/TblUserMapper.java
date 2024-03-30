@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.enums.UserRole;
+import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     /**
      * 给用户增添角色
      * */
-    default int addRoleToUser(String userId, UserRole roleToAdd) {
+    default int addRoleToUser(String userId, UserRoleEnum roleToAdd) {
         /* 2024-03-26 ljh
 
             1）用户角色的变更与查询，都要依靠 UserRole 提供的方法才能完成
@@ -121,7 +121,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     /**
      * 给用户移除角色
      * */
-    default int removeRoleFromUser(String userId, UserRole roleToRemove) {
+    default int removeRoleFromUser(String userId, UserRoleEnum roleToRemove) {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
             .select(TblUserDO::getRole)

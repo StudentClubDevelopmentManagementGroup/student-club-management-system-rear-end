@@ -5,13 +5,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
-import team.project.module.user.export.model.enums.Role;
-import team.project.module.user.export.service.UserIService;
+import team.project.module.user.export.model.enums.UserRole;
+import team.project.module.user.export.service.UserInfoIService;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 
 @Service
-public class UserIServiceImpl implements UserIService {
+public class UserInfoIServiceImpl implements UserInfoIService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
@@ -31,11 +31,11 @@ public class UserIServiceImpl implements UserIService {
         return result;
     }
 
-    public int addRoleToUser(String userId, Role roleToAdd) {
+    public int addRoleToUser(String userId, UserRole roleToAdd) {
         return userMapper.addRoleToUser(userId, roleToAdd.r);
     }
 
-    public int removeRoleFromUser(String userId, Role roleToRemove) {
+    public int removeRoleFromUser(String userId, UserRole roleToRemove) {
         return userMapper.removeRoleFromUser(userId, roleToRemove.r);
     }
 }

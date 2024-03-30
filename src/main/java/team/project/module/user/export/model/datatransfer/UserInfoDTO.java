@@ -1,8 +1,8 @@
 package team.project.module.user.export.model.datatransfer;
 
 import lombok.Data;
-import team.project.module.user.export.model.enums.Role;
-import team.project.module.user.internal.model.enums.UserRole;
+import team.project.module.user.export.model.enums.UserRole;
+import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 import java.util.ArrayList;
 
@@ -16,14 +16,8 @@ public class UserInfoDTO {
     Integer role;
 
     /* 判断用户是否拥有指定角色 */
-    public boolean hasRole(Role role) {
+    public boolean hasRole(UserRole role) {
         assert this.role != null : "当前角色码为 null";
-        return UserRole.hasRole(this.role, role.r);
-    }
-
-    /* 获取用户的身份描述列表 */
-    public ArrayList<String> getRoleList() {
-        assert this.role != null : "当前角色码为 null";
-        return UserRole.getExistingRoleDescriptions(this.role);
+        return UserRoleEnum.hasRole(this.role, role.r);
     }
 }
