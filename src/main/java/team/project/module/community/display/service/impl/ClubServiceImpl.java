@@ -18,8 +18,7 @@ public class ClubServiceImpl implements ClubService {
     }
     @Override
     public List<Club> selectClubsByDepartment(Long id){
-
-        List<Club> clubs = club.selectClubsByDepartment(id);
+        List<Club> clubs = club.selectClubsByDepartment(id); // 假设这里使用了 MyBatis 进行数据库查询
         return clubs;
     }
 }
