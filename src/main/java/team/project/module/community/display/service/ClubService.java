@@ -1,6 +1,6 @@
 package team.project.module.community.display.service;
 
-import team.project.module.community.display.entity.Club;
+import team.project.module.community.display.model.entity.Club;
 
 import java.util.List;
 
