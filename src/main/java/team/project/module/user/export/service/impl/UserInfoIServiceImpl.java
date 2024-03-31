@@ -17,8 +17,11 @@ public class UserInfoIServiceImpl implements UserInfoIService {
     @Autowired
     TblUserMapper userMapper;
 
-    public UserInfoDTO getUserInfoByUserId(String userId) {
+    public UserInfoDTO selectUserInfo(String userId) {
         TblUserDO userInfo = userMapper.selectOne(userId);
+        if (userInfo == null) {
+            return null;
+        }
 
         UserInfoDTO result = new UserInfoDTO();
         result.setUserId(userInfo.getUserId());
@@ -28,6 +31,16 @@ public class UserInfoIServiceImpl implements UserInfoIService {
         result.setEmail(userInfo.getEmail());
         result.setRole(userInfo.getRole());
 
+        return result;
+    }
+
+    public UserInfoDTO selectUserRole(String userId) {
+        TblUserDO userInfo = userMapper.selectUserRole(userId);
+        if (userInfo == null) {
+            return null;
+        }
+        UserInfoDTO result = new UserInfoDTO();
+        result.setRole(userInfo.getRole());
         return result;
     }
 

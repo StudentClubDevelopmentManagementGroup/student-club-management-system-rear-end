@@ -15,7 +15,7 @@ public class ServiceExceptionHandler {
     Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(ServiceException.class)
-    Object handleServiceException(ServiceException exception) {
+    Object handle(ServiceException exception) {
         return new Response<>(exception.getStatus()).data(exception.getMessage());
     }
 }

@@ -19,19 +19,21 @@ public class SaTokenExceptionHandler {
 
     /* 未登录 */
     @ExceptionHandler(NotLoginException.class)
-    Object handleNotLoginException(NotLoginException exception) {
-        return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("未登录");
+    Object handle(NotLoginException exception) {
+        logger.error(exception.getMessage());
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("未登录");
     }
 
     /* 角色验证失败 */
     @ExceptionHandler(NotRoleException.class)
-    Object handleNotRoleException(NotRoleException exception) {
-        return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("用户不拥有指定角色，无权执行请求");
+    Object handle(NotRoleException exception) {
+        logger.error(exception.getMessage());
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户不拥有指定角色，无权执行请求");
     }
 
     /* 权限验证失败 */
     @ExceptionHandler(NotPermissionException.class)
-    Object handleNotPermissionException(NotPermissionException exception) {
-        return new Response<>(ServiceStatus.UNAUTHORIZED).statusText("用户未拥有指定权限，无权执行请求");
+    Object handle(NotPermissionException exception) {
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有指定权限，无权执行请求");
     }
 }

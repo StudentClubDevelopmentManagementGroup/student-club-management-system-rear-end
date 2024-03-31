@@ -16,7 +16,8 @@ public class GeneralExceptionHandler {
 
     /* 处理任意异常 */
     @ExceptionHandler(Exception.class)
-    Object handleException(Exception exception) {
+    Object handle(Exception exception) {
+        exception.printStackTrace();
         logger.error(
             "异常类：" + exception.getClass() + "\n" +
             "信息：" + exception.getMessage() +

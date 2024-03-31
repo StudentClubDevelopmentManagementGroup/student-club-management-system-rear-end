@@ -6,9 +6,14 @@ import team.project.module.user.export.model.enums.UserRole;
 public interface UserInfoIService {
 
     /**
-     * 根据学号/工号获取用户信息
+     * 获取用户信息
      */
-    UserInfoDTO getUserInfoByUserId(String userId);
+    UserInfoDTO selectUserInfo(String userId);
+
+    /**
+     * 获取用户角色信息（只获取角色，其他属性为 null）
+     * */
+    UserInfoDTO selectUserRole(String userId);
 
     /**
      * 更新 tbl_user 表，给指定用户添加角色（不需要考虑用户当前是否拥有这个角色）

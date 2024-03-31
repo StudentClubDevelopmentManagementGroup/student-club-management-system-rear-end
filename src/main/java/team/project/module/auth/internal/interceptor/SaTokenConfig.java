@@ -41,10 +41,11 @@ public class SaTokenConfig implements WebMvcConfigurer, StpInterface {
 
         /* TODO: 缓存 */
 
-        String userId = (String)loginId;
-        UserInfoDTO userInfo = userService.getUserInfoByUserId(userId);
-
         List<String> list = new ArrayList<>();
+
+        String userId = (String)loginId;
+        UserInfoDTO userInfo = userService.selectUserRole(userId);
+        if (userInfo == null) return list;
 
         if (userInfo.hasRole(UserRole.STUDENT))      list.add(AuthRole.STUDENT);
         if (userInfo.hasRole(UserRole.TEACHER))      list.add(AuthRole.TEACHER);

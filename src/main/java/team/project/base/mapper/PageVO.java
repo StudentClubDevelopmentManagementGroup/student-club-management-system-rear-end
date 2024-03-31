@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.List;
 
+/* 用来封装分页查询的返回结果 */
 @Data
 public class PageVO<VO> {
     @JsonProperty("records")      private List<VO> records;

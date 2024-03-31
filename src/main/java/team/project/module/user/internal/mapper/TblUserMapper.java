@@ -38,6 +38,19 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
+     * 查询用户（只查询角色，其他属性为 null）
+     * */
+    default TblUserDO selectUserRole(String userId) {
+        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+            .select(TblUserDO::getRole)
+            .eq(TblUserDO::getUserId, userId)
+        );
+        assert userList.size() <= 1;
+        return userList.size() == 1 ? userList.get(0) : null;
+    }
+
+    /**
      *  将用户账号逻辑删除（注销账户）
      *  @return 如果用户不存在（已注销）或密码错误，则注销失败，返回 0；否则注销成功，返回 1
      * */
