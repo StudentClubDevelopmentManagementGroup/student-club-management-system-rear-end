@@ -4,8 +4,6 @@ import lombok.Data;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.model.enums.UserRoleEnum;
 
-import java.util.ArrayList;
-
 @Data
 public class UserInfoDTO {
     String  userId;

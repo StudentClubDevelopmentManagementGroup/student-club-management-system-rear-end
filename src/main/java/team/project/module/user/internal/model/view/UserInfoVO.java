@@ -16,6 +16,7 @@ public class UserInfoVO {
     public static class Role {
         @JsonProperty("is_student")         private Boolean student;
         @JsonProperty("is_teacher")         private Boolean teacher;
+        @JsonProperty("is_club_member")     private Boolean clubMember;
         @JsonProperty("is_club_manager")    private Boolean clubManager;
         @JsonProperty("is_super_admin")     private Boolean superAdmin;
     }

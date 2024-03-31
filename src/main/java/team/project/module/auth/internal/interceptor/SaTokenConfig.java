@@ -46,10 +46,11 @@ public class SaTokenConfig implements WebMvcConfigurer, StpInterface {
 
         List<String> list = new ArrayList<>();
 
-        if (userInfo.hasRole(UserRole.SUPER_ADMIN))  list.add(AuthRole.SUPER_ADMIN);
-        if (userInfo.hasRole(UserRole.CLUB_MANAGER)) list.add(AuthRole.CLUB_MANAGER);
-        if (userInfo.hasRole(UserRole.TEACHER))      list.add(AuthRole.TEACHER);
         if (userInfo.hasRole(UserRole.STUDENT))      list.add(AuthRole.STUDENT);
+        if (userInfo.hasRole(UserRole.TEACHER))      list.add(AuthRole.TEACHER);
+        if (userInfo.hasRole(UserRole.CLUB_MEMBER))  list.add(AuthRole.CLUB_MEMBER);
+        if (userInfo.hasRole(UserRole.CLUB_MANAGER)) list.add(AuthRole.CLUB_MANAGER);
+        if (userInfo.hasRole(UserRole.SUPER_ADMIN))  list.add(AuthRole.SUPER_ADMIN);
 
         return list;
     }

@@ -3,17 +3,16 @@ package team.project.module.user.internal.model.enums;
 import lombok.AllArgsConstructor;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-
 @AllArgsConstructor
 public enum UserRoleEnum {
-    STUDENT     (0b00001), /* 学生 */
-    TEACHER     (0b00010), /* 教师 */
-    CLUB_MANAGER(0b00100), /* 社团负责人 */
-    SUPER_ADMIN (0b01000), /* 超级管理员 */
+    STUDENT     (0b000001), /* 学生 */
+    TEACHER     (0b000010), /* 教师 */
+    CLUB_MEMBER (0b000100), /* 社团成员 */
+    CLUB_MANAGER(0b001000), /* 社团负责人 */
+    SUPER_ADMIN (0b010000), /* 超级管理员 */
     ;
 
-    public final int    value;
+    private final int value;
 
     /**
      * 获取空的角色码，没有任何角色
@@ -32,6 +31,7 @@ public enum UserRoleEnum {
         return switch (role) {
             case STUDENT      -> 0 != (userRoleCode & UserRoleEnum.STUDENT.value);
             case TEACHER      -> 0 != (userRoleCode & UserRoleEnum.TEACHER.value);
+            case CLUB_MEMBER  -> 0 != (userRoleCode & UserRoleEnum.CLUB_MEMBER.value);
             case CLUB_MANAGER -> 0 != (userRoleCode & UserRoleEnum.CLUB_MANAGER.value);
             case SUPER_ADMIN  -> 0 != (userRoleCode & UserRoleEnum.SUPER_ADMIN.value);
         };
@@ -47,15 +47,17 @@ public enum UserRoleEnum {
         Assert.isTrue(
            ! (   (hasRole(currRoleCode, UserRoleEnum.TEACHER) && toAddRole == UserRoleEnum.STUDENT)
               || (hasRole(currRoleCode, UserRoleEnum.STUDENT) && toAddRole == UserRoleEnum.TEACHER))
-            ,"学生和教师的角色是互斥的，不能同时拥有");
+            , "学生和教师的角色是互斥的，不能同时拥有");
 
         int newRoleCode = currRoleCode;
 
         switch (toAddRole) {
             case STUDENT      -> newRoleCode |= UserRoleEnum.STUDENT.value;
             case TEACHER      -> newRoleCode |= UserRoleEnum.TEACHER.value;
+            case CLUB_MEMBER  -> newRoleCode |= UserRoleEnum.CLUB_MEMBER.value;
             case CLUB_MANAGER -> newRoleCode |= UserRoleEnum.CLUB_MANAGER.value;
             case SUPER_ADMIN  -> newRoleCode |= UserRoleEnum.SUPER_ADMIN.value;
+            default -> { assert false; }
         }
 
         return newRoleCode;
@@ -68,15 +70,16 @@ public enum UserRoleEnum {
      * @return 移除角色后的新角色码（记得对原来旧的角色码做重新赋值）
      * */
     public static int removeRole(int currRoleCode, UserRoleEnum toRemoveRole) {
-
         Assert.isTrue((toRemoveRole != UserRoleEnum.STUDENT && toRemoveRole != UserRoleEnum.TEACHER)
             , "学生和教师角色无法移除");
 
         int newRoleCode = currRoleCode;
 
         switch (toRemoveRole) {
+            case CLUB_MEMBER ->  newRoleCode &= ~UserRoleEnum.CLUB_MEMBER.value;
             case CLUB_MANAGER -> newRoleCode &= ~UserRoleEnum.CLUB_MANAGER.value;
             case SUPER_ADMIN  -> newRoleCode &= ~UserRoleEnum.SUPER_ADMIN.value;
+            default -> { assert false; }
         };
 
         return newRoleCode;

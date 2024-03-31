@@ -8,7 +8,6 @@ import lombok.Data;
 import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
 
 @Data
 @TableName("tbl_user")
@@ -28,19 +27,19 @@ public class TblUserDO {
 
     /* 判断用户是否拥有指定角色 */
     public boolean hasRole(UserRoleEnum role) {
-        assert this.role != null : "当前角色码为 null";
+        assert this.role != null;
         return UserRoleEnum.hasRole(this.role, role);
     }
 
     /* 更新用户的身份，使其拥有指定角色 */
     public void addRole(UserRoleEnum role) {
-        assert this.role != null : "当前角色码为 null，请先 setRole(UserRole.getEmptyRoleCode())";
+        assert this.role != null;
         this.role = UserRoleEnum.addRole(this.role, role);
     }
 
     /* 移除指定角色 */
     public void removeRole(UserRoleEnum role) {
-        assert this.role != null : "当前角色码为 null";
+        assert this.role != null;
         this.role = UserRoleEnum.removeRole(this.role, role);
     }
 }

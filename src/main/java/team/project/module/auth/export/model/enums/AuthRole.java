@@ -4,6 +4,7 @@ public enum AuthRole {
     ;
     public static final String STUDENT      = "STUDENT";
     public static final String TEACHER      = "TEACHER";
+    public static final String CLUB_MEMBER  = "CLUB_MEMBER";
     public static final String CLUB_MANAGER = "CLUB_MANAGER";
     public static final String SUPER_ADMIN  = "SUPER_ADMIN";
 

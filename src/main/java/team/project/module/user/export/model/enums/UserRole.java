@@ -7,9 +7,10 @@ import team.project.module.user.internal.model.enums.UserRoleEnum;
 public enum UserRole {
     STUDENT     (UserRoleEnum.STUDENT),
     TEACHER     (UserRoleEnum.TEACHER),
+    CLUB_MEMBER (UserRoleEnum.CLUB_MEMBER),
     CLUB_MANAGER(UserRoleEnum.CLUB_MANAGER),
     SUPER_ADMIN (UserRoleEnum.SUPER_ADMIN),
     ;
 
-    public final UserRoleEnum r; /* <- 当前枚举类，是这个枚举类的封装 */
+    /* private ! */ public final UserRoleEnum r; /* <- 当前枚举类，是这个枚举类的封装 */
 }

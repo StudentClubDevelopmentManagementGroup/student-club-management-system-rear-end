@@ -11,14 +11,14 @@ public interface UserInfoIService {
     UserInfoDTO getUserInfoByUserId(String userId);
 
     /**
-     * 给用户增添角色（不需要考虑用户当前是否拥有这个角色）
-     * @return 数据库中受 update 语句影响的行数（如果增添成功返回 1，否则返回 0）
+     * 更新 tbl_user 表，给指定用户添加角色（不需要考虑用户当前是否拥有这个角色）
+     * @return 数据库 tbl_user 表受 update 语句影响的行数（如果增添成功返回 1，否则返回 0）
      * */
     int addRoleToUser(String userId, UserRole roleToAdd);
 
     /**
-     * 移除用户角色（不需要考虑用户当前是否拥有这个角色）
-     * @return 数据库中受 update 语句影响的行数（如果移除成功返回 1，否则返回 0）
+     * 更新 tbl_user 表，给指定用户移除角色（不需要考虑用户当前是否拥有这个角色）
+     * @return 数据库 tbl_user 表受 update 语句影响的行数（如果移除成功返回 1，否则返回 0）
      * */
     int removeRoleFromUser(String userId, UserRole roleToRemove);
 }

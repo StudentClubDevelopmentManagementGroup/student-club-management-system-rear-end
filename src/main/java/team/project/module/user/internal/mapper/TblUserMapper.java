@@ -13,17 +13,6 @@ import java.util.List;
 public interface TblUserMapper extends BaseMapper<TblUserDO> {
 
     /**
-     * 查询用户是否存在
-     * */
-    default boolean isExist(String userId, String password) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        return this.exists(lambdaQueryWrapper
-            .eq(TblUserDO::getUserId, userId)
-            .eq(TblUserDO::getPassword, password)
-        );
-    }
-
-    /**
      * 查询用户信息
      * */
     default TblUserDO selectOne(String userId) {
@@ -31,6 +20,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
             .eq(TblUserDO::getUserId, userId)
         );
+        assert userList.size() <= 1;
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
@@ -43,6 +33,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             .eq(TblUserDO::getUserId, userId)
             .eq(TblUserDO::getPassword, password)
         );
+        assert userList.size() <= 1;
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
@@ -95,17 +86,11 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             也就是，我不打算“将位运算直接落实到 sql”
         */
 
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
-            .select(TblUserDO::getRole)
-            .eq(TblUserDO::getUserId, userId)
-        );
-
-        if (userList.size() != 1) {
+        TblUserDO user = this.selectOne(userId);
+        if (user == null) {
             return 0;
         }
 
-        TblUserDO user = userList.get(0);
         if (user.hasRole(roleToAdd)) {
             return 0;
         }
@@ -122,17 +107,11 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 给用户移除角色
      * */
     default int removeRoleFromUser(String userId, UserRoleEnum roleToRemove) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
-            .select(TblUserDO::getRole)
-            .eq(TblUserDO::getUserId, userId)
-        );
-
-        if (userList.size() != 1) {
+        TblUserDO user = this.selectOne(userId);
+        if (user == null) {
             return 0;
         }
 
-        TblUserDO user = userList.get(0);
         if ( ! user.hasRole(roleToRemove)) {
             return 0;
         }

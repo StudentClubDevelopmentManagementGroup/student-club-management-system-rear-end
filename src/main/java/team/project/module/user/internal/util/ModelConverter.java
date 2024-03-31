@@ -11,13 +11,14 @@ import team.project.module.user.tmp.service.DepartmentService;
 public class ModelConverter {
 
     @Autowired
-    DepartmentService departmentService;
+    DepartmentService departmentService; /* TODO */
 
     public UserInfoVO toUserInfoVO(TblUserDO userDO) {
 
         UserInfoVO.Role role = new UserInfoVO.Role();
         role.setStudent(userDO.hasRole(UserRoleEnum.STUDENT));
         role.setTeacher(userDO.hasRole(UserRoleEnum.TEACHER));
+        role.setClubMember(userDO.hasRole(UserRoleEnum.CLUB_MEMBER));
         role.setClubManager(userDO.hasRole(UserRoleEnum.CLUB_MANAGER));
         role.setSuperAdmin(userDO.hasRole(UserRoleEnum.SUPER_ADMIN));
 

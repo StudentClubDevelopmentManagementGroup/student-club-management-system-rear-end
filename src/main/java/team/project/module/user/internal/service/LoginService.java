@@ -11,7 +11,6 @@ import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.util.ModelConverter;
 
-
 @Service
 public class LoginService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
