@@ -9,11 +9,12 @@ import team.project.base.service.status.ServiceStatus;
 public class Response<T> {
     @JsonProperty("status_code") private int    statusCode;
     @JsonProperty("status_text") private String statusText;
-    @JsonProperty("data")        private T      data;
+    @JsonProperty("data")        private Object data;
 
     public Response(ServiceStatus status) {
         this.statusCode = status.getStatusCode();
         this.statusText = status.getStatusText();
+        this.data       = "";
     }
 
     public Response<T> statusText(String statusText) {

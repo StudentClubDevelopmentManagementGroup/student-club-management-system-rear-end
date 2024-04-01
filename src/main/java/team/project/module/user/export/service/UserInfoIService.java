@@ -6,12 +6,12 @@ import team.project.module.user.export.model.enums.UserRole;
 public interface UserInfoIService {
 
     /**
-     * 获取用户信息
+     * 从 tbl_user 表中查询用户信息
      */
     UserInfoDTO selectUserInfo(String userId);
 
     /**
-     * 获取用户角色信息（只获取角色，其他属性为 null）
+     * 从 tbl_user 表中查询用户角色信息（只获取角色，其他属性为 null）
      * */
     UserInfoDTO selectUserRole(String userId);
 
