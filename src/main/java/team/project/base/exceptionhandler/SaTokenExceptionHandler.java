@@ -21,7 +21,18 @@ public class SaTokenExceptionHandler {
     @ExceptionHandler(NotLoginException.class)
     Object handle(NotLoginException exception) {
         logger.error(exception.getMessage());
-        return new Response<>(ServiceStatus.UNAUTHORIZED).data("未登录");
+
+        String message = switch (exception.getType()) {
+            case NotLoginException.NOT_TOKEN     -> "未能读取到有效 token";
+            case NotLoginException.INVALID_TOKEN -> "token 无效";
+            case NotLoginException.TOKEN_TIMEOUT -> "token 已过期";
+            case NotLoginException.BE_REPLACED   -> "token 已被顶下线";
+            case NotLoginException.TOKEN_FREEZE  -> "token 已被冻结";
+            case NotLoginException.NO_PREFIX     -> "未按照指定前缀提交 token";
+            default                              -> "当前会话未登录";
+        };
+
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data(message + "，请重新登录");
     }
 
     /* 角色验证失败 */

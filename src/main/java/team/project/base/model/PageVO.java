@@ -1,4 +1,4 @@
-package team.project.base.mapper;
+package team.project.base.model;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonProperty;
