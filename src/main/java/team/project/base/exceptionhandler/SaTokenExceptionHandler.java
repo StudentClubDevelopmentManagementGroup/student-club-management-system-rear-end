@@ -3,8 +3,6 @@ package team.project.base.exceptionhandler;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
 import cn.dev33.satoken.exception.NotRoleException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -15,13 +13,10 @@ import team.project.base.service.status.ServiceStatus;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.saTokenExceptionHandler)
 public class SaTokenExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /* 未登录 */
     @ExceptionHandler(NotLoginException.class)
     Object handle(NotLoginException exception) {
-        logger.error(exception.getMessage());
-
         String message = switch (exception.getType()) {
             case NotLoginException.NOT_TOKEN     -> "未能读取到有效 token";
             case NotLoginException.INVALID_TOKEN -> "token 无效";
@@ -38,7 +33,6 @@ public class SaTokenExceptionHandler {
     /* 角色验证失败 */
     @ExceptionHandler(NotRoleException.class)
     Object handle(NotRoleException exception) {
-        logger.error(exception.getMessage());
         return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户不拥有指定角色，无权执行请求");
     }
 

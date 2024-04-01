@@ -4,9 +4,14 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
@@ -24,11 +29,21 @@ public class LoginController {
     @Operation(summary="使用密码登录")
     @PostMapping("/user/login/password")
     Object loginWithPassword(
+
+        @NotNull(message="学号/工号不能为空")
+        @NotBlank(message="学号/工号不能为空")
+        @Size(min=1, max=20, message="学号/工号的长度不合约束")
         @RequestParam("user_id") String userId,
-        @RequestParam("pwd")     String password
+
+
+        @NotBlank @RequestParam("pwd")     String password
     ) {
         UserInfoVO userInfo = service.login(userId, password);
+
         StpUtil.login(userId);
+    /*  String token = StpUtil.getTokenValueByLoginId(userId);
+        StpUtil.getSessionByLoginId(StpUtil.getLoginId()).set("user_id", userId); */
+
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(userInfo);
     }
 
