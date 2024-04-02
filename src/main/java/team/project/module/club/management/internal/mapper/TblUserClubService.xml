@@ -16,11 +16,11 @@
         update tbl_user_club set role = role &amp; ~2 where user_id = #{userId} and club_id = #{clubId}
     </update>
 
-    <update id="setUserManager">
-        update tbl_user set role = role | 2 where id = #{userId}  and is_deleted = 0
-    </update>
+<!--    <update id="setUserManager">-->
+<!--        update tbl_user set role = role | 2 where id = #{userId}  and is_deleted = 0-->
+<!--    </update>-->
 
-    <update id="quashUserManager">
-        update tbl_user set role = role &amp; ~2  where id = #{userId} and is_deleted = 0
-    </update>
+<!--    <update id="quashUserManager">-->
+<!--        update tbl_user set role = role &amp; ~2  where id = #{userId} and is_deleted = 0-->
+<!--    </update>-->
 </mapper>

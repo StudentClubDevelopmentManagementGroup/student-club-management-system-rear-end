@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class ClubManagerVO {
     @JsonProperty("user_id")
-    Long   userId;
+    String   userId;
     @JsonProperty("club_id")
     Long     clubId;
 }
