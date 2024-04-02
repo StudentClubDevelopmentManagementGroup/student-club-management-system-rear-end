@@ -12,5 +12,4 @@ public class ClubView {
     private String name;
     private Integer state;
 
-
 }
