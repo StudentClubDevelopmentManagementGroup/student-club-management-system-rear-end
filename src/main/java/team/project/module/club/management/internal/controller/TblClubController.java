@@ -35,22 +35,19 @@ public class TblClubController {
     @GetMapping("/manage_all/select_club")
     Object selectClub(TblClubReq req){
         if(req.getName()==null){
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByDepartmentId(page,req.getDepartmentId()));
+                    .data(service.selectByDepartmentId(req));
         }
         else if (req.getDepartmentId()==null){
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByName(page,req.getName()));
+                    .data(service.selectByName(req));
         }
         else {
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByNameAndDepartmentId(page,req.getDepartmentId(), req.getName()));
+                    .data(service.selectByNameAndDepartmentId(req));
         }
     }
 
@@ -88,26 +85,25 @@ public class TblClubController {
     @Operation(summary="基地总信息")
     @GetMapping("/manage_all/select_all")
     Object selectAll(TblClubReq req) {
-        Page<ClubMasVO> page = new Page<>(req.getPagenum(), req.getSize());
         if (req.getDepartmentId() == null) {
             if (req.getName() == null) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAll(page));
+                        .data(service.findAll(req));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByName(page, req.getName()));
+                        .data(service.findAllByName(req));
             }
         } else {
             if (req.getName() == null) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentId(page, req.getDepartmentId()));
+                        .data(service.findAllByDepartmentId(req));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentIdAndName(page, req.getDepartmentId(), req.getName()));
+                        .data(service.findAllByDepartmentIdAndName(req));
             }
         }
     }

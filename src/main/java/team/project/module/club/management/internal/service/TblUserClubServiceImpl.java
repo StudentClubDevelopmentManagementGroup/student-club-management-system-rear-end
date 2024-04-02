@@ -8,10 +8,12 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.internal.mapper.TblUserClubMapper;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
-
+import team.project.module.user.export.service.UserInfoIService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
 
 
 /**
@@ -26,8 +28,9 @@ import java.util.Map;
 public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUserClubDO> implements TblUserClubService {
     @Autowired
     TblUserClubMapper ucMapper;
-
-    public void setClubManager(Long userId, Long clubId) {
+    @Autowired
+    UserInfoIService uiService;
+    public void setClubManager(String userId, Long clubId) {
         Map<String, Object> userClubMap = new HashMap<>();
         userClubMap.put("user_id", userId);
         userClubMap.put("club_id", clubId);
@@ -37,12 +40,13 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.setManager(userId, clubId);
-            ucMapper.setUserManager(userId, clubId);
+            //
+            uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
     }
 
     @Override
-    public void quashClubManager(Long userId, Long clubId) {
+    public void quashClubManager(String userId, Long clubId) {
         Map<String, Object> userClubMap = new HashMap<>();
         userClubMap.put("user_id", userId);
         userClubMap.put("club_id", clubId);
@@ -52,7 +56,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.quashManager(userId, clubId);
-            ucMapper.quashUserManager(userId, clubId);
+            //
+            uiService.removeRoleFromUser(userId, CLUB_MANAGER);
         }
 
     }

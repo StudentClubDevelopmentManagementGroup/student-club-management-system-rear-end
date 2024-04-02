@@ -8,9 +8,9 @@ import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 public interface TblUserClubService extends IService<TblUserClubDO> {
 
 
-     void setClubManager(Long userId, Long clubId);
+     void setClubManager(String userId, Long clubId);
 
-     void quashClubManager(Long userId, Long clubId);
+     void quashClubManager(String userId, Long clubId);
 
 
 }

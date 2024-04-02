@@ -10,14 +10,11 @@ import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 @Mapper
 public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
 
-int setManager(Long userId, Long clubId);
+int setManager(String userId, Long clubId);
 
-int createManager(Long userId, Long clubId);
+int createManager(String userId, Long clubId);
 
-int quashManager(Long userId, Long clubId);
+int quashManager(String userId, Long clubId);
 
-int setUserManager(Long userId, Long clubId);
-
-int quashUserManager(Long userId, Long clubId);
 
 }

@@ -1,7 +1,9 @@
 package team.project.module.auth.internal.interceptor;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
+import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpInterface;
+import cn.dev33.satoken.stp.StpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -54,6 +56,27 @@ public class SaTokenConfig implements WebMvcConfigurer, StpInterface {
         if (userInfo.hasRole(UserRole.SUPER_ADMIN))  list.add(AuthRole.SUPER_ADMIN);
 
         return list;
+    }
+
+    public List<String> getRoleListXXX(Object loginId, String loginType) {
+
+        String userId = (String)loginId;
+
+        SaSession session = StpUtil.getSessionByLoginId(userId);
+        return session.get("auth", () -> {
+            List<String> list = new ArrayList<>();
+
+            UserInfoDTO userInfo = userService.selectUserRole(userId);
+            if (userInfo == null) return list;
+
+            if (userInfo.hasRole(UserRole.STUDENT))      list.add(AuthRole.STUDENT);
+            if (userInfo.hasRole(UserRole.TEACHER))      list.add(AuthRole.TEACHER);
+            if (userInfo.hasRole(UserRole.CLUB_MEMBER))  list.add(AuthRole.CLUB_MEMBER);
+            if (userInfo.hasRole(UserRole.CLUB_MANAGER)) list.add(AuthRole.CLUB_MANAGER);
+            if (userInfo.hasRole(UserRole.SUPER_ADMIN))  list.add(AuthRole.SUPER_ADMIN);
+
+            return list;
+        });
     }
 }
 

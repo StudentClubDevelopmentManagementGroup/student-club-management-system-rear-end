@@ -15,6 +15,7 @@ public class PageVO<VO> {
     @JsonProperty("total_pages")  private Long     totalPages;
     @JsonProperty("total_item")   private Long     totalItem;
 
+    /* 如果分页查询得出的结果还需要进一步转换（例如，查出的是 DO，需要转换成 VO），则用这个构造器 */
     public PageVO(List<VO> records, Page<?> page) {
         this.records     = records;
 
@@ -25,5 +26,10 @@ public class PageVO<VO> {
             this.totalPages  = page.getPages();
             this.totalItem   = page.getTotal();
         }
+    }
+
+    /* 如果分页查询得出的结果不需要转换，则用这个构造器 */
+    public PageVO(Page<VO> page) {
+        this(page.getRecords(), page);
     }
 }

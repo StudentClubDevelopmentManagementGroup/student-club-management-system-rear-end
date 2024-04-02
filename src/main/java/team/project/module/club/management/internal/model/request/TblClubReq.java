@@ -6,8 +6,6 @@ import lombok.Data;
 
 @Data
 public class TblClubReq {
-
-
     @JsonProperty("departmentId")
     Long     departmentId;
     @JsonProperty("name")
