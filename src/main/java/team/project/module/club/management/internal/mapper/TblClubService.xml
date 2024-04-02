@@ -67,7 +67,6 @@
     <update id="recoverClub">
         update tbl_club set is_deleted = 0 where name = #{name} and department_id = #{departmentId} and is_deleted = 1
     </update>
-
     <select id="findAll"
             resultMap="clubmasVO">
         SELECT * from view_club_manager

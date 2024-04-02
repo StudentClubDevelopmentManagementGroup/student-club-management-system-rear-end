@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Tag(name="tbl_department")
+@Tag(name="院系管理")
 @RestController
 @RequestMapping("/department")
 public class DepartmentController {
@@ -27,17 +27,48 @@ public class DepartmentController {
     @Autowired
     private ClubService clubService;
 
+
+
+
+
     @Operation(summary="查询所有院系以及校级部门")
-    @GetMapping("all")
-    public List<DepartmentView> getAllDepartments() {
-        return departmentService.getAllDepartments();
+    @GetMapping("/all")
+    public Response<Object> getAllDepartments() {
+        List<DepartmentView> departments = departmentService.getAllDepartments();
+        if (!departments.isEmpty()) {
+            return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("查询成功")
+                    .data(departments);
+        } else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
+                    .statusText("查询失败，部门列表为空")
+                    .data("数据为空");
+        }
     }
+
+//
+//    @Operation(summary="根据院系ID查询院系的社团")
+//    @GetMapping("/clubs")
+//    public List<Club> getClubsByDepartmentId(
+//             @Parameter(description = "请输入部门ID", required = true) Long departmentId) {
+//        return clubService.selectClubsByDepartment( departmentId);
+//    }
+//
+
 
     @Operation(summary="根据院系ID查询院系的社团")
     @GetMapping("/clubs")
-    public List<Club> getClubsByDepartmentId(
-             @Parameter(description = "请输入部门ID", required = true) Long departmentId) {
-        return clubService.selectClubsByDepartment( departmentId);
+    public Response<Object> getClubsByDepartmentId(@Parameter(description = "请输入部门ID", required = true) Long departmentId) {
+        List<Club> clubs = clubService.selectClubsByDepartment( departmentId);
+        if (!clubs.isEmpty()) {
+            return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("查询成功")
+                    .data(clubs);
+        } else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
+                    .statusText("查询失败，列表为空")
+                    .data("数据为空");
+        }
     }
 
 
