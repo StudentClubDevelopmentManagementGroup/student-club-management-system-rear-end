@@ -35,22 +35,19 @@ public class TblClubController {
     @GetMapping("/manage_all/select_club")
     Object selectClub(TblClubReq req){
         if(req.getName()==null){
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByDepartmentId(page,req.getDepartmentId()));
+                    .data(service.selectByDepartmentId(req));
         }
         else if (req.getDepartmentId()==null){
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByName(page,req.getName()));
+                    .data(service.selectByName(req));
         }
         else {
-            Page<TblClubDO> page = new Page<>(req.getPagenum(), req.getSize());
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByNameAndDepartmentId(page,req.getDepartmentId(), req.getName()));
+                    .data(service.selectByNameAndDepartmentId(req));
         }
     }
 

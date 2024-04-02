@@ -12,11 +12,11 @@ public interface TblClubService extends IService<TblClubDO> {
 
 
      void createClub(Long departmentId, String name);
-     Page<TblClubDO> selectByNameAndDepartmentId(@Param("page") Page<TblClubDO> page, Long departmentId, String name);
+     Page<TblClubDO> selectByNameAndDepartmentId(TblClubReq page);
 
-     Page<TblClubDO> selectByName(@Param("page") Page<TblClubDO> page, String name);
+     Page<TblClubDO> selectByName(TblClubReq page);
 
-     Page<TblClubDO> selectByDepartmentId(@Param("page") Page<TblClubDO> page, Long departmentId);
+     Page<TblClubDO> selectByDepartmentId(TblClubReq page);
 
      void deleteClub(Long departmentId, String name);
 
@@ -26,7 +26,7 @@ public interface TblClubService extends IService<TblClubDO> {
 
      void recoverClub(Long departmentId, String name);
 
-     Page<ClubMasVO> findAll(@Param("page") TblClubReq page);
+     Page<ClubMasVO> findAll( TblClubReq page);
 
      Page<ClubMasVO> findAllByDepartmentId(TblClubReq page);
 
