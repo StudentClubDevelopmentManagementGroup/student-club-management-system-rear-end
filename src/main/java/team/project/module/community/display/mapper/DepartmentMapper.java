@@ -17,6 +17,7 @@ public interface DepartmentMapper extends BaseMapper<Department> {
 
     // 定义 selectAll() 方法
     List<DepartmentView> selectAll();
+
     // 增加院系
     Integer addDepartment(AddDepartmentReq adddepartmentreq);
 
