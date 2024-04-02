@@ -2,18 +2,16 @@ package team.project.module.user.internal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.stp.StpUtil;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
+import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.LoginService;
 
@@ -30,17 +28,11 @@ public class LoginController {
 
     @Operation(summary="使用密码登录")
     @PostMapping("/user/login/password")
-    Object loginWithPassword(
+    Object loginWithPassword(@Valid @RequestBody UserIdAndPasswordReq req) {
 
-        @NotBlank(message="学号/工号不能为空")
-        @Size(min=1, max=20, message="学号/工号的长度不合约束")
-        @RequestParam("user_id") String userId,
+        String userId = req.getUserId();
+        String password = req.getPassword();
 
-        @NotBlank(message="密码不能为空")
-        @Size(min=1, max=20, message="密码的长度不合约束")
-        @RequestParam("pwd") String password
-
-    ) {
         UserInfoVO userInfo = service.login(userId, password);
 
         StpUtil.login(userId);

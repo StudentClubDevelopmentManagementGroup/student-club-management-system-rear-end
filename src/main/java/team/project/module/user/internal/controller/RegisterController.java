@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.internal.model.request.RegisterReq;
+import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.service.RegisterService;
 
 @Tag(name="注册")
@@ -29,11 +30,8 @@ public class RegisterController {
 
     @Operation(summary="注销账号")
     @PostMapping("/user/unregister")
-    Object unregister(
-        @RequestParam("user_id") String userId,
-        @RequestParam("pwd")     String password
-    ) {
-        service.unregister(userId, password);
+    Object unregister(@Valid @RequestBody UserIdAndPasswordReq req) {
+        service.unregister(req.getUserId(), req.getPassword());
         return new Response<>(ServiceStatus.SUCCESS).statusText("销号成功");
     }
 }

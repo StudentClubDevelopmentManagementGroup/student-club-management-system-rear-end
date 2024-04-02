@@ -9,6 +9,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.HandlerMethodValidationException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import org.springframework.web.multipart.support.MissingServletRequestPartException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -58,6 +59,12 @@ public class SpringframeworkExceptionHandler {
         }
 
         return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    /* 参数转换失败 */
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public Object handle(MethodArgumentTypeMismatchException exception) {
+        return new Response<>(ServiceStatus.BAD_REQUEST).data("请求参数的类型与所需的类型不匹配");
     }
 
     /* 无法解析 http 请求 */

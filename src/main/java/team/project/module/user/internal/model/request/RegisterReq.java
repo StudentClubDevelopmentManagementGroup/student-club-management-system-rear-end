@@ -9,19 +9,24 @@ import lombok.Data;
 
 @Data
 public class RegisterReq {
+
+    /* 这部分字段的约束与 UserIdAndPasswordReq 保持一致 [begin] */
+
     @NotBlank(message="学号/工号不能为空")
     @Size(min=1, max=20, message="学号/工号的长度不合约束")
     @JsonProperty("user_id")
     private String userId;
 
-    @NotNull(message="所属院系id不能为空")
-    @JsonProperty("department_id")
-    private Long departmentId;
-
     @NotBlank(message="密码不能为空")
     @Size(min=1, max=512, message="密码的长度不合约束")
     @JsonProperty("pwd")
     private String password;
+
+    /* 这部分字段的约束约束与 UserIdAndPasswordReq 保持一致 [end] */
+
+    @NotNull(message="所属院系id不能为空")
+    @JsonProperty("department_id")
+    private Long departmentId;
 
     @NotBlank(message="姓名不能为空")
     @Size(min=1, max=16, message="姓名的长度不合约束")
