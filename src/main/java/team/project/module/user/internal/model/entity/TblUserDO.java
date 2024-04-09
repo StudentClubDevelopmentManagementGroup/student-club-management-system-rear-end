@@ -12,18 +12,18 @@ import java.sql.Timestamp;
 @Data
 @TableName("tbl_user")
 public class TblUserDO {
-    @TableId(value="id")               Long      id;
+    @TableId(value="id")               private Long      id;
     @TableLogic(value="0", delval="1")
-    @TableField(value="is_deleted")    Boolean   deleted;
-    @TableField(value="create_time")   Timestamp createTime;
-    @TableField(value="update_time")   Timestamp updateTime;
-    @TableField(value="user_id")       String    userId;
-    @TableField(value="department_id") Long      departmentId;
-    @TableField(value="pwd")           String    password;
-    @TableField(value="name")          String    name;
-    @TableField(value="tel")           String    tel;
-    @TableField(value="mail")          String    email;
-    @TableField(value="role")          Integer   role;
+    @TableField(value="is_deleted")    private Boolean   deleted;
+    @TableField(value="create_time")   private Timestamp createTime;
+    @TableField(value="update_time")   private Timestamp updateTime;
+    @TableField(value="user_id")       private String    userId;
+    @TableField(value="department_id") private Long      departmentId;
+    @TableField(value="pwd")           private String    password;
+    @TableField(value="name")          private String    name;
+    @TableField(value="tel")           private String    tel;
+    @TableField(value="mail")          private String    email;
+    @TableField(value="role")          private Integer   role;
 
     /* 判断用户是否拥有指定角色 */
     public boolean hasRole(UserRoleEnum role) {
