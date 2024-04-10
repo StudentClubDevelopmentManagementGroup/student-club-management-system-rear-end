@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.model.enums.AuthRole;
 
 /* 处理 Sa-Token 权限认证相关的异常 */
 @RestControllerAdvice
@@ -33,7 +34,15 @@ public class SaTokenExceptionHandler {
     /* 角色验证失败 */
     @ExceptionHandler(NotRoleException.class)
     Object handle(NotRoleException exception) {
-        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户不拥有指定角色，无权执行请求");
+        String roleName = switch (exception.getRole()) {
+            case AuthRole.STUDENT      -> AuthRole.ROLE_NAME_STUDENT;
+            case AuthRole.TEACHER      -> AuthRole.ROLE_NAME_TEACHER;
+            case AuthRole.CLUB_MEMBER  -> AuthRole.ROLE_NAME_CLUB_MEMBER;
+            case AuthRole.CLUB_MANAGER -> AuthRole.ROLE_NAME_CLUB_MANAGER;
+            case AuthRole.SUPER_ADMIN  -> AuthRole.ROLE_NAME_SUPER_ADMIN;
+            default -> "？"; /* <- 不应该匹配到这个 case */
+        };
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有[ " + roleName + " ]角色，无权执行请求");
     }
 
     /* 权限验证失败 */

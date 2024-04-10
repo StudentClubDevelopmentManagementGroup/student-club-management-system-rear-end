@@ -5,6 +5,7 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.method.ParameterValidationResult;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -21,6 +22,13 @@ import team.project.base.service.status.ServiceStatus;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.springframeworkExceptionHandler)
 public class SpringframeworkExceptionHandler {
+
+    /* http 请求的请求方式 */
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public Object handle(HttpRequestMethodNotSupportedException exception) {
+        String msg = "此 api 不支持 " + exception.getMethod() + " 的请求方式";
+        return new Response<>(ServiceStatus.BAD_REQUEST).data(msg);
+    }
 
     /* http 请求缺少必要的参数 */
     @ExceptionHandler(MissingServletRequestParameterException.class)

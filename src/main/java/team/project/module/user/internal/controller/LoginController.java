@@ -8,9 +8,11 @@ import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.user.export.model.annotation.UserIdConstraint;
 import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.LoginService;
@@ -55,7 +57,8 @@ public class LoginController {
     @Operation(summary="登出")
     @PostMapping("/user/logout")
     @SaCheckLogin
-    Object logout(@RequestParam("user_id") String userId) {
+    Object logout() {
+        String userId = (String)StpUtil.getSession().getLoginId();
         StpUtil.logout(userId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("登出成功");
     }
