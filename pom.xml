@@ -62,11 +62,11 @@
             <artifactId>sa-token-spring-boot3-starter</artifactId>
             <version>1.37.0</version>
         </dependency>
-        <dependency>    <!-- Sa-Token 整合 Redis（使用 jackson 序列化方式） -->
+        <!--<dependency>    暂时关闭 Sa-Token 集成 Redis
             <groupId>cn.dev33</groupId>
             <artifactId>sa-token-redis-jackson</artifactId>
             <version>1.37.0</version>
-        </dependency>
+        </dependency>-->
         <!-- Sa-Token [end] -->
 
         <!-- quartz -->
@@ -170,6 +170,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-ea</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
 
