@@ -17,6 +17,7 @@ public class TblUserClubSeatDO {
     @TableField(value="is_deleted")  private Boolean   deleted;
     @TableField(value="create_time") private Timestamp createTime;
     @TableField(value="update_time") private Timestamp updateTime;
+
     @TableField(value="arranger_id") private String    arrangerId;
     @TableField(value="seat")        private String    seat;
     @TableField(value="owner_id")    private String    ownerId;

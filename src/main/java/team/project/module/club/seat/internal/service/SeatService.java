@@ -30,10 +30,12 @@ public class SeatService {
         seatInfo.setArrangerId(arrangerId);
         seatInfo.setSeat(req.getSeat());
         seatInfo.setClubId(req.getClubId());
+
         try {
             userClubSeatMapper.insert(seatInfo);
         }
         catch (Exception e) {
+            logger.error("创建座位失败：", e);
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "创建座位失败");
         }
     }
