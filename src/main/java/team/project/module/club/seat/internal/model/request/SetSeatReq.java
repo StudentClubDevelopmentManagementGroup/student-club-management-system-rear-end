@@ -12,6 +12,10 @@ public class SetSeatReq {
     @JsonProperty("seat_id")
     private Long seatId;
 
+    /* TODO jsr303 */
+    @JsonProperty("club_id")
+    private Long clubId;
+
     @UserIdConstraint
-    private Long ownerId;
+    private String ownerId;
 }

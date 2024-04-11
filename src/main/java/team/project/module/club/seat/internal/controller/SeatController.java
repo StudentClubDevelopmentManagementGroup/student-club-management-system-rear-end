@@ -17,6 +17,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.SetSeatReq;
 import team.project.module.club.seat.internal.service.SeatService;
 
 @Tag(name="座位安排")
@@ -36,8 +37,10 @@ public class SeatController {
     @Operation(summary="安排座位")
     @GetMapping("/club/seat/set")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object set() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    Object set(@Valid @RequestBody SetSeatReq req) {
+        String userId = (String)StpUtil.getSession().getLoginId();
+        service.setSeat(userId, req);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="添加座位")

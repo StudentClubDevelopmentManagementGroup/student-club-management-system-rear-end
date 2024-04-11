@@ -16,8 +16,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 查询用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
         );
         return userList.size() == 1 ? userList.get(0) : null;
@@ -27,8 +26,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 查询用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId, String password) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
             .eq(TblUserDO::getPassword, password)
         );
@@ -39,8 +37,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 查询用户基本信息（只查询姓名和角色，其他属性为 null）
      * */
     default TblUserDO selectBasicInfo(String userId) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
             .select(TblUserDO::getName)
             .select(TblUserDO::getRole)
             .eq(TblUserDO::getUserId, userId)
@@ -52,8 +49,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 查询用户角色（只查询角色，其他属性为 null）
      * */
     default TblUserDO selectRole(String userId) {
-        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
-        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
             .select(TblUserDO::getRole)
             .eq(TblUserDO::getUserId, userId)
         );
@@ -65,8 +61,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      *  @return 如果用户不存在（已注销）或密码错误，则注销失败，返回 0；否则注销成功，返回 1
      * */
     default int logicalDelete(String userId, String password) {
-        LambdaUpdateWrapper<TblUserDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        return this.update(null, lambdaUpdateWrapper
+        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
             .eq(TblUserDO::getPassword, password)
             .set(TblUserDO::getDeleted, true)
@@ -119,8 +114,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         }
         user.addRole(roleToAdd);
 
-        LambdaUpdateWrapper<TblUserDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        return this.update(null, lambdaUpdateWrapper
+        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
             .set(TblUserDO::getRole, user.getRole())
         );
@@ -140,8 +134,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         }
         user.removeRole(roleToRemove);
 
-        LambdaUpdateWrapper<TblUserDO> lambdaUpdateWrapper = new LambdaUpdateWrapper<>();
-        return this.update(null, lambdaUpdateWrapper
+        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
             .set(TblUserDO::getRole, user.getRole())
         );
