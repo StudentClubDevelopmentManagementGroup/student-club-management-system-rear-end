@@ -11,6 +11,11 @@ import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
 import team.project.module.club.seat.internal.model.request.SetSeatReq;
+import team.project.module.club.seat.internal.model.view.SeatVO;
+import team.project.module.club.seat.internal.util.ModelConverter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class SeatService {
@@ -21,6 +26,9 @@ public class SeatService {
 
     @Autowired
     TblUserClubSeatMapper userClubSeatMapper;
+
+    @Autowired
+    ModelConverter modelConverter;
 
     public void addSeat(String arrangerId, AddSeatReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
@@ -45,7 +53,8 @@ public class SeatService {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
-        /*if ( ! clubMemberRoleService.isClubMember(req.getOwnerId(), req.getClubId())) {
+        /* TODO
+        if ( ! clubMemberRoleService.isClubMember(req.getOwnerId(), req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
         }*/
 
@@ -56,5 +65,21 @@ public class SeatService {
         seat.setOwnerId(req.getOwnerId());
 
         userClubSeatMapper.updateSeat(seat);
+    }
+
+    public List<SeatVO> view(String userId, Long clubId) {
+        /* TODO
+        if ( ! clubMemberRoleService.isClubMember(userId, clubId)) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "该用户不是该社团的成员");
+        }*/
+
+        List<TblUserClubSeatDO> seatList = userClubSeatMapper.selectAllSeat(clubId);
+
+        List<SeatVO> result = new ArrayList<>();
+        for (TblUserClubSeatDO seat : seatList) {
+            result.add(modelConverter.toSeatVO(seat));
+        }
+
+        return result;
     }
 }

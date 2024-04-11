@@ -38,8 +38,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * */
     default TblUserDO selectBasicInfo(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
-            .select(TblUserDO::getName)
-            .select(TblUserDO::getRole)
+            .select(TblUserDO::getUserId, TblUserDO::getName, TblUserDO::getRole)
             .eq(TblUserDO::getUserId, userId)
         );
         return userList.size() == 1 ? userList.get(0) : null;
@@ -50,7 +49,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * */
     default TblUserDO selectRole(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
-            .select(TblUserDO::getRole)
+            .select(TblUserDO::getUserId, TblUserDO::getRole)
             .eq(TblUserDO::getUserId, userId)
         );
         return userList.size() == 1 ? userList.get(0) : null;

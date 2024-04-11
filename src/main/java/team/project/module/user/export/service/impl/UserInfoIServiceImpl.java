@@ -19,7 +19,7 @@ public class UserInfoIServiceImpl implements UserInfoIService {
     TblUserMapper userMapper;
 
     public UserInfoDTO selectUserInfo(String userId) {
-        TblUserDO userInfo = userMapper.selectBasicInfo(userId);
+        TblUserDO userInfo = userMapper.selectOne(userId);
         if (userInfo == null) {
             return null;
         }
