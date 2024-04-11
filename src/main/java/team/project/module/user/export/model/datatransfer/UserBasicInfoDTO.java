@@ -1,16 +1,14 @@
 package team.project.module.user.export.model.datatransfer;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 @Data
-public class UserInfoDTO {
+public class UserBasicInfoDTO {
     String  userId;
-    Long    departmentId;
     String  name;
-    String  tel;
-    String  email;
     Integer role;
 
     /* 判断用户是否拥有指定角色 */

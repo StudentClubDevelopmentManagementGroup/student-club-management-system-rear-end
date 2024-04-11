@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoIService;
@@ -18,7 +19,7 @@ public class UserInfoIServiceImpl implements UserInfoIService {
     TblUserMapper userMapper;
 
     public UserInfoDTO selectUserInfo(String userId) {
-        TblUserDO userInfo = userMapper.selectOne(userId);
+        TblUserDO userInfo = userMapper.selectBasicInfo(userId);
         if (userInfo == null) {
             return null;
         }
@@ -34,8 +35,22 @@ public class UserInfoIServiceImpl implements UserInfoIService {
         return result;
     }
 
+    public UserBasicInfoDTO selectUserBasicInfo(String userId) {
+        TblUserDO userBasicInfo = userMapper.selectBasicInfo(userId);
+        if (userBasicInfo == null) {
+            return null;
+        }
+
+        UserBasicInfoDTO result = new UserBasicInfoDTO();
+        result.setUserId(userId);
+        result.setName(userBasicInfo.getName());
+        result.setRole(userBasicInfo.getRole());
+
+        return result;
+    }
+
     public UserInfoDTO selectUserRole(String userId) {
-        TblUserDO userInfo = userMapper.selectUserRole(userId);
+        TblUserDO userInfo = userMapper.selectRole(userId);
         if (userInfo == null) {
             return null;
         }

@@ -13,19 +13,18 @@ import java.util.List;
 public interface TblUserMapper extends BaseMapper<TblUserDO> {
 
     /**
-     * 查询用户信息
+     * 查询用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId) {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
             .eq(TblUserDO::getUserId, userId)
         );
-        assert userList.size() <= 1;
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
     /**
-     * 查询用户信息
+     * 查询用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId, String password) {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
@@ -33,20 +32,31 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             .eq(TblUserDO::getUserId, userId)
             .eq(TblUserDO::getPassword, password)
         );
-        assert userList.size() <= 1;
+        return userList.size() == 1 ? userList.get(0) : null;
+    }
+
+     /**
+     * 查询用户基本信息（只查询姓名和角色，其他属性为 null）
+     * */
+    default TblUserDO selectBasicInfo(String userId) {
+        LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+        List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
+            .select(TblUserDO::getName)
+            .select(TblUserDO::getRole)
+            .eq(TblUserDO::getUserId, userId)
+        );
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
     /**
-     * 查询用户（只查询角色，其他属性为 null）
+     * 查询用户角色（只查询角色，其他属性为 null）
      * */
-    default TblUserDO selectUserRole(String userId) {
+    default TblUserDO selectRole(String userId) {
         LambdaQueryWrapper<TblUserDO> lambdaQueryWrapper = new LambdaQueryWrapper<>();
         List<TblUserDO> userList = this.selectList(lambdaQueryWrapper
             .select(TblUserDO::getRole)
             .eq(TblUserDO::getUserId, userId)
         );
-        assert userList.size() <= 1;
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
@@ -99,7 +109,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             也就是，我不打算“将位运算直接落实到 sql”
         */
 
-        TblUserDO user = this.selectOne(userId);
+        TblUserDO user = this.selectRole(userId);
         if (user == null) {
             return 0;
         }
@@ -120,7 +130,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 给用户移除角色
      * */
     default int removeRoleFromUser(String userId, UserRoleEnum roleToRemove) {
-        TblUserDO user = this.selectOne(userId);
+        TblUserDO user = this.selectRole(userId);
         if (user == null) {
             return 0;
         }

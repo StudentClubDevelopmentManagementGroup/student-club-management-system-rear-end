@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 public class UserClubService {
 
     /* 判断该用户是否是指定社团的负责人 */
-    public boolean isClubManager(String userId, Long clubId) throws SecurityException {
+    public boolean isClubManager(String userId, Long clubId) {
         return true;
     }
 }

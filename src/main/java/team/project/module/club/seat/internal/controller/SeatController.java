@@ -1,5 +1,6 @@
 package team.project.module.club.seat.internal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,7 +46,7 @@ public class SeatController {
     Object add(@Valid @RequestBody AddSeatReq req) {
         String userId = (String)StpUtil.getSession().getLoginId();
         service.addSeat(userId, req);
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        return new Response<>(ServiceStatus.CREATED);
     }
 
     @Operation(summary="删除座位")
