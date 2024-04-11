@@ -11,8 +11,8 @@ import java.util.List;
 @Mapper
 public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
 
-    default int updateSeat(TblUserClubSeatDO seat) {
-        return this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
+    default void setSeat(TblUserClubSeatDO seat) {
+        this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getId, seat.getId())
             .eq(TblUserClubSeatDO::getClubId, seat.getClubId())
             .set(TblUserClubSeatDO::getArrangerId, seat.getArrangerId())
@@ -22,6 +22,13 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
 
     default List<TblUserClubSeatDO> selectAllSeat(Long clubId) {
         return this.selectList(null, new LambdaQueryWrapper<TblUserClubSeatDO>()
+            .eq(TblUserClubSeatDO::getClubId, clubId)
+        );
+    }
+
+    default int deleteSeat(Long clubId, Long seatId) {
+        return this.delete(new LambdaQueryWrapper<TblUserClubSeatDO>()
+            .eq(TblUserClubSeatDO::getId, seatId)
             .eq(TblUserClubSeatDO::getClubId, clubId)
         );
     }

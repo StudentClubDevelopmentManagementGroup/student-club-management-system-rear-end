@@ -13,6 +13,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.SetSeatReq;
 import team.project.module.club.seat.internal.service.SeatService;
 
@@ -24,14 +25,13 @@ public class SeatController {
     @Autowired
     SeatService seatService;
 
-    @Operation(summary="查看座位表")
-    @GetMapping("/club/seat/view")
-    @SaCheckRole(AuthRole.CLUB_MEMBER)
-    Object view(
-        /* TODO jsr303 */ @RequestParam("club_id") Long clubId
-    ) {
+    @Operation(summary="添加座位")
+    @PostMapping("/club/seat/add")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object add(@Valid @RequestBody AddSeatReq req) {
         String userId = (String)StpUtil.getSession().getLoginId();
-        return new Response<>(ServiceStatus.SUCCESS).data(seatService.view(userId, clubId));
+        seatService.addSeat(userId, req);
+        return new Response<>(ServiceStatus.CREATED);
     }
 
     @Operation(summary="安排座位")
@@ -43,19 +43,22 @@ public class SeatController {
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
-    @Operation(summary="添加座位")
-    @PostMapping("/club/seat/add")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object add(@Valid @RequestBody AddSeatReq req) {
+    @Operation(summary="查看座位表")
+    @GetMapping("/club/seat/view")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    Object view(
+        /* TODO jsr303 */ @RequestParam("club_id") Long clubId
+    ) {
         String userId = (String)StpUtil.getSession().getLoginId();
-        seatService.addSeat(userId, req);
-        return new Response<>(ServiceStatus.CREATED);
+        return new Response<>(ServiceStatus.SUCCESS).data(seatService.view(userId, clubId));
     }
 
     @Operation(summary="删除座位")
     @PostMapping("/club/seat/del")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object del() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    Object del(@Valid @RequestBody DelSeatReq req) {
+        String userId = (String)StpUtil.getSession().getLoginId();
+        seatService.deleteSeat(userId, req);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 }
