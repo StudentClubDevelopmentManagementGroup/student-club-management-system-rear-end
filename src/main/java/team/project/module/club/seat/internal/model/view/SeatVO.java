@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class SeatVO {
+
     @JsonProperty("seat_id")  private Long       seatId;
     @JsonProperty("seat")     private String     seat;
     @JsonProperty("arranger") private UserInfoVO arranger;

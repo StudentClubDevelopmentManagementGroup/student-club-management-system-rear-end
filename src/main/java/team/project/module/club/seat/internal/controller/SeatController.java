@@ -35,7 +35,7 @@ public class SeatController {
     }
 
     @Operation(summary="安排座位")
-    @GetMapping("/club/seat/set")
+    @PostMapping("/club/seat/set")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object set(@Valid @RequestBody SetSeatReq req) {
         String userId = (String)StpUtil.getSession().getLoginId();

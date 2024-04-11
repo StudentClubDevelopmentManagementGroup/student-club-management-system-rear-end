@@ -17,5 +17,6 @@ public class SetSeatReq {
     private Long seatId;
 
     @UserIdConstraint
+    @JsonProperty("owner_id")
     private String ownerId;
 }
