@@ -14,7 +14,7 @@ public class AddSeatReq {
     @JsonProperty("seat")
     private String seat;
 
-    @NotNull(message="未指定社团")
+    /* TODO jsr303 */
     @JsonProperty("club_id")
     private Long clubId;
 }
