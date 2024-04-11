@@ -56,7 +56,7 @@ public class DepartmentController {
 //
 
 
-    @Operation(summary="根据院系ID查询院系的社团")
+    @Operation(summary="根据院系ID查询院系所有社团")
     @GetMapping("/clubs")
     public Response<Object> getClubsByDepartmentId(@Parameter(description = "请输入部门ID", required = true) Long departmentId) {
         List<Club> clubs = clubService.selectClubsByDepartment( departmentId);
@@ -85,7 +85,7 @@ public class DepartmentController {
                 .data(message);
     }
 
-    @Operation(summary="传入简称修改院系全称，只需要abbreviation、full_name 字段")
+    @Operation(summary="，修改院系全称，传入院系id修改full_name 字段")
     @PutMapping("/update")
     public Response<Object> updateDepartment(@RequestBody AlterDepartmentNameReq alterDepartmentNameReq) {
         boolean isUpdated = departmentService.updateDepartment(alterDepartmentNameReq);
@@ -110,7 +110,7 @@ public class DepartmentController {
 
         // 创建响应对象并设置状态码、状态文本和数据
         return new Response<>(isAdded ? ServiceStatus.SUCCESS : ServiceStatus.INTERNAL_SERVER_ERROR)
-                .statusText(message);
+                .data(message);
 
     }
 

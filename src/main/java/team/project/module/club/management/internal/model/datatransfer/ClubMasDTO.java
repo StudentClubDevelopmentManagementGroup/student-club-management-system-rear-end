@@ -1,4 +1,4 @@
-package team.project.module.club.management.internal.model.view;
+package team.project.module.club.management.internal.model.datatransfer;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,7 @@ import lombok.Data;
 
 
 @Data
-public class ClubMasVO {
+public class ClubMasDTO {
     @JsonProperty("name")
     String   name;
     @JsonProperty("department_name")

@@ -4,6 +4,6 @@ import lombok.Data;
 
 @Data
 public class AlterDepartmentNameReq {
-    private String abbreviation;
+    private Long id;
     private String fullName;
 }

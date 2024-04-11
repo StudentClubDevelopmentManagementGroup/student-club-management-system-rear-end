@@ -1,13 +1,13 @@
-package team.project.module.club.management.internal.service;
+package team.project.module.club.personnelchanges.internal.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.management.internal.mapper.TblClubMapper;
-import team.project.module.club.management.internal.mapper.TblUserClubMapper;
+import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.module.club.personnelchanges.internal.service.TblUserClubService;
 import team.project.module.user.export.service.UserInfoIService;
 import java.util.HashMap;
 import java.util.List;
@@ -56,7 +56,6 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.quashManager(userId, clubId);
-            //
             uiService.removeRoleFromUser(userId, CLUB_MANAGER);
         }
 

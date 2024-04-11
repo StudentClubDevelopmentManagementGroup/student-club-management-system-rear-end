@@ -1,4 +1,4 @@
-package team.project.module.club.management.internal.mapper;
+package team.project.module.club.personnelchanges.internal.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -16,5 +16,5 @@ int createManager(String userId, Long clubId);
 
 int quashManager(String userId, Long clubId);
 
-
+Boolean selectManagerRole(String userId, Long clubId);
 }
