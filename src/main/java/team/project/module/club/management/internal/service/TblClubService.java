@@ -1,11 +1,11 @@
 package team.project.module.club.management.internal.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
+import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
-import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
 
 @Service
 public interface TblClubService extends IService<TblClubDO> {
@@ -26,13 +26,13 @@ public interface TblClubService extends IService<TblClubDO> {
 
      void recoverClub(Long departmentId, String name);
 
-     Page<ClubMasVO> findAll( TblClubReq page);
+     Page<ClubMasDTO> findAll(TblClubReq page);
 
-     Page<ClubMasVO> findAllByDepartmentId(TblClubReq page);
+     Page<ClubMasDTO> findAllByDepartmentId(TblClubReq page);
 
-     Page<ClubMasVO> findAllByName(TblClubReq page);
+     Page<ClubMasDTO> findAllByName(TblClubReq page);
 
-     Page<ClubMasVO> findAllByDepartmentIdAndName(TblClubReq page);
+     PageVO<ClubMasDTO> findAllByDepartmentIdAndName(TblClubReq page);
 
 }
 

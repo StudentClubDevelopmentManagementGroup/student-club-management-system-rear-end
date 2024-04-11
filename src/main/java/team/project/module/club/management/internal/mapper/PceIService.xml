@@ -13,7 +13,7 @@
         <result column="state"              property="state" />
     </resultMap>
 
-    <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.view.ClubMasVO">
+    <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.datatransfer.ClubMasDTO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="is_deleted"         property="deleted" />
         <result column="department_id"      property="departmentId" />
@@ -86,4 +86,5 @@
         SELECT * from view_club_manager
         WHERE department_id = #{departmentId} and name = #{name}
     </select>
+    <!--     TODO xml文件加上逻辑删除-->
 </mapper>

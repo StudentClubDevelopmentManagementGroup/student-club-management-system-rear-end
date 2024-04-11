@@ -3,6 +3,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import team.project.base.model.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
@@ -10,7 +11,7 @@ import team.project.module.club.management.internal.model.entity.TblClubDO;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import team.project.module.club.management.internal.model.request.TblClubReq;
-import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
 
 /**
  * <p style="color: #f23215;">
@@ -40,8 +41,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     @Override
     public Page<TblClubDO> selectByNameAndDepartmentId(TblClubReq page) {
 
-        Page<TblClubDO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<TblClubDO> page2 = cMapper.selectByNameAndDepartmentId(page1,page.getDepartmentId(), page.getName());
+        Page<TblClubDO> page2 = cMapper.selectByNameAndDepartmentId(
+                new Page<>(page.getPagenum(), page.getSize()),page.getDepartmentId(), page.getName());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
@@ -52,8 +53,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     @Override
     public Page<TblClubDO> selectByName(TblClubReq page) {
-        Page<TblClubDO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<TblClubDO> page2 = cMapper.selectByName(page1, page.getName());
+        Page<TblClubDO> page2 = cMapper.selectByName(
+                new Page<>(page.getPagenum(), page.getSize()), page.getName());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
@@ -63,8 +64,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     public Page<TblClubDO> selectByDepartmentId(TblClubReq page) {
-        Page<TblClubDO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<TblClubDO> page2 = cMapper.selectByDepartmentId(page1, page.getDepartmentId());
+        Page<TblClubDO> page2 = cMapper.selectByDepartmentId(
+                new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
@@ -105,15 +106,15 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
 
-    public Page<ClubMasVO> findAll(TblClubReq page) {
-        Page<ClubMasVO> page1 = new Page<>(page.getPagenum(), page.getSize());
+    public Page<ClubMasDTO> findAll(TblClubReq page) {
+        Page<ClubMasDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
         return cMapper.findAll(page1);
     }
 
-    public Page<ClubMasVO> findAllByDepartmentId(TblClubReq page) {
+    public Page<ClubMasDTO> findAllByDepartmentId(TblClubReq page) {
 
-        Page<ClubMasVO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<ClubMasVO> page2 = cMapper.findAllByDepartmentId(page1, page.getDepartmentId());
+        Page<ClubMasDTO> page2 = cMapper.findAllByDepartmentId(
+                new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
@@ -122,9 +123,9 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public Page<ClubMasVO> findAllByName(TblClubReq page) {
-        Page<ClubMasVO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<ClubMasVO> page2 = cMapper.findAllByName(page1, page.getName());
+    public Page<ClubMasDTO> findAllByName(TblClubReq page) {
+        Page<ClubMasDTO> page2 = cMapper.findAllByName(
+                new Page<>(page.getPagenum(), page.getSize()), page.getName());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
@@ -133,14 +134,14 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public Page<ClubMasVO> findAllByDepartmentIdAndName(TblClubReq page) {
-        Page<ClubMasVO> page1 = new Page<>(page.getPagenum(), page.getSize());
-        Page<ClubMasVO> page2 = cMapper.findAllByDepartmentIdAndName(page1, page.getDepartmentId(), page.getName());
+    public PageVO<ClubMasDTO> findAllByDepartmentIdAndName(TblClubReq page) {
+        Page<ClubMasDTO> page2 = cMapper.findAllByDepartmentIdAndName(
+                new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId(), page.getName());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
-            return page2;
+            return new PageVO<>(page2.getRecords(), page2);
         }
     }
 
