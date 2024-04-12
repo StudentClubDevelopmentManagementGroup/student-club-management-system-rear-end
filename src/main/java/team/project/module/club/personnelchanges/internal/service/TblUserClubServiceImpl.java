@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
+import static team.project.module.user.export.model.enums.UserRole.CLUB_MEMBER;
 
 
 /**
@@ -37,10 +38,10 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
         if(userList.isEmpty()){
             ucMapper.createManager(userId, clubId);
+            uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
         else {
             ucMapper.setManager(userId, clubId);
-            //
             uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
     }
@@ -56,9 +57,49 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
         else {
             ucMapper.quashManager(userId, clubId);
+            // TODO 撤销身份需要核实
             uiService.removeRoleFromUser(userId, CLUB_MANAGER);
         }
 
+    }
+
+    @Override
+    public void createMember(String userId, Long clubId) {
+        Map<String, Object> userClubMap = new HashMap<>();
+        userClubMap.put("user_id", userId);
+        userClubMap.put("club_id", clubId);
+        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
+        if(userList.isEmpty()){
+            try
+            {
+                ucMapper.createMember(userId, clubId);
+                uiService.addRoleToUser(userId,CLUB_MEMBER);
+            }
+            catch (Exception a){
+                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+                throw new ServiceException(ServiceStatus.SUCCESS, "创建失败");
+            }
+        }
+        else {
+            throw new ServiceException(ServiceStatus.SUCCESS, "已经存在");
+        }
+    }
+
+    @Override
+    public void quashMember(String userId, Long clubId) {
+        Map<String, Object> userClubMap = new HashMap<>();
+        userClubMap.put("user_id", userId);
+        userClubMap.put("club_id", clubId);
+        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
+        if(userList.isEmpty()){
+            throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
+        }
+        else {
+            // TODO 添加try
+            ucMapper.quashMember(userId, clubId);
+            // TODO 撤销身份需要核实
+            uiService.removeRoleFromUser(userId, CLUB_MEMBER);
+        }
     }
 
 

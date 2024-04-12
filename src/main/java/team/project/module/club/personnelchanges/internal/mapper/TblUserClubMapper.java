@@ -17,4 +17,8 @@ int createManager(String userId, Long clubId);
 int quashManager(String userId, Long clubId);
 
 Boolean selectManagerRole(String userId, Long clubId);
+
+int createMember(String userId, Long clubId);
+
+int quashMember(String userId, Long clubId);
 }

@@ -15,8 +15,18 @@
         update tbl_user_club set role = role &amp; ~2 where user_id = #{userId} and club_id = #{clubId}
     </update>
 
+    <update id="quashMember">
+        update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId}
+    </update>
+
     <select id="selectManagerRole" resultType="java.lang.Boolean">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2
     </select>
 <!--     TODO xml文件加上逻辑删除-->
+
+    <insert id="createMember">
+        insert into tbl_user_club (role, user_id, club_id)
+        values (1, #{userId}, #{clubId})
+    </insert>
+
 </mapper>

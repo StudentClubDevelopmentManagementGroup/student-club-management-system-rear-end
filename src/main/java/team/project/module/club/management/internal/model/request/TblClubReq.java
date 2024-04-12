@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Data
 public class TblClubReq {
 
-
     @JsonProperty("departmentId")
     Long     departmentId;
 
