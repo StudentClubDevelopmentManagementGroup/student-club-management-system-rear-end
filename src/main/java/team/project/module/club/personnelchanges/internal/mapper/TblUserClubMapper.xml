@@ -8,25 +8,31 @@
     </update>
 
     <update id="setManager">
-        update tbl_user_club set role = role | 2 where user_id = #{userId} and club_id = #{clubId}
+        update tbl_user_club set role = role | 2
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=0
     </update>
 
     <update id="quashManager">
-        update tbl_user_club set role = role &amp; ~2 where user_id = #{userId} and club_id = #{clubId}
+        update tbl_user_club set role = role &amp; ~2
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=1
     </update>
 
     <update id="quashMember">
-        update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId}
+        update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
     <select id="selectManagerRole" resultType="java.lang.Boolean">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2
     </select>
-<!--     TODO xml文件加上逻辑删除-->
+
+    <select id="selectOne"
+            resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO">
+    </select>
+    <!--     TODO xml文件加上逻辑删除-->
 
     <insert id="createMember">
         insert into tbl_user_club (role, user_id, club_id)
         values (1, #{userId}, #{clubId})
     </insert>
-
+<!--思路：删除社员用使用逻辑删除，所有社员的查询均带上排除逻辑删除条件-->
 </mapper>

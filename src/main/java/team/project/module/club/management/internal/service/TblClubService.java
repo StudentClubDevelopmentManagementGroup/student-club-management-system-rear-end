@@ -1,12 +1,10 @@
 package team.project.module.club.management.internal.service;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
-
 @Service
 public interface TblClubService extends IService<TblClubDO> {
 

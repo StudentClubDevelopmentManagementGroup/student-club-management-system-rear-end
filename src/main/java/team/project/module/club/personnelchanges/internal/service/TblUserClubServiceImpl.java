@@ -7,12 +7,7 @@ import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
-import team.project.module.club.personnelchanges.internal.service.TblUserClubService;
 import team.project.module.user.export.service.UserInfoIService;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MEMBER;
 
@@ -32,11 +27,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     @Autowired
     UserInfoIService uiService;
     public void setClubManager(String userId, Long clubId) {
-        Map<String, Object> userClubMap = new HashMap<>();
-        userClubMap.put("user_id", userId);
-        userClubMap.put("club_id", clubId);
-        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
-        if(userList.isEmpty()){
+        TblUserClubDO user =ucMapper.selectOne(userId, clubId);
+        if(user==null){
             ucMapper.createManager(userId, clubId);
             uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
@@ -48,11 +40,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     @Override
     public void quashClubManager(String userId, Long clubId) {
-        Map<String, Object> userClubMap = new HashMap<>();
-        userClubMap.put("user_id", userId);
-        userClubMap.put("club_id", clubId);
-        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
-        if(userList.isEmpty()){
+        TblUserClubDO user =ucMapper.selectOne(userId, clubId);
+        if(user==null){
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
         }
         else {
@@ -65,11 +54,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     @Override
     public void createMember(String userId, Long clubId) {
-        Map<String, Object> userClubMap = new HashMap<>();
-        userClubMap.put("user_id", userId);
-        userClubMap.put("club_id", clubId);
-        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
-        if(userList.isEmpty()){
+        TblUserClubDO user =ucMapper.selectOne(userId, clubId);
+        if(user==null){
             try
             {
                 ucMapper.createMember(userId, clubId);
@@ -87,11 +73,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     @Override
     public void quashMember(String userId, Long clubId) {
-        Map<String, Object> userClubMap = new HashMap<>();
-        userClubMap.put("user_id", userId);
-        userClubMap.put("club_id", clubId);
-        List<TblUserClubDO> userList = ucMapper.selectByMap(userClubMap);
-        if(userList.isEmpty()){
+        TblUserClubDO user =ucMapper.selectOne(userId, clubId);
+        if(user==null){
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
         }
         else {

@@ -2,6 +2,7 @@ package team.project.module.club.personnelchanges.internal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class TblUserClubController {
 
     @Operation(summary="基地设置负责人")
     @PostMapping("/user_club/set_manager")
-    Object setManager(@RequestBody ClubManagerReq req) {
+    Object setManager(@Valid @RequestBody ClubManagerReq req) {
         ucService.setClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("设置成功");
@@ -27,7 +28,7 @@ public class TblUserClubController {
 
     @Operation(summary="基地撤销负责人")
     @PostMapping("/user_club/quash_manager")
-    Object quashManager(@RequestBody ClubManagerReq req) {
+    Object quashManager(@Valid @RequestBody ClubManagerReq req) {
         ucService.quashClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("撤销成功");
@@ -35,7 +36,7 @@ public class TblUserClubController {
 
     @Operation(summary="添加基地成员")
     @PostMapping("/user_club/create_member")
-    Object createMember(@RequestBody ClubManagerReq req) {
+    Object createMember(@Valid @RequestBody ClubManagerReq req) {
         ucService.createMember(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("添加成功");
@@ -43,7 +44,7 @@ public class TblUserClubController {
 
     @Operation(summary="撤销基地成员")
     @PostMapping("/user_club/quash_member")
-    Object quashMember(@RequestBody ClubManagerReq req) {
+    Object quashMember(@Valid @RequestBody ClubManagerReq req) {
         ucService.quashMember(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("撤销成功");

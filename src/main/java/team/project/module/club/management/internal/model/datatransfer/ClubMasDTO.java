@@ -1,6 +1,5 @@
 package team.project.module.club.management.internal.model.datatransfer;
 
-
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
