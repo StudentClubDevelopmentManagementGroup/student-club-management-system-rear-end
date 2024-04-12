@@ -35,7 +35,9 @@ public class ModelConverter {
 
         SeatVO seatVO = new SeatVO();
         seatVO.setSeatId(seat.getId());
-        seatVO.setSeat(seat.getSeat());
+        seatVO.setX(seat.getX());
+        seatVO.setY(seat.getY());
+        seatVO.setDescription(seat.getDescription());
         seatVO.setArranger(arranger);
         seatVO.setOwner(owner);
 

@@ -3,12 +3,13 @@ package team.project.module.club.seat.internal.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 @Data
-public class SetSeatReq {
+public class SetOwnerReq {
 
-    /* TODO jsr303 */
+    @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;
 

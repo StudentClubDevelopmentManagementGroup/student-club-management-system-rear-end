@@ -11,7 +11,7 @@ import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
-import team.project.module.club.seat.internal.model.request.SetSeatReq;
+import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
 
@@ -37,8 +37,10 @@ public class SeatService {
         }
 
         TblUserClubSeatDO seat = new TblUserClubSeatDO();
+        seat.setX(req.getX());
+        seat.setY(req.getY());
+        seat.setDescription(req.getDescription());
         seat.setArrangerId(arrangerId);
-        seat.setSeat(req.getSeat());
         seat.setClubId(req.getClubId());
 
         try {
@@ -50,7 +52,7 @@ public class SeatService {
         }
     }
 
-    public void setSeat(String arrangerId, SetSeatReq req) {
+    public void setOwner(String arrangerId, SetOwnerReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
@@ -66,7 +68,7 @@ public class SeatService {
         seat.setOwnerId(req.getOwnerId());
 
         try {
-            userClubSeatMapper.setSeat(seat);
+            userClubSeatMapper.setSeatOwner(seat);
         }
         catch (Exception e) {
             logger.error("分配座位失败：", e);
@@ -80,7 +82,7 @@ public class SeatService {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "该用户不是该社团的成员");
         }*/
 
-        List<TblUserClubSeatDO> seatList = userClubSeatMapper.selectAllSeat(clubId);
+        List<TblUserClubSeatDO> seatList = userClubSeatMapper.selectAll(clubId);
 
         List<SeatVO> result = new ArrayList<>();
         for (TblUserClubSeatDO seat : seatList) {
@@ -95,7 +97,7 @@ public class SeatService {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        int result = userClubSeatMapper.deleteSeat(req.getClubId(), req.getSeatId());
+        int result = userClubSeatMapper.delete(req.getClubId(), req.getSeatId());
         if (1 != result) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "删除座位失败");
         }

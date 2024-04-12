@@ -12,9 +12,10 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
-import team.project.module.club.seat.internal.model.request.SetSeatReq;
+import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.service.SeatService;
 
 @Tag(name="座位安排")
@@ -35,11 +36,11 @@ public class SeatController {
     }
 
     @Operation(summary="安排座位")
-    @PostMapping("/club/seat/set")
+    @PostMapping("/club/seat/set_owner")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object set(@Valid @RequestBody SetSeatReq req) {
+    Object setOwner(@Valid @RequestBody SetOwnerReq req) {
         String userId = (String)StpUtil.getSession().getLoginId();
-        seatService.setSeat(userId, req);
+        seatService.setOwner(userId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
@@ -47,7 +48,7 @@ public class SeatController {
     @GetMapping("/club/seat/view")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     Object view(
-        /* TODO jsr303 */ @RequestParam("club_id") Long clubId
+        @ClubIdConstraint @RequestParam("club_id") Long clubId
     ) {
         String userId = (String)StpUtil.getSession().getLoginId();
         return new Response<>(ServiceStatus.SUCCESS).data(seatService.view(userId, clubId));

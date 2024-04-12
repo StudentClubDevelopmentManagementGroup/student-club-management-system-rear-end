@@ -6,10 +6,12 @@ import lombok.Data;
 @Data
 public class SeatVO {
 
-    @JsonProperty("seat_id")  private Long       seatId;
-    @JsonProperty("seat")     private String     seat;
-    @JsonProperty("arranger") private UserInfoVO arranger;
-    @JsonProperty("owner")    private UserInfoVO owner;
+    @JsonProperty("seat_id")     private Long       seatId;
+    @JsonProperty("description") private String     description;
+    @JsonProperty("x")           private Integer    x;
+    @JsonProperty("y")           private Integer    y;
+    @JsonProperty("arranger")    private UserInfoVO arranger;
+    @JsonProperty("owner")       private UserInfoVO owner;
 
     @Data
     public static class UserInfoVO {
