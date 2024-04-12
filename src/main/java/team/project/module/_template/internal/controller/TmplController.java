@@ -10,6 +10,10 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module._template.internal.service.TmplService;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
 @Tag(name="【测试】模板示例")
 @RestController
 public class TmplController {
@@ -47,4 +51,21 @@ public class TmplController {
             .data(service.list_mp());
     }
 
+    /* 示例 */
+    @Operation(summary="返回一个json对象")
+    @GetMapping("/tmpl/object")
+    Object object() {
+        Map<String, Object> result = new HashMap<>();
+        result.put("int", Integer.MAX_VALUE);
+        result.put("long", Long.MAX_VALUE);
+        result.put("float", 3.1415926);
+
+        Map<String, Object> obj = new HashMap<>();
+        Object[] arr = {123, 456L, "hello world"};
+        obj.put("date", new Date());
+        obj.put("arr", arr);
+        result.put("obj", obj);
+
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
 }

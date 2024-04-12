@@ -2,7 +2,7 @@ package team.project.module.user.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-import team.project.module.user.export.model.annotation.PasswordConstraint;
+import team.project.module.user.export.model.annotation.UserPasswordConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 @Data
@@ -12,7 +12,7 @@ public class UserIdAndPasswordReq {
     @JsonProperty("user_id")
     private String userId;
 
-    @PasswordConstraint
+    @UserPasswordConstraint
     @JsonProperty("pwd")
     private String password;
 }
