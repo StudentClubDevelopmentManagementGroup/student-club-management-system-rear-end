@@ -9,16 +9,36 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-// @Aspect /* <-- 开启切面 debug */
+@Aspect /* <-- 开启切面 debug */
 public class TraceLogAspect {
-    Logger logger = LoggerFactory.getLogger("[函数的调用情况]");
 
-    @Around("""
-        execution(* team.project.module..controller..*(..)) ||
-        execution(* team.project.module..service..*(..))    ||
-        execution(* team.project.module..mapper..*(..))
-    """)
-    public Object logMethodExecution(ProceedingJoinPoint jp) throws Throwable {
+    Logger controllerLogger = LoggerFactory.getLogger("[controller 层]");
+    Logger serviceLogger = LoggerFactory.getLogger("[service 层]");
+    Logger mapperLogger = LoggerFactory.getLogger("[mapper 层]");
+    Logger daoLogger = LoggerFactory.getLogger("[dao 层]");
+
+
+    @Around("execution(* team.project.module..controller..*(..))")
+    public Object controllerLog(ProceedingJoinPoint jp) throws Throwable {
+        return traceLog(jp, controllerLogger);
+    }
+
+    @Around("execution(* team.project.module..service..*(..))")
+    public Object serviceLog(ProceedingJoinPoint jp) throws Throwable {
+        return traceLog(jp, serviceLogger);
+    }
+
+    @Around("execution(* team.project.module..mapper..*(..))")
+    public Object mapperLog(ProceedingJoinPoint jp) throws Throwable {
+        return traceLog(jp, mapperLogger);
+    }
+
+    @Around("execution(* team.project.module..dao..*(..))")
+    public Object daoLog(ProceedingJoinPoint jp) throws Throwable {
+        return traceLog(jp, daoLogger);
+    }
+
+    private Object traceLog(ProceedingJoinPoint jp, Logger logger) throws Throwable {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
         String    className       = signature.getDeclaringTypeName();
@@ -28,10 +48,10 @@ public class TraceLogAspect {
         try {
             Object result = jp.proceed();
             logger.info("""
-                   class  : {} ( {} )
-                   method : {}
-                   args   : {}
-                   return : {}\
+                   类： {} ( {} )
+                   方法： {}
+                   入参： {}
+                   返回： {}\
                 """,
                 simpleClassName, className, methodName, args, result
             );
@@ -39,10 +59,10 @@ public class TraceLogAspect {
 
         } catch (Exception e) {
             logger.info("""
-                   class  : {} ( {} )
-                   method : {}
-                   args   : {}
-                 ! throw  : {}\
+                   类： {} ( {} )
+                   方法： {}
+                   入参： {}
+                 ! 抛出： {}\
                 """,
                 simpleClassName, className, methodName, args, e.getClass().getName()
             );

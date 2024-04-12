@@ -29,7 +29,7 @@ public class ExceptionHandlerLogAspect {
     }
 
     @Before("execution(* team.project.base..GeneralExceptionHandler.*(..)) && args(exception)")
-    public void logGeneralException(JoinPoint jp, Exception exception) throws Throwable {
+    public void logGeneralException(JoinPoint jp, Exception exception) {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
@@ -41,7 +41,7 @@ public class ExceptionHandlerLogAspect {
     }
 
     @Before("execution(* team.project.base..MybatisPlusExceptionHandler.*(..)) && args(exception)")
-    public void logMybatisPlusException(JoinPoint jp, Exception exception) throws Throwable {
+    public void logMybatisPlusException(JoinPoint jp, Exception exception) {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
