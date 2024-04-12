@@ -69,21 +69,73 @@
     </update>
     <select id="findAll"
             resultMap="clubmasVO">
-        SELECT * from view_club_manager
+        SELECT
+        c.name AS name,
+        d.full_name AS department_name,
+        c.department_id AS department_id,
+        c.id AS club_id,
+        COUNT(uc.user_id) AS number,
+        c.state AS state,
+        c.is_deleted AS is_deleted,
+        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
+        FROM tbl_club c
+        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
+        LEFT JOIN tbl_user u ON uc.user_id = u.user_id
+        LEFT JOIN tbl_department d ON c.department_id = d.id
+        GROUP BY c.id
     </select>
     <select id="findAllByDepartmentId"
             resultMap="clubmasVO">
-        SELECT * from view_club_manager
+        SELECT
+        c.name AS name,
+        d.full_name AS department_name,
+        c.department_id AS department_id,
+        c.id AS club_id,
+        COUNT(uc.user_id) AS number,
+        c.state AS state,
+        c.is_deleted AS is_deleted,
+        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
+        FROM tbl_club c
+        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
+        LEFT JOIN tbl_user u ON uc.user_id = u.user_id
+        LEFT JOIN tbl_department d ON c.department_id = d.id
+        GROUP BY c.id
         WHERE department_id = #{departmentId}
     </select>
     <select id="findAllByName"
             resultMap="clubmasVO">
-        SELECT * from view_club_manager
+        SELECT
+        c.name AS name,
+        d.full_name AS department_name,
+        c.department_id AS department_id,
+        c.id AS club_id,
+        COUNT(uc.user_id) AS number,
+        c.state AS state,
+        c.is_deleted AS is_deleted,
+        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
+        FROM tbl_club c
+        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
+        LEFT JOIN tbl_user u ON uc.user_id = u.user_id
+        LEFT JOIN tbl_department d ON c.department_id = d.id
+        GROUP BY c.id
         WHERE name = #{name}
     </select>
     <select id="findAllByDepartmentIdAndName"
             resultMap="clubmasVO">
-        SELECT * from view_club_manager
+        SELECT
+        c.name AS name,
+        d.full_name AS department_name,
+        c.department_id AS department_id,
+        c.id AS club_id,
+        COUNT(uc.user_id) AS number,
+        c.state AS state,
+        c.is_deleted AS is_deleted,
+        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
+        FROM tbl_club c
+        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
+        LEFT JOIN tbl_user u ON uc.user_id = u.user_id
+        LEFT JOIN tbl_department d ON c.department_id = d.id
+        GROUP BY c.id
         WHERE department_id = #{departmentId} and name = #{name}
     </select>
     <!--     TODO xml文件加上逻辑删除-->
