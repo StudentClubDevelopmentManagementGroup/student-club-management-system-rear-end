@@ -7,6 +7,9 @@ import jakarta.validation.constraints.Size;
 
 import java.lang.annotation.*;
 
+/**
+ * 用于 jsr303 校验学号/工号
+ */
 @Documented
 @Target({ElementType.FIELD, ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
