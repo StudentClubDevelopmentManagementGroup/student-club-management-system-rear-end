@@ -11,7 +11,7 @@ import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
-import team.project.module.club.seat.internal.model.request.UnsetOwnensrReq;
+import team.project.module.club.seat.internal.model.request.UnsetOwnerReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.model.view.SeatVO;
@@ -52,7 +52,7 @@ public class SeatService {
             seatsToAdd.add(seat);
         }
 
-        for (TblUserClubSeatDO seat : seatsToAdd) { /* 可优化，但无所谓了 */
+        for (TblUserClubSeatDO seat : seatsToAdd) { /* 可优化，但无所谓了，毕竟添加座位不是频繁的操作 */
             userClubSeatMapper.insert(seat);
         }
     }
@@ -78,7 +78,7 @@ public class SeatService {
         }
     }
 
-    public void unsetOwner(String arrangerId, UnsetOwnensrReq req) {
+    public void unsetOwner(String arrangerId, UnsetOwnerReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }

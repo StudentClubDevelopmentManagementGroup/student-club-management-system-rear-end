@@ -23,7 +23,7 @@ public class ExceptionHandlerLogAspect {
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
         logger.info(
-            "异常处理器 [ " + simpleClassName + " ] 捕获到异常\n" +
+            "异常处理器【" + simpleClassName + "】捕获到异常\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
         );
     }
@@ -34,7 +34,7 @@ public class ExceptionHandlerLogAspect {
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
         logger.error(
-            "异常处理器 [ " + simpleClassName + " ] 捕获到异常（该异常由通用异常处理器捕获，请考虑是否为其配备专门的异常处理器）\n" +
+            "异常处理器【" + simpleClassName + "】捕获到异常（该异常由通用异常处理器捕获，请考虑是否为其配备专门的异常处理器）\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
             , exception
         );
@@ -46,7 +46,7 @@ public class ExceptionHandlerLogAspect {
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
         logger.error(
-            "异常处理器 [ " + simpleClassName + " ] 捕获到异常\n" +
+            "异常处理器【" + simpleClassName + "】捕获到异常（执行 SQL 时出现的异常最好在 service 层或 dao 层将其捕获）\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
             , exception
         );

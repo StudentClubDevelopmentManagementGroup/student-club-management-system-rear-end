@@ -6,7 +6,7 @@ import lombok.Data;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 @Data
-public class UnsetOwnensrReq {
+public class UnsetOwnerReq {
 
     @ClubIdConstraint
     @JsonProperty("club_id")

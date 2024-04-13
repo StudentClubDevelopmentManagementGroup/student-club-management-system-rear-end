@@ -13,10 +13,7 @@ import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
-import team.project.module.club.seat.internal.model.request.AddSeatReq;
-import team.project.module.club.seat.internal.model.request.UnsetOwnensrReq;
-import team.project.module.club.seat.internal.model.request.DelSeatReq;
-import team.project.module.club.seat.internal.model.request.SetOwnerReq;
+import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.service.SeatService;
 
 @Tag(name="座位安排")
@@ -48,10 +45,18 @@ public class SeatController {
     @Operation(summary="将座位设为空座")
     @PostMapping("/club/seat/unset_owner")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object unsetOwner(@Valid @RequestBody UnsetOwnensrReq req) {
+    Object unsetOwner(@Valid @RequestBody UnsetOwnerReq req) {
         String arrangerId = (String)StpUtil.getSession().getLoginId();
         seatService.unsetOwner(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
+    }
+
+    @Operation(summary="更新座位信息")
+    @PostMapping("/club/seat/update_info")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object updateInfo(@Valid @RequestBody UpdateSeatInfoReq req) {
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 
     @Operation(summary="查看座位表")
