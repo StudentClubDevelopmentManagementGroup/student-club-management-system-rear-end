@@ -82,7 +82,7 @@ public class SpringframeworkExceptionHandler {
           - 数据类型不匹配，无法转换
           - 期望接收非空数据，但请求的内容为空
         */
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("请求的内容不符合预期的格式或结构，无法进行解析");
+        return new Response<>(ServiceStatus.BAD_REQUEST).data("请求的内容不符合预期的格式或结构，或是数据类型不匹配，无法进行解析");
     }
 
     /* 访问不存在的资源（例如一个错误URL地址） */

@@ -4,12 +4,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.UnsetOwnensrReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.model.view.SeatVO;
@@ -31,24 +33,27 @@ public class SeatService {
     @Autowired
     ModelConverter modelConverter;
 
+    @Transactional
     public void addSeat(String arrangerId, AddSeatReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        TblUserClubSeatDO seat = new TblUserClubSeatDO();
-        seat.setX(req.getX());
-        seat.setY(req.getY());
-        seat.setDescription(req.getDescription());
-        seat.setArrangerId(arrangerId);
-        seat.setClubId(req.getClubId());
+        List<TblUserClubSeatDO> seatsToAdd = userClubSeatMapper.selectAll(req.getClubId());
+        for (AddSeatReq.SeatInfo seatInfo : req.getSeatList()) {
 
-        try {
-            userClubSeatMapper.insert(seat);
+            TblUserClubSeatDO seat = new TblUserClubSeatDO();
+            seat.setX(seatInfo.getX());
+            seat.setY(seatInfo.getY());
+            seat.setDescription(seatInfo.getDescription());
+            seat.setArrangerId(arrangerId);
+            seat.setClubId(req.getClubId());
+
+            seatsToAdd.add(seat);
         }
-        catch (Exception e) {
-            logger.error("创建座位失败：", e);
-            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "创建座位失败");
+
+        for (TblUserClubSeatDO seat : seatsToAdd) { /* 可优化，但无所谓了 */
+            userClubSeatMapper.insert(seat);
         }
     }
 
@@ -62,17 +67,31 @@ public class SeatService {
         }*/
 
         TblUserClubSeatDO seat = new TblUserClubSeatDO();
-        seat.setId(req.getSeatId());
         seat.setClubId(req.getClubId());
+        seat.setId(req.getSeatId());
         seat.setArrangerId(arrangerId);
         seat.setOwnerId(req.getOwnerId());
 
-        try {
-            userClubSeatMapper.setSeatOwner(seat);
-        }
-        catch (Exception e) {
-            logger.error("分配座位失败：", e);
+        int result = userClubSeatMapper.setSeatOwner(seat);
+        if (result == 0) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "分配座位失败");
+        }
+    }
+
+    public void unsetOwner(String arrangerId, UnsetOwnensrReq req) {
+        if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
+        }
+
+        TblUserClubSeatDO seat = new TblUserClubSeatDO();
+        seat.setClubId(req.getClubId());
+        seat.setId(req.getSeatId());
+        seat.setArrangerId(arrangerId);
+        seat.setOwnerId(null);
+
+        int result = userClubSeatMapper.setSeatOwner(seat);
+        if (result == 0) {
+            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "设为空座失败");
         }
     }
 

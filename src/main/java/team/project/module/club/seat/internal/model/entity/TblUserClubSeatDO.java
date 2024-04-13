@@ -18,10 +18,10 @@ public class TblUserClubSeatDO {
     @TableField(value="create_time") private Timestamp createTime;
     @TableField(value="update_time") private Timestamp updateTime;
 
+    @TableField(value="club_id")     private Long      clubId;
     @TableField(value="x")           private Integer   x;
     @TableField(value="y")           private Integer   y;
     @TableField(value="description") private String    description;
     @TableField(value="arranger_id") private String    arrangerId;
     @TableField(value="owner_id")    private String    ownerId;
-    @TableField(value="club_id")     private Long      clubId;
 }

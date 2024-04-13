@@ -14,6 +14,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.UnsetOwnensrReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.service.SeatService;
@@ -30,26 +31,33 @@ public class SeatController {
     @PostMapping("/club/seat/add")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
-        String userId = (String)StpUtil.getSession().getLoginId();
-        seatService.addSeat(userId, req);
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        seatService.addSeat(arrangerId, req);
         return new Response<>(ServiceStatus.CREATED);
     }
 
-    @Operation(summary="安排座位")
+    @Operation(summary="分配座位给社团成员")
     @PostMapping("/club/seat/set_owner")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object setOwner(@Valid @RequestBody SetOwnerReq req) {
-        String userId = (String)StpUtil.getSession().getLoginId();
-        seatService.setOwner(userId, req);
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        seatService.setOwner(arrangerId, req);
+        return new Response<>(ServiceStatus.SUCCESS);
+    }
+
+    @Operation(summary="将座位设为空座")
+    @PostMapping("/club/seat/unset_owner")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object unsetOwner(@Valid @RequestBody UnsetOwnensrReq req) {
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        seatService.unsetOwner(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="查看座位表")
     @GetMapping("/club/seat/view")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
-    Object view(
-        @ClubIdConstraint @RequestParam("club_id") Long clubId
-    ) {
+    Object view(@ClubIdConstraint @RequestParam("club_id") Long clubId) {
         String userId = (String)StpUtil.getSession().getLoginId();
         return new Response<>(ServiceStatus.SUCCESS).data(seatService.view(userId, clubId));
     }
@@ -58,8 +66,8 @@ public class SeatController {
     @PostMapping("/club/seat/del")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@Valid @RequestBody DelSeatReq req) {
-        String userId = (String)StpUtil.getSession().getLoginId();
-        seatService.deleteSeat(userId, req);
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        seatService.deleteSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
 }

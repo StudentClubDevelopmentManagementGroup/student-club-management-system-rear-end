@@ -70,10 +70,10 @@
         <!-- Sa-Token [end] -->
 
         <!-- quartz -->
-        <dependency>
+        <!--<dependency>    暂时取消“调度任务”依赖
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- mysql -->
         <dependency>
