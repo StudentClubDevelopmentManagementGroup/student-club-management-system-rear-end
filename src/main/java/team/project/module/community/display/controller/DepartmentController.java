@@ -85,7 +85,7 @@ public class DepartmentController {
                 .data(message);
     }
 
-    @Operation(summary="传入简称修改院系全称，只需要abbreviation、full_name 字段")
+    @Operation(summary="，修改院系全称，传入院系id修改full_name 字段")
     @PutMapping("/update")
     public Response<Object> updateDepartment(@RequestBody AlterDepartmentNameReq alterDepartmentNameReq) {
         boolean isUpdated = departmentService.updateDepartment(alterDepartmentNameReq);
@@ -97,8 +97,6 @@ public class DepartmentController {
         return new Response<>(isUpdated ? ServiceStatus.SUCCESS : ServiceStatus.INTERNAL_SERVER_ERROR)
                 .data(message);
     }
-
-
 
     @Operation(summary="添加院系，只需要abbreviation、full_name 字段")
     @PostMapping("/add")
