@@ -16,4 +16,9 @@
     </resultMap>
 
 
+    <!-- 定义根据部门查询社团的方法 -->
+    <select id="selectClubsByDepartment" parameterType="Long" resultMap="ClubView">
+        SELECT * FROM tbl_club WHERE department_id = #{department_id} and is_deleted = 0
+    </select>
+
 </mapper>

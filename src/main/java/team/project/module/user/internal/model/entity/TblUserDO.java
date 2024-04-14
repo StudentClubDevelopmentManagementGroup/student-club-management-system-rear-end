@@ -7,16 +7,12 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import team.project.module.user.internal.model.enums.UserRoleEnum;
 
-import java.sql.Timestamp;
-
 @Data
 @TableName("tbl_user")
 public class TblUserDO {
-    @TableId(value="id")               private Long      id;
     @TableLogic(value="0", delval="1")
     @TableField(value="is_deleted")    private Boolean   deleted;
-    @TableField(value="create_time")   private Timestamp createTime;
-    @TableField(value="update_time")   private Timestamp updateTime;
+    @TableId(value="id")               private Long      id;
     @TableField(value="user_id")       private String    userId;
     @TableField(value="department_id") private Long      departmentId;
     @TableField(value="pwd")           private String    password;
