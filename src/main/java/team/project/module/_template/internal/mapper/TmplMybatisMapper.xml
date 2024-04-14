@@ -10,10 +10,10 @@
     <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
     <resultMap id="TmplDO" type="team.project.module._template.internal.model.entity.TmplDO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
-        <result column="id"                 property="id" />
         <result column="is_deleted"         property="deleted" />
-        <result column="create_time"        property="createTime" />
-        <result column="update_time"        property="updateTime" />
+        <result column="id"                 property="id" />
+<!--    <result column="create_time"        property="createTime" />
+        <result column="update_time"        property="updateTime" />    -->
         <result column="str"                property="str" />
     </resultMap>
 
