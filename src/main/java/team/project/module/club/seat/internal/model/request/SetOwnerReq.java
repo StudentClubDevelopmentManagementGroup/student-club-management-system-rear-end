@@ -19,5 +19,5 @@ public class SetOwnerReq {
 
     @UserIdConstraint
     @JsonProperty("owner_id")
-    private String ownerId;
+    private String ownerId; /* <- nullable */
 }

@@ -6,16 +6,18 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import team.project.module.user.export.model.annotation.UserPasswordConstraint;
+import team.project.module.user.internal.model.annotation.UserPasswordConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 @Data
 public class RegisterReq {
 
+    @NotBlank(message="学号/工号不能为空")
     @UserIdConstraint
     @JsonProperty("user_id")
     private String userId;
 
+    @NotBlank(message="学号/工号不能为空")
     @UserPasswordConstraint
     @JsonProperty("pwd")
     private String password;

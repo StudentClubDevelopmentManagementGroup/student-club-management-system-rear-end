@@ -14,7 +14,7 @@ public class AddSeatReq {
     @JsonProperty("club_id")
     private Long clubId;
 
-    @NotEmpty(message="未指定座位")
+    @NotEmpty(message="“新增座位”列表不能为空")
     @JsonProperty("seat_list")
     private List<SeatInfo> seatList;
 

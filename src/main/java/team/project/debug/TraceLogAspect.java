@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 @Component
-@Aspect /* <-- 开启切面 debug */
+// @Aspect /* <-- 开启切面 debug */
 public class TraceLogAspect {
 
     Logger controllerLogger = LoggerFactory.getLogger("【controller 层】");

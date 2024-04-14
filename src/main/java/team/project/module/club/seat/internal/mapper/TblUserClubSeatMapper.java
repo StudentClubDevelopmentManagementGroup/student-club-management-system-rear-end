@@ -16,7 +16,7 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
             .eq(TblUserClubSeatDO::getId, seat.getId()) /* <- seatId */
             .eq(TblUserClubSeatDO::getClubId, seat.getClubId())
             .set(TblUserClubSeatDO::getArrangerId, seat.getArrangerId())
-            .set(TblUserClubSeatDO::getOwnerId, seat.getOwnerId())
+            .set(TblUserClubSeatDO::getOwnerId, seat.getOwnerId()) /* <- nullable */
         );
     }
 

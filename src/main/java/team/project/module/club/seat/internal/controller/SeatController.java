@@ -33,21 +33,12 @@ public class SeatController {
         return new Response<>(ServiceStatus.CREATED);
     }
 
-    @Operation(summary="分配座位给社团成员")
+    @Operation(summary="分配座位给社团成员", description="如果传入 owner_id 传 null，则将座位设为空座")
     @PostMapping("/club/seat/set_owner")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object setOwner(@Valid @RequestBody SetOwnerReq req) {
         String arrangerId = (String)StpUtil.getSession().getLoginId();
         seatService.setOwner(arrangerId, req);
-        return new Response<>(ServiceStatus.SUCCESS);
-    }
-
-    @Operation(summary="将座位设为空座")
-    @PostMapping("/club/seat/unset_owner")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object unsetOwner(@Valid @RequestBody UnsetOwnerReq req) {
-        String arrangerId = (String)StpUtil.getSession().getLoginId();
-        seatService.unsetOwner(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
