@@ -1,8 +1,7 @@
 package team.project.module.community.display.service;
 
-import team.project.module.community.display.model.entity.Department;
-import team.project.module.community.display.model.request.AddDepartmentReq;
-import team.project.module.community.display.model.request.AlterDepartmentNameReq;
+import team.project.module.community.display.model.request.department.AddDepartmentReq;
+import team.project.module.community.display.model.request.department.AlterDepartmentNameReq;
 import team.project.module.community.display.model.view.DepartmentView;
 
 import java.util.List;

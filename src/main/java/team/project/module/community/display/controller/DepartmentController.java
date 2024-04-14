@@ -6,11 +6,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.community.display.model.request.AddDepartmentReq;
-import team.project.module.community.display.model.request.AlterDepartmentNameReq;
+import team.project.module.community.display.model.request.department.AddDepartmentReq;
+import team.project.module.community.display.model.request.department.AlterDepartmentNameReq;
 import team.project.module.community.display.service.DepartmentService;
 import team.project.module.community.display.model.entity.Club;
-import team.project.module.community.display.model.entity.Department;
 import team.project.module.community.display.model.view.DepartmentView;
 import team.project.module.community.display.service.ClubService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -97,8 +96,6 @@ public class DepartmentController {
         return new Response<>(isUpdated ? ServiceStatus.SUCCESS : ServiceStatus.INTERNAL_SERVER_ERROR)
                 .data(message);
     }
-
-
 
     @Operation(summary="添加院系，只需要abbreviation、full_name 字段")
     @PostMapping("/add")
