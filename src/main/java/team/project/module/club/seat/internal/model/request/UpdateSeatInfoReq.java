@@ -5,6 +5,8 @@ import jakarta.validation.constraints.*;
 import lombok.Data;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
+import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
+
 @Data
 public class UpdateSeatInfoReq {
 
@@ -16,17 +18,17 @@ public class UpdateSeatInfoReq {
     @JsonProperty("seat_id")
     private Long seatId;
 
-    @Max(value=65535, message="坐标值不合约束")
-    @Min(value=-65535, message="坐标值不合约束")
+    @Max(value=xyMax, message="坐标值x不合约束")
+    @Min(value=xyMin, message="坐标值x不合约束")
     @JsonProperty("x")
     private Integer x;
 
-    @Max(value=65535, message="坐标值不合约束")
-    @Min(value=-65535, message="坐标值不合约束")
+    @Max(value=xyMax, message="坐标值y不合约束")
+    @Min(value=xyMin, message="坐标值y不合约束")
     @JsonProperty("y")
     private Integer y;
 
-    @Size(max=64, message="座位描述字数过多")
+    @Size(max=descriptionMaxLength, message="座位描述字数过多")
     @JsonProperty("description")
     private String description;
 }

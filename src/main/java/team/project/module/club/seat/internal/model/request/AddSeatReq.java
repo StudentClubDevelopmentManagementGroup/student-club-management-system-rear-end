@@ -7,6 +7,8 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 
 import java.util.List;
 
+import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
+
 @Data
 public class AddSeatReq {
 
@@ -20,18 +22,17 @@ public class AddSeatReq {
 
     @Data
     static public class SeatInfo {
-        @Max(value=65535, message="坐标值不合约束")
-        @Min(value=-65535, message="坐标值不合约束")
+        @Max(value=xyMax, message="坐标值x不合约束")
+        @Min(value=xyMin, message="坐标值x不合约束")
         @JsonProperty("x")
         private Integer x;
 
-        @Max(value=65535, message="坐标值不合约束")
-        @Min(value=-65535, message="坐标值不合约束")
+        @Max(value=xyMax, message="坐标值y不合约束")
+        @Min(value=xyMin, message="坐标值y不合约束")
         @JsonProperty("y")
         private Integer y;
 
-        @NotBlank(message="未填写座位描述")
-        @Size(max=64, message="座位描述字数过多")
+        @Size(max=descriptionMaxLength, message="座位描述字数过多")
         @JsonProperty("description")
         private String description;
     }

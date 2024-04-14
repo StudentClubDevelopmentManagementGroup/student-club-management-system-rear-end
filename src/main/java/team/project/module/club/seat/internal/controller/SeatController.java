@@ -33,7 +33,7 @@ public class SeatController {
         return new Response<>(ServiceStatus.CREATED);
     }
 
-    @Operation(summary="分配座位给社团成员", description="如果传入 owner_id 传 null，则将座位设为空座")
+    @Operation(summary="分配座位给社团成员", description="如果传入 owner_id 为 null，则将座位设为空座")
     @PostMapping("/club/seat/set_owner")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object setOwner(@Valid @RequestBody SetOwnerReq req) {
@@ -42,12 +42,13 @@ public class SeatController {
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
-    @Operation(summary="更新座位信息")
+    @Operation(summary="更新座位信息", description="如果传入的属性值为 null 则不修改")
     @PostMapping("/club/seat/update_info")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object updateInfo(@Valid @RequestBody UpdateSeatInfoReq req) {
         String arrangerId = (String)StpUtil.getSession().getLoginId();
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        seatService.updateSeatInfo(arrangerId, req);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="查看座位表")
