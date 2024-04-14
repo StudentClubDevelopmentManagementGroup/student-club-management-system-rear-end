@@ -33,8 +33,8 @@ public class SeatService {
     @Autowired
     ModelConverter modelConverter;
 
-   @Transactional
-    public void addSeat(String arrangerId, AddSeatReq req) {
+    @Transactional
+    public List<SeatVO> addSeat(String arrangerId, AddSeatReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
@@ -52,9 +52,17 @@ public class SeatService {
             seatsToAdd.add(seat);
         }
 
-        for (TblUserClubSeatDO seat : seatsToAdd) { /* 可优化，但无所谓了，毕竟添加座位不是频繁的操作 */
+        /* 批量添加可优化，但无所谓了，毕竟添加座位不是频繁的操作 */
+        for (TblUserClubSeatDO seat : seatsToAdd) {
             seatMapper.addSeat(seat);
         }
+
+        /* 返回添加后的座位信息，携带主键 seat_id */
+        List<SeatVO> result = new ArrayList<>();
+        for (TblUserClubSeatDO seat : seatsToAdd) {
+            result.add(modelConverter.toSeatVO(seat));
+        }
+        return result;
     }
 
     public void setOwner(String arrangerId, SetOwnerReq req) {
@@ -96,6 +104,9 @@ public class SeatService {
         seat.setDescription(req.getDescription());
 
         int result = seatMapper.updateSeatInfo(seat);
+        if (1 != result) {
+            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "更新座位失败");
+        }
     }
 
     public List<SeatVO> view(String userId, Long clubId) {
