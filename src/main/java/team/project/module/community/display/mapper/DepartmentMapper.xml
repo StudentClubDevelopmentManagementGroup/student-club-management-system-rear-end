@@ -20,7 +20,7 @@
 
 
     <!-- 增加部门 -->
-    <insert id="addDepartment" parameterType="team.project.module.community.display.model.request.AddDepartmentReq">
+    <insert id="addDepartment" parameterType="team.project.module.community.display.model.request.department.AddDepartmentReq">
         INSERT INTO tbl_department (abbreviation, full_name)
         SELECT #{abbreviation}, #{fullName}
         WHERE NOT EXISTS (
@@ -40,7 +40,7 @@
 
 
     <!-- 更改部门名称 -->
-    <update id="updateDepartmentName" parameterType="team.project.module.community.display.model.request.AlterDepartmentNameReq">
+    <update id="updateDepartmentName" parameterType="team.project.module.community.display.model.request.department.AlterDepartmentNameReq">
         UPDATE tbl_department SET full_name = #{fullName} WHERE abbreviation = #{abbreviation}
     </update>
 

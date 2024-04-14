@@ -12,8 +12,9 @@ public class Attendence {
     private Long id;
     @TableField("is_deleted") // 指定数据库列名为 is_deleted
     private boolean isDeleted;
-
+    @TableField("create_time")
     private Timestamp createTime;
+    @TableField("update_time")
     private Timestamp updateTime;
     @TableField("checkin_time")
     private Timestamp checkinTime;
