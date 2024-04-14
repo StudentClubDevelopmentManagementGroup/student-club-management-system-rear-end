@@ -1,4 +1,4 @@
-package team.project.module.community.display.model.request;
+package team.project.module.community.display.model.request.attendence;
 
 import lombok.Data;
 
