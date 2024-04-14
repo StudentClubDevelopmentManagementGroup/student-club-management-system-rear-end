@@ -6,18 +6,14 @@ import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
-import java.sql.Timestamp;
-
 @Data
 @TableName("tbl_user_club_seat")
 public class TblUserClubSeatDO {
 
-    @TableId(value="id")             private Long      seatId;
     @TableLogic(value="0", delval="1")
     @TableField(value="is_deleted")  private Boolean   deleted;
-    @TableField(value="create_time") private Timestamp createTime;
-    @TableField(value="update_time") private Timestamp updateTime;
 
+    @TableId(value="id")             private Long      seatId;
     @TableField(value="club_id")     private Long      clubId;
     @TableField(value="x")           private Integer   x;
     @TableField(value="y")           private Integer   y;
