@@ -41,7 +41,7 @@
 
     <!-- 更改部门名称 -->
     <update id="updateDepartmentName" parameterType="team.project.module.community.display.model.request.AlterDepartmentNameReq">
-        UPDATE tbl_department SET full_name = #{fullName} WHERE id = #{id}
+        UPDATE tbl_department SET full_name = #{fullName} WHERE abbreviation = #{abbreviation}
     </update>
 
 
