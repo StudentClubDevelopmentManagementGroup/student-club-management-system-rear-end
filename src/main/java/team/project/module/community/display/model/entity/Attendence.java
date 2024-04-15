@@ -7,6 +7,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import java.sql.Timestamp;
+
 @Data
 @TableName("tbl_user_club_attendance")  //使用Mybatis-plus时必须使用注解指定对应数据库哪一张表
 public class Attendence {
@@ -15,9 +17,9 @@ public class Attendence {
     @TableField("is_deleted") // 指定数据库列名为 is_deleted
     private boolean isDeleted;
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Timestamp createTime;
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
     @TableField("checkin_time")
     private LocalDateTime checkinTime;
     @TableField("checkout_time")

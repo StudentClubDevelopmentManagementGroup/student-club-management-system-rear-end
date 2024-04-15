@@ -2,8 +2,7 @@ package team.project.module.community.display.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import lombok.Data;
-
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 @Data
 public class Club {
@@ -11,9 +10,9 @@ public class Club {
     @TableField("is_deleted") // 指定数据库列名为 is_deleted
     private Boolean isDeleted;
     @TableField("create_time")
-    private LocalDateTime createTime;
+    private Timestamp createTime;
     @TableField("updata_time")
-    private LocalDateTime updateTime;
+    private Timestamp updateTime;
     @TableField("department_id")
     private Long departmentId;
     private String name;

@@ -61,6 +61,7 @@ public class AttendenceServiceImpl extends ServiceImpl<AttendenceMapper, Attende
             attendence.setCheckoutTime(userCheckoutReq.getCheckoutTime()); // 签退时间为前端发过来的时间
             //修改了对象的属性，这个修改只会在内存中生效，不会自动反映到数据库中对应的记录上。
             // 调用 MyBatis-Plus 提供的更新方法，更新记录到数据库中
+            System.out.println(userCheckoutReq.getCheckoutTime()+userCheckoutReq.getUserId()+userCheckoutReq.getClubId());
             boolean success = this.updateById(attendence);
             // 返回更新操作是否成功的结果
             return success;
