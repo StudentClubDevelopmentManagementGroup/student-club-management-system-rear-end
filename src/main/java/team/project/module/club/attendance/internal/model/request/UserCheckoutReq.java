@@ -3,6 +3,7 @@ package team.project.module.club.attendance.internal.model.request;
 import lombok.Data;
 
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
 
