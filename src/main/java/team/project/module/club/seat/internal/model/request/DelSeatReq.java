@@ -8,6 +8,7 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 @Data
 public class DelSeatReq {
 
+    @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;

@@ -12,8 +12,9 @@ import java.util.List;
 public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
 
     default void addSeat(TblUserClubSeatDO seat) {
-        String description = seat.getDescription();
-        seat.setDescription(description == null ? "" : description.trim());
+        if (null == seat.getDescription()) {
+            seat.setDescription("");
+        }
         this.insert(seat);
     }
 
@@ -27,16 +28,12 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
     }
 
     default int updateSeatInfo(TblUserClubSeatDO seat) {
-        String description = seat.getDescription();
-        if (description != null) {
-            description = description.trim();
-        }
         return this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getClubId, seat.getClubId())
             .eq(TblUserClubSeatDO::getSeatId, seat.getSeatId())
             .set(seat.getX() != null, TblUserClubSeatDO::getX, seat.getX())
             .set(seat.getY() != null, TblUserClubSeatDO::getY, seat.getY())
-            .set(description != null, TblUserClubSeatDO::getDescription, description)
+            .set(seat.getDescription() != null, TblUserClubSeatDO::getDescription, seat.getDescription())
         );
     }
 

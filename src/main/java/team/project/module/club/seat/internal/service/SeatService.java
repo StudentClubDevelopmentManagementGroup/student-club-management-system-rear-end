@@ -90,22 +90,31 @@ public class SeatService {
         }
     }
 
+    @Transactional
     public void updateSeatInfo(String arrangerId, UpdateSeatInfoReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        TblUserClubSeatDO seat = new TblUserClubSeatDO();
-        seat.setClubId(req.getClubId());
-        seat.setSeatId(req.getSeatId());
-        seat.setArrangerId(arrangerId);
-        seat.setX(req.getX());
-        seat.setY(req.getY());
-        seat.setDescription(req.getDescription());
+        List<TblUserClubSeatDO> seatsToUpdate = new ArrayList<>();
+        for (UpdateSeatInfoReq.SeatInfo seatInfo : req.getSeatList()) {
 
-        int result = seatMapper.updateSeatInfo(seat);
-        if (1 != result) {
-            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "更新座位失败");
+            TblUserClubSeatDO seat = new TblUserClubSeatDO();
+            seat.setClubId(req.getClubId());
+            seat.setSeatId(seatInfo.getSeatId());
+            seat.setArrangerId(arrangerId);
+            seat.setX(seatInfo.getX());
+            seat.setY(seatInfo.getY());
+            seat.setDescription(seatInfo.getDescription());
+
+            seatsToUpdate.add(seat);
+        }
+
+        for (TblUserClubSeatDO seat : seatsToUpdate) {
+            int result = seatMapper.updateSeatInfo(seat);
+            if (1 != result) {
+                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "更新座位失败");
+            }
         }
     }
 

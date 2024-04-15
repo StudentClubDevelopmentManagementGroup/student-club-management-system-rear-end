@@ -9,6 +9,7 @@ import team.project.module.user.export.model.annotation.UserIdConstraint;
 @Data
 public class SetOwnerReq {
 
+    @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;

@@ -12,6 +12,7 @@ import static team.project.module.club.seat.internal.model.entity.TblUserClubSea
 @Data
 public class AddSeatReq {
 
+    @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;
