@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
-import team.project.module.user.internal.model.entity.TblUserDO;
 
 import java.util.List;
 
@@ -28,6 +27,21 @@ int quashMember(String userId, Long clubId);
         List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
                 .eq(TblUserClubDO::getUserId, userId)
                 .eq(TblUserClubDO::getClubId, clubId)
+        );
+        return userList.size() == 1 ? userList.get(0) : null;
+    }
+
+    default TblUserClubDO selectRootROle(String userId) {
+        List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
+                .eq(TblUserClubDO::getUserId, userId)
+                .in(TblUserClubDO::getRole,2,3)
+        );
+        return userList.size() == 1 ? userList.get(0) : null;
+    }
+    default TblUserClubDO selectMemberRole(String userId) {
+        List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
+                .eq(TblUserClubDO::getUserId, userId)
+                .eq(TblUserClubDO::getRole, 1)
         );
         return userList.size() == 1 ? userList.get(0) : null;
     }

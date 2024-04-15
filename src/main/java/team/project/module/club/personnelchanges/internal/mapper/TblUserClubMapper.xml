@@ -28,6 +28,14 @@
     <select id="selectOne"
             resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO">
     </select>
+    <select id="selectRootROle" resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO"
+            parameterType="java.lang.String">
+
+    </select>
+    <select id="selectMemberRole" resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO"
+            parameterType="java.lang.String">
+
+    </select>
     <!--     TODO xml文件加上逻辑删除-->
 
     <insert id="createMember">
