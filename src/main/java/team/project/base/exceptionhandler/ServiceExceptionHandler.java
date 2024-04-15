@@ -1,7 +1,5 @@
 package team.project.base.exceptionhandler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -12,10 +10,9 @@ import team.project.base.service.exception.ServiceException;
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.serviceExceptionHandler)
 public class ServiceExceptionHandler {
-    Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @ExceptionHandler(ServiceException.class)
-    Object handleServiceException(ServiceException exception) {
+    Object handle(ServiceException exception) {
         return new Response<>(exception.getStatus()).data(exception.getMessage());
     }
 }

@@ -1,15 +1,18 @@
 package team.project.module.club.management.internal.service;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import team.project.base.model.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
+import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.springframework.stereotype.Service;
-import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.request.TblClubReq;
 
 /**
  * <p style="color: #f23215;">
@@ -22,86 +25,127 @@ import team.project.module.club.management.internal.model.view.ClubMasVO;
 @Service
 public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> implements TblClubService {
     @Autowired
-    TblClubMapper tmplMapper;  /* 示例 */
+    TblClubMapper cMapper;
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public void createClub(Long departmentId, String name) {
 
-        if(tmplMapper.findByNameAndDepartmentId(departmentId,name).isEmpty()){
-            tmplMapper.createClub(departmentId, name);
+        if(cMapper.findByNameAndDepartmentId(departmentId,name).isEmpty()){
+            cMapper.createClub(departmentId, name);
         }else{
-            throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团");
         }
     }
 
 
 
     @Override
-    public Page<TblClubDO> selectByNameAndDepartmentId(Page<TblClubDO> page, Long departmentId, String name) {
-        Page<TblClubDO> page1 = tmplMapper.selectByNameAndDepartmentId(page,departmentId, name);
-        if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+    public PageVO<TblClubDO> selectByNameAndDepartmentId(TblClubReq req) {
+
+        Page<TblClubDO> page = cMapper.selectByNameAndDepartmentId(
+                new Page<>(req.getPagenum(), req.getSize()),req.getDepartmentId(), req.getName());
+        if(page.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
-            return page1;
+            return new PageVO<>(page);
         }
     }
 
     @Override
-    public Page<TblClubDO> selectByName(Page<TblClubDO> page, String name) {
-        Page<TblClubDO> page1 = tmplMapper.selectByName(page, name);
-        if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+    public PageVO<TblClubDO> selectByName(TblClubReq req) {
+        Page<TblClubDO> page = cMapper.selectByName(
+                new Page<>(req.getPagenum(), req.getSize()), req.getName());
+        if(page.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
-            return page1;
+            return new PageVO<>(page);
         }
     }
 
-    @Override
-    public Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId) {
-        Page<TblClubDO> page1 = tmplMapper.selectByDepartmentId(page, departmentId);
-        if(page1.getTotal()==0){
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+    public PageVO<TblClubDO> selectByDepartmentId(TblClubReq req) {
+        Page<TblClubDO> page = cMapper.selectByDepartmentId(
+                new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId());
+        if(page.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
         else {
-            return page1;
+            return new PageVO<>(page);
         }
     }
 
     public void deleteClub(Long departmentId, String name) {
-            int result = tmplMapper.deleteClub(departmentId, name);
+            int result = cMapper.deleteClub(departmentId, name);
             if (result == 0) {
-                throw new ServiceException(ServiceStatus.NOT_FOUND, "删除失败，未找到该社团");
+                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
     }
 
 
     public void reuseClub(Long departmentId, String name) {
-            int result = tmplMapper.reuseClub(departmentId, name);
+            int result = cMapper.reuseClub(departmentId, name);
             if(result==0){
-                throw new ServiceException(ServiceStatus.NOT_FOUND, "修改失败，未找到该社团");
+                throw new ServiceException(ServiceStatus.SUCCESS, "修改失败");
             }
     }
 
     @Override
     public void deactivateClub(Long departmentId, String name) {
-        int result = tmplMapper.deactivateClub(departmentId, name);
+        int result = cMapper.deactivateClub(departmentId, name);
         if(result==0){
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
 
     @Override
     public void recoverClub(Long departmentId, String name) {
-        int result = tmplMapper.recoverClub(departmentId, name);
+        int result = cMapper.recoverClub(departmentId, name);
         if(result==0){
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团，请重新输入名字");
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
 
 
-    public Page<ClubMasVO> findAll(Page<ClubMasVO> page) {
-        return tmplMapper.findAll(page);
+    public PageVO<ClubMasDTO> findAll(TblClubReq page) {
+        Page<ClubMasDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
+        page1 = cMapper.findAll(page1);
+        return new PageVO<>(page1);
     }
+
+    public PageVO<ClubMasDTO> findAllByDepartmentId(TblClubReq page) {
+
+        Page<ClubMasDTO> page2 = cMapper.findAllByDepartmentId(
+                new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId());
+        if(page2.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+        }
+        else {
+            return new PageVO<>(page2);
+        }
+    }
+
+    public PageVO<ClubMasDTO> findAllByName(TblClubReq req) {
+        Page<ClubMasDTO> page = cMapper.findAllByName(
+                new Page<>(req.getPagenum(), req.getSize()), req.getName());
+        if(page.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+        }
+        else {
+            return new PageVO<>(page);
+        }
+    }
+
+    public PageVO<ClubMasDTO> findAllByDepartmentIdAndName(TblClubReq req) {
+        Page<ClubMasDTO> page = cMapper.findAllByDepartmentIdAndName(
+                new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId(), req.getName());
+        if(page.getTotal()==0){
+            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+        }
+        else {
+            return new PageVO<>(page);
+        }
+    }
+
+
 }

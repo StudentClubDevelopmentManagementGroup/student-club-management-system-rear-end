@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
-import team.project.module.club.management.internal.model.view.ClubMasVO;
+import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
 
 import java.util.List;
 
@@ -37,5 +37,11 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId);
 
-    Page<ClubMasVO> findAll(Page<ClubMasVO> page);
+    Page<ClubMasDTO> findAll(Page<ClubMasDTO> page);
+
+    Page<ClubMasDTO> findAllByDepartmentId(Page<ClubMasDTO> page, Long departmentId);
+
+    Page<ClubMasDTO> findAllByName(Page<ClubMasDTO> page, String name);
+
+    Page<ClubMasDTO> findAllByDepartmentIdAndName(Page<ClubMasDTO> page, Long departmentId, String name);
 }

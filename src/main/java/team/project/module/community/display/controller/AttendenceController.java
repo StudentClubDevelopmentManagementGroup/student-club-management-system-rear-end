@@ -9,6 +9,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.community.display.model.entity.Attendence;
 import team.project.module.community.display.model.request.attendence.DayCheckInReq;
 import team.project.module.community.display.model.request.attendence.UserCheckinReq;
+import team.project.module.community.display.model.request.attendence.UserCheckoutReq;
 import team.project.module.community.display.service.AttendenceService;
 
 import java.time.LocalDate;
@@ -54,5 +55,20 @@ public class AttendenceController {
                     .data("查询失败");
         }
 
+    }
+
+    @Operation(summary="社团成员签退")
+    @PatchMapping ("/checkout")
+    public Response<Object> userCheckout(@RequestBody UserCheckoutReq userCheckoutReq) {
+        boolean success = attendenceService.userCheckOut(userCheckoutReq);
+        if (success) {
+            return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("签退成功")
+                    .data("签退成功");
+        } else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
+                    .statusText("签退失败")
+                    .data("签退失败");
+        }
     }
 }

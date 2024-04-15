@@ -50,17 +50,30 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- security-->
+        <!-- security -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
-        <!-- quartz -->
+        <!-- Sa-Token [begin] -->
         <dependency>
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-spring-boot3-starter</artifactId>
+            <version>1.37.0</version>
+        </dependency>
+        <!--<dependency>    暂时关闭 Sa-Token 集成 Redis
+            <groupId>cn.dev33</groupId>
+            <artifactId>sa-token-redis-jackson</artifactId>
+            <version>1.37.0</version>
+        </dependency>-->
+        <!-- Sa-Token [end] -->
+
+        <!-- quartz -->
+        <!--<dependency>    暂时取消“调度任务”依赖
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- mysql -->
         <dependency>
@@ -88,11 +101,16 @@
         </dependency>
         <!-- mybatis-plus and mybatis [end] -->
 
-        <!-- redis -->
+        <!-- redis [begin] -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-pool2</artifactId>
+        </dependency>
+        <!-- redis [end] -->
 
         <!-- aop -->
         <dependency>
@@ -102,14 +120,9 @@
 
         <!-- openapi and swagger3 [begin] -->
         <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-api</artifactId>
-            <version>2.0.2</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springdoc</groupId>
-            <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
-            <version>2.0.2</version>
+          <groupId>org.springdoc</groupId>
+          <artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+          <version>2.5.0</version>
         </dependency>
         <!-- openapi and swagger3 [end] -->
 
@@ -126,14 +139,6 @@
             <artifactId>commons-io</artifactId>
             <version>1.4</version>
         </dependency>
-
-        <!-- hutool -->
-        <!-- 谨慎使用 hutool 工具包，先尝试使用 apache commons 工具包 -->
-        <!--<dependency>
-            <groupId>cn.hutool</groupId>
-            <artifactId>hutool-all</artifactId>
-            <version>5.7.12</version>
-        </dependency>-->
 
         <!-- aliyun OSS Java SDK [begin] -->
         <dependency>
@@ -155,7 +160,7 @@
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
-            <version>2.3.3</version> <!-- 不能超过 2.3.3-->
+            <version>2.3.3</version> <!-- 不能超过 2.3.3  -->
         </dependency>
         <!-- aliyun OSS Java SDK [end] -->
     </dependencies>
@@ -165,6 +170,9 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <jvmArguments>-ea</jvmArguments>
+                </configuration>
             </plugin>
         </plugins>
 

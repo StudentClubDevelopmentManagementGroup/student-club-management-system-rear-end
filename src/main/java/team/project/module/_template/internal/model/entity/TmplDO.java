@@ -2,6 +2,7 @@ package team.project.module._template.internal.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -26,13 +27,11 @@ public class TmplDO {
     */
 
     /* 示例（与 tbl_tmp_test 表结构对应） */
-    @TableId(value="id")             Long      id;
-    @TableField(value="is_deleted")  Boolean   deleted;         // <-- java 字段名不能以is开头
-    @TableField(value="create_time") Timestamp createTime;
-    @TableField(value="update_time") Timestamp updateTime;
+    @TableLogic(value="0", delval="1")                           /* <- 用于 mybatis-plus 做逻辑删除的判断 */
+    @TableField(value="is_deleted")  private Boolean   deleted;  /* <- java bool 类型的字段名不以 is 开头 */
+    @TableId(value="id")             private Long      id;       /* <- 主键*/
+ /* @TableField(value="create_time") private Timestamp createTime;  <- 一般的业务逻辑不会处理这两个字段
+    @TableField(value="update_time") private Timestamp updateTime; */
 
-     /* is_deleted、create_time、update_time 这三个字段不用对应
-     因为与业务逻辑无关（create_time 可能和业务逻辑有关，有关再单独处理） */
-
-    @TableField(value="str") String str;
+    @TableField(value="str") private String str;
 }

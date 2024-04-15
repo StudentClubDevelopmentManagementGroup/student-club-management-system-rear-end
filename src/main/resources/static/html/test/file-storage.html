@@ -73,9 +73,6 @@
     .green-border {
       border: 1.5px solid var(--color-green);
     }
-    .margin-left-1em {
-      margin-left: 1em;
-    }
     .border-left-none {
       border-left: none;
     }
@@ -86,7 +83,7 @@
   <div style="height: 100vh; display: flex; flex-direction: column;">
 
     <div class="main-container">
-      <form action="/upload_file_to_local_file_system"method="post" enctype="multipart/form-data" target="output">
+      <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
           <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
           <input name="file" type="file" enctype="multipart/form-data"
@@ -96,7 +93,7 @@
     </div>
 
     <div class="main-container">
-      <form action="/upload_file_to_cloud_storage"method="post" enctype="multipart/form-data" target="output">
+      <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
           <button type="submit" class="green-btn green-border font-size-16px">上传文件至云存储空间</button>
           <input name="file" type="file" enctype="multipart/form-data"

@@ -129,7 +129,10 @@ final class NamingStyleChecker {
 
         String className = clazz.getName();
         String classSimpleName = clazz.getSimpleName();
-        if ( ! className.contains("$") && ! classNamePattern.matcher(classSimpleName).matches()) {
+        if (   ! className.contains("$")
+            && ! "package-info".equals(classSimpleName)
+            && ! classNamePattern.matcher(classSimpleName).matches()
+        ) {
             invalidClassName.add(new String[]{classSimpleName, className});
         }
         else if (classSimpleName.startsWith(tmplPrefix)) {
