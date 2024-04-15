@@ -45,9 +45,17 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
         }
         else {
-            ucMapper.quashManager(userId, clubId);
-            // TODO 撤销身份需要核实
-            uiService.removeRoleFromUser(userId, CLUB_MANAGER);
+            try
+            {
+                ucMapper.quashManager(userId, clubId);
+                if(ucMapper.selectRootROle(userId)==null){
+                    uiService.removeRoleFromUser(userId, CLUB_MANAGER);
+                }
+            }
+            catch (Exception a){
+                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+            }
         }
 
     }
@@ -78,10 +86,17 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
         }
         else {
-            // TODO 添加try
-            ucMapper.quashMember(userId, clubId);
-            // TODO 撤销身份需要核实
-            uiService.removeRoleFromUser(userId, CLUB_MEMBER);
+            try
+            {
+                ucMapper.quashMember(userId, clubId);
+                if(ucMapper.selectMemberRole(userId)==null){
+                    uiService.removeRoleFromUser(userId, CLUB_MEMBER);
+                }
+            }
+            catch (Exception a){
+                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+            }
         }
     }
 
