@@ -19,10 +19,10 @@ public class AddSeatReq {
 
     @NotEmpty(message="“新增座位”列表不能为空")
     @JsonProperty("seat_list")
-    private List<SeatInfo> seatList;
+    private List<ToAddSeat> seatList;
 
     @Data
-    static public class SeatInfo {
+    static public class ToAddSeat {
         @Max(value=xyMax, message="坐标值x不合约束")
         @Min(value=xyMin, message="坐标值x不合约束")
         @JsonProperty("x")

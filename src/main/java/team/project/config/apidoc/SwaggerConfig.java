@@ -17,10 +17,26 @@ public class SwaggerConfig {
     }
 
     @Bean
+    GroupedOpenApi department() {
+        return GroupedOpenApi.builder()
+            .group("院系管理")
+            .packagesToScan("team.project.module.department")
+            .build();
+    }
+
+    @Bean
     GroupedOpenApi user() {
         return GroupedOpenApi.builder()
             .group("用户（注册、登录、信息管理）")
             .packagesToScan("team.project.module.user")
+            .build();
+    }
+
+    @Bean
+    GroupedOpenApi attendance() {
+        return GroupedOpenApi.builder()
+            .group("社团-座位安排")
+            .packagesToScan("team.project.module.club.attendance")
             .build();
     }
 
@@ -53,14 +69,6 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
             .group("文件存储")
             .packagesToScan("team.project.module.filestorage")
-            .build();
-    }
-
-    @Bean
-    GroupedOpenApi department() {
-        return GroupedOpenApi.builder()
-            .group("院系管理")
-            .pathsToMatch("/department/*")
             .build();
     }
 }
