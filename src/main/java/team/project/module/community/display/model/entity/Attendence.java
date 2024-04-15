@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 @TableName("tbl_user_club_attendance")  //使用Mybatis-plus时必须使用注解指定对应数据库哪一张表
 public class Attendence {
@@ -17,9 +19,9 @@ public class Attendence {
     @TableField("update_time")
     private Timestamp updateTime;
     @TableField("checkin_time")
-    private Timestamp checkinTime;
+    private LocalDateTime checkinTime;
     @TableField("checkout_time")
-    private Timestamp checkoutTime;
+    private LocalDateTime checkoutTime;
     @TableField("user_id")
     private String userId;
     @TableField("club_id")

@@ -25,7 +25,7 @@ public class AttendenceController {
     private  AttendenceService attendenceService;
 
 
-    @Operation(summary="社团成员签到")
+    @Operation(summary="社团成员签到,时间格式为(2024-04-15 13:01:33)")
     @PostMapping("/checkin")
     public Response<Object> userCheckIn(@RequestBody UserCheckinReq userCheckinReq) {
         boolean success = attendenceService.userCheckIn(userCheckinReq);
@@ -68,7 +68,7 @@ public class AttendenceController {
         } else {
             return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
                     .statusText("签退失败")
-                    .data("签退失败");
+                    .data("没有该签到记录");
         }
     }
 }

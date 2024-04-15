@@ -3,7 +3,9 @@ package team.project.module.community.display.model.request.attendence;
 import lombok.Data;
 
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
+
 
 @Data
 public class UserCheckoutReq {
