@@ -35,7 +35,7 @@ public class SwaggerConfig {
     @Bean
     GroupedOpenApi attendance() {
         return GroupedOpenApi.builder()
-            .group("社团-打卡签到")
+            .group("社团-签到签退")
             .packagesToScan("team.project.module.club.attendance")
             .build();
     }
