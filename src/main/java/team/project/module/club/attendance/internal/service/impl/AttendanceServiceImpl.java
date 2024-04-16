@@ -103,6 +103,20 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         return attendanceInfoVO;
     }
 
+    //查询社团成员一个月的打卡时长
+    @Override
+    public Long getTotalMonthSeconds(String userId, Long clubId, int year, int month) {
+        return attendanceMapper.getTotalMonthSeconds(userId, clubId, year, month);
+    }
+
+
+    //查询社团成员一个月的打卡时长
+    @Override
+    public Long getTotalYearSeconds(String userId, Long clubId, int year) {
+        return attendanceMapper.getTotalYearSeconds(userId, clubId, year);
+    }
+
+
 }
 
 

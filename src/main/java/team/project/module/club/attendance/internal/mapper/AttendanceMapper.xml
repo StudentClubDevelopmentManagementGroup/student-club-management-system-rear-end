@@ -3,6 +3,47 @@
 
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
 
+    <!--    查询社团成员一个月的打卡时长-->
+    <select id="getTotalMonthSeconds" resultType="java.lang.Long">
+        SELECT
+        SUM(
+        TIME_TO_SEC(
+        TIMEDIFF(
+        IFNULL(checkout_time, NOW()),
+        checkin_time
+        )
+        )
+        ) AS total_month_seconds
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        user_id = #{userId}
+        AND club_id = #{clubId}
+        AND is_deleted = '0'
+        AND YEAR(checkin_time) = #{year}
+        AND MONTH(checkin_time) = #{month}
+    </select>
+
+    <!--    查询社团成员一年的打卡时长-->
+    <select id="getTotalYearSeconds" resultType="java.lang.Long">
+        SELECT
+        SUM(
+        TIME_TO_SEC(
+        TIMEDIFF(
+        IFNULL(checkout_time, NOW()),
+        checkin_time
+        )
+        )
+        ) AS total_month_seconds
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        user_id = #{userId}
+        AND club_id = #{clubId}
+        AND is_deleted = '0'
+        AND YEAR(checkin_time) = #{year}
+
+    </select>
 
 
 </mapper>

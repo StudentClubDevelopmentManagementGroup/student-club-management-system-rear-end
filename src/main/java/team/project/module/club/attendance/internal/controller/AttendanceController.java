@@ -49,7 +49,7 @@ public class AttendanceController {
                 .data(dayCheckInRecords);
     }
 
-    @Operation(summary="社团成员签退")
+    @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
     @PatchMapping ("/checkout")
     public Object userCheckout(@RequestBody UserCheckoutReq userCheckoutReq) {
         boolean success = attendanceService.userCheckOut(userCheckoutReq);
@@ -63,7 +63,7 @@ public class AttendanceController {
     }
 
 
-    @Operation(summary="负责人帮社团成员补签")
+    @Operation(summary="负责人帮社团成员补签，时间格式为(2024-04-15 13:01:33)")
     @PostMapping("/applyAttendance")
     public Object makeUpAttendance(@RequestBody /* TODO jsr303 */ ApplyAttendanceReq applyAttendanceReq) {
         AttendanceInfoVO attendanceInfoVO = attendanceService.makeUpAttendance(applyAttendanceReq);
@@ -71,9 +71,34 @@ public class AttendanceController {
                 .statusText("补签成功")
                 .data(attendanceInfoVO);
     }
+    @Operation(summary="查询社团成员一个月的打卡时长，格式：年份（2024），月份（3），返回秒")
+    @GetMapping("/totalMonthSeconds")
+    public Object getTotalMonthSeconds(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month) {
 
+        Long totalMonthSeconds = attendanceService.getTotalMonthSeconds(userId, clubId, year, month);
 
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(totalMonthSeconds);
+    }
 
+    @Operation(summary="查询社团成员一年打卡时长，格式：年份（2024），返回秒")
+    @GetMapping("/totalYearSeconds")
+    public Object getTotalYearSeconds(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId,
+            @RequestParam("year") int year){
+
+        Long totalMonthSeconds = attendanceService.getTotalYearSeconds(userId, clubId, year);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(totalMonthSeconds);
+    }
 
 
 }

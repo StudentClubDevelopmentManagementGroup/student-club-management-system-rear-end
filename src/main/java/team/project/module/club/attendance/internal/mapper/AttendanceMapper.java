@@ -3,6 +3,7 @@ package team.project.module.club.attendance.internal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
 
@@ -26,6 +27,21 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         List<AttendanceDO> attendanceDOList = this.selectList(queryWrapper);
         return attendanceDOList;
     }
+
+    Long getTotalMonthSeconds(
+            @Param("userId") String userId,
+            @Param("clubId") Long clubId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
+
+    Long getTotalYearSeconds(
+            @Param("userId") String userId,
+            @Param("clubId") Long clubId,
+            @Param("year") int year
+    );
+
+
 
 
 }
