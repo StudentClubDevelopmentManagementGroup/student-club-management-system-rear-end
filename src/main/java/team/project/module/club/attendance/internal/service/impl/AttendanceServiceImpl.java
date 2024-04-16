@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.club.attendance.internal.mapper.AttendanceMapper;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
+import team.project.module.club.attendance.internal.model.request.ApplyAttendanceReq;
 import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
 import team.project.module.club.attendance.internal.model.request.UserCheckInReq;
 import team.project.module.club.attendance.internal.model.request.UserCheckoutReq;
+import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
@@ -44,10 +46,13 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         queryWrapper.eq("user_id", dayCheckInReq.getUserId())
                 .eq("club_id", dayCheckInReq.getClubId())
                 .eq("DATE(checkin_time)", dayCheckInReq.getDate());
+
         // 调用 MyBatis-Plus 提供的查询方法进行查询
         List<AttendanceDO> attendanceDOList = attendanceMapper.selectList(queryWrapper);
         return attendanceDOList;
     }
+
+
     // 社团成员签退
     @Override
     public boolean userCheckOut(UserCheckoutReq userCheckoutReq) {
@@ -73,4 +78,32 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
             return false;
         }
     }
+
+    @Override
+    public AttendanceInfoVO makeUpAttendance(ApplyAttendanceReq applyAttendanceReq) {
+        // 将 ApplyAttendanceReq 对象转换为 AttendanceDO 对象
+        AttendanceDO attendanceDO = new AttendanceDO();
+        BeanUtils.copyProperties(applyAttendanceReq, attendanceDO); // 将属性复制到 AttendanceDO 对象中
+        // 调用 MyBatis-Plus 提供的 save 方法将补签记录插入数据库
+        boolean success = this.save(attendanceDO);
+
+        // 创建一个用于返回的对象
+        AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+
+        // 如果保存成功，则将数据库中生成的 ID 和其他信息填充到返回对象中
+        if (success) {
+            attendanceInfoVO.setId(attendanceDO.getId());
+            attendanceInfoVO.setUserId(attendanceDO.getUserId());
+            attendanceInfoVO.setClubId(attendanceDO.getClubId());
+            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
+            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
+            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
+        }
+        // 返回包含插入数据的对象
+        return attendanceInfoVO;
+    }
+
 }
+
+
+

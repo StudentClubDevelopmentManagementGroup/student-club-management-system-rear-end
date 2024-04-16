@@ -7,9 +7,11 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
+import team.project.module.club.attendance.internal.model.request.ApplyAttendanceReq;
 import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
 import team.project.module.club.attendance.internal.model.request.UserCheckInReq;
 import team.project.module.club.attendance.internal.model.request.UserCheckoutReq;
+import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 
 import java.util.List;
@@ -59,4 +61,19 @@ public class AttendanceController {
                     .statusText("签退失败，没有该签到记录");
         }
     }
+
+
+    @Operation(summary="负责人帮社团成员补签")
+    @PostMapping("/applyAttendance")
+    public Object makeUpAttendance(@RequestBody /* TODO jsr303 */ ApplyAttendanceReq applyAttendanceReq) {
+        AttendanceInfoVO attendanceInfoVO = attendanceService.makeUpAttendance(applyAttendanceReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("补签成功")
+                .data(attendanceInfoVO);
+    }
+
+
+
+
+
 }
