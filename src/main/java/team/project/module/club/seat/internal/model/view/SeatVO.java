@@ -12,12 +12,4 @@ public class SeatVO {
     @JsonProperty("y")           private Integer    y;
     @JsonProperty("arranger")    private UserInfoVO arranger;
     @JsonProperty("owner")       private UserInfoVO owner;
-
-    @Data
-    public static class UserInfoVO {
-        @JsonProperty("user_id")    private String  userId;
-        @JsonProperty("name")       private String  name;
-        @JsonProperty("is_student") private Boolean student;
-        @JsonProperty("is_teacher") private Boolean teacher;
-    }
 }

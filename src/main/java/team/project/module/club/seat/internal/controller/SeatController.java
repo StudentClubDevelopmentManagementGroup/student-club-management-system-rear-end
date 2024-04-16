@@ -5,6 +5,7 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.model.view.SeatVO;
+import team.project.module.club.seat.internal.model.view.UserInfoVO;
 import team.project.module.club.seat.internal.service.SeatService;
 
 import java.util.List;
@@ -57,7 +59,7 @@ public class SeatController {
     @Operation(summary="查看座位表")
     @GetMapping("/club/seat/view")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
-    Object view(@ClubIdConstraint @RequestParam("club_id") Long clubId) {
+    Object view(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
         String userId = (String)StpUtil.getSession().getLoginId();
         List<SeatVO> result = seatService.view(userId, clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
@@ -70,5 +72,15 @@ public class SeatController {
         String arrangerId = (String)StpUtil.getSession().getLoginId();
         seatService.deleteSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
+    }
+
+
+    @Operation(summary="查询没有座位的社团成员")
+    @GetMapping("/club/seat/members/no_seat")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object membersNoSeat(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
+        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        List<UserInfoVO> result = seatService.membersNoSeat(arrangerId, clubId);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }

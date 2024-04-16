@@ -15,10 +15,17 @@ import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.SetOwnerReq;
 import team.project.module.club.seat.internal.model.request.UpdateSeatInfoReq;
 import team.project.module.club.seat.internal.model.view.SeatVO;
+import team.project.module.club.seat.internal.model.view.UserInfoVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
+import team.project.module.club.seat.tmp.ClubMemberService;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
+import team.project.module.user.export.model.enums.UserRole;
+import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.internal.model.entity.TblUserDO;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SeatService {
@@ -26,6 +33,12 @@ public class SeatService {
 
     @Autowired
     PceIService clubMemberRoleService;
+
+    @Autowired
+    ClubMemberService clubMemberService;
+
+    @Autowired
+    UserInfoIService userInfoService;
 
     @Autowired
     TblUserClubSeatMapper seatMapper;
@@ -143,5 +156,32 @@ public class SeatService {
         if (1 != result) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "删除座位失败");
         }
+    }
+
+    public List<UserInfoVO> membersNoSeat(String arrangerId, Long clubId) {
+        if ( ! clubMemberRoleService.isClubManager(arrangerId, clubId)) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该社团的负责人");
+        }
+
+        List<String> members = clubMemberService.allMember(clubId);
+        List<TblUserClubSeatDO> occupiedSeats = seatMapper.selectOccupiedSeats(clubId);
+        List<String> membersNoSeat = members.stream().filter(
+                userId -> occupiedSeats.stream().noneMatch(seat -> userId.equals(seat.getOwnerId()))
+            ).toList();
+
+        List<UserInfoVO> result = new ArrayList<>();
+        for (String userId : membersNoSeat) {
+            UserBasicInfoDTO userBasicInfo = userInfoService.selectUserBasicInfo(userId);
+
+            UserInfoVO userInfo = new UserInfoVO();
+            userInfo.setUserId(userId);
+            userInfo.setName(userBasicInfo.getName());
+            userInfo.setStudent(userBasicInfo.hasRole(UserRole.STUDENT));
+            userInfo.setTeacher(userBasicInfo.hasRole(UserRole.TEACHER));
+
+            result.add(userInfo);
+        }
+
+        return result;
     }
 }
