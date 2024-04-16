@@ -2,15 +2,18 @@ package team.project.module.club.seat.internal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
+import team.project.base.model.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
@@ -19,6 +22,7 @@ import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.model.view.UserInfoVO;
 import team.project.module.club.seat.internal.service.SeatService;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Tag(name="座位安排")
@@ -78,9 +82,43 @@ public class SeatController {
     @Operation(summary="查询没有座位的社团成员")
     @GetMapping("/club/seat/members/no_seat")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object membersNoSeat(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
+    Object membersNoSeat(
+        @NotNull(message="未指定社团id") @ClubIdConstraint
+        @RequestParam("club_id") Long clubId,
+
+        @Min(value=1, message="分页查询指定当前页码不能小于 1")
+        @RequestParam(value="page_num", required=false)  Long pageNum,
+
+        @Min(value=1, message="每页大小最小不能小于 1")
+        @RequestParam(value="page_size", required=false) Long pageSize
+    ) {
+        if ((pageNum != null && pageSize == null) || (pageNum == null && pageSize != null)) {
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("分页查询需同时指定页码与页大小");
+        }
+
         String arrangerId = (String)StpUtil.getSession().getLoginId();
         List<UserInfoVO> result = seatService.membersNoSeat(arrangerId, clubId);
-        return new Response<>(ServiceStatus.SUCCESS).data(result);
+
+        HashMap<String, Object> resultMap = new HashMap<>();
+
+        if (pageNum != null) { /* 伪分页 */
+            resultMap.put("current_page", pageNum);
+            resultMap.put("page_size",    pageSize);
+            resultMap.put("total_pages",  (long)Math.ceil((double) result.size() / pageSize));
+            resultMap.put("total_item",   (long)result.size());
+            result = result.subList(
+                Math.min(result.size(), (int)((pageNum - 1) * pageSize)),
+                Math.min(result.size(), (int)(pageNum * pageSize))
+            );
+        }
+        else {
+            resultMap.put("current_page", null);
+            resultMap.put("page_size",    null);
+            resultMap.put("total_pages",  null);
+            resultMap.put("total_item",   null);
+        }
+        resultMap.put("records", result);
+
+        return new Response<>(ServiceStatus.SUCCESS).data(resultMap);
     }
 }
