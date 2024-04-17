@@ -112,10 +112,10 @@ public class SeatController {
             );
         }
         else {
-            resultMap.put("current_page", null);
-            resultMap.put("page_size",    null);
-            resultMap.put("total_pages",  null);
-            resultMap.put("total_item",   null);
+            resultMap.put("current_page", 1L);
+            resultMap.put("page_size",    (long)result.size());
+            resultMap.put("total_pages",  1L);
+            resultMap.put("total_item",   (long)result.size());
         }
         resultMap.put("records", result);
 
