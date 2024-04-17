@@ -10,10 +10,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
-import team.project.module.club.seat.internal.model.request.AddSeatReq;
-import team.project.module.club.seat.internal.model.request.DelSeatReq;
-import team.project.module.club.seat.internal.model.request.SetOwnerReq;
-import team.project.module.club.seat.internal.model.request.UpdateSeatInfoReq;
+import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.model.view.UserInfoVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
@@ -21,11 +18,9 @@ import team.project.module.club.seat.tmp.ClubMemberService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoIService;
-import team.project.module.user.internal.model.entity.TblUserDO;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class SeatService {
@@ -78,55 +73,43 @@ public class SeatService {
         return result;
     }
 
-    public void setOwner(String arrangerId, SetOwnerReq req) {
-
-        Long clubId = req.getClubId();
-        String ownerId = req.getOwnerId();
-
-        if ( ! clubMemberRoleService.isClubManager(arrangerId, clubId)) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
-        }
-        /* TODO
-        if (ownerId != null &&  ! clubMemberRoleService.isClubMember(ownerId, clubId)) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
-        } */
-
-        TblUserClubSeatDO seat = new TblUserClubSeatDO();
-        seat.setClubId(clubId);
-        seat.setSeatId(req.getSeatId());
-        seat.setArrangerId(arrangerId);
-        seat.setOwnerId(ownerId);
-
-        int result = seatMapper.setSeatOwner(seat);
-        if (result == 0) {
-            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "分配座位失败");
-        }
-    }
-
     @Transactional
-    public void updateSeatInfo(String arrangerId, UpdateSeatInfoReq req) {
+    public void updateSeat(String arrangerId, UpdateSeatReq req) {
         if ( ! clubMemberRoleService.isClubManager(arrangerId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        List<TblUserClubSeatDO> seatsToUpdate = new ArrayList<>();
-        for (UpdateSeatInfoReq.ToUpdateSeat seatInfo : req.getSeatList()) {
+        /*for (UpdateSeatReq.ToUpdate seatInfo : req.getSeatList()) {
+            if (seatInfo.getOwnerId() != null &&  ! clubMemberRoleService.isClubMember(seatInfo.getOwnerId(), req.getClubId())) {
+                throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
+            }
+        }*/
+
+        for (UpdateSeatReq.ToUpdateSeatInfo seatInfo : req.getSeatList()) {
 
             TblUserClubSeatDO seat = new TblUserClubSeatDO();
             seat.setClubId(req.getClubId());
             seat.setSeatId(seatInfo.getSeatId());
             seat.setArrangerId(arrangerId);
-            seat.setX(seatInfo.getX());
-            seat.setY(seatInfo.getY());
-            seat.setDescription(seatInfo.getDescription());
 
-            seatsToUpdate.add(seat);
-        }
+            /* 更新座位信息 */
+            if (seatInfo.getX() != null || seatInfo.getY() != null || seatInfo.getDescription() != null) {
+                seat.setX(seatInfo.getX());
+                seat.setY(seatInfo.getY());
+                seat.setDescription(seatInfo.getDescription());
 
-        for (TblUserClubSeatDO seat : seatsToUpdate) {
-            int result = seatMapper.updateSeatInfo(seat);
-            if (1 != result) {
-                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "更新座位失败");
+                if (1 != seatMapper.updateSeatInfo(seat)) {
+                    throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "更新座位信息失败");
+                }
+            }
+
+            /* 更新座位所属 */
+            boolean isUnsetOwner = seatInfo.getUnsetOwner();
+            if (isUnsetOwner || seatInfo.getOwnerId() != null) {
+                seat.setOwnerId(isUnsetOwner ? null : seatInfo.getOwnerId());
+                if (0 == seatMapper.setSeatOwner(seat)) {
+                    throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "分配座位失败");
+                }
             }
         }
     }
