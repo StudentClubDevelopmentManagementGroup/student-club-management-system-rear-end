@@ -1,13 +1,19 @@
 package team.project.module.club.personnelchanges.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import team.project.base.model.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDto;
+import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
 import team.project.module.user.export.service.UserInfoIService;
+
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MEMBER;
 
@@ -26,6 +32,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     TblUserClubMapper ucMapper;
     @Autowired
     UserInfoIService uiService;
+    @Transactional
     public void setClubManager(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
         if(user==null){
@@ -37,7 +44,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
             uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
     }
-
+    @Transactional
     @Override
     public void quashClubManager(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
@@ -59,7 +66,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
 
     }
-
+    @Transactional
     @Override
     public void createMember(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
@@ -78,7 +85,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
             throw new ServiceException(ServiceStatus.SUCCESS, "已经存在");
         }
     }
-
+    @Transactional
     @Override
     public void quashMember(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
@@ -98,6 +105,16 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
         }
+    }
+
+
+
+
+
+    public PageVO<UserMasDto> selectClubMember(ClubReq req) {
+        Page<UserMasDto> user =  ucMapper.selectClubMember(
+                new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
+            return new PageVO<>(user);
     }
 
 

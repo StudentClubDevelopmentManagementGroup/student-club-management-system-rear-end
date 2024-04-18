@@ -2,6 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper">
+
+    <resultMap id="userMasVO" type="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDto">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="user_id"                 property="userId" />
+    </resultMap>
+
     <update id="createManager">
         insert into tbl_user_club (role, user_id, club_id)
         values (2, #{userId}, #{clubId})
@@ -36,6 +42,12 @@
             parameterType="java.lang.String">
 
     </select>
+
+    <select id="selectClubMember"
+            resultMap="userMasVO">
+        select user_id from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0
+    </select>
+
     <!--     TODO xml文件加上逻辑删除-->
 
     <insert id="createMember">
