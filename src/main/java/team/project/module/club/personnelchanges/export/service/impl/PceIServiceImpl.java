@@ -1,9 +1,15 @@
 package team.project.module.club.personnelchanges.export.service.impl;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.project.base.model.PageVO;
+import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO;
+import team.project.module.club.personnelchanges.export.model.request.ClubReq;
+
 
 @Service
 public class PceIServiceImpl implements PceIService {
@@ -13,5 +19,17 @@ public class PceIServiceImpl implements PceIService {
     public boolean isClubManager(String userId, Long clubId)
     {
         return tblUserClubMapper.selectManagerRole(userId, clubId) != null;
+    }
+
+    public PageVO<UserMasDTO>  selectClubMember(ClubReq req) {
+        Page<UserMasDTO> user;
+        user = tblUserClubMapper.selectClubMember(
+                new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
+        return new PageVO<>(user);
+    }
+
+    public Boolean selectTheMember(String userId, Long clubId) {
+        TblUserClubDO user =tblUserClubMapper.selectOne(userId, clubId);
+        return user != null;
     }
 }

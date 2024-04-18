@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
-import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDto;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO;
 import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
 
 
@@ -19,7 +19,9 @@ public interface TblUserClubService extends IService<TblUserClubDO> {
 
      void quashMember(String userId, Long clubId);
 
-     PageVO<UserMasDto> selectClubMember(ClubReq req);
+     PageVO<UserMasDTO> selectClubMember(ClubReq req);
+
+     Boolean selectTheMember(String userId, Long clubId);
 
 }
 

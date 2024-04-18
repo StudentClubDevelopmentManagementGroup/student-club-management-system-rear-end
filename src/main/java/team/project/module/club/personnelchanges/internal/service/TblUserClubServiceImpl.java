@@ -10,7 +10,7 @@ import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
-import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDto;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO;
 import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
 import team.project.module.user.export.service.UserInfoIService;
 
@@ -107,14 +107,16 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
     }
 
-
-
-
-
-    public PageVO<UserMasDto> selectClubMember(ClubReq req) {
-        Page<UserMasDto> user =  ucMapper.selectClubMember(
+    public PageVO<UserMasDTO> selectClubMember(ClubReq req) {
+        Page<UserMasDTO> user =  ucMapper.selectClubMember(
                 new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
             return new PageVO<>(user);
+    }
+
+
+    public Boolean selectTheMember(String userId, Long clubId) {
+        TblUserClubDO user =ucMapper.selectOne(userId, clubId);
+        return user != null;
     }
 
 

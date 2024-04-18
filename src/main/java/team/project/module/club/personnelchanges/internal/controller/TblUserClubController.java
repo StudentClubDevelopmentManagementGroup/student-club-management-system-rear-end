@@ -52,12 +52,22 @@ public class TblUserClubController {
     }
 
     @Operation(summary="查询基地所有成员id")
-    @PostMapping("/user_club/select_allmember")
+    @PostMapping("/user_club/select_allMember")
     Object selectMember(@Valid @RequestBody ClubReq req) {
 
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(ucService.selectClubMember(req));
+
+    }
+
+    @Operation(summary="查询该用户是否是该社团成员")
+    @PostMapping("/user_club/select_member")
+    Object selecttheMember(@Valid @RequestBody UserClubReq req) {
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(ucService.selectTheMember(req.getUserId(),req.getClubId()));
 
     }
 
