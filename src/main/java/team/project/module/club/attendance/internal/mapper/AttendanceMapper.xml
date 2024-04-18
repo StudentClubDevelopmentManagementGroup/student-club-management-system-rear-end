@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
+    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
+    <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
+        <!-- 数据库字段 -->                           <!-- java 类属性 -->
+        <result column="user_id"                    property="userId" />
+        <result column="total_month_duration_seconds"       property="totalMonthDuration" />
+        <result column="total_month_duration_hms"       property="totalMonthDurationHMS" />
+    </resultMap>
 
 
     <!--    查询社团成员一周的打卡时长-->
@@ -68,6 +75,48 @@
         AND is_deleted = '0'
         AND YEAR(checkin_time) = #{year}
 
+    </select>
+
+    <!-- 查询社团每个成员每月的打卡时长 -->
+    <select id="getEachTotalMonthDuration"  resultMap="ClubAttendanceDurationVO">
+        SELECT
+        user_id,
+        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) as total_month_duration_seconds,
+        CONCAT(
+        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
+        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
+        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
+        ) as total_month_duration_hms
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        AND YEAR(checkin_time) = #{year}
+        AND MONTH(checkin_time) = #{month}
+        GROUP BY
+        user_id;
+    </select>
+
+
+    <!-- 查询社团每个成员每年的打卡时长 -->
+    <select id="getEachTotalYearDuration"  resultMap="ClubAttendanceDurationVO">
+        SELECT
+        user_id,
+        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) as total_month_duration_seconds,
+        CONCAT(
+        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
+        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
+        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
+        ) as total_month_duration_hms
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        AND YEAR(checkin_time) = #{year}
+        GROUP BY
+        user_id;
     </select>
 
 

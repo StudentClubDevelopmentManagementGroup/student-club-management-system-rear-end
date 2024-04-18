@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Param;
 @Data
 public class MonthlyAttendanceTimeReq {
 
-
     private String userId;
     private Long clubId;
     private int year;

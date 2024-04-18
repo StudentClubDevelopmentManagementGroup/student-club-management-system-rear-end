@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
+import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
 import java.util.List;
 
@@ -44,10 +45,23 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     Long getTotalYearSeconds(
             @Param("userId") String userId,
             @Param("clubId") Long clubId,
-            @Param("year") int year
+            @Param("year") int year111
     );
 
+    //查询社团每个成员每个月打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalMonthDuration(
+            @Param("clubId") Long clubId,
+            @Param("year") int year,
+            @Param("month") int month
 
+    );
+
+    //查询社团每个成员每年打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalYearDuration(
+            @Param("clubId") Long clubId,
+            @Param("year") int year
+
+    );
 
 
 }

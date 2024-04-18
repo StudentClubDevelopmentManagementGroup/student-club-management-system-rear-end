@@ -2,11 +2,10 @@ package team.project.module.club.attendance.internal.service;
 
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
-import team.project.module.club.attendance.internal.model.request.ApplyAttendanceReq;
-import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
-import team.project.module.club.attendance.internal.model.request.UserCheckInReq;
-import team.project.module.club.attendance.internal.model.request.UserCheckoutReq;
+import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
+import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
+
 import java.util.List;
 
 public interface AttendanceService {
@@ -47,4 +46,24 @@ public interface AttendanceService {
             @Param("year") int year
 
     );
+
+
+
+    //查询社团每个成员一个月打卡时长List<DepartmentVO>
+    List<ClubAttendanceDurationVO> getEachTotalMonthDuration(
+            @Param("clubId") Long clubId,
+            @Param("year") int year,
+            @Param("month") int month
+
+    );
+
+    //查询社团每个成员每年打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalYearDuration(
+            @Param("clubId") Long clubId,
+            @Param("year") int year
+
+    );
+
+
+
 }

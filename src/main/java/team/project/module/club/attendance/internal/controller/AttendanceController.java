@@ -7,11 +7,9 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
-import team.project.module.club.attendance.internal.model.request.ApplyAttendanceReq;
-import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
-import team.project.module.club.attendance.internal.model.request.UserCheckInReq;
-import team.project.module.club.attendance.internal.model.request.UserCheckoutReq;
+import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
+import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 
 import java.util.List;
@@ -115,6 +113,32 @@ public class AttendanceController {
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(totalMonthSeconds);
+    }
+
+    @Operation(summary="查询社团每个成员每月的打卡时长，返回秒")
+    @GetMapping("/eachTotalMonthSeconds")
+    public Object getEachTotalMonthSeconds(
+            @RequestParam("clubId") Long clubId,
+            @RequestParam("year") int year,
+            @RequestParam("month") int month){
+
+        List<ClubAttendanceDurationVO> eachTotalMonthSeconds = attendanceService.getEachTotalMonthDuration(clubId, year,month);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachTotalMonthSeconds);
+    }
+    @Operation(summary="查询社团每个成员每年的打卡时长，返回秒")
+    @GetMapping("/eachTotalYearSeconds")
+    public Object getEachTotalYearSeconds(
+            @RequestParam("clubId") Long clubId,
+            @RequestParam("year") int year){
+
+        List<ClubAttendanceDurationVO> eachTotalYearSeconds = attendanceService.getEachTotalYearDuration(clubId, year);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachTotalYearSeconds);
     }
 
 
