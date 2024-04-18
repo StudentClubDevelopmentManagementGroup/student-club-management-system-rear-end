@@ -12,7 +12,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
-import team.project.module.club.management.internal.model.request.TblClubReq;
+import team.project.module.club.management.internal.model.query.TblClubQO;
 
 /**
  * <p style="color: #f23215;">
@@ -40,7 +40,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
 
     @Override
-    public PageVO<TblClubDO> selectByNameAndDepartmentId(TblClubReq req) {
+    public PageVO<TblClubDO> selectByNameAndDepartmentId(TblClubQO req) {
 
         Page<TblClubDO> page = cMapper.selectByNameAndDepartmentId(
                 new Page<>(req.getPagenum(), req.getSize()),req.getDepartmentId(), req.getName());
@@ -53,7 +53,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     @Override
-    public PageVO<TblClubDO> selectByName(TblClubReq req) {
+    public PageVO<TblClubDO> selectByName(TblClubQO req) {
         Page<TblClubDO> page = cMapper.selectByName(
                 new Page<>(req.getPagenum(), req.getSize()), req.getName());
         if(page.getTotal()==0){
@@ -64,7 +64,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public PageVO<TblClubDO> selectByDepartmentId(TblClubReq req) {
+    public PageVO<TblClubDO> selectByDepartmentId(TblClubQO req) {
         Page<TblClubDO> page = cMapper.selectByDepartmentId(
                 new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId());
         if(page.getTotal()==0){
@@ -107,13 +107,13 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
 
-    public PageVO<ClubMsgDTO> findAll(TblClubReq page) {
+    public PageVO<ClubMsgDTO> findAll(TblClubQO page) {
         Page<ClubMsgDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
         page1 = cMapper.findAll(page1);
         return new PageVO<>(page1);
     }
 
-    public PageVO<ClubMsgDTO> findAllByDepartmentId(TblClubReq page) {
+    public PageVO<ClubMsgDTO> findAllByDepartmentId(TblClubQO page) {
 
         Page<ClubMsgDTO> page2 = cMapper.findAllByDepartmentId(
                 new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId());
@@ -125,7 +125,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public PageVO<ClubMsgDTO> findAllByName(TblClubReq req) {
+    public PageVO<ClubMsgDTO> findAllByName(TblClubQO req) {
         Page<ClubMsgDTO> page = cMapper.findAllByName(
                 new Page<>(req.getPagenum(), req.getSize()), req.getName());
         if(page.getTotal()==0){
@@ -136,7 +136,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(TblClubReq req) {
+    public PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(TblClubQO req) {
         Page<ClubMsgDTO> page = cMapper.findAllByDepartmentIdAndName(
                 new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId(), req.getName());
         if(page.getTotal()==0){

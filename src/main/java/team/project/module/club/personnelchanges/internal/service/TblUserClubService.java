@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
-import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
+import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 
 
 @Service
@@ -19,7 +19,7 @@ public interface TblUserClubService extends IService<TblUserClubDO> {
 
      void quashMember(String userId, Long clubId);
 
-     PageVO<UserMsgDTO> selectClubMember(ClubReq req);
+     PageVO<UserMsgDTO> selectClubMember(ClubQO req);
 
      Boolean selectTheMember(String userId, Long clubId);
 

@@ -11,7 +11,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
-import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
+import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.user.export.service.UserInfoIService;
 
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
@@ -107,7 +107,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         }
     }
 
-    public PageVO<UserMsgDTO> selectClubMember(ClubReq req) {
+    public PageVO<UserMsgDTO> selectClubMember(ClubQO req) {
         Page<UserMsgDTO> user =  ucMapper.selectClubMember(
                 new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
             return new PageVO<>(user);

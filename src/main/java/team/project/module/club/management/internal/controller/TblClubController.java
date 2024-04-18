@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.club.management.internal.model.query.TblClubQO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.request.ClubReq;
 import team.project.module.club.management.internal.service.TblClubService;
@@ -28,20 +29,21 @@ public class TblClubController {
     @Operation(summary="查询基地")
     @GetMapping("/club/select")
     Object selectClub(@Valid TblClubReq req){
+        TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
         if(req.getName()==null){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByDepartmentId(req));
+                    .data(service.selectByDepartmentId(newQO));
         }
         else if (req.getDepartmentId()==null){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByName(req));
+                    .data(service.selectByName(newQO));
         }
         else {
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByNameAndDepartmentId(req));
+                    .data(service.selectByNameAndDepartmentId(newQO));
         }
     }
 
@@ -62,7 +64,7 @@ public class TblClubController {
     }
 
     @Operation(summary="基地开放招人")
-    @PostMapping("/club/set_recruitment")
+    @PostMapping("/club/recruitment/open")
     Object reuseClub(@Valid @RequestBody ClubReq req) {
         service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -70,7 +72,7 @@ public class TblClubController {
     }
 
     @Operation(summary="基地停止招人")
-    @PostMapping("/club/deactivate_club")
+    @PostMapping("/club/recruitment/close")
     Object deactivateClub(@Valid @RequestBody ClubReq req) {
         service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -79,25 +81,26 @@ public class TblClubController {
     @Operation(summary="基地总信息")
     @GetMapping("/club/select_all")
     Object selectAll(@Valid TblClubReq req) {
+        TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
         if (req.getDepartmentId() == null) {
             if (req.getName() == null) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAll(req));
+                        .data(service.findAll(newQO));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByName(req));
+                        .data(service.findAllByName(newQO));
             }
         } else {
             if (req.getName() == null) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentId(req));
+                        .data(service.findAllByDepartmentId(newQO));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentIdAndName(req));
+                        .data(service.findAllByDepartmentIdAndName(newQO));
             }
         }
     }

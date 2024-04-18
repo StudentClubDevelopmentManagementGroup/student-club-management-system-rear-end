@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
 import team.project.module.club.personnelchanges.internal.model.request.UserClubReq;
 import team.project.module.club.personnelchanges.internal.service.TblUserClubService;
@@ -54,10 +55,10 @@ public class TblUserClubController {
     @Operation(summary="查询基地所有成员id")
     @PostMapping("/club/member/select_all")
     Object selectMember(@Valid @RequestBody ClubReq req) {
-
+        ClubQO QO=new ClubQO(req.getClubId(),req.getPagenum(),req.getSize());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
-                .data(ucService.selectClubMember(req));
+                .data(ucService.selectClubMember(QO));
 
     }
 
