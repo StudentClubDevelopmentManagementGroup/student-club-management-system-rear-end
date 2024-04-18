@@ -13,24 +13,30 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableAspectJAutoProxy
 public class Application {
+
+    static ConfigurableApplicationContext ctx;
+
     public static void main(String[] args) {
-        ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
+        ctx = SpringApplication.run(Application.class, args);
+        tmp();
+    }
 
-        String serverPort = ctx.getEnvironment().getProperty("server.port");
-        Logger logger = LoggerFactory.getLogger("[临时测试用]" + Application.class);
+    private static void tmp() {
+        Logger logger = LoggerFactory.getLogger("【临时测试用】");
 
-        String hostAddress;
+        String host;
         try {
-            hostAddress = InetAddress.getLocalHost().getHostAddress();
+            host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            hostAddress = "127.0.0.1";
+            logger.error("获取本机地址失败", e);
+            host = "127.0.0.1";
         }
+        String port = ctx.getEnvironment().getProperty("server.port");
 
-        logger.info(
-            """
+        logger.info("""
             api 说明文档：{}/swagger-ui/index.html
             文件存储测试：{}/html/test/file-storage.html
-            """.replace("{}", "http://" + hostAddress + ":" + serverPort)
+            """.replace("{}", "http://" + host + ":" + port)
         );
     }
 }

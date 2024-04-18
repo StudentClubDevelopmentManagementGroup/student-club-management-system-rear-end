@@ -79,6 +79,8 @@ sa-token:
   token-style: uuid
   # 输出操作日志
   is-log: true
+  # 日志等级
+  log-level: debug
   # 关闭 sa-token 启动时输出的命令行字符画
   is-print: false
 

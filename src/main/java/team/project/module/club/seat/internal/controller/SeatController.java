@@ -41,8 +41,8 @@ public class SeatController {
     }
 
     @Operation(summary="更新座位信息", description="""
-         - 修改部分信息：x、y、description 传 null 则不修改
-         - 分配座位：owner_id 不能传学号/工号，unset_owner 传 false 或 null
+         - 修改部分信息：x、y、description 传修改后的值（传 null 则不修改）
+         - 分配座位：owner_id 传学号/工号，且 unset_owner 传 false 或 null
          - 将座位置空：owner_id 传 null，且 unset_owner 传 true
         """)
     @PostMapping("/club/seat/update")
@@ -77,7 +77,6 @@ public class SeatController {
         seatService.deleteSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
-
 
     @Operation(summary="查询没有座位的社团成员")
     @GetMapping("/club/seat/members/no_seat")
