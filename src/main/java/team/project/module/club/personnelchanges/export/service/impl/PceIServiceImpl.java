@@ -7,7 +7,7 @@ import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
-import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.export.model.request.ClubReq;
 
 
@@ -21,8 +21,8 @@ public class PceIServiceImpl implements PceIService {
         return tblUserClubMapper.selectManagerRole(userId, clubId) != null;
     }
 
-    public PageVO<UserMasDTO>  selectClubMember(ClubReq req) {
-        Page<UserMasDTO> user;
+    public PageVO<UserMsgDTO>  selectClubMember(ClubReq req) {
+        Page<UserMsgDTO> user;
         user = tblUserClubMapper.selectClubMember(
                 new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
         return new PageVO<>(user);

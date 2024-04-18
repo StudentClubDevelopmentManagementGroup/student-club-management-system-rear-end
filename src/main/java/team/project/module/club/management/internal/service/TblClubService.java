@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
-import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
+import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 @Service
 public interface TblClubService extends IService<TblClubDO> {
 
@@ -24,13 +24,13 @@ public interface TblClubService extends IService<TblClubDO> {
 
      void recoverClub(Long departmentId, String name);
 
-     PageVO<ClubMasDTO> findAll(TblClubReq page);
+     PageVO<ClubMsgDTO> findAll(TblClubReq page);
 
-     PageVO<ClubMasDTO> findAllByDepartmentId(TblClubReq page);
+     PageVO<ClubMsgDTO> findAllByDepartmentId(TblClubReq page);
 
-     PageVO<ClubMasDTO> findAllByName(TblClubReq page);
+     PageVO<ClubMsgDTO> findAllByName(TblClubReq page);
 
-     PageVO<ClubMasDTO> findAllByDepartmentIdAndName(TblClubReq page);
+     PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(TblClubReq page);
 
 }
 

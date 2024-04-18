@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
-import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 
 import java.util.List;
 
@@ -49,6 +49,6 @@ int quashMember(String userId, Long clubId);
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
-    Page<UserMasDTO> selectClubMember(@Param("page") Page<UserMasDTO> page, Long clubId);
+    Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
 
 }

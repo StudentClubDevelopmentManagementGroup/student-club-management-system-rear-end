@@ -3,7 +3,7 @@
 
 <mapper namespace="team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper">
 
-    <resultMap id="userMasVO" type="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMasDTO">
+    <resultMap id="userMasVO" type="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="user_id"                 property="userId" />
     </resultMap>

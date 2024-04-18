@@ -13,7 +13,7 @@
         <result column="state"              property="state" />
     </resultMap>
 
-    <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.datatransfer.ClubMasDTO">
+    <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="is_deleted"         property="deleted" />
         <result column="department_id"      property="departmentId" />

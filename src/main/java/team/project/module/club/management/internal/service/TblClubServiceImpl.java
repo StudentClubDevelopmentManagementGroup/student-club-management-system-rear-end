@@ -10,7 +10,7 @@ import team.project.base.model.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
-import team.project.module.club.management.internal.model.datatransfer.ClubMasDTO;
+import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 
@@ -107,15 +107,15 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
 
-    public PageVO<ClubMasDTO> findAll(TblClubReq page) {
-        Page<ClubMasDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
+    public PageVO<ClubMsgDTO> findAll(TblClubReq page) {
+        Page<ClubMsgDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
         page1 = cMapper.findAll(page1);
         return new PageVO<>(page1);
     }
 
-    public PageVO<ClubMasDTO> findAllByDepartmentId(TblClubReq page) {
+    public PageVO<ClubMsgDTO> findAllByDepartmentId(TblClubReq page) {
 
-        Page<ClubMasDTO> page2 = cMapper.findAllByDepartmentId(
+        Page<ClubMsgDTO> page2 = cMapper.findAllByDepartmentId(
                 new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId());
         if(page2.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
@@ -125,8 +125,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public PageVO<ClubMasDTO> findAllByName(TblClubReq req) {
-        Page<ClubMasDTO> page = cMapper.findAllByName(
+    public PageVO<ClubMsgDTO> findAllByName(TblClubReq req) {
+        Page<ClubMsgDTO> page = cMapper.findAllByName(
                 new Page<>(req.getPagenum(), req.getSize()), req.getName());
         if(page.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
@@ -136,8 +136,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public PageVO<ClubMasDTO> findAllByDepartmentIdAndName(TblClubReq req) {
-        Page<ClubMasDTO> page = cMapper.findAllByDepartmentIdAndName(
+    public PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(TblClubReq req) {
+        Page<ClubMsgDTO> page = cMapper.findAllByDepartmentIdAndName(
                 new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId(), req.getName());
         if(page.getTotal()==0){
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");

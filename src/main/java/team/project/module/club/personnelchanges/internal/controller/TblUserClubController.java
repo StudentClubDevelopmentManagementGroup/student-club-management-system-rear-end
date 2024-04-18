@@ -19,7 +19,7 @@ public class TblUserClubController {
     TblUserClubService ucService;
 
     @Operation(summary="基地设置负责人")
-    @PostMapping("/user_club/set_manager")
+    @PostMapping("/club/member/set_manager")
     Object setManager(@Valid @RequestBody UserClubReq req) {
         ucService.setClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -28,7 +28,7 @@ public class TblUserClubController {
 
 
     @Operation(summary="基地撤销负责人")
-    @PostMapping("/user_club/quash_manager")
+    @PostMapping("/club/member/revoke_manager")
     Object quashManager(@Valid @RequestBody UserClubReq req) {
         ucService.quashClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -36,7 +36,7 @@ public class TblUserClubController {
     }
 
     @Operation(summary="添加基地成员")
-    @PostMapping("/user_club/create_member")
+    @PostMapping("/club/member/add")
     Object createMember(@Valid @RequestBody UserClubReq req) {
         ucService.createMember(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -44,7 +44,7 @@ public class TblUserClubController {
     }
 
     @Operation(summary="撤销基地成员")
-    @PostMapping("/user_club/quash_member")
+    @PostMapping("/club/member/del")
     Object quashMember(@Valid @RequestBody UserClubReq req) {
         ucService.quashMember(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -52,7 +52,7 @@ public class TblUserClubController {
     }
 
     @Operation(summary="查询基地所有成员id")
-    @PostMapping("/user_club/select_allMember")
+    @PostMapping("/club/member/select_all")
     Object selectMember(@Valid @RequestBody ClubReq req) {
 
         return new Response<>(ServiceStatus.SUCCESS)
@@ -62,7 +62,7 @@ public class TblUserClubController {
     }
 
     @Operation(summary="查询该用户是否是该社团成员")
-    @PostMapping("/user_club/select_member")
+    @PostMapping("/club/member/select_member")
     Object selecttheMember(@Valid @RequestBody UserClubReq req) {
 
         return new Response<>(ServiceStatus.SUCCESS)

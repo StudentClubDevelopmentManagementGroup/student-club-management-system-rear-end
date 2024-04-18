@@ -18,7 +18,7 @@ public class TblClubController {
 
 
     @Operation(summary="创建基地")
-    @PostMapping("/manage_all/create_club")
+    @PostMapping("/club/add")
     Object createClub (@Valid @RequestBody ClubReq req) {
         service.createClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -26,7 +26,7 @@ public class TblClubController {
     }
 
     @Operation(summary="查询基地")
-    @GetMapping("/manage_all/select_club")
+    @GetMapping("/club/select")
     Object selectClub(@Valid TblClubReq req){
         if(req.getName()==null){
             return new Response<>(ServiceStatus.SUCCESS)
@@ -46,7 +46,7 @@ public class TblClubController {
     }
 
     @Operation(summary="删除基地")
-    @PostMapping("/manage_all/delete_club")
+    @PostMapping("/club/del")
     Object deleteClub(@Valid @RequestBody ClubReq req){
         service.deleteClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -54,7 +54,7 @@ public class TblClubController {
     }
 
     @Operation(summary="撤销删除基地")
-    @PostMapping("/manage_all/recover_club")
+    @PostMapping("/club/undelete")
     Object recoverClub(@Valid @RequestBody ClubReq req) {
         service.recoverClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -62,7 +62,7 @@ public class TblClubController {
     }
 
     @Operation(summary="基地开放招人")
-    @PostMapping("/manage_all/reuse_club")
+    @PostMapping("/club/set_recruitment")
     Object reuseClub(@Valid @RequestBody ClubReq req) {
         service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -70,14 +70,14 @@ public class TblClubController {
     }
 
     @Operation(summary="基地停止招人")
-    @PostMapping("/manage_all/deactivate_club")
+    @PostMapping("/club/deactivate_club")
     Object deactivateClub(@Valid @RequestBody ClubReq req) {
         service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
     @Operation(summary="基地总信息")
-    @GetMapping("/manage_all/select_all")
+    @GetMapping("/club/select_all")
     Object selectAll(@Valid TblClubReq req) {
         if (req.getDepartmentId() == null) {
             if (req.getName() == null) {
