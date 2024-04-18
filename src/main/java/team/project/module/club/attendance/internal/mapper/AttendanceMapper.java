@@ -6,8 +6,11 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
+import team.project.module.club.attendance.internal.model.request.GetEachAnyDurationReq;
+import team.project.module.club.attendance.internal.model.request.GetOneAnyDurationReq;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 //如果使用Mybatis-plus提供的方法不需要再写.xml映射文件
@@ -28,25 +31,30 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         List<AttendanceDO> attendanceDOList = this.selectList(queryWrapper);
         return attendanceDOList;
     }
-
+    //查社团一个成员一周打卡时长
     Long getTotalWeekSeconds(
             @Param("userId") String userId,
             @Param("clubId") Long clubId
 
     );
-
+    //查社团一个成员一个月打卡时长
     Long getTotalMonthSeconds(
             @Param("userId") String userId,
             @Param("clubId") Long clubId,
             @Param("year") int year,
             @Param("month") int month
     );
-
+    //查社团一个成员一年打卡时长
     Long getTotalYearSeconds(
             @Param("userId") String userId,
             @Param("clubId") Long clubId,
             @Param("year") int year111
     );
+
+
+    //查社团一个成员指定时间打卡时长
+    Long getAnyDurationSecondsT(GetOneAnyDurationReq getOneAnyDurationReq);
+
 
     //查询社团每个成员每个月打卡时长
     List<ClubAttendanceDurationVO> getEachTotalMonthDuration(
@@ -62,7 +70,12 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
             @Param("year") int year
 
     );
+    //查询社团每个成员本周打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalWeekDuration(@Param("clubId") Long clubId);
 
+
+    //查询社团每个成员指定时间段打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalAnyDuration(GetEachAnyDurationReq getEachAnyDurationReq);
 
 }
 

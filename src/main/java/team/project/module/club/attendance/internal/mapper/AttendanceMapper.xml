@@ -4,10 +4,10 @@
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
     <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
     <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
-        <!-- 数据库字段 -->                           <!-- java 类属性 -->
-        <result column="user_id"                    property="userId" />
+        <!-- 数据库字段 -->                                   <!-- java 类属性 -->
+        <result column="user_id"                            property="userId" />
         <result column="total_month_duration_seconds"       property="totalMonthDuration" />
-        <result column="total_month_duration_hms"       property="totalMonthDurationHMS" />
+        <result column="total_month_duration_hms"           property="totalMonthDurationHMS" />
     </resultMap>
 
 
@@ -77,6 +77,10 @@
 
     </select>
 
+
+
+
+
     <!-- 查询社团每个成员每月的打卡时长 -->
     <select id="getEachTotalMonthDuration"  resultMap="ClubAttendanceDurationVO">
         SELECT
@@ -118,6 +122,71 @@
         GROUP BY
         user_id;
     </select>
+
+    <!-- 查询社团每个成员本周的打卡时长 -->
+    <select id="getEachTotalWeekDuration"  resultMap="ClubAttendanceDurationVO">
+        SELECT
+        user_id,
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()))) AS total_month_duration_seconds,
+        CONCAT(
+        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
+        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
+        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
+        ) as total_month_duration_hms
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        AND YEARWEEK(checkin_time, 1) = YEARWEEK(CURDATE(), 1)
+        GROUP BY
+        user_id;
+
+    </select>
+
+
+
+
+    <!-- 查询社团每个成员指定时间段的打卡时长 -->
+    <select id="getEachTotalAnyDuration"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetEachAnyDurationReq"
+            resultMap="ClubAttendanceDurationVO">
+        <![CDATA[
+        SELECT
+        user_id,
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS total_month_duration_seconds,
+        CONCAT(
+        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
+        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
+        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
+        ) as total_month_duration_hms
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        AND checkin_time >= #{startTime}
+        AND ( checkout_time <= #{endTime} OR checkout_time IS NULL )
+        GROUP BY
+        user_id;
+        ]]>
+    </select>
+
+
+    <!--查询社团一个成员指定时间段的打卡时长 -->
+    <select id="getAnyDurationSecondsT"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetOneAnyDurationReq"
+            resultType="Long">
+        SELECT
+        TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW())) AS total_duration_seconds
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        club_id = #{clubId}
+        AND user_id = #{userId}
+        AND checkin_time BETWEEN #{startTime} AND #{endTime}
+    </select>
+
 
 
 </mapper>

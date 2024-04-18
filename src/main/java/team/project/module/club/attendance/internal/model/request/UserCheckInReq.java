@@ -6,7 +6,9 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-
+/**
+ * 社团成员签到请求体
+ */
 @Data
 public class UserCheckInReq {
     /* TODO jsr303 */

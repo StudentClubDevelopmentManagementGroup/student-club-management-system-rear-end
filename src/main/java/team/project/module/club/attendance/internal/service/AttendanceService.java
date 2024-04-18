@@ -6,6 +6,7 @@ import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface AttendanceService {
@@ -49,6 +50,9 @@ public interface AttendanceService {
 
 
 
+    //查社团一个成员指定时间打卡时长
+    Long getAnyDurationSecondsT(GetOneAnyDurationReq getOneAnyDurationReq);
+
     //查询社团每个成员一个月打卡时长List<DepartmentVO>
     List<ClubAttendanceDurationVO> getEachTotalMonthDuration(
             @Param("clubId") Long clubId,
@@ -64,6 +68,12 @@ public interface AttendanceService {
 
     );
 
+    //查询社团每个成员本周打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalWeekDuration(@Param("clubId") Long clubId);
 
+
+
+    //查询社团每个成员指定时间段打卡时长
+    List<ClubAttendanceDurationVO> getEachTotalAnyDuration(GetEachAnyDurationReq getEachAnyDurationReq);
 
 }

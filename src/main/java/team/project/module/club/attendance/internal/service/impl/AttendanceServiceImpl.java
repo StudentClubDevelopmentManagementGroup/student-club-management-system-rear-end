@@ -15,6 +15,7 @@ import team.project.module.club.attendance.internal.model.view.ClubAttendanceDur
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -126,6 +127,14 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         return attendanceMapper.getTotalYearSeconds(userId, clubId, year);
     }
 
+
+
+    //查社团一个成员指定时间打卡时长
+    public Long getAnyDurationSecondsT(GetOneAnyDurationReq getOneAnyDurationReq){
+        return attendanceMapper.getAnyDurationSecondsT(getOneAnyDurationReq);
+    }
+
+    //查询社团每个成员每个月的打卡时长
     @Override
     public List<ClubAttendanceDurationVO> getEachTotalMonthDuration(Long clubId, int year, int month) {
         return attendanceMapper.getEachTotalMonthDuration(clubId,year,month);
@@ -135,6 +144,17 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     //查询社团每个成员每年打卡时长
     public List<ClubAttendanceDurationVO> getEachTotalYearDuration(Long clubId, int year) {
         return attendanceMapper.getEachTotalYearDuration(clubId,year);
+    }
+    @Override
+    //查询社团每个成员本周打卡时长
+    public List<ClubAttendanceDurationVO> getEachTotalWeekDuration(@Param("clubId") Long clubId){
+        return attendanceMapper.getEachTotalWeekDuration(clubId);
+    }
+
+
+    //查询社团每个成员指定时间段打卡时长
+    public List<ClubAttendanceDurationVO> getEachTotalAnyDuration(GetEachAnyDurationReq getEachAnyDurationReq){
+        return attendanceMapper.getEachTotalAnyDuration(getEachAnyDurationReq);
     }
 }
 

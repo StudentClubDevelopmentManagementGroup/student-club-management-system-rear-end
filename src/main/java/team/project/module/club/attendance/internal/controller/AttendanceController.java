@@ -12,6 +12,7 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Tag(name="签到签退模块")
@@ -72,7 +73,7 @@ public class AttendanceController {
 
 
 
-    @Operation(summary="查询社团成员本周签到时长，返回秒")
+    @Operation(summary="查询社团一个成员本周签到时长，返回秒")
     @GetMapping("/totalWeekSeconds")
     public Object getTotalWeekSeconds(
             @RequestParam("userId") String userId,
@@ -86,7 +87,7 @@ public class AttendanceController {
     }
 
 
-    @Operation(summary="查询社团成员一个月的打卡时长，格式：年份（2024），月份（3），返回秒")
+    @Operation(summary="查询社团一个成员一个月的打卡时长，格式：年份（2024），月份（3），返回秒")
     @GetMapping("/totalMonthSeconds")
     public Object getTotalMonthSeconds(
             @RequestParam("userId") String userId,
@@ -101,7 +102,7 @@ public class AttendanceController {
                 .data(totalMonthSeconds);
     }
 
-    @Operation(summary="查询社团成员一年打卡时长，格式：年份（2024），返回秒")
+    @Operation(summary="查询社团一个成员一年打卡时长，格式：年份（2024），返回秒")
     @GetMapping("/totalYearSeconds")
     public Object getTotalYearSeconds(
             @RequestParam("userId") String userId,
@@ -114,6 +115,23 @@ public class AttendanceController {
                 .statusText("查询成功")
                 .data(totalMonthSeconds);
     }
+
+
+
+
+
+    @Operation(summary="查询社团一个成员指定时长打卡时长，返回秒，时间格式（2024-04-18 23:59:59）")
+    @PostMapping("/anyTotalSecondsT")
+    public Object getAnyTotalSecondsT(@RequestBody  GetOneAnyDurationReq getOneAnyDurationReq){
+
+        Long totalAnySeconds = attendanceService.getAnyDurationSecondsT(getOneAnyDurationReq);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(totalAnySeconds);
+    }
+
+
 
     @Operation(summary="查询社团每个成员每月的打卡时长，返回秒")
     @GetMapping("/eachTotalMonthSeconds")
@@ -141,5 +159,30 @@ public class AttendanceController {
                 .data(eachTotalYearSeconds);
     }
 
+    @Operation(summary="查询社团每个成员本周的打卡时长，返回秒")
+    @GetMapping("/eachTotalWeekSeconds")
+    public Object getEachTotalWeekSeconds(
+            @RequestParam("clubId") Long clubId){
 
+        List<ClubAttendanceDurationVO> eachTotalWeekSeconds = attendanceService.getEachTotalWeekDuration(clubId);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachTotalWeekSeconds);
+    }
+
+
+
+
+    @Operation(summary="查询社团每个成员指定时间段打卡时长，返回秒,时间格式（2024-04-18 23:59:59）")
+    @PostMapping("/eachTotalAnySeconds")
+    public Object getEachTotalAnySeconds(@RequestBody GetEachAnyDurationReq getEachAnyDurationReq){
+
+        List<ClubAttendanceDurationVO> eachTotalAnySeconds = attendanceService
+                .getEachTotalAnyDuration(getEachAnyDurationReq);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachTotalAnySeconds);
+    }
 }
