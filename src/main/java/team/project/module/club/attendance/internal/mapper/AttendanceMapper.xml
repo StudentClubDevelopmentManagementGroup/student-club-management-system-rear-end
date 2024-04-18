@@ -3,6 +3,31 @@
 
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
 
+
+    <!--    查询社团成员一周的打卡时长-->
+    <select id="getTotalWeekSeconds" resultType="java.lang.Long">
+        <![CDATA[
+        SELECT
+        SUM(
+        TIME_TO_SEC(
+        TIMEDIFF(
+        IFNULL(checkout_time, NOW()),checkin_time ))
+        ) AS total_week_seconds
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        club_id = #{clubId}
+        AND user_id = #{userId}
+        AND is_deleted = '0'
+        AND checkin_time >= DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE() ) DAY)
+        AND checkin_time < DATE_ADD(CURRENT_DATE(), INTERVAL 7 - WEEKDAY(CURRENT_DATE()) DAY)
+        ]]>
+    </select>
+
+
+
+
+
     <!--    查询社团成员一个月的打卡时长-->
     <select id="getTotalMonthSeconds" resultType="java.lang.Long">
         SELECT

@@ -22,6 +22,14 @@ public interface AttendanceService {
     AttendanceInfoVO makeUpAttendance(ApplyAttendanceReq applyAttendanceReq);
 
     //查询本周签到时长
+    //查询社团成员一年的打卡时长
+    Long getTotalWeekSeconds(
+            @Param("userId") String userId,
+            @Param("clubId") Long clubId
+
+
+    );
+
     //查询社团成员一个月的打卡时长
 
     Long getTotalMonthSeconds(

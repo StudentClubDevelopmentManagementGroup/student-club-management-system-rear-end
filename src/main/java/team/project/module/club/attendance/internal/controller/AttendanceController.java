@@ -71,6 +71,23 @@ public class AttendanceController {
                 .statusText("补签成功")
                 .data(attendanceInfoVO);
     }
+
+
+
+    @Operation(summary="查询社团成员本周签到时长，返回秒")
+    @GetMapping("/totalWeekSeconds")
+    public Object getTotalWeekSeconds(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId){
+
+        Long totalWeekSeconds = attendanceService.getTotalWeekSeconds(userId, clubId);
+
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(totalWeekSeconds);
+    }
+
+
     @Operation(summary="查询社团成员一个月的打卡时长，格式：年份（2024），月份（3），返回秒")
     @GetMapping("/totalMonthSeconds")
     public Object getTotalMonthSeconds(

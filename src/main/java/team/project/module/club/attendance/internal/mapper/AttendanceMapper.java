@@ -28,6 +28,12 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         return attendanceDOList;
     }
 
+    Long getTotalWeekSeconds(
+            @Param("userId") String userId,
+            @Param("clubId") Long clubId
+
+    );
+
     Long getTotalMonthSeconds(
             @Param("userId") String userId,
             @Param("clubId") Long clubId,
