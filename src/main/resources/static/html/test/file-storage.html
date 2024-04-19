@@ -111,6 +111,16 @@
         </div>
       </form>
     </div>
+
+    <div class="main-container">
+      <form action="/get_uploaded_file" method="get" target="output">
+        <div class="display-flex">
+          <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件</button>
+          <input class="green-input green-border border-left-none"
+                 type="text" name="file_id" placeholder="请输入文件id">
+        </div>
+      </form>
+    </div>
   
     <div class="main-container green-border" style="flex: 1;">
       <iframe name="output" style="width: 100%; height: 100%; border: none; font-size: 25px;"></iframe>

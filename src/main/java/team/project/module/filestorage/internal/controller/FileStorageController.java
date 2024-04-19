@@ -6,18 +6,15 @@ import jakarta.validation.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.service.FileStorageIService;
 
-
 @Tag(name="文件存储")
-@RestController
+@Controller
 public class FileStorageController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
@@ -26,6 +23,7 @@ public class FileStorageController {
 
     @Operation(summary="上传文件至服务器的本地文件系统", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_local_file_system")
+    @ResponseBody
     Object uploadFileToLocalFileSystem(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
@@ -44,6 +42,7 @@ public class FileStorageController {
 
     @Operation(summary="上传文件至云存储空间", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_cloud_storage")
+    @ResponseBody
     Object uploadFileToCloudStorage(@RequestParam("file") MultipartFile file) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
@@ -60,6 +59,7 @@ public class FileStorageController {
 
     @Operation(summary="获取访问已上传的文件的URL")
     @GetMapping("/get_uploaded_file_url")
+    @ResponseBody
     Object getUploadedFileUrl(
         @NotBlank(message="未输入文件id")
         @RequestParam("file_id") String fileId
@@ -70,5 +70,15 @@ public class FileStorageController {
         } else {
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
+    }
+
+    @Operation(summary="获取访问已上传的文件")
+    @GetMapping("/get_uploaded_file")
+    Object getUploadedFile(
+        @NotBlank(message="未输入文件id")
+        @RequestParam("file_id") String fileId
+    ) {
+        /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:null”，响应 404 */
+        return "redirect:" + service.getUploadedFileUrl(fileId);
     }
 }
