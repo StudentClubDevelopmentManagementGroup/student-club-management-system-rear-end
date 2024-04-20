@@ -33,8 +33,11 @@
     /* 按钮 */
     .green-btn {
       padding: 0.25em 1em;
+      width: 18em;
       color: var(--color-white);
       background-color: var(--color-green);
+      border: 1.5px solid var(--color-green);
+      font-size: 16px;
     }
     .green-btn:hover {
       background-color: var(--color-light-green);
@@ -51,6 +54,9 @@
       flex: 1;
       padding: 0.5em;
       outline: none;
+      border: 1.5px solid var(--color-green);
+      border-left: none;
+      text-align: left;
     }
     .green-input[type="file"]::file-selector-button {
       display: none;
@@ -67,14 +73,8 @@
     .display-flex {
       display: flex;
     }
-    .font-size-16px {
-      font-size: 16px;
-    }
     .green-border {
       border: 1.5px solid var(--color-green);
-    }
-    .border-left-none {
-      border-left: none;
     }
   </style>
 </head>
@@ -85,9 +85,8 @@
     <div class="main-container">
       <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
-          <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
-          <input name="file" type="file" enctype="multipart/form-data"
-              class="green-input green-border border-left-none">
+          <button type="submit" class="green-btn">上传文件至服务器的本地文件系统</button>
+          <input class="green-input" type="file" name="file">
         </div>
       </form>
     </div>
@@ -95,19 +94,17 @@
     <div class="main-container">
       <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
         <div class="display-flex">
-          <button type="submit" class="green-btn green-border font-size-16px">上传文件至云存储空间</button>
-          <input name="file" type="file" enctype="multipart/form-data"
-              class="green-input green-border border-left-none">
+          <button type="submit" class="green-btn">上传文件至云存储空间</button>
+          <input class="green-input" type="file" name="file">
         </div>
       </form>
     </div>
-    
+
     <div class="main-container">
       <form action="/get_uploaded_file_url" method="get" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件的URL</button>
-          <input class="green-input green-border border-left-none"
-                 type="text" name="file_id" placeholder="请输入文件id">
+          <button class="green-btn" type="submit">获取访问已上传的文件的URL</button>
+          <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
         </div>
       </form>
     </div>
@@ -115,9 +112,8 @@
     <div class="main-container">
       <form action="/get_uploaded_file" method="get" target="output">
         <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件</button>
-          <input class="green-input green-border border-left-none"
-                 type="text" name="file_id" placeholder="请输入文件id">
+          <button class="green-btn" type="submit">获取访问已上传的文件</button>
+          <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
         </div>
       </form>
     </div>
