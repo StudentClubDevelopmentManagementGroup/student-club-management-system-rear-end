@@ -43,4 +43,9 @@ public class FileStorageIServiceImpl implements FileStorageIService {
         }
         return null;
     }
+
+    @Override
+    public void deleteUploadedFile(String fileId) {
+
+    }
 }

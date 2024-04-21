@@ -4,6 +4,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.base.service.exception.ServiceException;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.internal.config.LocalFileSystemConfig;
 import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
 import team.project.module.filestorage.internal.util.Util;
@@ -44,5 +46,15 @@ public class LocalFileSystemService {
 
         String filePath = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
         return baseUrl + filePath;
+    }
+
+    public boolean deleteUploadedFile(String fileId) {
+        if ( ! fileId.startsWith(uploadedFileIdPrefix)) {
+            return false;
+        }
+
+        String fileName = fileId.substring(uploadedFileIdPrefix.length() + 1);
+
+        return localFileSystemDAO.delete(uploadedFilesFolder, fileName);
     }
 }

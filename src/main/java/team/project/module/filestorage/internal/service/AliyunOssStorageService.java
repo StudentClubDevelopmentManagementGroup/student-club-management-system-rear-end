@@ -32,15 +32,14 @@ public class AliyunOssStorageService {
         String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
 
         String fileId = uploadedFileIdPrefix + "/" + newFilename;
+        String fileKey = uploadedFilesFolder + "/" + newFilename;
 
         try {
-            aliyunOssStorageDAO.upload(uploadedFilesFolder + "/" + newFilename, file);
+            aliyunOssStorageDAO.upload(fileKey, file);
 
             return fileId;
         } catch (OSSException | ClientException e) {
-            logger.error("""
-                上传文件到阿里云OSS的存储空间失败
-                {}""", e.getMessage());
+            logger.error("上传文件到阿里云OSS的存储空间失败", e);
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "上传文件到云存储空间失败");
         }
     }
@@ -49,15 +48,26 @@ public class AliyunOssStorageService {
         if ( ! fileId.startsWith(uploadedFileIdPrefix)) {
             return null;
         }
-
         String fileKey = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
         try {
             return aliyunOssStorageDAO.getUrl(fileKey);
         } catch (OSSException | ClientException e) {
-            logger.error("""
-                从阿里云OSS的存储空间获取文件url失败
-                {}""", e.getMessage());
+            logger.error("从阿里云OSS的存储空间获取访问文件的url失败", e);
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "从云存储空间失败获取url失败");
+        }
+    }
+
+    public boolean deleteUploadedFile(String fileId) {
+        if ( ! fileId.startsWith(uploadedFileIdPrefix)) {
+            return false;
+        }
+        try {
+            String fileKey = uploadedFilesFolder + "/" + fileId.substring(uploadedFileIdPrefix.length());
+            aliyunOssStorageDAO.delete(fileKey);
+            return true;
+        } catch (OSSException | ClientException e) {
+            logger.error("从阿里云OSS的存储空间删除文件失败", e);
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "从云存储空间删除文件失败");
         }
     }
 }

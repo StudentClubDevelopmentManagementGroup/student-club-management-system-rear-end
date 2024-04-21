@@ -35,6 +35,9 @@ public class LoginController {
         String password = req.getPassword();
 
         UserInfoVO userInfo = service.login(userId, password);
+        if (userInfo == null) {
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("用户不存在或密码错误");
+        }
 
         StpUtil.login(userId);
         SaTokenInfo token = StpUtil.getTokenInfo();

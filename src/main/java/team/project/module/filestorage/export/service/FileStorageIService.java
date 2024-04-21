@@ -20,7 +20,12 @@ public interface FileStorageIService {
 
     /**
      * 通过文件id获取访问该文件的 URL
-     * @return 获取访问该文件的 URL
+     * @return 获取访问该文件的 URL（fileId 指向的文件不存在也会返回 URL，访问这个 URL 会响应文件不存在）
      * */
     String getUploadedFileUrl(String fileId);
+
+    /**
+     * 删除已上传的文件
+     * */
+    void deleteUploadedFile(String fileId);
 }
