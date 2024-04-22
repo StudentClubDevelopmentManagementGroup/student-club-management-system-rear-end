@@ -19,10 +19,10 @@ public class UpdateSeatInfoReq {
 
     @NotEmpty(message="“更新座位”列表不能为空")
     @JsonProperty("seat_list")
-    List<SeatInfo> seatList;
+    List<ToUpdateSeat> seatList;
 
     @Data
-    public static class SeatInfo {
+    public static class ToUpdateSeat {
         @NotNull(message="未指定座位id")
         @JsonProperty("seat_id")
         private Long seatId;

@@ -40,7 +40,7 @@ public class SeatService {
         }
 
         List<TblUserClubSeatDO> seatsToAdd = new ArrayList<>();
-        for (AddSeatReq.SeatInfo seatInfo : req.getSeatList()) {
+        for (AddSeatReq.ToAddSeat seatInfo : req.getSeatList()) {
 
             TblUserClubSeatDO seat = new TblUserClubSeatDO();
             seat.setX(seatInfo.getX());
@@ -97,7 +97,7 @@ public class SeatService {
         }
 
         List<TblUserClubSeatDO> seatsToUpdate = new ArrayList<>();
-        for (UpdateSeatInfoReq.SeatInfo seatInfo : req.getSeatList()) {
+        for (UpdateSeatInfoReq.ToUpdateSeat seatInfo : req.getSeatList()) {
 
             TblUserClubSeatDO seat = new TblUserClubSeatDO();
             seat.setClubId(req.getClubId());
