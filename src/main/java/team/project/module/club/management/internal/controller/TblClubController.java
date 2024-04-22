@@ -6,11 +6,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.club.management.internal.model.query.TblClubQO;
 import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.request.ClubReq;
 import team.project.module.club.management.internal.service.TblClubService;
 
-@Tag(name="tbl_club_Controller")
+import java.util.Objects;
+
+@Tag(name="社团管理")
 @RestController
 public class TblClubController {
     @Autowired
@@ -18,35 +21,37 @@ public class TblClubController {
 
 
     @Operation(summary="创建基地")
-    @PostMapping("/manage_all/create_club")
+    @PostMapping("/club/add")
     Object createClub (@Valid @RequestBody ClubReq req) {
         service.createClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("创建成功");
     }
 
-    @Operation(summary="查询基地")
-    @GetMapping("/manage_all/select_club")
+    //TODO id为0查全部，id不为零精准，加模糊查询，name输入like %${keyword}%查全部
+    @Operation(summary="查询基地基础信息")
+    @GetMapping("/club/select")
     Object selectClub(@Valid TblClubReq req){
-        if(req.getName()==null){
+        TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
+        if(Objects.equals(req.getName(), "")){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByDepartmentId(req));
+                    .data(service.selectByDepartmentId(newQO));
         }
-        else if (req.getDepartmentId()==null){
+        else if (req.getDepartmentId()== 0){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByName(req));
+                    .data(service.selectByName(newQO));
         }
         else {
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
-                    .data(service.selectByNameAndDepartmentId(req));
+                    .data(service.selectByNameAndDepartmentId(newQO));
         }
     }
 
     @Operation(summary="删除基地")
-    @PostMapping("/manage_all/delete_club")
+    @PostMapping("/club/del")
     Object deleteClub(@Valid @RequestBody ClubReq req){
         service.deleteClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -54,7 +59,7 @@ public class TblClubController {
     }
 
     @Operation(summary="撤销删除基地")
-    @PostMapping("/manage_all/recover_club")
+    @PostMapping("/club/undelete")
     Object recoverClub(@Valid @RequestBody ClubReq req) {
         service.recoverClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -62,7 +67,7 @@ public class TblClubController {
     }
 
     @Operation(summary="基地开放招人")
-    @PostMapping("/manage_all/reuse_club")
+    @PostMapping("/club/recruitment/open")
     Object reuseClub(@Valid @RequestBody ClubReq req) {
         service.reuseClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -70,36 +75,38 @@ public class TblClubController {
     }
 
     @Operation(summary="基地停止招人")
-    @PostMapping("/manage_all/deactivate_club")
+    @PostMapping("/club/recruitment/close")
     Object deactivateClub(@Valid @RequestBody ClubReq req) {
         service.deactivateClub(req.getDepartmentId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
-    @Operation(summary="基地总信息")
-    @GetMapping("/manage_all/select_all")
+    @Operation(summary="基地总信息，包括人数、负责人以及是否开放招新")
+    @GetMapping("/club/select_all")
     Object selectAll(@Valid TblClubReq req) {
-        if (req.getDepartmentId() == null) {
-            if (req.getName() == null) {
+        TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
+        if (req.getDepartmentId() == 0) {
+            if (Objects.equals(req.getName(), "")) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAll(req));
+                        .data(service.findAll(newQO));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByName(req));
+                        .data(service.findAllByName(newQO));
             }
         } else {
-            if (req.getName() == null) {
+            if (Objects.equals(req.getName(), "")) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentId(req));
+                        .data(service.findAllByDepartmentId(newQO));
             } else {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
-                        .data(service.findAllByDepartmentIdAndName(req));
+                        .data(service.findAllByDepartmentIdAndName(newQO));
             }
         }
     }
+    //TODO id为0查全部，id不为零精准，加模糊查询，name输入like %${keyword}%查全部
 
 }
