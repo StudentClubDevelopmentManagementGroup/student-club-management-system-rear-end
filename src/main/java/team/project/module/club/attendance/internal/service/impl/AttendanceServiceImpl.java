@@ -1,11 +1,8 @@
 package team.project.module.club.attendance.internal.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import team.project.module.club.attendance.internal.mapper.AttendanceMapper;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
@@ -14,9 +11,9 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-
-import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 @Service
 public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, AttendanceDO> implements AttendanceService {
@@ -37,21 +34,16 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         return success;
     }
 
-    //查询社团成员当天签到记录
+
+
+
+    //查当天签到记录测试
     @Override
-    public List<AttendanceDO> getDayCheckIn(DayCheckInReq dayCheckInReq) {
-        // 构造查询条件，只匹配指定日期的范围
+    public List<AttendanceDO> getDayCheckInTest(DayCheckInReq dayCheckInReq){
+        return attendanceMapper.getDayCheckIn(dayCheckInReq);
 
-        /* TODO SQL 放 mapper 层 */
-        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", dayCheckInReq.getUserId())
-                .eq("club_id", dayCheckInReq.getClubId())
-                .eq("DATE(checkin_time)", dayCheckInReq.getDate());
-
-        // 调用 MyBatis-Plus 提供的查询方法进行查询
-        List<AttendanceDO> attendanceDOList = attendanceMapper.selectList(queryWrapper);
-        return attendanceDOList;
     }
+
 
 
     // 社团成员签退
@@ -80,6 +72,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         }
     }
 
+    //补签
     @Override
     public AttendanceInfoVO makeUpAttendance(ApplyAttendanceReq applyAttendanceReq) {
         // 将 ApplyAttendanceReq 对象转换为 AttendanceDO 对象

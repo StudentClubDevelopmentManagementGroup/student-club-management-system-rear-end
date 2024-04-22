@@ -2,9 +2,8 @@ package team.project.module.club.attendance.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
-
-
 import java.time.LocalDateTime;
+
 
 /**
  * 社团成员签到请求体

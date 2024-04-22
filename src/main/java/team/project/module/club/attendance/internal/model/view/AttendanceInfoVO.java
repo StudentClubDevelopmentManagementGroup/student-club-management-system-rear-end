@@ -1,10 +1,9 @@
 package team.project.module.club.attendance.internal.model.view;
 
-import com.baomidou.mybatisplus.annotation.TableField;
-import lombok.Data;
 
-import java.sql.Timestamp;
+import lombok.Data;
 import java.time.LocalDateTime;
+
 @Data
 public class AttendanceInfoVO {
 

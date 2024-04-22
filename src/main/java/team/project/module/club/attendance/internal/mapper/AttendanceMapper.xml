@@ -182,7 +182,8 @@
         FROM
         tbl_user_club_attendance
         WHERE
-        club_id = #{clubId}
+        is_deleted = 0
+        AND club_id = #{clubId}
         AND user_id = #{userId}
         AND checkin_time BETWEEN #{startTime} AND #{endTime}
     </select>

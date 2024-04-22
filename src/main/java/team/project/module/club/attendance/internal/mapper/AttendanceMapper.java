@@ -9,19 +9,21 @@ import team.project.module.club.attendance.internal.model.request.DayCheckInReq;
 import team.project.module.club.attendance.internal.model.request.GetEachAnyDurationReq;
 import team.project.module.club.attendance.internal.model.request.GetOneAnyDurationReq;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
-
-import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 //如果使用Mybatis-plus提供的方法不需要再写.xml映射文件
 //复杂的数据库操作需要写SQL
+
+//SQL 放 mapper 层
 @Mapper
 public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     default List<AttendanceDO> getDayCheckIn(DayCheckInReq dayCheckInReq) {
         // 构造查询条件，只匹配指定日期的范围
 
-        /* TODO SQL 放 mapper 层 */
+
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", dayCheckInReq.getUserId())
                 .eq("club_id", dayCheckInReq.getClubId())
@@ -31,6 +33,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         List<AttendanceDO> attendanceDOList = this.selectList(queryWrapper);
         return attendanceDOList;
     }
+
     //查社团一个成员一周打卡时长
     Long getTotalWeekSeconds(
             @Param("userId") String userId,

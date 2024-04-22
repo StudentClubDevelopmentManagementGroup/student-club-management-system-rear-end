@@ -3,11 +3,9 @@ package team.project.module.club.attendance.internal.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-import java.sql.Timestamp;
 
 @Data
 @TableName("tbl_user_club_attendance")  //使用Mybatis-plus时必须使用注解指定对应数据库哪一张表

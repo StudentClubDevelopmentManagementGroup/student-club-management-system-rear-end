@@ -11,9 +11,9 @@ import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
-
-import java.time.LocalDateTime;
 import java.util.List;
+
+
 
 @Tag(name="签到签退模块")
 @RestController
@@ -41,7 +41,7 @@ public class AttendanceController {
     @PostMapping("/getDayCheckIn")
     public Object getCheckInRecords(@RequestBody DayCheckInReq dayCheckInReq ) {
         // 调用服务层方法执行查询当天签到记录的逻辑
-        List<AttendanceDO> dayCheckInRecords = attendanceService.getDayCheckIn(dayCheckInReq);
+        List<AttendanceDO> dayCheckInRecords = attendanceService.getDayCheckInTest(dayCheckInReq);
 
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")

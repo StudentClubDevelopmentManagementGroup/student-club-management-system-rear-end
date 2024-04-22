@@ -1,16 +1,16 @@
 package team.project.module.club.attendance.internal.model.request;
 
 import lombok.Data;
+
 import java.time.LocalDateTime;
 
 /**
- * 社团成员签退请求体
+ * 查询社团一个成员指定时间段打卡时长请求体
  */
-
 @Data
-public class UserCheckoutReq {
-    private Long id;
+public class GetOneAnyDurationReq {
     private String userId;
     private Long clubId;
-    private LocalDateTime checkoutTime;
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
 }
