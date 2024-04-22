@@ -13,7 +13,7 @@ import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.request.ClubReq;
 import team.project.module.club.personnelchanges.internal.model.request.UserClubReq;
 import team.project.module.club.personnelchanges.internal.service.TblUserClubService;
-@Tag(name="tbl_user_club_Controller")
+@Tag(name="社团人员管理")
 @RestController
 public class TblUserClubController {
     @Autowired

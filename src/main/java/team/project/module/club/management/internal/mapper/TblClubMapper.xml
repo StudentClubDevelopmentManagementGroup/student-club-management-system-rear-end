@@ -27,18 +27,18 @@
     <select id="findByNameAndDepartmentId"
             resultMap="tbl_club_DO">
         select * from tbl_club
-        where name = #{name} and department_id = #{departmentId}
+        where name LIKE CONCAT('%', #{name}, '%') and department_id = #{departmentId}
     </select>
     <select id="selectByNameAndDepartmentId"
             resultMap="tbl_club_DO">
         select * from tbl_club
-        where name = #{name} and department_id = #{departmentId}
+        where name LIKE CONCAT('%', #{name}, '%') and department_id = #{departmentId}
     </select>
 
     <select id="selectByName"
             resultMap="tbl_club_DO">
         select * from tbl_club
-        where name = #{name}
+        where name LIKE CONCAT('%', #{name}, '%')
     </select>
 
     <select id="selectByDepartmentId"
@@ -81,26 +81,30 @@
         LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
         LEFT JOIN tbl_user u ON uc.user_id = u.user_id
         LEFT JOIN tbl_department d ON c.department_id = d.id
-        GROUP BY c.id
+
     </sql>
 
     <select id="findAll" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
+        GROUP BY c.id
     </select>
 
     <select id="findAllByDepartmentId" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
-        WHERE department_id = #{departmentId}
+        where c.department_id = #{departmentId}
+        GROUP BY c.id
     </select>
 
     <select id="findAllByName" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
-        WHERE name = #{name}
+        where c.name LIKE CONCAT('%', #{name}, '%')
+        GROUP BY c.id
     </select>
 
     <select id="findAllByDepartmentIdAndName" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
-        WHERE department_id = #{departmentId} AND name = #{name}
+        WHERE c.department_id = #{departmentId} and c.name LIKE CONCAT('%', #{name}, '%')
+        GROUP BY c.id
     </select>
     <!--     TODO xml文件加上逻辑删除-->
 </mapper>

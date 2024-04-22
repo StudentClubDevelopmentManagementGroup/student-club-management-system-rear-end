@@ -11,7 +11,9 @@ import team.project.module.club.management.internal.model.request.TblClubReq;
 import team.project.module.club.management.internal.model.request.ClubReq;
 import team.project.module.club.management.internal.service.TblClubService;
 
-@Tag(name="tbl_club_Controller")
+import java.util.Objects;
+
+@Tag(name="社团管理")
 @RestController
 public class TblClubController {
     @Autowired
@@ -26,16 +28,17 @@ public class TblClubController {
                 .statusText("创建成功");
     }
 
-    @Operation(summary="查询基地")
+    //TODO id为0查全部，id不为零精准，加模糊查询，name输入like %${keyword}%查全部
+    @Operation(summary="查询基地基础信息")
     @GetMapping("/club/select")
     Object selectClub(@Valid TblClubReq req){
         TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
-        if(req.getName()==null){
+        if(Objects.equals(req.getName(), "")){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
                     .data(service.selectByDepartmentId(newQO));
         }
-        else if (req.getDepartmentId()==null){
+        else if (req.getDepartmentId()== 0 ){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
                     .data(service.selectByName(newQO));
@@ -78,12 +81,12 @@ public class TblClubController {
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("修改成功");
     }
-    @Operation(summary="基地总信息")
+    @Operation(summary="基地总信息，包括人数、负责人以及是否开放招新")
     @GetMapping("/club/select_all")
     Object selectAll(@Valid TblClubReq req) {
         TblClubQO newQO = new TblClubQO(req.getDepartmentId(), req.getName(), req.getPagenum(), req.getSize());
-        if (req.getDepartmentId() == null) {
-            if (req.getName() == null) {
+        if (req.getDepartmentId() == 0) {
+            if (Objects.equals(req.getName(), "")) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
                         .data(service.findAll(newQO));
@@ -93,7 +96,7 @@ public class TblClubController {
                         .data(service.findAllByName(newQO));
             }
         } else {
-            if (req.getName() == null) {
+            if (Objects.equals(req.getName(), "")) {
                 return new Response<>(ServiceStatus.SUCCESS)
                         .statusText("查询成功")
                         .data(service.findAllByDepartmentId(newQO));
@@ -104,5 +107,6 @@ public class TblClubController {
             }
         }
     }
+    //TODO id为0查全部，id不为零精准，加模糊查询，name输入like %${keyword}%查全部
 
 }
