@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+  <meta charset="UTF-8">
+  <title>登录</title>
+</head>
+
+<body>
+  <script>
+    fetch('/user/login/password', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify({
+        user_id: 'a', pwd: 'a'
+      })
+    })
+    .then(resp => {
+      if (resp) {
+        window.location.href = '/swagger-ui/index.html';
+      } else {
+        alert("登录失败");
+      }
+    })
+    .catch(error => {
+      alert("登录失败");
+    });
+  </script>
+</body>
+
+</html>

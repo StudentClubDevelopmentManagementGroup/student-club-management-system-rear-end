@@ -15,14 +15,14 @@ public class ModelConverter {
 
     public UserInfoVO toUserInfoVO(TblUserDO userDO) {
 
-        UserInfoVO.Role role = new UserInfoVO.Role();
+        UserInfoVO.UserRoleInfo role = new UserInfoVO.UserRoleInfo();
         role.setStudent(userDO.hasRole(UserRoleEnum.STUDENT));
         role.setTeacher(userDO.hasRole(UserRoleEnum.TEACHER));
         role.setClubMember(userDO.hasRole(UserRoleEnum.CLUB_MEMBER));
         role.setClubManager(userDO.hasRole(UserRoleEnum.CLUB_MANAGER));
         role.setSuperAdmin(userDO.hasRole(UserRoleEnum.SUPER_ADMIN));
 
-        UserInfoVO.Department department = new UserInfoVO.Department();
+        UserInfoVO.DepartmentInfo department = new UserInfoVO.DepartmentInfo();
         department.setDepartmentId(userDO.getDepartmentId());
         department.setDepartmentName(departmentService.getNameById(userDO.getDepartmentId()));
 

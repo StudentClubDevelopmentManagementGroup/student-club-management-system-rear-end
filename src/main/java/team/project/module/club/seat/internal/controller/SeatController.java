@@ -35,7 +35,7 @@ public class SeatController {
     @PostMapping("/club/seat/add")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
-        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
         List<SeatVO> result = seatService.addSeat(arrangerId, req);
         return new Response<>(ServiceStatus.CREATED).data(result);
     }
@@ -55,7 +55,7 @@ public class SeatController {
             }
         }
 
-        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
         seatService.updateSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
@@ -64,7 +64,7 @@ public class SeatController {
     @GetMapping("/club/seat/view")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     Object view(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
-        String userId = (String)StpUtil.getSession().getLoginId();
+        String userId = (String)( StpUtil.getSession().getLoginId() );
         List<SeatVO> result = seatService.view(userId, clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
@@ -73,7 +73,7 @@ public class SeatController {
     @PostMapping("/club/seat/del")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@Valid @RequestBody DelSeatReq req) {
-        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
         seatService.deleteSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
@@ -95,7 +95,7 @@ public class SeatController {
             return new Response<>(ServiceStatus.BAD_REQUEST).statusText("分页查询需同时指定页码与页大小");
         }
 
-        String arrangerId = (String)StpUtil.getSession().getLoginId();
+        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
         List<UserInfoVO> result = seatService.membersNoSeat(arrangerId, clubId);
 
         HashMap<String, Object> resultMap = new HashMap<>();

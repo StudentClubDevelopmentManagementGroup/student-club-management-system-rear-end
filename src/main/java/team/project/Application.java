@@ -35,6 +35,7 @@ public class Application {
 
         logger.info("""
             api 说明文档：{}/swagger-ui/index.html
+            api 说明文档：{}/html/test/swagger-with-login.html（ <- 以管理员'a'的身份登录 ）
             文件存储测试：{}/html/test/file-storage.html
             """.replace("{}", "http://" + host + ":" + port)
         );
