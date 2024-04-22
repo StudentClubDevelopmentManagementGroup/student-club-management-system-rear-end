@@ -7,24 +7,47 @@
 </head>
 
 <body>
+  <p style="margin-top: 30vh; text-align: center;">请选择账户快速登录，选择后跳转 swagger 页面：</p>
+  <select style="display: block; margin: 0 auto; font-size: 1.2em;"><option selected value=""></option>
+
+    <option data-uid="a"          data-pwd="a">           测试用，权限全开   </option>
+    <option data-uid="2100301816" data-pwd="2100301816">  2100301816      </option>
+    <option data-uid="2100301514" data-pwd="2100301514">  李健衡           </option>
+
+    <!--                 自行按下述格式添加账户：
+
+    <option data-uid="学号/工号" data-pwd="密码"> 账号描述 </option>
+
+    -->
+
+  </select>
+  <p style="color: lightgray; text-align: center;">添加账户请自行修改：src/main/resources/static/html/test/swagger-with-login.html</p>
+
   <script>
-    fetch('/user/login/password', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
-      body: JSON.stringify({
-        user_id: 'a', pwd: 'a'
+
+    document.querySelector('select').addEventListener('input', (event) => {
+      event.preventDefault();
+      const selected_option = event.target.options[event.target.selectedIndex];
+
+      fetch('/user/login/password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
+        body: JSON.stringify({
+          user_id: selected_option.dataset['uid'],
+          pwd:     selected_option.dataset['pwd']
+        })
       })
-    })
-    .then(resp => {
-      if (resp) {
-        window.location.href = '/swagger-ui/index.html';
-      } else {
+      .then(resp => {
+        if (resp) {
+          window.location.href = '/swagger-ui/index.html';
+        } else {
+          alert("登录失败");
+        }
+      })
+      .catch(error => {
         alert("登录失败");
-      }
-    })
-    .catch(error => {
-      alert("登录失败");
+      });
     });
   </script>
 </body>
