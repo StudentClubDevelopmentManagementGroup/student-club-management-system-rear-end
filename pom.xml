@@ -51,10 +51,10 @@
         </dependency>
 
         <!-- security -->
-        <dependency>
+        <!--<dependency>    暂时关闭集成 Spring Security
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
+        </dependency>-->
 
         <!-- Sa-Token [begin] -->
         <dependency>
@@ -102,14 +102,14 @@
         <!-- mybatis-plus and mybatis [end] -->
 
         <!-- redis [begin] -->
-        <dependency>
+        <!--<dependency>    暂时关闭集成 redis
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-redis</artifactId>
         </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-pool2</artifactId>
-        </dependency>
+        </dependency>-->
         <!-- redis [end] -->
 
         <!-- aop -->
