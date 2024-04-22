@@ -2,6 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
+
     <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
     <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
         <!-- 数据库字段 -->                                   <!-- java 类属性 -->

@@ -18,6 +18,7 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
         this.insert(seat);
     }
 
+
     default int setSeatOwner(TblUserClubSeatDO seat) {
         return this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getSeatId, seat.getSeatId())

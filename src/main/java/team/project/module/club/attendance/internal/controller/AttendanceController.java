@@ -23,19 +23,56 @@ public class AttendanceController {
     @Autowired //注入
     private AttendanceService attendanceService;
 
+    @Operation(summary="查询社团成员当天最新的签到记录")
+    @GetMapping("/getLatestCheckInRecord")
+    public Object getLatestCheckInRecord(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId) {
+        // 调用服务层方法执行查询当天签到记录的逻辑
+        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubId);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(attendanceInfoVO);
+    }
 
     @Operation(summary="社团成员签到,时间格式为(2024-04-15 13:01:33)")
-    @PostMapping("/checkIn")
-    public Object userCheckIn(@RequestBody /* TODO jsr303 */ UserCheckInReq userCheckinReq) {
-        boolean success = attendanceService.userCheckIn(userCheckinReq);
-        if (success) {
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("签到成功");
-        } else {
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR)
-                    .statusText("签到失败");
+    @PostMapping("/checkInTest")
+    public Object userCheckInTest(@RequestBody /* TODO jsr303 */ UserCheckInReq userCheckinReq) {
+        // 查询当天最新的签到记录
+        AttendanceInfoVO latestCheckInRecord = attendanceService.getLatestCheckInRecord(userCheckinReq.getUserId(), userCheckinReq.getClubId());
+
+        // 如果最新签到记录存在且签退时间不为空，则表示上一次签到未签退
+        if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
+            return new Response<>(ServiceStatus.BAD_REQUEST)
+                    .statusText("签到失败，上一次签到未签退");
         }
+
+        // 如果最新签到记录不存在或签退时间不为空，则可以进行签到操作
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("签到成功")
+                .data(attendanceInfoVO);
     }
+
+
+    @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
+    @PatchMapping ("/checkoutTest")
+    public Object userCheckoutTest(@RequestBody UserCheckoutReq userCheckoutReq) {
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckOutTest(userCheckoutReq);
+        if(attendanceInfoVO != null){
+            return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("签退成功")
+                .data(attendanceInfoVO);
+        }else {
+            return new Response<>(ServiceStatus.BAD_REQUEST)
+                    .statusText("没有可以签退的记录");
+        }
+
+
+
+    }
+
+
 
     @Operation(summary="查询社团成员当天的签到记录")
     @PostMapping("/getDayCheckIn")
@@ -48,18 +85,6 @@ public class AttendanceController {
                 .data(dayCheckInRecords);
     }
 
-    @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
-    @PatchMapping ("/checkout")
-    public Object userCheckout(@RequestBody UserCheckoutReq userCheckoutReq) {
-        boolean success = attendanceService.userCheckOut(userCheckoutReq);
-        if (success) {
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("签退成功");
-        } else {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY)
-                    .statusText("签退失败，没有该签到记录");
-        }
-    }
 
 
     @Operation(summary="负责人帮社团成员补签，时间格式为(2024-04-15 13:01:33)")

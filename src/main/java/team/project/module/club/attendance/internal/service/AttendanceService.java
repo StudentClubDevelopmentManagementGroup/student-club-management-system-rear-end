@@ -11,17 +11,20 @@ import java.util.List;
 
 public interface AttendanceService {
 
+    //签到返回签到信息
+    AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq);
 
+    //查询社团成员当天最新的签到记录
+    AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId);
 
     //查当天签到记录
     List<AttendanceDO> getDayCheckInTest(DayCheckInReq dayCheckInReq);
 
-    //签到
-    boolean userCheckIn(UserCheckInReq userCheckinReq);
 
 
-    //签退
-    boolean userCheckOut(UserCheckoutReq userCheckoutReq);
+
+    //签退返回签到信息
+    AttendanceInfoVO userCheckOutTest(UserCheckoutReq userCheckoutReq);
 
     //负责人补签
     AttendanceInfoVO makeUpAttendance(ApplyAttendanceReq applyAttendanceReq);
