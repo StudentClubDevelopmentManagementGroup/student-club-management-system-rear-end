@@ -8,8 +8,6 @@ import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.internal.service.AliyunOssStorageService;
 import team.project.module.filestorage.internal.service.LocalFileSystemService;
 
-import java.io.IOException;
-
 @Service
 public class FileStorageIServiceImpl implements FileStorageIService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
@@ -21,26 +19,38 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     private AliyunOssStorageService aliyunOssStorageService;
 
     @Override
-    public String uploadFileToLocalFileSystem(MultipartFile file) throws IOException {
+    public String uploadFileToLocalFileSystem(MultipartFile file) {
         return localFileSystemService.upload(file);
     }
 
     @Override
-    public String uploadFileToCloudStorage(MultipartFile file) throws IOException {
+    public String uploadFileToCloudStorage(MultipartFile file) {
         return aliyunOssStorageService.upload(file);
     }
 
     @Override
     public String getUploadedFileUrl(String fileId) {
-        String url;
-        url = aliyunOssStorageService.getUploadedFileUrl(fileId);
-        if (null != url) {
-            return url;
+        if (aliyunOssStorageService.isValidFileId(fileId)) {
+            return aliyunOssStorageService.getUploadedFileUrl(fileId);
         }
-        url = localFileSystemService.getUploadedFileUrl(fileId);
-        if (null != url) {
-            return url;
+        else if (localFileSystemService.isValidFileId(fileId)) {
+            return localFileSystemService.getUploadedFileUrl(fileId);
         }
-        return null;
+        else {
+            return null;
+        }
+    }
+
+    @Override
+    public boolean deleteUploadedFile(String fileId) {
+        if (aliyunOssStorageService.isValidFileId(fileId)) {
+            return aliyunOssStorageService.deleteUploadedFile(fileId);
+        }
+        else if (localFileSystemService.isValidFileId(fileId)) {
+            return localFileSystemService.deleteUploadedFile(fileId);
+        }
+        else {
+            return false;
+        }
     }
 }

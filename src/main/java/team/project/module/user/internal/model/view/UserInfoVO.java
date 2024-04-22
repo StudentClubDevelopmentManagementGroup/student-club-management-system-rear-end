@@ -5,15 +5,15 @@ import lombok.Data;
 
 @Data
 public class UserInfoVO {
-    @JsonProperty("user_id")        private String      userId;
-    @JsonProperty("department")     private Department  department;
-    @JsonProperty("name")           private String      name;
-    @JsonProperty("tel")            private String      tel;
-    @JsonProperty("mail")           private String      email;
-    @JsonProperty("role")           private Role        role;
+    @JsonProperty("user_id")    private String         userId;
+    @JsonProperty("department") private DepartmentInfo department;
+    @JsonProperty("name")       private String         name;
+    @JsonProperty("tel")        private String         tel;
+    @JsonProperty("mail")       private String         email;
+    @JsonProperty("role")       private UserRoleInfo   role;
 
     @Data
-    public static class Role {
+    public static class UserRoleInfo {
         @JsonProperty("is_student")      private Boolean student;
         @JsonProperty("is_teacher")      private Boolean teacher;
         @JsonProperty("is_club_member")  private Boolean clubMember;
@@ -22,7 +22,7 @@ public class UserInfoVO {
     }
 
     @Data
-    public static class Department {
+    public static class DepartmentInfo {
         @JsonProperty("department_id")   private Long    departmentId;
         @JsonProperty("department_name") private String  departmentName;
     }

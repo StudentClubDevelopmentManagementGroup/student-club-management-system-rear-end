@@ -4,13 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
+import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 import java.util.List;
 
 import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
 
 @Data
-public class UpdateSeatInfoReq {
+public class UpdateSeatReq {
 
     @NotNull(message="未指定社团id")
     @ClubIdConstraint
@@ -19,10 +20,10 @@ public class UpdateSeatInfoReq {
 
     @NotEmpty(message="“更新座位”列表不能为空")
     @JsonProperty("seat_list")
-    List<ToUpdateSeat> seatList;
+    List<ToUpdateSeatInfo> seatList;
 
     @Data
-    public static class ToUpdateSeat {
+    public static class ToUpdateSeatInfo {
         @NotNull(message="未指定座位id")
         @JsonProperty("seat_id")
         private Long seatId;
@@ -40,5 +41,12 @@ public class UpdateSeatInfoReq {
         @Size(max=descriptionMaxLength, message="座位描述字数过多")
         @JsonProperty("description")
         private String description;
+
+        @UserIdConstraint
+        @JsonProperty("owner_id")
+        private String ownerId; /* <- nullable */
+
+        @JsonProperty(value="unset_owner", defaultValue="false")
+        private Boolean unsetOwner = false;
     }
 }

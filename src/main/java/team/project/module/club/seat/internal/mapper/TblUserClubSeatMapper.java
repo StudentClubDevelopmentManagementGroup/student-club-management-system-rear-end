@@ -11,6 +11,9 @@ import java.util.List;
 @Mapper
 public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
 
+    /**
+     * 添加新座位
+     * */
     default void addSeat(TblUserClubSeatDO seat) {
         if (null == seat.getDescription()) {
             seat.setDescription("");
@@ -18,6 +21,9 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
         this.insert(seat);
     }
 
+    /**
+     * 设置座位所属
+     * */
     default int setSeatOwner(TblUserClubSeatDO seat) {
         return this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getSeatId, seat.getSeatId())
@@ -27,6 +33,9 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
         );
     }
 
+    /**
+     * 更新座位信息（字段传 null 则不更新，且不更新座位所属）
+     * */
     default int updateSeatInfo(TblUserClubSeatDO seat) {
         return this.update(null, new LambdaUpdateWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getClubId, seat.getClubId())
@@ -37,16 +46,32 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
         );
     }
 
+    /**
+     * 查询社团的所有座位
+     * */
     default List<TblUserClubSeatDO> selectAll(Long clubId) {
         return this.selectList(null, new LambdaQueryWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getClubId, clubId)
         );
     }
 
+    /**
+     * 删除座位（真的删除，不是逻辑删除）
+     * */
     default int delete(Long clubId, Long seatId) {
         return this.delete(new LambdaQueryWrapper<TblUserClubSeatDO>()
             .eq(TblUserClubSeatDO::getClubId, clubId)
             .eq(TblUserClubSeatDO::getSeatId, seatId)
+        );
+    }
+
+    /**
+     * 查询非空座位
+     * */
+    default List<TblUserClubSeatDO> selectOccupiedSeats(Long clubId) {
+        return this.selectList(null, new LambdaQueryWrapper<TblUserClubSeatDO>()
+            .eq(TblUserClubSeatDO::getClubId, clubId)
+            .isNotNull(TblUserClubSeatDO::getOwnerId)
         );
     }
 }

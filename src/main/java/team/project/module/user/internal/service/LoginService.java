@@ -23,10 +23,6 @@ public class LoginService {
 
     public UserInfoVO login(String userId, String password) {
         TblUserDO user = userMapper.selectOne(userId, password);
-        if (user == null) {
-            throw new ServiceException(ServiceStatus.UNAUTHORIZED, "账号不存在或密码错误");
-        }
-
-        return modelConverter.toUserInfoVO(user);
+        return user == null ? null : modelConverter.toUserInfoVO(user);
     }
 }

@@ -24,4 +24,9 @@ public class LocalFileSystemDAO {
         boolean ignored = folder.mkdirs();
         file.transferTo(new File(folder + "/" + fileName));
     }
+
+    public boolean delete(String uploadedFilesFolder, String fileName) {
+        File file = new File(rootFolder + "/" + uploadedFilesFolder + "/" + fileName);
+        return file.delete(); /* <- 只要真的删除成功，才返回是 true，其他情况都是 false */
+    }
 }
