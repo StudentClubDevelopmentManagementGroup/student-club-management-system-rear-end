@@ -7,10 +7,11 @@ import java.util.UUID;
 public class Util {
 
     /**
-     * 将文件路径字符串进行格式化：
-     *  <li> 统一使用'/'作为文件夹的分隔符
-     *  <li> 合并连续的斜杠为单个斜杠
-     *  <li> 并移除路径末尾的斜杠（如果存在）
+     * <p>将文件路径字符串进行格式化：
+     *  <li> 统一使用'/'作为文件夹的分隔符</li>
+     *  <li> 合并连续的斜杠为单个斜杠</li>
+     *  <li> 并移除路径末尾的斜杠（如果存在）</li>
+     * </p>
      * @return 格式化后的路径字符串
      * */
     public static String fixPath(String path) {

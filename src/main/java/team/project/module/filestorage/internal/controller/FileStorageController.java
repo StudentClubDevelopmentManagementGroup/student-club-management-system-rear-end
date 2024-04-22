@@ -29,14 +29,12 @@ public class FileStorageController {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        try {
-            String newFileName = service.uploadFileToLocalFileSystem(file);
-            return new Response<>(ServiceStatus.CREATED)
-                .statusText("上传成功").data(newFileName);
-
-        } catch (Exception e) {
-            logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
+        String fileId = service.uploadFileToLocalFileSystem(file);
+        if (fileId != null) {
+            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
+        }
+        else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("上传失败");
         }
     }
 
@@ -47,13 +45,13 @@ public class FileStorageController {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
-        try {
-            String newFileName = service.uploadFileToCloudStorage(file);
-            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(newFileName);
 
-        } catch (Exception e) {
-            logger.error("上传文件至服务器的本地文件系统失败", e);
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data("上传失败");
+        String fileId = service.uploadFileToCloudStorage(file);
+        if (fileId != null) {
+            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
+        }
+        else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("上传失败");
         }
     }
 
@@ -80,5 +78,20 @@ public class FileStorageController {
     ) {
         /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:null”，响应 404 */
         return "redirect:" + service.getUploadedFileUrl(fileId);
+    }
+
+    @Operation(summary="删除已上传的文件")
+    @PostMapping("/delete_uploaded_file")
+    @ResponseBody
+    Object deleteUploadedFile(
+        @NotBlank(message="未输入文件id")
+        @RequestParam("file_id") String fileId
+    ) {
+        if (service.deleteUploadedFile(fileId)) {
+            return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
+        }
+        else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("删除失败");
+        }
     }
 }

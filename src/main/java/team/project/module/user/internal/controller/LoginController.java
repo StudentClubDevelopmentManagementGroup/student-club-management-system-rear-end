@@ -36,6 +36,7 @@ public class LoginController {
 
         UserInfoVO userInfo = service.login(userId, password);
         if (userInfo == null) {
+            /* 依前端要求，登录失败返回 400 状态码 */
             return new Response<>(ServiceStatus.BAD_REQUEST).statusText("用户不存在或密码错误");
         }
 
