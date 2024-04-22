@@ -38,7 +38,7 @@ public class TblClubController {
                     .statusText("查询成功")
                     .data(service.selectByDepartmentId(newQO));
         }
-        else if (req.getDepartmentId()== 0 ){
+        else if (req.getDepartmentId()== 0){
             return new Response<>(ServiceStatus.SUCCESS)
                     .statusText("查询成功")
                     .data(service.selectByName(newQO));
