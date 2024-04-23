@@ -8,7 +8,6 @@ import lombok.ToString;
    注意，这个是 ServiceStatus，而不是 HttpStatus） */
 @AllArgsConstructor
 @Getter
-@ToString
 public enum ServiceStatus {
     /* 成功响应 */
     SUCCESS              (200, "执行成功"), /* 请求成功，请求所希望数据将随此响应返回 */
