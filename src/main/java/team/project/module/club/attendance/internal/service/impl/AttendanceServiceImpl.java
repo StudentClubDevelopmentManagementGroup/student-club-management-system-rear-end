@@ -1,6 +1,6 @@
 package team.project.module.club.attendance.internal.service.impl;
 
-import org.apache.ibatis.annotations.Param;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,6 +11,7 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+
 import java.util.List;
 
 
@@ -21,36 +22,39 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private AttendanceMapper attendanceMapper;
 
-
-
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
         return attendanceMapper.userCheckIn(userCheckinReq);
 
     }
+
+    @Override
+    //签退返回签到信息
+    public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
+        AttendanceDO attendanceDO = attendanceMapper.userCheckOutTest(userCheckoutReq);
+        if(attendanceDO !=null){
+            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+            BeanUtils.copyProperties(attendanceDO, attendanceInfoVO);
+            return attendanceInfoVO;
+        }else {
+            return null;
+        }
+    }
+
     //查询社团成员当天最新的签到记录
     @Override
     public AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId){
-        return attendanceMapper.getLatestCheckInRecord(userId,clubId);
+        if(attendanceMapper.getLatestCheckInRecord(userId,clubId) != null) {
+            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+            BeanUtils.copyProperties(attendanceMapper.getLatestCheckInRecord(userId,clubId), attendanceInfoVO);
+            return attendanceInfoVO;
+        }else{
+            return null;
+        }
+
 
     }
-
-
-
-    //查当天签到记录测试
-    @Override
-    public List<AttendanceDO> getDayCheckInTest(DayCheckInReq dayCheckInReq){
-        return attendanceMapper.getDayCheckIn(dayCheckInReq);
-
-    }
-    @Override
-    //签退返回签到信息
-    public AttendanceInfoVO userCheckOutTest(UserCheckoutReq userCheckoutReq){
-        return attendanceMapper.userCheckOutTest(userCheckoutReq);
-    }
-
-
 
     //补签
     @Override
@@ -76,58 +80,30 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 返回包含插入数据的对象
         return attendanceInfoVO;
     }
-
-
-
-
-
-    //查询社团成员一周的打卡时长
     @Override
-    public Long getTotalWeekSeconds(String userId, Long clubId) {
-        return attendanceMapper.getTotalWeekSeconds(userId, clubId);
-    }
-
-    //查询社团成员一个月的打卡时长
-    @Override
-    public Long getTotalMonthSeconds(String userId, Long clubId, int year, int month) {
-        return attendanceMapper.getTotalMonthSeconds(userId, clubId, year, month);
-    }
-
-
-    //查询社团成员一年的打卡时长
-    @Override
-    public Long getTotalYearSeconds(String userId, Long clubId, int year) {
-        return attendanceMapper.getTotalYearSeconds(userId, clubId, year);
-    }
-
-
-
     //查社团一个成员指定时间打卡时长
-    public Long getAnyDurationSecondsT(GetOneAnyDurationReq getOneAnyDurationReq){
-        return attendanceMapper.getAnyDurationSecondsT(getOneAnyDurationReq);
-    }
-
-    //查询社团每个成员每个月的打卡时长
-    @Override
-    public List<ClubAttendanceDurationVO> getEachTotalMonthDuration(Long clubId, int year, int month) {
-        return attendanceMapper.getEachTotalMonthDuration(clubId,year,month);
-    }
-
-    @Override
-    //查询社团每个成员每年打卡时长
-    public List<ClubAttendanceDurationVO> getEachTotalYearDuration(Long clubId, int year) {
-        return attendanceMapper.getEachTotalYearDuration(clubId,year);
+    public Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
+        return attendanceMapper.getOneAttendanceDurationTime(getAttendanceTimeReq);
     }
     @Override
-    //查询社团每个成员本周打卡时长
-    public List<ClubAttendanceDurationVO> getEachTotalWeekDuration(@Param("clubId") Long clubId){
-        return attendanceMapper.getEachTotalWeekDuration(clubId);
-    }
-
-
     //查询社团每个成员指定时间段打卡时长
-    public List<ClubAttendanceDurationVO> getEachTotalAnyDuration(GetEachAnyDurationReq getEachAnyDurationReq){
-        return attendanceMapper.getEachTotalAnyDuration(getEachAnyDurationReq);
+    public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
+        return attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq);
+    }
+    @Override
+    //查社团成员指定时间打卡记录
+    public List<AttendanceInfoVO> getEachAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq){
+        return attendanceMapper.getAttendanceRecord(getAttendanceRecordReq);
+    }
+
+
+
+
+
+    //定时逻辑删除签到记录
+    @Override
+    public int timedDeleteRecord() {
+            return attendanceMapper.timedDeleteRecord();
     }
 }
 

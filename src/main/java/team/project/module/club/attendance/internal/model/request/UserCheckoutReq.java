@@ -4,6 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+/**
+ * 社团成员签退请求体
+ */
+
 @Data
 public class UserCheckoutReq {
     @JsonProperty("userId")
@@ -12,6 +16,6 @@ public class UserCheckoutReq {
     @JsonProperty("clubId")
     private Long clubId;
 
-    @JsonProperty("checkInTime")
+    @JsonProperty("checkoutTime")
     private LocalDateTime checkoutTime;
 }

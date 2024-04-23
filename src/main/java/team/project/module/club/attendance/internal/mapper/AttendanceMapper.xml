@@ -7,160 +7,63 @@
     <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
         <!-- 数据库字段 -->                                   <!-- java 类属性 -->
         <result column="user_id"                            property="userId" />
-        <result column="total_month_duration_seconds"       property="totalMonthDuration" />
-        <result column="total_month_duration_hms"           property="totalMonthDurationHMS" />
+        <result column="attendance_duration_time"           property="attendanceDurationTime" />
+
     </resultMap>
 
 
-    <!--    查询社团成员一周的打卡时长-->
-    <select id="getTotalWeekSeconds" resultType="java.lang.Long">
-        <![CDATA[
+    <resultMap id="AttendanceInfoVO" type="team.project.module.club.attendance.internal.model.view.AttendanceInfoVO">
+        <!-- 数据库字段 -->                           <!-- java 类属性 -->
+        <result column="id"                         property="id" />
+        <result column="user_id"                    property="userId" />
+        <result column="club_id"                    property="clubId" />
+        <result column="checkin_time"               property="checkInTime" />
+        <result column="checkout_time"              property="checkoutTime" />
+        <result column="is_deleted"                 property="isDeleted" />
+
+    </resultMap>
+
+
+    <select id="getAttendanceRecord"
+            resultMap="AttendanceInfoVO">
+        SELECT *
+        FROM tbl_user_club_attendance
+        WHERE is_deleted = 0
+        AND club_id = #{clubId}
+        <if test="userId != null">
+            AND user_id = #{userId}
+        </if>
+        <if test="startTime != null and endTime != null">
+            AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+    </select>
+
+
+
+
+    <!--查询社团一个成员指定时间段的打卡时长 -->
+    <select id="getOneAttendanceDurationTime"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
+            resultType="Long">
         SELECT
-        SUM(
-        TIME_TO_SEC(
-        TIMEDIFF(
-        IFNULL(checkout_time, NOW()),checkin_time ))
-        ) AS total_week_seconds
+        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) AS attendance_duration_time
         FROM
         tbl_user_club_attendance
         WHERE
-        club_id = #{clubId}
+        is_deleted = 0
+        AND club_id = #{clubId}
         AND user_id = #{userId}
-        AND is_deleted = '0'
-        AND checkin_time >= DATE_SUB(CURRENT_DATE(), INTERVAL WEEKDAY(CURRENT_DATE() ) DAY)
-        AND checkin_time < DATE_ADD(CURRENT_DATE(), INTERVAL 7 - WEEKDAY(CURRENT_DATE()) DAY)
-        ]]>
+        AND checkin_time BETWEEN #{startTime} AND #{endTime}
     </select>
-
-
-
-
-
-    <!--    查询社团成员一个月的打卡时长-->
-    <select id="getTotalMonthSeconds" resultType="java.lang.Long">
-        SELECT
-        SUM(
-        TIME_TO_SEC(
-        TIMEDIFF(
-        IFNULL(checkout_time, NOW()),
-        checkin_time
-        )
-        )
-        ) AS total_month_seconds
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        user_id = #{userId}
-        AND club_id = #{clubId}
-        AND is_deleted = '0'
-        AND YEAR(checkin_time) = #{year}
-        AND MONTH(checkin_time) = #{month}
-    </select>
-
-    <!--    查询社团成员一年的打卡时长-->
-    <select id="getTotalYearSeconds" resultType="java.lang.Long">
-        SELECT
-        SUM(
-        TIME_TO_SEC(
-        TIMEDIFF(
-        IFNULL(checkout_time, NOW()),
-        checkin_time
-        )
-        )
-        ) AS total_month_seconds
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        user_id = #{userId}
-        AND club_id = #{clubId}
-        AND is_deleted = '0'
-        AND YEAR(checkin_time) = #{year}
-
-    </select>
-
-
-
-
-
-    <!-- 查询社团每个成员每月的打卡时长 -->
-    <select id="getEachTotalMonthDuration"  resultMap="ClubAttendanceDurationVO">
-        SELECT
-        user_id,
-        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) as total_month_duration_seconds,
-        CONCAT(
-        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
-        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
-        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
-        ) as total_month_duration_hms
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        is_deleted = 0
-        AND club_id = #{clubId}
-        AND YEAR(checkin_time) = #{year}
-        AND MONTH(checkin_time) = #{month}
-        GROUP BY
-        user_id;
-    </select>
-
-
-    <!-- 查询社团每个成员每年的打卡时长 -->
-    <select id="getEachTotalYearDuration"  resultMap="ClubAttendanceDurationVO">
-        SELECT
-        user_id,
-        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) as total_month_duration_seconds,
-        CONCAT(
-        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
-        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
-        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
-        ) as total_month_duration_hms
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        is_deleted = 0
-        AND club_id = #{clubId}
-        AND YEAR(checkin_time) = #{year}
-        GROUP BY
-        user_id;
-    </select>
-
-    <!-- 查询社团每个成员本周的打卡时长 -->
-    <select id="getEachTotalWeekDuration"  resultMap="ClubAttendanceDurationVO">
-        SELECT
-        user_id,
-        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()))) AS total_month_duration_seconds,
-        CONCAT(
-        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
-        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
-        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
-        ) as total_month_duration_hms
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        is_deleted = 0
-        AND club_id = #{clubId}
-        AND YEARWEEK(checkin_time, 1) = YEARWEEK(CURDATE(), 1)
-        GROUP BY
-        user_id;
-
-    </select>
-
-
-
 
     <!-- 查询社团每个成员指定时间段的打卡时长 -->
-    <select id="getEachTotalAnyDuration"
-            parameterType="team.project.module.club.attendance.internal.model.request.GetEachAnyDurationReq"
+    <select id="getEachAttendanceDurationTime"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
             resultMap="ClubAttendanceDurationVO">
         <![CDATA[
         SELECT
         user_id,
-        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS total_month_duration_seconds,
-        CONCAT(
-        FLOOR(SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) / 3600), '小时',
-        FLOOR((SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 3600) / 60), '分钟',
-        (SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) % 60), '秒'
-        ) as total_month_duration_hms
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS attendance_duration_time
         FROM
         tbl_user_club_attendance
         WHERE
@@ -171,22 +74,6 @@
         GROUP BY
         user_id;
         ]]>
-    </select>
-
-
-    <!--查询社团一个成员指定时间段的打卡时长 -->
-    <select id="getAnyDurationSecondsT"
-            parameterType="team.project.module.club.attendance.internal.model.request.GetOneAnyDurationReq"
-            resultType="Long">
-        SELECT
-        TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW())) AS total_duration_seconds
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        is_deleted = 0
-        AND club_id = #{clubId}
-        AND user_id = #{userId}
-        AND checkin_time BETWEEN #{startTime} AND #{endTime}
     </select>
 
 

@@ -3,24 +3,22 @@ package team.project.module.club.attendance.internal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.beans.BeanUtils;
+import org.apache.ibatis.annotations.Update;
+
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
+
 import java.util.List;
 
 
 //数据库持久化层
 //如果使用Mybatis-plus提供的方法不需要再写.xml映射文件
-//复杂的数据库操作需要写SQL
-
+//复杂的数据库操作需要在xml写SQL
 //SQL 放 mapper 层
 @Mapper
 public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
-
-
 
 
     //签到返回签到信息
@@ -53,28 +51,20 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
 
     //签退,返回完整信息
-    default AttendanceInfoVO userCheckOutTest(UserCheckoutReq userCheckoutReq){
-        AttendanceInfoVO latestCheckInRecord =
+    default AttendanceDO userCheckOutTest(UserCheckoutReq userCheckoutReq){
+        AttendanceDO latestCheckInRecord =
                 getLatestCheckInRecord(userCheckoutReq.getUserId(), userCheckoutReq.getClubId());
-        if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null){
-            // 补全签退字段
-            latestCheckInRecord.setCheckoutTime(userCheckoutReq.getCheckoutTime());
-            // 更新数据库中的签到记录的签退时间字段
-            AttendanceDO attendanceDO = new AttendanceDO();
-            BeanUtils.copyProperties(latestCheckInRecord, attendanceDO); // 将视图对象的属性复制到数据对象中
-            updateById(attendanceDO); // 更新数据库中的记录
-            // 返回签到信息
-            return latestCheckInRecord;
-
-        }else{
-            return null;
-        }
-
+        // 补全签退字段
+        latestCheckInRecord.setCheckoutTime(userCheckoutReq.getCheckoutTime());
+        // 更新数据库中的签到记录的签退时间字段
+        updateById(latestCheckInRecord); // 更新数据库中的记录
+        // 返回签到信息
+        return latestCheckInRecord;
     }
 
 
     //查询社团成员当天最新的签到记录
-    default AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId) {
+    default AttendanceDO getLatestCheckInRecord(String userId, Long clubId) {
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId)
                 .eq("club_id", clubId)
@@ -83,74 +73,41 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
                 .orderByDesc("checkin_time")
                 .last("LIMIT 1");
         AttendanceDO attendanceDO = this.selectOne(queryWrapper);
-        AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-        BeanUtils.copyProperties(attendanceDO, attendanceInfoVO);
-        return attendanceInfoVO;
+        return attendanceDO;
+
     }
 
 
 
 
-    //查询社团成员当天的签到记录
-    default List<AttendanceDO> getDayCheckIn(DayCheckInReq dayCheckInReq) {
-        // 构造查询条件，只匹配指定日期的范围
-        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", dayCheckInReq.getUserId())
-                .eq("club_id", dayCheckInReq.getClubId())
-                .eq("DATE(checkin_time)", dayCheckInReq.getDate());
-
-        // 调用 MyBatis-Plus 提供的查询方法进行查询
-        List<AttendanceDO> attendanceDOList = this.selectList(queryWrapper);
-        return attendanceDOList;
-    }
-
-
-
-    //查社团一个成员一周打卡时长
-    Long getTotalWeekSeconds(
-            @Param("userId") String userId,
-            @Param("clubId") Long clubId
-
-    );
-    //查社团一个成员一个月打卡时长
-    Long getTotalMonthSeconds(
-            @Param("userId") String userId,
-            @Param("clubId") Long clubId,
-            @Param("year") int year,
-            @Param("month") int month
-    );
-    //查社团一个成员一年打卡时长
-    Long getTotalYearSeconds(
-            @Param("userId") String userId,
-            @Param("clubId") Long clubId,
-            @Param("year") int year111
-    );
 
 
     //查社团一个成员指定时间打卡时长
-    Long getAnyDurationSecondsT(GetOneAnyDurationReq getOneAnyDurationReq);
-
-
-    //查询社团每个成员每个月打卡时长
-    List<ClubAttendanceDurationVO> getEachTotalMonthDuration(
-            @Param("clubId") Long clubId,
-            @Param("year") int year,
-            @Param("month") int month
-
-    );
-
-    //查询社团每个成员每年打卡时长
-    List<ClubAttendanceDurationVO> getEachTotalYearDuration(
-            @Param("clubId") Long clubId,
-            @Param("year") int year
-
-    );
-    //查询社团每个成员本周打卡时长
-    List<ClubAttendanceDurationVO> getEachTotalWeekDuration(@Param("clubId") Long clubId);
+    Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
 
     //查询社团每个成员指定时间段打卡时长
-    List<ClubAttendanceDurationVO> getEachTotalAnyDuration(GetEachAnyDurationReq getEachAnyDurationReq);
+    List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
+
+
+    //查社团所有成员指定时间打卡记录
+    List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
+
+
+
+
+
+    //定时逻辑删除记录
+    @Update("UPDATE tbl_user_club_attendance SET is_deleted = 1 " +
+            "WHERE checkout_time IS NULL " +
+            "AND is_deleted = 0 " +
+            "AND DATE(checkin_time) = CURDATE()")
+    int timedDeleteRecord();
+
+
+
+
+
 
 }
 

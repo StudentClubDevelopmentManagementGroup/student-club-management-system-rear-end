@@ -5,6 +5,6 @@ import lombok.Data;
 @Data
 public class ClubAttendanceDurationVO {
     private String userId;
-    Long totalMonthDuration;
-    String totalMonthDurationHMS;
+    private Long attendanceDurationTime;
+
 }

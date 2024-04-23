@@ -6,12 +6,14 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
+@EnableScheduling // 启用定时任务调度功能
 public class Application {
     public static void main(String[] args) {
         ConfigurableApplicationContext ctx = SpringApplication.run(Application.class, args);
