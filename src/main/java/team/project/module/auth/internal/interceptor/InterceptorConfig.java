@@ -16,8 +16,8 @@ import team.project.module.user.export.service.UserInfoIService;
 import java.util.ArrayList;
 import java.util.List;
 
-@Configuration
-public class SaTokenConfig implements WebMvcConfigurer, StpInterface {
+@Configuration("auth-[SaToken]-InterceptorConfig")
+public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
 
     /* 配置拦截器 */
     @Override

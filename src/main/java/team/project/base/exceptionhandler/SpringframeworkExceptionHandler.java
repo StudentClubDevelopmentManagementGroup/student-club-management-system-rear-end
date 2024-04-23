@@ -17,7 +17,6 @@ import org.springframework.web.servlet.resource.NoResourceFoundException;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
 
-
 /* 处理 springframework 抛出的异常 */
 @RestControllerAdvice
 @Order(ExceptionHandlerOrder.springframeworkExceptionHandler)
@@ -55,7 +54,6 @@ public class SpringframeworkExceptionHandler {
     public Object handle(HandlerMethodValidationException exception) {
 
         ParameterValidationResult validationResult = exception.getAllValidationResults().get(0);
-        String paramName = validationResult.getMethodParameter().getParameterName();
         String defaultMessage = validationResult.getResolvableErrors().get(0).getDefaultMessage();
         String errorMessage = "参数校验未通过：" + defaultMessage;
 

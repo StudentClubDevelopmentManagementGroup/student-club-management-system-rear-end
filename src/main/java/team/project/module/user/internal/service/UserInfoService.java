@@ -24,6 +24,21 @@ public class UserInfoService {
     @Autowired
     ModelConverter modelConverter;
 
+    /**
+     * 查询用户账号信息
+     * @return 如果查询到成功则账号信息，否则返回 null
+     * */
+    public UserInfoVO selectUserInfo(String userId) {
+        TblUserDO userDO = userMapper.selectOne(userId);
+        if (userDO == null) {
+            return null;
+        }
+        return modelConverter.toUserInfoVO(userDO);
+    }
+
+    /**
+     * 分页查询用户账号信息
+     * */
     public PageVO<UserInfoVO> pagingQueryUserInfo(long pageNum, long pageSize) {
         Page<TblUserDO> page = new Page<>(pageNum, pageSize, true);
         List<TblUserDO> userDOList = userMapper.selectList(page, null);

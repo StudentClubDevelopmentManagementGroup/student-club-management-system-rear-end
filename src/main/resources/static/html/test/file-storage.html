@@ -6,116 +6,98 @@
   <title>测试 - 文件存储</title>
 
   <style>
-    body {
-      padding: 0;
-      margin: 0;
-    }
-
     :root {
       --color-light-green: #2eb526;
       --color-green: #09a800;
-      --color-white: #ffffff;
-      --color-light-gray: #e7e7e7;
-      --color-black: #000000;
     }
 
-
-    /* 版心 */
-    .main-container {
-      margin: 1em;
-      margin-bottom: 0;
-    }
-    .main-container:last-of-type {
-      margin: 1em;
+    body {
+      padding: 0;
+      margin: 0;
+      height: 120vh;
+      display: flex;
+      flex-direction: column;
     }
 
-
-    /* 按钮 */
-    .green-btn {
-      padding: 0.25em 1em;
-      color: var(--color-white);
+    form {
+      display: flex;
+      margin: 1em 1em 0 1em;
+    }
+    form > button {
+      width: 18em;
+      color: white;
       background-color: var(--color-green);
-    }
-    .green-btn:hover {
-      background-color: var(--color-light-green);
+      border: 1.5px solid var(--color-green);
+      font-size: 14px;
       cursor: pointer;
     }
-    .green-btn:active {
+    form > button:hover {
+      background-color: var(--color-light-green);
+    }
+    form > button:active {
       color: var(--color-green);
-      background-color: var(--color-white);
+      background-color: white;
     }
-
-
-    /* 输入框 */
-    .green-input {
+    form > input {
       flex: 1;
-      padding: 0.5em;
+      padding-left: 1em;
+      min-height: 2em;
+      line-height: 2em;
       outline: none;
+      border: 1.5px solid var(--color-green);
+      border-left: none;
+      text-align: left;
+      cursor: pointer;
     }
-    .green-input[type="file"]::file-selector-button {
+    form > input[type="file"]::file-selector-button {
       display: none;
     }
-    .green-input[type="file"]:hover {
-      cursor: pointer;
-    }
-    .green-input::placeholder {
-      color: var(--color-black);
+    form > input::placeholder {
+      color: black;
     }
 
-
-    /* 原子 */
-    .display-flex {
-      display: flex;
-    }
-    .font-size-16px {
-      font-size: 16px;
-    }
-    .green-border {
+    div#output {
+      margin: 1em;
+      flex: 1;
       border: 1.5px solid var(--color-green);
     }
-    .border-left-none {
-      border-left: none;
+    div#output > iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      font-size: 25px;
     }
   </style>
 </head>
 
 <body>
-  <div style="height: 100vh; display: flex; flex-direction: column;">
+  <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
+    <button type="submit" class="green-btn">上传文件至服务器的本地文件系统</button>
+    <input class="green-input" type="file" name="file">
+  </form>
 
-    <div class="main-container">
-      <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
-        <div class="display-flex">
-          <button type="submit" class="green-btn green-border font-size-16px">上传文件至服务器的本地文件系统</button>
-          <input name="file" type="file" enctype="multipart/form-data"
-              class="green-input green-border border-left-none">
-        </div>
-      </form>
-    </div>
+  <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
+    <button type="submit" class="green-btn">上传文件至云存储空间</button>
+    <input class="green-input" type="file" name="file">
+  </form>
 
-    <div class="main-container">
-      <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
-        <div class="display-flex">
-          <button type="submit" class="green-btn green-border font-size-16px">上传文件至云存储空间</button>
-          <input name="file" type="file" enctype="multipart/form-data"
-              class="green-input green-border border-left-none">
-        </div>
-      </form>
-    </div>
-    
-    <div class="main-container">
-      <form action="/get_uploaded_file_url" method="get" target="output">
-        <div class="display-flex">
-          <button class="green-btn green-border font-size-16px" type="submit">获取访问已上传的文件的URL</button>
-          <input class="green-input green-border border-left-none"
-                 type="text" name="file_id" placeholder="请输入文件id">
-        </div>
-      </form>
-    </div>
-  
-    <div class="main-container green-border" style="flex: 1;">
-      <iframe name="output" style="width: 100%; height: 100%; border: none; font-size: 25px;"></iframe>
-    </div>
+  <form action="/get_uploaded_file_url" method="get" target="output">
+    <button class="green-btn" type="submit">获取访问已上传的文件的URL</button>
+    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
+  </form>
+
+  <form action="/get_uploaded_file" method="get" target="output">
+    <button class="green-btn" type="submit">获取访问已上传的文件</button>
+    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
+  </form>
+
+  <form action="/delete_uploaded_file" method="post" target="output">
+    <button class="green-btn" type="submit">删除已上传的文件</button>
+    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
+  </form>
+
+  <div id="output">
+    <iframe name="output"></iframe>
   </div>
-
 </body>
 </html>

@@ -5,7 +5,7 @@ import lombok.Data;
 
 
 @Data
-public class ClubMasDTO {
+public class ClubMsgDTO {
 
     @JsonProperty("name")
     String   name;

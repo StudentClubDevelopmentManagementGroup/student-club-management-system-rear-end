@@ -1,6 +1,7 @@
 package team.project.module.user.internal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -34,14 +35,17 @@ public class LoginController {
         String password = req.getPassword();
 
         UserInfoVO userInfo = service.login(userId, password);
+        if (userInfo == null) {
+            /* 依前端要求，登录失败返回 400 状态码 */
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("用户不存在或密码错误");
+        }
 
         StpUtil.login(userId);
-        String token = StpUtil.getTokenValueByLoginId(userId);
-        StpUtil.getSessionByLoginId(StpUtil.getLoginId()).set("user_id", userId);
+        SaTokenInfo token = StpUtil.getTokenInfo();
 
         Map<String, Object> loginResult = new HashMap<>();
         loginResult.put("user_info", userInfo);
-        loginResult.put("token", token);
+        loginResult.put("token", token.getTokenValue());
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }

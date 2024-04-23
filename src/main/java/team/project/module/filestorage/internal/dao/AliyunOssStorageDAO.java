@@ -31,39 +31,41 @@ import java.util.Date;
 public class AliyunOssStorageDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final String endpoint;
-    private final String accessKeyId;
-    private final String accessKeySecret;
     private final String bucketName;
+    private final OSS    ossClient;
 
     AliyunOssStorageDAO(AliyunOssConfig cfg) {
-        this.endpoint        = cfg.endpoint;
-        this.accessKeyId     = cfg.accessKeyId;
-        this.accessKeySecret = cfg.accessKeySecret;
-        this.bucketName      = cfg.bucketName;
+        String endpoint        = cfg.endpoint;
+        String accessKeyId     = cfg.accessKeyId;
+        String accessKeySecret = cfg.accessKeySecret;
+        this.bucketName        = cfg.bucketName;
+
+        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 
-    /* 采用简单上传的方式，上传不超过5 GB大小的文件 */
+    /**
+     * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
+     * */
     public void upload(String key, MultipartFile file) throws IOException {
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-        try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
-            PutObjectResult result = ossClient.putObject(putObjectRequest);
-
-        } finally {
-            if (ossClient != null) {
-                ossClient.shutdown();
-            }
-        }
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
+        PutObjectResult result = ossClient.putObject(putObjectRequest);
     }
 
+    /**
+     * 获取访问文件的 URL（fileId 指向的文件不存在也会返回 URL，访问这个 URL 会响应文件不存在）
+     * */
     public String getUrl(String key) {
-        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
-
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
         request.setExpiration(new Date(new Date().getTime() + 10 * 1000L)); /* 设置过期时间 10 分钟 */
 
         URL url = ossClient.generatePresignedUrl(request);
         return url.toString();
+    }
+
+    /**
+     * 删除文件
+     * */
+    public void delete(String key) {
+        ossClient.deleteObject(bucketName, key);
     }
 }
