@@ -19,6 +19,10 @@ import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Set;
 
+
+/**
+ * 配合 @QueryParam 注解的参数解析器
+ * */
 @Configuration
 public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgumentResolver {
 

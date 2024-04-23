@@ -16,6 +16,7 @@ import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.request.PagingQueryReq;
 import team.project.module.user.internal.model.request.QueryUserInfoReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.UserInfoService;
@@ -70,8 +71,11 @@ public class UserInfoController {
 
     @Operation(summary="查询用户账号信息")
     @GetMapping("/user_info/query")
-    // @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object queryUserInfo(@QueryParam QueryUserInfoReq req) {
+    @SaCheckRole(AuthRole.SUPER_ADMIN)
+    Object queryUserInfo(
+        @QueryParam QueryUserInfoReq req,
+        @QueryParam PagingQueryReq   page
+    ) {
         return new Response<>(ServiceStatus.SUCCESS);
     }
 }

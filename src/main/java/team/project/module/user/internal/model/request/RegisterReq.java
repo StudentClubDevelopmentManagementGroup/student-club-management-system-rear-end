@@ -1,10 +1,7 @@
 package team.project.module.user.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import team.project.module.user.internal.model.annotation.UserPasswordConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
@@ -36,6 +33,7 @@ public class RegisterReq {
     @JsonProperty("tel")
     private String tel;
 
+    @Email
     @NotBlank(message="邮箱不能为空")
     @Size(min=1, max=100, message="邮箱的长度不合约束")
     @JsonProperty("mail")
