@@ -84,7 +84,7 @@ public class AttendanceController {
     }
 
 
-    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59")
+    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）")
     @PostMapping("/attendance/durationTime")
     public Object getAttendanceTime(@RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
         if(getAttendanceTimeReq.getUserId() ==null){
@@ -102,7 +102,7 @@ public class AttendanceController {
     }
 
     //getEachAttendanceRecord
-    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59")
+    @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）")
     @PostMapping("/attendance/record")
     public Object getEachAttendanceRecord(@RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
         if(getAttendanceRecordReq.getUserId() ==null){
