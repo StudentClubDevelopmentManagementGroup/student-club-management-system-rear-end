@@ -5,9 +5,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
+import team.project.module.user.internal.model.request.QueryUserInfoReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.util.ModelConverter;
 
@@ -39,8 +41,8 @@ public class UserInfoService {
     /**
      * 分页查询用户账号信息
      * */
-    public PageVO<UserInfoVO> pagingQueryUserInfo(long pageNum, long pageSize) {
-        Page<TblUserDO> page = new Page<>(pageNum, pageSize, true);
+    public PageVO<UserInfoVO> pagingQueryUserInfo(PagingQueryReq pageReq) {
+        Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
         List<TblUserDO> userDOList = userMapper.selectList(page, null);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
@@ -49,5 +51,9 @@ public class UserInfoService {
         }
 
         return new PageVO<>(userInfoList, page);
+    }
+
+    public PageVO<UserInfoVO> pagingQueryUserInfo(QueryUserInfoReq query, PagingQueryReq page) {
+        return null;
     }
 }

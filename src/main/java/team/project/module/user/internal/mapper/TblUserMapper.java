@@ -13,7 +13,7 @@ import java.util.List;
 public interface TblUserMapper extends BaseMapper<TblUserDO> {
 
     /**
-     * 查询用户信息（所有字段都查询）
+     * 查询指定用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -23,7 +23,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 查询用户信息（所有字段都查询）
+     * 查询指定用户信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId, String password) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -34,7 +34,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
      /**
-     * 查询用户基本信息（只查询姓名和角色，其他属性为 null）
+     * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
      * */
     default TblUserDO selectBasicInfo(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -45,7 +45,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 查询用户角色（只查询角色，其他属性为 null）
+     * 查询指定用户的角色信息（只查询角色，其他属性为 null）
      * */
     default TblUserDO selectRole(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -68,7 +68,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 给用户增添角色
+     * 给指定用户增添角色
      * */
     default int addRoleToUser(String userId, UserRoleEnum roleToAdd) {
         /* 2024-03-26 ljh
@@ -120,7 +120,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 给用户移除角色
+     * 给指定用户移除角色
      * */
     default int removeRoleFromUser(String userId, UserRoleEnum roleToRemove) {
         TblUserDO user = this.selectRole(userId);

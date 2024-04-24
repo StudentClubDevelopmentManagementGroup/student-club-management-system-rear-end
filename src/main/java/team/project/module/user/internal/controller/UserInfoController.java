@@ -43,7 +43,7 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfo);
     }
 
-    @Operation(summary="查询用户账号信息")
+    @Operation(summary="查询指定用户账号信息")
     @GetMapping("/user_info/select_one")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectOne(@NotNull @UserIdConstraint @RequestParam("user_id") String userId) {
@@ -57,25 +57,24 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfo);
     }
 
-    @Operation(summary="分页查询用户账号信息", hidden=true)
-    @GetMapping("/user_info/paging_query")
+    @Operation(summary="查询所有用户账号信息（分页查询）", hidden=true)
+    @GetMapping("/user_info/all")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object pagingQuery(
-        @Min(value=1, message="分页查询指定当前页码不能小于 1") @RequestParam("page_num")  Long pageNum,
-        @Min(value=1, message="每页大小最小不能小于 1")       @RequestParam("page_size") Long pageSize
-    ) {
+    Object pagingQuery(@QueryParam PagingQueryReq pageReq) {
         return new Response<>(ServiceStatus.SUCCESS).data(
-            service.pagingQueryUserInfo(pageNum, pageSize)
+            service.pagingQueryUserInfo(pageReq)
         );
     }
 
-    @Operation(summary="查询用户账号信息")
+    @Operation(summary="查询用户账号信息（模糊查询，分页查询）")
     @GetMapping("/user_info/query")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object queryUserInfo(
-        @QueryParam QueryUserInfoReq req,
-        @QueryParam PagingQueryReq   page
+        @QueryParam QueryUserInfoReq queryReq,
+        @QueryParam PagingQueryReq   pageReq
     ) {
-        return new Response<>(ServiceStatus.SUCCESS);
+        return new Response<>(ServiceStatus.SUCCESS).data(
+            service.pagingQueryUserInfo(queryReq, pageReq)
+        );
     }
 }
