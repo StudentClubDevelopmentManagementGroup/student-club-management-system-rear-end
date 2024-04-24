@@ -52,14 +52,19 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     //签退,返回完整信息
     default AttendanceDO userCheckOutTest(UserCheckoutReq userCheckoutReq){
+        //先查询今天最新的签到记录
         AttendanceDO latestCheckInRecord =
                 getLatestCheckInRecord(userCheckoutReq.getUserId(), userCheckoutReq.getClubId());
-        // 补全签退字段
-        latestCheckInRecord.setCheckoutTime(userCheckoutReq.getCheckoutTime());
-        // 更新数据库中的签到记录的签退时间字段
-        updateById(latestCheckInRecord); // 更新数据库中的记录
-        // 返回签到信息
-        return latestCheckInRecord;
+        if(latestCheckInRecord !=null && latestCheckInRecord.getCheckoutTime() == null){
+            // 补全签退字段
+            latestCheckInRecord.setCheckoutTime(userCheckoutReq.getCheckoutTime());
+            // 更新数据库中的签到记录的签退时间字段
+            updateById(latestCheckInRecord); // 更新数据库中的记录
+            // 返回签到信息
+            return latestCheckInRecord;
+        }else {
+            return null;
+        }
     }
 
 

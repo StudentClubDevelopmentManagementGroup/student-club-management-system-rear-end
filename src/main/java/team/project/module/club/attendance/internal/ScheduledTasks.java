@@ -17,6 +17,6 @@ public class ScheduledTasks {
     public void timedDeleteRecord() {
         // 调用服务类的 TimedDeleteRecord() 方法
         int affectedRows = attendanceService.timedDeleteRecord();
-        System.out.println("成功更新记录数：" + affectedRows);
+        System.out.println("逻辑删除签到记录数：" + affectedRows);
     }
 }

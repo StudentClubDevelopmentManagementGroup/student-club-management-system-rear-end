@@ -29,6 +29,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
     }
 
+
     @Override
     //签退返回签到信息
     public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
@@ -46,15 +47,18 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     public AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId){
         if(attendanceMapper.getLatestCheckInRecord(userId,clubId) != null) {
+            //BeanUtils.copyProperties方法将一个对象的属性复制到另一个对象
+            // 复制空对象会引发异常
             AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
             BeanUtils.copyProperties(attendanceMapper.getLatestCheckInRecord(userId,clubId), attendanceInfoVO);
             return attendanceInfoVO;
         }else{
             return null;
         }
-
-
     }
+
+
+
 
     //补签
     @Override
@@ -64,6 +68,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         BeanUtils.copyProperties(applyAttendanceReq, attendanceDO); // 将属性复制到 AttendanceDO 对象中
         // 调用 MyBatis-Plus 提供的 save 方法将补签记录插入数据库
         boolean success = this.save(attendanceDO);
+
 
         // 创建一个用于返回的对象
         AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();

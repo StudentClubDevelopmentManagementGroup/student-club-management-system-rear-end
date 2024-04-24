@@ -2,11 +2,11 @@ package team.project.module.club.attendance.internal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
@@ -35,9 +35,11 @@ public class AttendanceController {
                 .data(attendanceInfoVO);
     }
 
+
+
     @Operation(summary="社团成员签到,时间格式为(2024-04-15 13:01:33)")
     @PostMapping("/checkIn")
-    public Object userCheckInTest(@RequestBody /* TODO jsr303 */ UserCheckInReq userCheckinReq) {
+    public Object userCheckIn( @Valid @RequestBody  UserCheckInReq userCheckinReq) {
         // 查询当天最新的签到记录
         AttendanceInfoVO latestCheckInRecord = attendanceService.getLatestCheckInRecord(userCheckinReq.getUserId(), userCheckinReq.getClubId());
 
@@ -45,19 +47,19 @@ public class AttendanceController {
         if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
             return new Response<>(ServiceStatus.BAD_REQUEST)
                     .statusText("签到失败，上一次签到未签退");
+        }else {
+            // 如果最新签到记录不存在或签退时间不为空，则可以进行签到操作
+            AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
+            return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("签到成功")
+                    .data(attendanceInfoVO);
         }
-
-        // 如果最新签到记录不存在或签退时间不为空，则可以进行签到操作
-        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
-        return new Response<>(ServiceStatus.SUCCESS)
-                .statusText("签到成功")
-                .data(attendanceInfoVO);
     }
 
 
     @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
     @PatchMapping ("/checkout")
-    public Object userCheckout(@RequestBody UserCheckoutReq userCheckoutReq) {
+    public Object userCheckout(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
         AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckOut(userCheckoutReq);
         if(attendanceInfoVO != null){
             return new Response<>(ServiceStatus.SUCCESS)
@@ -68,15 +70,13 @@ public class AttendanceController {
                     .statusText("没有可以签退的记录");
         }
 
-
-
     }
 
 
 
     @Operation(summary="负责人帮社团成员补签，时间格式为(2024-04-15 13:01:33)")
     @PostMapping("/applyAttendance")
-    public Object makeUpAttendance(@RequestBody /* TODO jsr303 */ ApplyAttendanceReq applyAttendanceReq) {
+    public Object makeUpAttendance(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq) {
         AttendanceInfoVO attendanceInfoVO = attendanceService.makeUpAttendance(applyAttendanceReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("补签成功")
@@ -84,9 +84,13 @@ public class AttendanceController {
     }
 
 
-    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）")
+    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）",
+            description = """
+                    -学号为空则查询社团全部成员的打卡时长 \n
+                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡时长
+                    """)
     @PostMapping("/attendance/durationTime")
-    public Object getAttendanceTime(@RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
+    public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
         if(getAttendanceTimeReq.getUserId() ==null){
             List<ClubAttendanceDurationVO> eachAttendanceTime =
                     attendanceService.getEachAttendanceDurationTime(getAttendanceTimeReq);
@@ -101,10 +105,11 @@ public class AttendanceController {
         }
     }
 
+
     //getEachAttendanceRecord
     @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）")
     @PostMapping("/attendance/record")
-    public Object getEachAttendanceRecord(@RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
+    public Object getEachAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
         if(getAttendanceRecordReq.getUserId() ==null){
             List<AttendanceInfoVO> eachAttendanceRecord =
                     attendanceService.getEachAttendanceRecord(getAttendanceRecordReq);
