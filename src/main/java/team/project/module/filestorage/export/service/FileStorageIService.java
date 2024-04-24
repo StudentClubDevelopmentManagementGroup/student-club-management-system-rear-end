@@ -5,16 +5,18 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileStorageIService {
 
     /**
-     * 上传文件到本地文件系统
+     * <p>上传文件到本地文件系统中（指定目录）<br>
+     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录</p>
      * @return 如果上传成功，返回 fileId，如果上传途中出现异常则返回 null
      * */
-    String uploadFileToLocalFileSystem(MultipartFile file);
+    String uploadFileToLocalFileSystem(MultipartFile file, String targetFolder);
 
     /**
-     * 上传文件到云存储空间
+     * 上传文件到云存储空间（指定目录）<br>
+     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录</p>
      * @return 如果上传成功，返回 fileId，如果上传途中出现异常则返回 null
      * */
-    String uploadFileToCloudStorage(MultipartFile file);
+    String uploadFileToCloudStorage(MultipartFile file, String targetFolder);
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>

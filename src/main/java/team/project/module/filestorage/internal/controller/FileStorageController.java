@@ -29,7 +29,7 @@ public class FileStorageController {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        String fileId = service.uploadFileToLocalFileSystem(file);
+        String fileId = service.uploadFileToLocalFileSystem(file, "/");
         if (fileId != null) {
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }
@@ -46,7 +46,7 @@ public class FileStorageController {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        String fileId = service.uploadFileToCloudStorage(file);
+        String fileId = service.uploadFileToCloudStorage(file, "/");
         if (fileId != null) {
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }

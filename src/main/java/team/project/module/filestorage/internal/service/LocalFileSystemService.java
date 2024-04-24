@@ -26,6 +26,13 @@ public class LocalFileSystemService {
     }
 
     /**
+     * 解析文件 id 得到文件路径 ljh_TODO
+     * */
+    private String parseFileIdToFilePath(String fileId) {
+        return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
+    }
+
+    /**
      * <p>通过 fileId 判断文件是否可能存储在本地文件系统中</p>
      * <p>如果文件存储在本地文件系统中，则 fileId 一定符合某种规则<br>
      * 操作文件前，先判断 fileId 是否符合这个规则<br>
@@ -36,16 +43,16 @@ public class LocalFileSystemService {
     }
 
     /**
-     * 上传文件（文件会更名，存储在特定目录下）
+     * <p>上传文件到指定目录（文件会更名）<br>
+     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录（根目录用单个斜杠表示）</p>
      * @return 如果成功返回 fileId，如果上传途中出现异常则返回 null
      * */
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file, String targetFolder) {
         String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
-
-        String fileId = uploadedFileIdPrefix + "/" + newFilename;
-
+        String fileId = Util.fixPath(uploadedFileIdPrefix + "/" + targetFolder + "/" + newFilename);
+        String folder = Util.fixPath(uploadedFilesFolder + "/" + targetFolder);
         try {
-            localFileSystemDAO.save(uploadedFilesFolder, newFilename, file);
+            localFileSystemDAO.save(folder, newFilename, file);
             return fileId;
         }
         catch (Exception e) {
@@ -63,8 +70,7 @@ public class LocalFileSystemService {
      * @return 如果获取成功，则返回 URL
      * */
     public String getUploadedFileUrl(String fileId) {
-        String filePath = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
-        return baseUrl + filePath;
+        return baseUrl + parseFileIdToFilePath(fileId);
     }
 
     /**
@@ -72,9 +78,8 @@ public class LocalFileSystemService {
      * @return 执行时没有发生异常则返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
-        String fileName = fileId.substring(uploadedFileIdPrefix.length() + 1);
         try {
-            boolean ignored = localFileSystemDAO.delete(uploadedFilesFolder, fileName);
+            boolean ignored = localFileSystemDAO.delete(parseFileIdToFilePath(fileId));
             return true;
         }
         catch (Exception e) {

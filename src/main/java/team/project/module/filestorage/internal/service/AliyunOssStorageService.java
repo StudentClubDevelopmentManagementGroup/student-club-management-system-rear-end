@@ -37,15 +37,14 @@ public class AliyunOssStorageService {
     }
 
     /**
-     * 上传文件（文件会更名，存储在特定目录下）
+     * <p>上传文件到指定目录（文件会更名）<br>
+     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录（根目录用单个斜杠表示）</p>
      * @return 如果成功返回 fileId，如果上传途中出现异常则返回 null
      * */
-    public String upload(MultipartFile file) {
+    public String upload(MultipartFile file,  String targetFolder) {
         String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
-
         String fileId = uploadedFileIdPrefix + "/" + newFilename;
-        String fileKey = uploadedFilesFolder + "/" + newFilename;
-
+        String fileKey = Util.fixPath(uploadedFilesFolder + "/" + targetFolder + "/" + newFilename);
         try {
             aliyunOssStorageDAO.upload(fileKey, file);
 

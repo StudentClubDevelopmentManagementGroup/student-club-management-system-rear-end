@@ -13,6 +13,7 @@ import java.io.IOException;
 public class LocalFileSystemDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
+    /* 本地文件系统中，存储用户数据文件的根目录（在配置文件中以绝对路径形式给出） */
     private final String rootFolder;
 
     LocalFileSystemDAO(LocalFileSystemConfig cfg) {
@@ -25,8 +26,8 @@ public class LocalFileSystemDAO {
         file.transferTo(new File(folder + "/" + fileName));
     }
 
-    public boolean delete(String uploadedFilesFolder, String fileName) {
-        File file = new File(rootFolder + "/" + uploadedFilesFolder + "/" + fileName);
+    public boolean delete(String filePath) {
+        File file = new File(rootFolder + "/" + filePath);
         return file.delete(); /* <- 只要真的删除成功，才返回是 true，其他情况都是 false */
     }
 }
