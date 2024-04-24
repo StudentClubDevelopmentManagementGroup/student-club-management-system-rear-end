@@ -3,6 +3,7 @@ package team.project.module.club.attendance.internal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
@@ -78,6 +79,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
                 .orderByDesc("checkin_time")
                 .last("LIMIT 1");
         AttendanceDO attendanceDO = this.selectOne(queryWrapper);
+
         return attendanceDO;
 
     }
@@ -97,7 +99,6 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     //查社团所有成员指定时间打卡记录
     List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
-
 
 
 

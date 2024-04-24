@@ -109,21 +109,12 @@ public class AttendanceController {
     //getEachAttendanceRecord
     @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）")
     @PostMapping("/attendance/record")
-    public Object getEachAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
-        if(getAttendanceRecordReq.getUserId() ==null){
-            List<AttendanceInfoVO> eachAttendanceRecord =
-                    attendanceService.getEachAttendanceRecord(getAttendanceRecordReq);
-
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(eachAttendanceRecord);
-        }else {
-            List<AttendanceInfoVO> oneAttendanceRecord =
-                    attendanceService.getEachAttendanceRecord(getAttendanceRecordReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(oneAttendanceRecord);
-        }
+    public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
+        List<AttendanceInfoVO> eachAttendanceRecord =
+                attendanceService.getAttendanceRecord(getAttendanceRecordReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachAttendanceRecord);
     }
 
 

@@ -23,7 +23,7 @@
 
     </resultMap>
 
-
+    <!--查询打卡记录-->
     <select id="getAttendanceRecord"
             resultMap="AttendanceInfoVO">
         SELECT *
@@ -41,6 +41,10 @@
 
 
 
+
+
+
+
     <!--查询社团一个成员指定时间段的打卡时长 -->
     <select id="getOneAttendanceDurationTime"
             parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
@@ -53,14 +57,17 @@
         is_deleted = 0
         AND club_id = #{clubId}
         AND user_id = #{userId}
+        <if test="startTime != null and endTime != null">
         AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
     </select>
+
+
 
     <!-- 查询社团每个成员指定时间段的打卡时长 -->
     <select id="getEachAttendanceDurationTime"
             parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
             resultMap="ClubAttendanceDurationVO">
-        <![CDATA[
         SELECT
         user_id,
         SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS attendance_duration_time
@@ -69,11 +76,12 @@
         WHERE
         is_deleted = 0
         AND club_id = #{clubId}
-        AND checkin_time >= #{startTime}
-        AND ( checkout_time <= #{endTime} OR checkout_time IS NULL )
+        <if test="startTime != null and endTime != null">
+            AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
         GROUP BY
         user_id;
-        ]]>
+
     </select>
 
 

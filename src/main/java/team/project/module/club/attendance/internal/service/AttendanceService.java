@@ -1,6 +1,7 @@
 package team.project.module.club.attendance.internal.service;
 
 
+import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
@@ -33,8 +34,10 @@ public interface AttendanceService {
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
 
-    //查社团所有成员指定时间打卡记录
-    List<AttendanceInfoVO> getEachAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
+    //查社团成员指定时间打卡记录
+    List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
+
+
 
 
     //每天23.59.59逻辑删除当天未签退的记录

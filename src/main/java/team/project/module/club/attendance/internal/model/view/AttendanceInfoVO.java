@@ -8,8 +8,9 @@ import java.time.LocalDateTime;
 public class AttendanceInfoVO {
 
     private Long id;
-    private String userId;
     private Long clubId;
+    private String userId;
+    private String userName;
     private LocalDateTime checkInTime;
     private LocalDateTime checkoutTime;
     private boolean isDeleted;
