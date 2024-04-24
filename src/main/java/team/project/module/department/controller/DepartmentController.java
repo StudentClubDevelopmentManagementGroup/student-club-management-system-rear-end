@@ -3,7 +3,7 @@ package team.project.module.department.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.web.bind.annotation.*;
-import team.project.base.controller.Response;
+import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.department.model.request.AddDepartmentReq;
 import team.project.module.department.model.request.AlterDepartmentNameReq;

@@ -1,13 +1,15 @@
-package team.project.base.model;
+package team.project.base.model.view;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 /* 用来封装分页查询的返回结果 */
-@Data
+@Getter
+@Setter
 public class PageVO<VO> {
     @JsonProperty("records")      private List<VO> records;
     @JsonProperty("current_page") private Long     currentPage;

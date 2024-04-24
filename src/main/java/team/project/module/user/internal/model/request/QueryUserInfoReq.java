@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
+import java.util.List;
+
 @Data
 public class QueryUserInfoReq {
 
@@ -29,4 +31,7 @@ public class QueryUserInfoReq {
     @Pattern(regexp="^(student|teacher)$", message="用户角色只能在“student”和“teacher”中二选一")
     @JsonProperty("role")
     private String role;
+
+    @JsonProperty("l")
+    private long l;
 }
