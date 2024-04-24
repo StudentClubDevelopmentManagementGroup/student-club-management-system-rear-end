@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Min;
 import lombok.Getter;
 import lombok.Setter;
 
+/* 用来封装分页查询的请求 */
 @Getter
 @Setter
 public class PagingQueryReq {

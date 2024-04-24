@@ -3,9 +3,11 @@ package team.project.module.user.internal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.model.enums.UserRoleEnum;
+import team.project.module.user.internal.model.query.QueryUserQO;
 
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
 public interface TblUserMapper extends BaseMapper<TblUserDO> {
 
     /**
-     * 查询指定用户信息（所有字段都查询）
+     * 查询指定用户的账号信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -23,7 +25,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 查询指定用户信息（所有字段都查询）
+     * 查询指定用户的账号信息（所有字段都查询）
      * */
     default TblUserDO selectOne(String userId, String password) {
         List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
@@ -53,6 +55,29 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             .eq(TblUserDO::getUserId, userId)
         );
         return userList.size() == 1 ? userList.get(0) : null;
+    }
+
+    /**
+     * 搜索用户（模糊查询）
+     * */
+    default  List<TblUserDO> searchUsers(Page<TblUserDO> page, QueryUserQO queryQO) {
+        String userId   = queryQO.getUserId();
+        String userName = queryQO.getUserName();
+        String userIdLike   = (userId != null)   ? ("%" + userId.replace("%", "")   + "%") : "";
+        String userNameLike = (userName != null) ? ("%" + userName.replace("%", "") + "%") : "";
+
+        return this.selectList(page, new LambdaQueryWrapper<TblUserDO>()
+            .select(
+                TblUserDO::getUserId,
+                TblUserDO::getDepartmentId,
+                TblUserDO::getName,
+                TblUserDO::getTel,
+                TblUserDO::getEmail,
+                TblUserDO::getRole
+            )
+            .like(userId   != null, TblUserDO::getUserId, userIdLike)
+            .like(userName != null, TblUserDO::getName,   userNameLike)
+        );
     }
 
     /**

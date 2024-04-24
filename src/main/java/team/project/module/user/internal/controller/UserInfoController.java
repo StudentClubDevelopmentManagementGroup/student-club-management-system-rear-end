@@ -5,7 +5,7 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,7 +17,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 import team.project.base.model.request.PagingQueryReq;
-import team.project.module.user.internal.model.request.QueryUserInfoReq;
+import team.project.module.user.internal.model.request.SearchUserReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.UserInfoService;
 
@@ -28,8 +28,9 @@ public class UserInfoController {
 
     @Autowired
     UserInfoService service;
+
     @Operation(summary="查询自己的账号信息")
-    @GetMapping("/user_info/self")
+    @GetMapping({"/user_info/select_self"})
     @SaCheckLogin
     Object selectSelf() {
         String userId = (String)( StpUtil.getSession().getLoginId() );
@@ -57,24 +58,20 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfo);
     }
 
-    @Operation(summary="查询所有用户账号信息（分页查询）", hidden=true)
-    @GetMapping("/user_info/all")
+    @Operation(summary="查询所有用户账号信息（分页查询）")
+    @GetMapping("/user_info/select_all")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object pagingQuery(@QueryParam PagingQueryReq pageReq) {
-        return new Response<>(ServiceStatus.SUCCESS).data(
-            service.pagingQueryUserInfo(pageReq)
-        );
+    Object selectAll(@QueryParam PagingQueryReq pageReq) {
+        return new Response<>(ServiceStatus.SUCCESS).data(service.selectUserInfo(pageReq));
     }
 
-    @Operation(summary="查询用户账号信息（模糊查询，分页查询）")
-    @GetMapping("/user_info/query")
-    @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object queryUserInfo(
-        @QueryParam QueryUserInfoReq queryReq,
-        @QueryParam PagingQueryReq   pageReq
+    @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）")
+    @GetMapping("/user_info/search")
+    //@SaCheckRole(AuthRole.SUPER_ADMIN)
+    Object selectAll(
+        @Valid @QueryParam SearchUserReq  searchReq,
+        @Valid @QueryParam PagingQueryReq pageReq
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(
-            service.pagingQueryUserInfo(queryReq, pageReq)
-        );
+        return new Response<>(ServiceStatus.SUCCESS).data(service.searchUsers(pageReq, searchReq));
     }
 }

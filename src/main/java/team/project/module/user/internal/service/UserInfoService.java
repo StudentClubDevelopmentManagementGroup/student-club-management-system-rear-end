@@ -9,7 +9,8 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.request.QueryUserInfoReq;
+import team.project.module.user.internal.model.query.QueryUserQO;
+import team.project.module.user.internal.model.request.SearchUserReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.util.ModelConverter;
 
@@ -27,7 +28,7 @@ public class UserInfoService {
     ModelConverter modelConverter;
 
     /**
-     * 查询用户账号信息
+     * 查询指定用户的账号信息
      * @return 如果查询到成功则账号信息，否则返回 null
      * */
     public UserInfoVO selectUserInfo(String userId) {
@@ -39,9 +40,9 @@ public class UserInfoService {
     }
 
     /**
-     * 分页查询用户账号信息
+     * 查询所有用户的账号信息（分页查询）
      * */
-    public PageVO<UserInfoVO> pagingQueryUserInfo(PagingQueryReq pageReq) {
+    public PageVO<UserInfoVO> selectUserInfo(PagingQueryReq pageReq) {
         Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
         List<TblUserDO> userDOList = userMapper.selectList(page, null);
 
@@ -53,7 +54,24 @@ public class UserInfoService {
         return new PageVO<>(userInfoList, page);
     }
 
-    public PageVO<UserInfoVO> pagingQueryUserInfo(QueryUserInfoReq query, PagingQueryReq page) {
-        return null;
+    /**
+    * 搜索用户，返回账号信息（分页查询、模糊查询）
+    * */
+    public PageVO<UserInfoVO> searchUsers(PagingQueryReq pageReq, SearchUserReq searchReq) {
+
+        Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+
+        QueryUserQO queryQO = new QueryUserQO();
+        queryQO.setUserId(   "".equals(searchReq.getUserId())   ? null : searchReq.getUserId()   );
+        queryQO.setUserName( "".equals(searchReq.getUserName()) ? null : searchReq.getUserName() );
+
+        List<TblUserDO> userDOList = userMapper.searchUsers(page, queryQO);
+
+        List<UserInfoVO> userInfoList = new ArrayList<>();
+        for (TblUserDO userDO : userDOList) {
+            userInfoList.add( modelConverter.toUserInfoVO(userDO) );
+        }
+
+        return new PageVO<>(userInfoList, page);
     }
 }

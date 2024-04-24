@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Valid;
 import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -62,10 +63,12 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
             throw new ServiceException(ServiceStatus.BAD_REQUEST, "请求参数的类型与所需的类型不匹配");
         }
 
-        Set<ConstraintViolation<Object>> violations = validator.validate(result);
-        if ( ! violations.isEmpty()) {
-            for (ConstraintViolation<Object> violation : violations) {
-                throw new ServiceException(ServiceStatus.BAD_REQUEST, "参数校验未通过：" + violation.getMessage());
+        if (parameter.hasParameterAnnotation(Valid.class)) {
+            Set<ConstraintViolation<Object>> violations = validator.validate(result);
+            if ( ! violations.isEmpty()) {
+                for (ConstraintViolation<Object> violation : violations) {
+                    throw new ServiceException(ServiceStatus.BAD_REQUEST, "参数校验未通过：" + violation.getMessage());
+                }
             }
         }
 
@@ -122,5 +125,3 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
         }
     }
 }
-
-

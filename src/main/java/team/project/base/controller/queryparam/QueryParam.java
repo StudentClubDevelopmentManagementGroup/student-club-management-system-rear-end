@@ -124,9 +124,11 @@ GET 请求的 api 中有多个小写下划线风格的查询参数：
 
 controller 中使用此注解修饰形参：
     GetMapping("xxx")
-    Object api( @QueryParam UserInfoReq req ) {
+    Object api( @Valid @QueryParam UserInfoReq req ) {
         ...
     }
+
+注意，如果要开启校验，还要多使用 @Valid 来修饰形参
 
 
 
