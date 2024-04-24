@@ -115,7 +115,7 @@ public class SeatService {
     }
 
     public List<SeatVO> view(String userId, Long clubId) {
-        /* TODO
+        /* ljh_TODO
         if ( ! clubMemberRoleService.isClubMember(userId, clubId)) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该社团的成员");
         }*/

@@ -100,7 +100,7 @@ public class SeatController {
 
         HashMap<String, Object> resultMap = new HashMap<>();
 
-        if (pageNum != null) { /* TODO: 伪分页 */
+        if (pageNum != null) { /* ljh_TODO: 伪分页 */
             resultMap.put("current_page", pageNum);
             resultMap.put("page_size",    pageSize);
             resultMap.put("total_pages",  (long)Math.ceil((double) result.size() / pageSize));

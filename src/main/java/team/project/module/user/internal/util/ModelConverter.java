@@ -11,7 +11,7 @@ import team.project.module.user.tmp.service.DepartmentService;
 public class ModelConverter {
 
     @Autowired
-    DepartmentService departmentService; /* TODO */
+    DepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
     public UserInfoVO toUserInfoVO(TblUserDO userDO) {
 

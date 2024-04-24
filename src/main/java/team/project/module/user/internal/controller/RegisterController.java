@@ -19,19 +19,19 @@ public class RegisterController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    RegisterService service;
+    RegisterService registerService;
 
     @Operation(summary="注册账号")
     @PostMapping("/user/register")
     Object register(@Valid @RequestBody RegisterReq req) {
-        service.register(req);
+        registerService.register(req);
         return new Response<>(ServiceStatus.CREATED).statusText("注册成功");
     }
 
     @Operation(summary="注销账号")
     @PostMapping("/user/unregister")
     Object unregister(@Valid @RequestBody UserIdAndPasswordReq req) {
-        service.unregister(req.getUserId(), req.getPassword());
+        registerService.unregister(req.getUserId(), req.getPassword());
         return new Response<>(ServiceStatus.SUCCESS).statusText("销号成功");
     }
 }
