@@ -16,6 +16,7 @@ import team.project.module.user.internal.util.ModelConverter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class UserInfoService {
@@ -61,9 +62,14 @@ public class UserInfoService {
 
         Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
 
+        String searchUserId       = searchReq.getUserId();
+        String searchUserName     = searchReq.getUserName();
+        Long   searchDepartmentId = searchReq.getDepartmentId();
+
         QueryUserQO queryQO = new QueryUserQO();
-        queryQO.setUserId(   "".equals(searchReq.getUserId())   ? null : searchReq.getUserId()   );
-        queryQO.setUserName( "".equals(searchReq.getUserName()) ? null : searchReq.getUserName() );
+        queryQO.setUserId(   "".equals(searchUserId)   ? null : searchUserId   );
+        queryQO.setUserName( "".equals(searchUserName) ? null : searchUserName );
+        queryQO.setDepartmentId(Objects.equals(0L, searchDepartmentId) ? null : searchDepartmentId);
 
         List<TblUserDO> userDOList = userMapper.searchUsers(page, queryQO);
 

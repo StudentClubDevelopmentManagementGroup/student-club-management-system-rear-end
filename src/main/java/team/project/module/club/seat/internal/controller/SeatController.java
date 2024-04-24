@@ -41,10 +41,10 @@ public class SeatController {
     }
 
     @Operation(summary="更新座位信息", description="""
-         - 修改部分信息：x、y、description 传修改后的值（传 null 则不修改）
-         - 分配座位：owner_id 传学号/工号，且 unset_owner 传 false 或 null
-         - 将座位置空：owner_id 传 null，且 unset_owner 传 true
-        """)
+     - 修改部分信息：x、y、description 传修改后的值（传 null 则不修改）
+     - 分配座位：owner_id 传学号/工号，且 unset_owner 传 false 或 null
+     - 将座位置空：owner_id 传 null，且 unset_owner 传 true
+    """)
     @PostMapping("/club/seat/update")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object update(@Valid @RequestBody UpdateSeatReq req) {

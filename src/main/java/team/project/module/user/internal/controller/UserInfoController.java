@@ -65,9 +65,11 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(service.selectUserInfo(pageReq));
     }
 
-    @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）")
+    @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）", description="""
+     - 学号/工号、姓名传 null 或 "" 表示全匹配，院系 id 传 null 或 0 表示全匹配
+    """)
     @GetMapping("/user_info/search")
-    //@SaCheckRole(AuthRole.SUPER_ADMIN)
+    @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectAll(
         @Valid @QueryParam SearchUserReq  searchReq,
         @Valid @QueryParam PagingQueryReq pageReq

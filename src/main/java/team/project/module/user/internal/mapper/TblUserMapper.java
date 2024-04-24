@@ -65,6 +65,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         String userName = queryQO.getUserName();
         String userIdLike   = (userId != null)   ? ("%" + userId.replace("%", "")   + "%") : "";
         String userNameLike = (userName != null) ? ("%" + userName.replace("%", "") + "%") : "";
+        Long   departmentId = queryQO.getDepartmentId();
 
         return this.selectList(page, new LambdaQueryWrapper<TblUserDO>()
             .select(
@@ -75,6 +76,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
                 TblUserDO::getEmail,
                 TblUserDO::getRole
             )
+            .eq(departmentId != null, TblUserDO::getDepartmentId, departmentId)
             .like(userId   != null, TblUserDO::getUserId, userIdLike)
             .like(userName != null, TblUserDO::getName,   userNameLike)
         );
