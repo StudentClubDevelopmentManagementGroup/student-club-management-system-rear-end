@@ -39,12 +39,6 @@
     </select>
 
 
-
-
-
-
-
-
     <!--查询社团一个成员指定时间段的打卡时长 -->
     <select id="getOneAttendanceDurationTime"
             parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
@@ -61,7 +55,6 @@
         AND checkin_time BETWEEN #{startTime} AND #{endTime}
         </if>
     </select>
-
 
 
     <!-- 查询社团每个成员指定时间段的打卡时长 -->

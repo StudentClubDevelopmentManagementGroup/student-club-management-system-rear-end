@@ -72,18 +72,6 @@ public class AttendanceController {
 
     }
 
-
-
-    @Operation(summary="负责人帮社团成员补签，时间格式为(2024-04-15 13:01:33)")
-    @PostMapping("/applyAttendance")
-    public Object makeUpAttendance(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq) {
-        AttendanceInfoVO attendanceInfoVO = attendanceService.makeUpAttendance(applyAttendanceReq);
-        return new Response<>(ServiceStatus.SUCCESS)
-                .statusText("补签成功")
-                .data(attendanceInfoVO);
-    }
-
-
     @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）",
             description = """
                     -学号为空则查询社团全部成员的打卡时长 \n
@@ -105,7 +93,6 @@ public class AttendanceController {
         }
     }
 
-
     //getEachAttendanceRecord
     @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）")
     @PostMapping("/attendance/record")
@@ -116,7 +103,6 @@ public class AttendanceController {
                 .statusText("查询成功")
                 .data(eachAttendanceRecord);
     }
-
 
 
 }

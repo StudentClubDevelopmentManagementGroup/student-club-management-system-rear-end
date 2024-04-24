@@ -40,6 +40,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         AttendanceDO attendanceDO = attendanceMapper.userCheckOutTest(userCheckoutReq);
         if(attendanceDO !=null){
             AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+            String userName = userInfoIService.selectUserBasicInfo(attendanceDO.getUserId()).getName();
+            attendanceInfoVO.setUserName(userName);
             BeanUtils.copyProperties(attendanceDO, attendanceInfoVO);
             return attendanceInfoVO;
         }else {
@@ -63,32 +65,6 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
 
 
-
-    //补签
-    @Override
-    public AttendanceInfoVO makeUpAttendance(ApplyAttendanceReq applyAttendanceReq) {
-        // 将 ApplyAttendanceReq 对象转换为 AttendanceDO 对象
-        AttendanceDO attendanceDO = new AttendanceDO();
-        BeanUtils.copyProperties(applyAttendanceReq, attendanceDO); // 将属性复制到 AttendanceDO 对象中
-        // 调用 MyBatis-Plus 提供的 save 方法将补签记录插入数据库
-        boolean success = this.save(attendanceDO);
-
-
-        // 创建一个用于返回的对象
-        AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-
-        // 如果保存成功，则将数据库中生成的 ID 和其他信息填充到返回对象中
-        if (success) {
-            attendanceInfoVO.setId(attendanceDO.getId());
-            attendanceInfoVO.setUserId(attendanceDO.getUserId());
-            attendanceInfoVO.setClubId(attendanceDO.getClubId());
-            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
-            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
-            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
-        }
-        // 返回包含插入数据的对象
-        return attendanceInfoVO;
-    }
     @Override
     //查社团一个成员指定时间打卡时长
     public Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
@@ -116,9 +92,6 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         }
         return attendanceInfoVOList;
     }
-
-
-
 
 
     //定时逻辑删除签到记录
