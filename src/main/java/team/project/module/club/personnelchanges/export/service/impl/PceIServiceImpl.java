@@ -18,7 +18,7 @@ public class PceIServiceImpl implements PceIService {
     TblUserClubMapper tblUserClubMapper;
     public boolean isClubManager(String userId, Long clubId)
     {
-        return tblUserClubMapper.selectManagerRole(userId, clubId) != null;
+        return tblUserClubMapper.selectManagerRole(userId, clubId) != null; // TODO
     }
 
     public PageVO<UserMsgDTO>  selectClubMember(ClubReq req) {

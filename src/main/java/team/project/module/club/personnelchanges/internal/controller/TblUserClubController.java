@@ -27,9 +27,8 @@ public class TblUserClubController {
                 .statusText("设置成功");
     }
 
-
     @Operation(summary="基地撤销负责人")
-    @PostMapping("/club/member/revoke_manager")
+    @PostMapping("/club/member/revoke_manager") // TODO 改名字
     Object quashManager(@Valid @RequestBody UserClubReq req) {
         ucService.quashClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
@@ -52,14 +51,13 @@ public class TblUserClubController {
                 .statusText("撤销成功");
     }
 
-    @Operation(summary="查询基地所有成员id")
+    @Operation(summary="查询基地所有成员信息")
     @PostMapping("/club/member/select_all")
     Object selectMember(@Valid @RequestBody ClubReq req) {
         ClubQO QO=new ClubQO(req.getClubId(),req.getPagenum(),req.getSize());
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
-                .data(ucService.selectClubMember(QO));
-
+                .data(ucService.selectClubMemberInfo(QO));
     }
 
     @Operation(summary="查询该用户是否是该社团成员")
@@ -72,5 +70,13 @@ public class TblUserClubController {
 
     }
 
+//    @Operation(summary = "通过姓名查询社团成员")
+//    @PostMapping("/club/member/select_member_by_name")
+//    Object selectMemberByName(@Valid @RequestBody ClubReq req) {
+//        ClubQO QO=new ClubQO(req.getClubId(),req.getPagenum(),req.getSize());
+//        return new Response<>(ServiceStatus.SUCCESS)
+//                .statusText("查询成功")
+//                .data(ucService.selectClubMember(QO));
+//    }
 
 }

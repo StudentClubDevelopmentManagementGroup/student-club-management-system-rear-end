@@ -3,7 +3,7 @@ package team.project.module.club.management.internal.model.datatransfer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
-
+//TODO: 给非单一职责的数据传输类添加说明
 @Data
 public class ClubMsgDTO {
 

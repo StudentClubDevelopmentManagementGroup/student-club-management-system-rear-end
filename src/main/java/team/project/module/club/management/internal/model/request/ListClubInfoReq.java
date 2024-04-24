@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 @Data
-public class TblClubReq {
+public class ListClubInfoReq {
     @JsonProperty("departmentId")
     Long     departmentId;
 

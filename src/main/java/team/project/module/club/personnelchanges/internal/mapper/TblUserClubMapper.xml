@@ -8,6 +8,13 @@
         <result column="user_id"                 property="userId" />
     </resultMap>
 
+
+    <resultMap id="userInfo" type="team.project.module.user.export.model.datatransfer.UserInfoDTO">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="user_id"                 property="userId" />
+        <result column="department_id"                 property="departmentId" />
+        <result column="mail"                    property="email" />
+    </resultMap>
     <update id="createManager">
         insert into tbl_user_club (role, user_id, club_id)
         values (2, #{userId}, #{clubId})
@@ -45,7 +52,13 @@
 
     <select id="selectClubMember"
             resultMap="userMasVO">
-        select user_id from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0
+        select user_id  from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0
+    </select>
+
+    <select id="selectClubMemberInfo"
+            resultMap="userInfo">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0 )
     </select>
 
     <!--     TODO xml文件加上逻辑删除-->
