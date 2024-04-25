@@ -25,21 +25,22 @@ public class LocalFileSystemService {
         this.baseUrl = cfg.baseUrl;
     }
 
-    /**
-     * 解析文件 id 得到文件路径 ljh_TODO
-     * */
+    private String generateFileId(String folderPath, String filename) {
+        return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
+    }
+
     private String parseFileIdToFilePath(String fileId) {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
     /**
      * <p>通过 fileId 判断文件是否可能存储在本地文件系统中</p>
-     * <p>如果文件存储在本地文件系统中，则 fileId 一定符合某种规则<br>
+     * <p>如果文件存储在本地文件系统中，则 fileId 一定符合存储规则<br>
      * 操作文件前，先判断 fileId 是否符合这个规则<br>
      * 若不符合，则认为文件不存在，不必再进行后续操作</p>
      * */
     public boolean isValidFileId(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix);
+        return fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
     /**
@@ -49,10 +50,10 @@ public class LocalFileSystemService {
      * */
     public String upload(MultipartFile file, String targetFolder) {
         String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
-        String fileId = Util.fixPath(uploadedFileIdPrefix + "/" + targetFolder + "/" + newFilename);
-        String folder = Util.fixPath(uploadedFilesFolder + "/" + targetFolder);
+        String fileId = generateFileId(targetFolder, newFilename);
+        String filePath = parseFileIdToFilePath(fileId);
         try {
-            localFileSystemDAO.save(folder, newFilename, file);
+            localFileSystemDAO.save(filePath, file);
             return fileId;
         }
         catch (Exception e) {
@@ -67,19 +68,23 @@ public class LocalFileSystemService {
      * <li>文件不存在（此时访问该 URL 可能会返回 404）</li>
      * <li>...</li>
      * </p>
-     * @return 如果获取成功，则返回 URL
+     * @return 获取成功返回 URL，失败返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
-        return baseUrl + parseFileIdToFilePath(fileId);
+        return isValidFileId(fileId) ? (baseUrl + parseFileIdToFilePath(fileId)) : null;
     }
 
     /**
-     * 删除文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
+     * <p>删除文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
      * @return 执行时没有发生异常则返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
+        if ( ! isValidFileId(fileId)) {
+            return true;
+        }
         try {
-            boolean ignored = localFileSystemDAO.delete(parseFileIdToFilePath(fileId));
+            String filePath = parseFileIdToFilePath(fileId);
+            boolean ignored = localFileSystemDAO.delete(filePath);
             return true;
         }
         catch (Exception e) {

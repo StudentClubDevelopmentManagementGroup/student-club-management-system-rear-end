@@ -5,16 +5,18 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileStorageIService {
 
     /**
-     * <p>上传文件到本地文件系统中（指定目录）<br>
-     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录</p>
-     * @return 如果上传成功，返回 fileId，如果上传途中出现异常则返回 null
+     * 上传文件到本地文件系统
+     * @param file 要上传的文件
+     * @param targetFolder 指定目录（路径要求：以'/'开头、以'/'开头分隔目录）
+     * @return 如果上传成功，返回 fileId，上传失败（上传途中出现异常）则返回 null
      * */
     String uploadFileToLocalFileSystem(MultipartFile file, String targetFolder);
 
     /**
-     * 上传文件到云存储空间（指定目录）<br>
-     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录</p>
-     * @return 如果上传成功，返回 fileId，如果上传途中出现异常则返回 null
+     * 上传文件到云存储空间
+     * @param file 要上传的文件
+     * @param targetFolder 指定目录（路径要求：以'/'开头、以'/'开头分隔目录）
+     * @return 如果上传成功，返回 fileId，上传失败（上传途中出现异常）则返回 null
      * */
     String uploadFileToCloudStorage(MultipartFile file, String targetFolder);
 
@@ -26,16 +28,12 @@ public interface FileStorageIService {
      * <li>...</li>
      * </p>
      *
-     * @return 访问该文件的 URL，或 null
-     * <li>如果 fileId 不符合格式，则返回 null</li>
-     * <li>如果 fileId 符合格式，则尝试获取 URL</li>
-     * <li>如果获取成功，则返回 URL</li>
-     * <li>如果获取失败（获取时出现异常）否则返回 null</li>
+     * @return 获取成功返回 URL，失败返回 null
      * */
     String getUploadedFileUrl(String fileId);
 
     /**
-     * 删除文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
+     * 删除 fileId 指向的文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
      * @return 执行时没有发生异常则返回 true，否则返回 false
      * */
     boolean deleteUploadedFile(String fileId);

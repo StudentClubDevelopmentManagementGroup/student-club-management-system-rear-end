@@ -13,17 +13,17 @@ import java.io.IOException;
 public class LocalFileSystemDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    /* 本地文件系统中，存储用户数据文件的根目录（在配置文件中以绝对路径形式给出） */
+    /* 本地文件系统中，存储用户数据文件的根目录（在配置文件中以绝对路径形式给出）*/
     private final String rootFolder;
 
     LocalFileSystemDAO(LocalFileSystemConfig cfg) {
         this.rootFolder = cfg.rootFolder;
     }
 
-    public void save(String targetFolder, String fileName, MultipartFile file) throws IOException {
-        File folder = new File(rootFolder + "/" + targetFolder);
-        boolean ignored = folder.mkdirs();
-        file.transferTo(new File(folder + "/" + fileName));
+    public void save(String filePath, MultipartFile file) throws IOException {
+        File fileToSave = new File(rootFolder + "/" + filePath);
+        boolean ignored = fileToSave.getParentFile().mkdirs();
+        file.transferTo(fileToSave);
     }
 
     public boolean delete(String filePath) {

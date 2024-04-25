@@ -53,7 +53,7 @@
       display: none;
     }
     form > input::placeholder {
-      color: black;
+      color: gray;
     }
 
     div#output {
@@ -73,11 +73,13 @@
 <body>
   <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
     <button type="submit" class="green-btn">上传文件至服务器的本地文件系统</button>
+    <input class="green-input" type="text" name="folder" placeholder="指定文件夹目录" style="flex: 0.4;">
     <input class="green-input" type="file" name="file">
   </form>
 
   <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
     <button type="submit" class="green-btn">上传文件至云存储空间</button>
+    <input class="green-input" type="text" name="folder" placeholder="指定文件夹目录" style="flex: 0.4;">
     <input class="green-input" type="file" name="file">
   </form>
 

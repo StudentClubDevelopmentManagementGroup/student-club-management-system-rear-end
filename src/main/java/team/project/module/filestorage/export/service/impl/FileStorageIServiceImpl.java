@@ -50,7 +50,7 @@ public class FileStorageIServiceImpl implements FileStorageIService {
             return localFileSystemService.deleteUploadedFile(fileId);
         }
         else {
-            return false;
+            return true;
         }
     }
 }
