@@ -2,6 +2,7 @@ package team.project.module.club.attendance.internal.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
@@ -9,6 +10,8 @@ import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
+
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -82,9 +85,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     }
 
-
-
-
+    // 定义分页查询方法，返回Page<AttendanceInfoVO>类型的分页结果
+    Page<AttendanceInfoVO> findAttendanceInfoVOPage(Page<AttendanceInfoVO> page);
 
 
     //查社团一个成员指定时间打卡时长
@@ -95,20 +97,12 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
 
-    //查社团所有成员指定时间打卡记录
-    List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
-
-
-
-
     //定时逻辑删除记录
     @Update("UPDATE tbl_user_club_attendance SET is_deleted = 1 " +
             "WHERE checkout_time IS NULL " +
             "AND is_deleted = 0 " +
             "AND DATE(checkin_time) = CURDATE()")
     int timedDeleteRecord();
-
-
 
 
 

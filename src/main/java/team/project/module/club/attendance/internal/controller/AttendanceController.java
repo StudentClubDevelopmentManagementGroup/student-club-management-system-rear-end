@@ -1,6 +1,5 @@
 package team.project.module.club.attendance.internal.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -95,11 +94,15 @@ public class AttendanceController {
         }
     }
 
-    //getEachAttendanceRecord
-    @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）")
+    //查询社团成员指定时间段打卡记录
+    @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）",
+            description = """
+                    -学号为空则查询社团全部成员的打卡记录 \n
+                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡记录
+                    """)
     @PostMapping("/attendance/record")
     public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
-        List<AttendanceInfoVO> eachAttendanceRecord =
+        PageVO<AttendanceInfoVO> eachAttendanceRecord =
                 attendanceService.getAttendanceRecord(getAttendanceRecordReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")

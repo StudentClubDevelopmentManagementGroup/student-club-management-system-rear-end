@@ -1,6 +1,7 @@
 package team.project.module.club.attendance.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
@@ -26,9 +27,12 @@ public class GetAttendanceRecordReq {
 
     @JsonProperty("currentPage")
     @NotNull(message = "当前页不能为空")
+    @Min(value = 1, message = "当前页必须大于等于1")
     private Long currentPage;
 
     @JsonProperty("pageSize")
     @NotNull(message = "页大小不能为空")
+    @Min(value = 1, message = "页大小必须大于等于1")
     private Long pageSize;
+
 }

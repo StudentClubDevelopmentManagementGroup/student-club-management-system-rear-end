@@ -6,7 +6,6 @@ import lombok.Data;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
 
-
 @Data
 @TableName("tbl_user_club_attendance")  //使用Mybatis-plus时必须使用注解指定对应数据库哪一张表
 public class AttendanceDO {
