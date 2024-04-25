@@ -1,6 +1,6 @@
 package team.project.module.club.personnelchanges.export.service;
 
-import team.project.base.model.PageVO;
+import team.project.base.model.view.PageVO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.export.model.request.ClubReq;
 
