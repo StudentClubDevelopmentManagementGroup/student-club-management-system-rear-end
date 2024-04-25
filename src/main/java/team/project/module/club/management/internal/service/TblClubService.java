@@ -5,17 +5,17 @@ import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
-import team.project.module.club.management.internal.model.query.TblClubQO;
+import team.project.module.club.management.internal.model.query.ClubInfoQO;
 @Service
 public interface TblClubService extends IService<TblClubDO> {
 
 
      void createClub(Long departmentId, String name);
-     PageVO<TblClubDO> selectByNameAndDepartmentId(TblClubQO page);
+     PageVO<TblClubDO> selectByNameAndDepartmentId(ClubInfoQO page);
 
-     PageVO<TblClubDO> selectByName(TblClubQO page);
+     PageVO<TblClubDO> selectByName(ClubInfoQO page);
 
-     PageVO<TblClubDO> selectByDepartmentId(TblClubQO page);
+     PageVO<TblClubDO> selectByDepartmentId(ClubInfoQO page);
 
      void deleteClub(Long departmentId, String name);
 
@@ -25,13 +25,13 @@ public interface TblClubService extends IService<TblClubDO> {
 
      void recoverClub(Long departmentId, String name);
 
-     PageVO<ClubMsgDTO> findAll(TblClubQO page);
+     PageVO<ClubMsgDTO> findAll(ClubInfoQO page);
 
-     PageVO<ClubMsgDTO> findAllByDepartmentId(TblClubQO page);
+     PageVO<ClubMsgDTO> findAllByDepartmentId(ClubInfoQO page);
 
-     PageVO<ClubMsgDTO> findAllByName(TblClubQO page);
+     PageVO<ClubMsgDTO> findAllByName(ClubInfoQO page);
 
-     PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(TblClubQO page);
+     PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(ClubInfoQO page);
 
 }
 
