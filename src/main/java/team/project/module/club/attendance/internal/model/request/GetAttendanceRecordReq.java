@@ -23,4 +23,12 @@ public class GetAttendanceRecordReq {
 
     @JsonProperty("endTime")
     private LocalDateTime endTime;
+
+    @JsonProperty("currentPage")
+    @NotNull(message = "当前页不能为空")
+    private Long currentPage;
+
+    @JsonProperty("pageSize")
+    @NotNull(message = "页大小不能为空")
+    private Long pageSize;
 }

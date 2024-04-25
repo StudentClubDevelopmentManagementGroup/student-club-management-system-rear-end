@@ -13,7 +13,6 @@ import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.user.export.service.UserInfoIService;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -92,6 +91,19 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         }
         return attendanceInfoVOList;
     }
+
+
+    @Override
+    //分页查社团成员指定时间打卡记录
+    public List<AttendanceInfoVO> getAttendanceRecordTest(GetAttendanceRecordReq getAttendanceRecordReq){
+        List<AttendanceInfoVO> attendanceInfoVOList = attendanceMapper.getAttendanceRecord(getAttendanceRecordReq);
+        for(AttendanceInfoVO attendanceInfoVO : attendanceInfoVOList){
+            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
+            attendanceInfoVO.setUserName(userName);
+        }
+        return attendanceInfoVOList;
+    }
+
 
 
     //定时逻辑删除签到记录
