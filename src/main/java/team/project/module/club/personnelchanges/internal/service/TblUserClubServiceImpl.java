@@ -12,6 +12,7 @@ import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
+import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
 
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
@@ -59,8 +60,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                     uiService.removeRoleFromUser(userId, CLUB_MANAGER);
                 }
             }
-            catch (Exception a){
-                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+            catch (Exception e){
+                // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
         }
@@ -77,7 +78,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 uiService.addRoleToUser(userId,CLUB_MEMBER);
             }
             catch (Exception a){
-                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+                // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "创建失败");
             }
         }
@@ -101,7 +102,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 }
             }
             catch (Exception a){
-                // TODO 待修改状态码422 UNPROCESSABLE_ENTITY
+                // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
         }
@@ -114,9 +115,16 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     }
 
 
+
     public Boolean selectTheMember(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
         return user != null;
+    }
+
+    public PageVO<UserInfoDTO> selectClubMemberInfo(ClubQO req) {
+        Page<UserInfoDTO> user =  ucMapper.selectClubMemberInfo(
+                new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
+        return new PageVO<>(user);
     }
 
 
