@@ -22,19 +22,19 @@
 
     <update id="setManager">
         update tbl_user_club set role = role | 2
-        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=0
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2
     </update>
 
     <update id="quashManager">
         update tbl_user_club set role = role &amp; ~2
-        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=1
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2
     </update>
 
     <update id="quashMember">
         update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
-    <select id="selectManagerRole" resultType="java.lang.Boolean">
+    <select id="selectManagerRole" resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2
     </select>
 

@@ -70,13 +70,13 @@ public class TblUserClubController {
 
     }
 
-//    @Operation(summary = "通过姓名查询社团成员")
-//    @PostMapping("/club/member/select_member_by_name")
-//    Object selectMemberByName(@Valid @RequestBody ClubReq req) {
-//        ClubQO QO=new ClubQO(req.getClubId(),req.getPagenum(),req.getSize());
-//        return new Response<>(ServiceStatus.SUCCESS)
-//                .statusText("查询成功")
-//                .data(ucService.selectClubMember(QO));
-//    }
+    @Operation(summary = "通过姓名查询社团成员")
+    @PostMapping("/club/member/select_member_by_name")
+    Object selectMemberByName(@Valid @RequestBody ClubReq req) {
+        ClubQO QO=new ClubQO(req.getClubId(),req.getPagenum(),req.getSize());
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(ucService.selectClubMember(QO));
+    }
 
 }
