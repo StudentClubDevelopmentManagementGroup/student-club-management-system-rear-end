@@ -3,6 +3,7 @@ package team.project.module.department.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import org.apache.ibatis.annotations.Select;
 import team.project.module.department.model.entity.Department;
 import team.project.module.department.model.request.AddDepartmentReq;
 import team.project.module.department.model.request.AlterDepartmentNameReq;
@@ -27,5 +28,10 @@ public interface DepartmentMapper extends BaseMapper<Department> {
 
     // 修改院系名
     Integer updateDepartmentName(AlterDepartmentNameReq alterDepartmentNameReq);
+
+    // 使用 MyBatis 的注解进行 SQL 查询
+    @Select("SELECT full_name FROM tbl_department WHERE id = #{id}")
+    String getDepartmentName(Long id);
+
 
 }

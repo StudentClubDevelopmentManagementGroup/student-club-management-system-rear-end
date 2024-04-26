@@ -19,4 +19,7 @@ public interface DepartmentService {
     boolean deleteDepartmentByName(String name);
     //更改院系名
     boolean updateDepartment(AlterDepartmentNameReq alterDepartmentNameReq);
+
+    //输入id获取院系名称
+    String getDepartmentName(Long id);
 }
