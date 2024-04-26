@@ -11,6 +11,7 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
 
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,8 +53,34 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
+    //签到返回签到信息
+    default AttendanceDO userCheckInTest(UserCheckInReq userCheckinReq) {
+
+
+        // 插入签到信息到数据库中
+        AttendanceDO attendanceDO = new AttendanceDO();
+
+        attendanceDO.setUserId(userCheckinReq.getUserId());
+        attendanceDO.setClubId(userCheckinReq.getClubId());
+        attendanceDO.setCheckInTime(userCheckinReq.getCheckInTime());
+
+        int insertSuccess = this.insert(attendanceDO); // 使用 MyBatis-Plus 提供的 save 方法插入数据
+        if(insertSuccess>0){
+            // 获取刚刚插入的记录的主键值
+            Long attendanceId = attendanceDO.getId(); // 假设 id 是自增主键
+            // 根据主键查询刚刚插入的记录
+            AttendanceDO attendanceDO1 = this.selectById(attendanceId); // 使用 MyBatis-Plus 提供的 getById 方法查询数据
+            return attendanceDO1;
+        }else return null;
+        // 返回签到信息
+
+    }
+
+
+
+
     //签退,返回完整信息
-    default AttendanceDO userCheckOutTest(UserCheckoutReq userCheckoutReq){
+    default AttendanceDO userCheckOut(UserCheckoutReq userCheckoutReq){
         //先查询今天最新的签到记录
         AttendanceDO latestCheckInRecord =
                 getLatestCheckInRecord(userCheckoutReq.getUserId(), userCheckoutReq.getClubId());

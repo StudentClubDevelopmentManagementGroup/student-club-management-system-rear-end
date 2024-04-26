@@ -31,18 +31,34 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private UserInfoIService userInfoIService;
 
+
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
-        return attendanceMapper.userCheckIn(userCheckinReq);
-
+        AttendanceDO attendanceDO = attendanceMapper.userCheckInTest(userCheckinReq);
+        // 创建一个 AttendanceInfoVO 对象，用于存储签到信息
+        AttendanceInfoVO attendanceInfo = new AttendanceInfoVO();
+        // 如果插入成功，则设置签到信息的ID属性
+        if (attendanceDO !=null) {
+            attendanceInfo.setId(attendanceDO.getId());
+            attendanceInfo.setUserId(userCheckinReq.getUserId());
+            attendanceInfo.setClubId(userCheckinReq.getClubId());
+            String userName = userInfoIService.selectUserBasicInfo(userCheckinReq.getUserId()).getName();
+            attendanceInfo.setUserName(userName);
+            attendanceInfo.setCheckInTime(userCheckinReq.getCheckInTime());
+            attendanceInfo.setDeleted(attendanceDO.isDeleted());
+            attendanceInfo.setCheckoutTime(null); // 用户签到时还未签出，因此设置签出时间为 null
+        }
+        return attendanceInfo;
     }
+
+
 
 
     @Override
     //签退返回签到信息
     public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
-        AttendanceDO attendanceDO = attendanceMapper.userCheckOutTest(userCheckoutReq);
+        AttendanceDO attendanceDO = attendanceMapper.userCheckOut(userCheckoutReq);
         if(attendanceDO !=null){
             AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
             String userName = userInfoIService.selectUserBasicInfo(attendanceDO.getUserId()).getName();
