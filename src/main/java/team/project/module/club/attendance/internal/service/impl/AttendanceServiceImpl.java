@@ -106,8 +106,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
         // 构建查询条件
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("is_deleted", 0) // 等于条件
-                .eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
+        queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
                 .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
                 .between(getAttendanceRecordReq.getStartTime() != null
                                 && getAttendanceRecordReq.getEndTime() != null, "checkin_time", getAttendanceRecordReq.getStartTime(),
