@@ -14,6 +14,7 @@ import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapp
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
+import team.project.module.department.service.DepartmentService;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
 
@@ -37,6 +38,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     TblUserClubMapper ucMapper;
     @Autowired
     UserInfoIService uiService;
+    @Autowired
+    DepartmentService DService;
     @Transactional
     public void setClubManager(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
@@ -126,9 +129,6 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     }
 
     public PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubQO req) {
-       // Page<UserInfoDTO> user =  ucMapper.selectClubMemberInfo(
-         //       new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
-
         Page<TblUserClubDO> page = new Page<>(req.getPagenum(), req.getSize());
         List<TblUserClubDO> clubMembers = ucMapper.selectList(page, new LambdaQueryWrapper<TblUserClubDO>()
                 .eq(TblUserClubDO::getClubId, req.getClubId())
@@ -143,13 +143,16 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
             ui.setClubManager(ucMapper.selectManagerRole(clubMember.getUserId(), clubMember.getClubId())!=null);
             ui.setStudent(userInfo.hasRole(STUDENT));
             ui.setTeacher(userInfo.hasRole(TEACHER));
+
+            departmentInfo.setDepartmentId(clubMember.getClubId());
+            departmentInfo.setDepartmentName(DService.getDepartmentName(clubMember.getClubId()));
+
             clubMemberInfo.setRole(ui);
             clubMemberInfo.setUserId(userInfo.getUserId());
             clubMemberInfo.setDepartment(departmentInfo);
             clubMemberInfo.setName(userInfo.getName());
             clubMemberInfo.setTel(userInfo.getTel());
             clubMemberInfo.setEmail(userInfo.getEmail());
-
 
             result.add(clubMemberInfo);
         }
