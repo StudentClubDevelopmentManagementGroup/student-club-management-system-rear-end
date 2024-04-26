@@ -60,6 +60,21 @@
         select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
         select user_id from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0 )
     </select>
+    <select id="selectClubMemberInfoByNameAndDepartmentId"
+            resultType="team.project.module.user.export.model.datatransfer.UserInfoDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.department_id = #{departmentId} and c.name like #{name}
+    </select>
+    <select id="selectClubMemberInfoByName"
+            resultType="team.project.module.user.export.model.datatransfer.UserInfoDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.name like #{name}
+    </select>
+    <select id="selectClubMemberByDepartmentId"
+            resultType="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.department_id = #{departmentId}
+    </select>
 
     <!--     TODO xml文件加上逻辑删除-->
 

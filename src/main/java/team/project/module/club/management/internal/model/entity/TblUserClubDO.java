@@ -21,4 +21,12 @@ public class TblUserClubDO {
     @TableField(value="user_id")       String    userId;
     @TableField(value="club_id")       Long      clubId;
     @TableField(value="role")          Integer   role;
+
+
+    public boolean isMember() {
+        return (this.role & 1)!=0;
+    }
+    public boolean isManager() {
+        return (this.role & 2)!=0;
+    }
 }

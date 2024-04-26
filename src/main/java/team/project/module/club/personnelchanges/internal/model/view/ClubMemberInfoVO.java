@@ -25,4 +25,6 @@ public class ClubMemberInfoVO {
         @JsonProperty("department_id")   private Long    departmentId;
         @JsonProperty("department_name") private String  departmentName;
     }
+
+
 }

@@ -14,6 +14,7 @@ import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapp
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
+import team.project.module.department.service.DepartmentService;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
 
@@ -37,6 +38,8 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     TblUserClubMapper ucMapper;
     @Autowired
     UserInfoIService uiService;
+    @Autowired
+    DepartmentService departmentService;
     @Transactional
     public void setClubManager(String userId, Long clubId) {
         TblUserClubDO user =ucMapper.selectOne(userId, clubId);
@@ -126,31 +129,33 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     }
 
     public PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubQO req) {
-       // Page<UserInfoDTO> user =  ucMapper.selectClubMemberInfo(
-         //       new Page<>(req.getPagenum(), req.getSize()),req.getClubId());
-
         Page<TblUserClubDO> page = new Page<>(req.getPagenum(), req.getSize());
         List<TblUserClubDO> clubMembers = ucMapper.selectList(page, new LambdaQueryWrapper<TblUserClubDO>()
                 .eq(TblUserClubDO::getClubId, req.getClubId())
         );
         List<ClubMemberInfoVO> result = new ArrayList<>();
+
         for (TblUserClubDO clubMember : clubMembers) {
             ClubMemberInfoVO.UserRoleInfo ui = new ClubMemberInfoVO.UserRoleInfo();
-            UserInfoDTO userInfo = uiService.selectUserInfo(clubMember.getUserId());
             ClubMemberInfoVO.DepartmentInfo departmentInfo = new ClubMemberInfoVO.DepartmentInfo();
+
+            UserInfoDTO userInfo = uiService.selectUserInfo(clubMember.getUserId());
             ClubMemberInfoVO clubMemberInfo = new ClubMemberInfoVO();
-            ui.setClubMember(ucMapper.selectOne(clubMember.getUserId(), clubMember.getClubId())!=null);
-            ui.setClubManager(ucMapper.selectManagerRole(clubMember.getUserId(), clubMember.getClubId())!=null);
+
+            ui.setClubMember(clubMember.isMember());
+            ui.setClubManager(clubMember.isManager());
             ui.setStudent(userInfo.hasRole(STUDENT));
             ui.setTeacher(userInfo.hasRole(TEACHER));
+
+            departmentInfo.setDepartmentId(userInfo.getDepartmentId());
+            departmentInfo.setDepartmentName(departmentService.getDepartmentName(userInfo.getDepartmentId()));
+
             clubMemberInfo.setRole(ui);
             clubMemberInfo.setUserId(userInfo.getUserId());
             clubMemberInfo.setDepartment(departmentInfo);
             clubMemberInfo.setName(userInfo.getName());
             clubMemberInfo.setTel(userInfo.getTel());
             clubMemberInfo.setEmail(userInfo.getEmail());
-
-
             result.add(clubMemberInfo);
         }
 
