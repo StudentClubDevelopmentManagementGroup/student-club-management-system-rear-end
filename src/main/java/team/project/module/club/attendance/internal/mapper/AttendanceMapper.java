@@ -56,10 +56,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     //签到返回签到信息
     default AttendanceDO userCheckInTest(UserCheckInReq userCheckinReq) {
 
-
         // 插入签到信息到数据库中
         AttendanceDO attendanceDO = new AttendanceDO();
-
         attendanceDO.setUserId(userCheckinReq.getUserId());
         attendanceDO.setClubId(userCheckinReq.getClubId());
         attendanceDO.setCheckInTime(userCheckinReq.getCheckInTime());
