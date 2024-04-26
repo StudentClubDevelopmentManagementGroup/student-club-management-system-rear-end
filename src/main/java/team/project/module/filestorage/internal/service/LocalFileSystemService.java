@@ -49,7 +49,8 @@ public class LocalFileSystemService {
      * @return 如果成功返回 fileId，如果上传途中出现异常则返回 null
      * */
     public String upload(MultipartFile file, String targetFolder) {
-        String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+        // String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+        String newFilename = file.getOriginalFilename();
         String fileId = generateFileId(targetFolder, newFilename);
         String filePath = parseFileIdToFilePath(fileId);
         try {
