@@ -12,9 +12,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.Response;
+import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.request.QueryUserInfoReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.UserInfoService;
 
@@ -54,7 +56,7 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfo);
     }
 
-    @Operation(summary="分页查询用户账号信息")
+    @Operation(summary="分页查询用户账号信息", hidden=true)
     @GetMapping("/user_info/paging_query")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object pagingQuery(
@@ -64,5 +66,12 @@ public class UserInfoController {
         return new Response<>(ServiceStatus.SUCCESS).data(
             service.pagingQueryUserInfo(pageNum, pageSize)
         );
+    }
+
+    @Operation(summary="查询用户账号信息")
+    @GetMapping("/user_info/query")
+    // @SaCheckRole(AuthRole.SUPER_ADMIN)
+    Object queryUserInfo(@QueryParam QueryUserInfoReq req) {
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 }

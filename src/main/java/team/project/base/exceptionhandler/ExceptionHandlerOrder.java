@@ -4,7 +4,7 @@ package team.project.base.exceptionhandler;
 public class ExceptionHandlerOrder {
     static final int springframeworkExceptionHandler = 1;
     static final int saTokenExceptionHandler         = 2;
-    static final int serviceExceptionHandler         = 3;
+    static final int customExceptionHandler          = 3;
     static final int mybatisPlusExceptionHandler     = 4;
     static final int generalExceptionHandler         = 5; /* <- 保持最低优先级 */
 }

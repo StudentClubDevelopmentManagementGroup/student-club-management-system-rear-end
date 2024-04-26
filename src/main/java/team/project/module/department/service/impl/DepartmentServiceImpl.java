@@ -46,6 +46,13 @@ public class DepartmentServiceImpl implements DepartmentService {
         return rowsAffected > 0;
     }
 
+    @Override
+    //输入id获取院系名称
+    public String getDepartmentName(Long id){
+        return departmentMapper.getDepartmentName(id);
+    }
+
+
 
 
 }

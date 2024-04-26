@@ -11,6 +11,7 @@ public interface UserInfoIService {
      */
     UserInfoDTO selectUserInfo(String userId);
 
+
     /**
      * 从 tbl_user 表中查询用户的基本信息
      */
