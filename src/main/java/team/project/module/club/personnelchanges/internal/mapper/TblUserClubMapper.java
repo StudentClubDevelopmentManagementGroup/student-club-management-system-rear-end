@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
-import team.project.module.user.export.model.datatransfer.UserInfoDTO;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 
 import java.util.List;
 
@@ -50,14 +50,9 @@ int quashMember(String userId, Long clubId);
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
-    Page<UserInfoDTO> selectClubMemberInfo(@Param("page") Page<UserInfoDTO> page, Long clubId);
+    List<ClubMemberInfoDTO> selectClubMemberInfo(Long clubId, String name, Long departmentId);
 
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
 
-    Page<UserInfoDTO> selectClubMemberInfoByNameAndDepartmentId(@Param("page") Page<UserInfoDTO> page, Long departmentId, String name);
-
-    Page<UserInfoDTO> selectClubMemberInfoByName(@Param("page") Page<UserInfoDTO> page, String name);
-
-    Page<UserMsgDTO> selectClubMemberByDepartmentId(@Param("page") Page<UserMsgDTO> page, Long departmentId);
 
 }
