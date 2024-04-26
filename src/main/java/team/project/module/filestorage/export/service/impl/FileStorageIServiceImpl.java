@@ -19,13 +19,13 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     private AliyunOssStorageService aliyunOssStorageService;
 
     @Override
-    public String uploadFileToLocalFileSystem(MultipartFile file) {
-        return localFileSystemService.upload(file);
+    public String uploadFileToLocalFileSystem(MultipartFile file, String targetFolder) {
+        return localFileSystemService.upload(file, targetFolder);
     }
 
     @Override
-    public String uploadFileToCloudStorage(MultipartFile file) {
-        return aliyunOssStorageService.upload(file);
+    public String uploadFileToCloudStorage(MultipartFile file, String targetFolder) {
+        return aliyunOssStorageService.upload(file, targetFolder);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class FileStorageIServiceImpl implements FileStorageIService {
             return localFileSystemService.deleteUploadedFile(fileId);
         }
         else {
-            return false;
+            return true;
         }
     }
 }

@@ -9,9 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import team.project.base.controller.Response;
+import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.service.FileStorageIService;
+import team.project.module.filestorage.internal.util.Util;
 
 @Tag(name="文件存储")
 @Controller
@@ -24,12 +25,15 @@ public class FileStorageController {
     @Operation(summary="上传文件至服务器的本地文件系统", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_local_file_system")
     @ResponseBody
-    Object uploadFileToLocalFileSystem(@RequestParam("file") MultipartFile file) {
+    Object uploadFileToLocalFileSystem(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam(value="folder", defaultValue="/") String folder
+    ) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        String fileId = service.uploadFileToLocalFileSystem(file);
+        String fileId = service.uploadFileToLocalFileSystem(file, Util.fixPath(folder));
         if (fileId != null) {
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }
@@ -41,12 +45,15 @@ public class FileStorageController {
     @Operation(summary="上传文件至云存储空间", description="如果上传成功，data返回文件id")
     @PostMapping("/upload_file_to_cloud_storage")
     @ResponseBody
-    Object uploadFileToCloudStorage(@RequestParam("file") MultipartFile file) {
+    Object uploadFileToCloudStorage(
+        @RequestParam("file") MultipartFile file,
+        @RequestParam(value="folder", defaultValue="/") String folder
+    ) {
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        String fileId = service.uploadFileToCloudStorage(file);
+        String fileId = service.uploadFileToCloudStorage(file, Util.fixPath(folder));
         if (fileId != null) {
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }

@@ -2,7 +2,6 @@ package team.project.base.service.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
 /* 自定义的服务端响应状态码（虽然和 http 的状态码一致，但
    注意，这个是 ServiceStatus，而不是 HttpStatus） */
@@ -29,4 +28,8 @@ public enum ServiceStatus {
     ;
     private final int    statusCode;
     private final String statusText;
+
+    public boolean is5XX() {
+        return statusCode / 100 == 5;
+    }
 }

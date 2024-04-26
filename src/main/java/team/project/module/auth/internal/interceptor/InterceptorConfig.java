@@ -41,7 +41,7 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
 
-        /* TODO: 缓存 */
+        /* ljh_TODO: 缓存 */
 
         List<String> list = new ArrayList<>();
 

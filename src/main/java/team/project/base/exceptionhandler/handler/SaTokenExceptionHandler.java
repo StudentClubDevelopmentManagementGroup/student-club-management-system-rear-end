@@ -1,4 +1,4 @@
-package team.project.base.exceptionhandler;
+package team.project.base.exceptionhandler.handler;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.exception.NotPermissionException;
@@ -6,7 +6,8 @@ import cn.dev33.satoken.exception.NotRoleException;
 import org.springframework.core.annotation.Order;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import team.project.base.controller.Response;
+import team.project.base.controller.response.Response;
+import team.project.base.exceptionhandler.order.ExceptionHandlerOrder;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 

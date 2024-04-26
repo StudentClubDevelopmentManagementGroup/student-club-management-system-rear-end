@@ -3,7 +3,7 @@ package team.project.module.club.personnelchanges.export.service.impl;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.base.model.PageVO;
+import team.project.base.model.view.PageVO;
 import team.project.module.club.management.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;

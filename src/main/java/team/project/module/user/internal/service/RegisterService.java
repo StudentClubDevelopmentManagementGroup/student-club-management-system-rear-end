@@ -34,7 +34,7 @@ public class RegisterService {
         } */
 
         user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- TODO: 待加密 */
+        user.setPassword(req.getPassword()); /* <- ljh_TODO: 待加密 */
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setTel(req.getTel());

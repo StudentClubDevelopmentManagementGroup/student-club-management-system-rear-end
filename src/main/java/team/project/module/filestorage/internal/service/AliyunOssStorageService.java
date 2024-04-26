@@ -26,26 +26,34 @@ public class AliyunOssStorageService {
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }
 
-    /**
-     * <p>通过 fileId 判断文件是否可能存储在阿里云 OSS 的存储空间中</p>
-     * <p>如果文件存储在阿里云 OSS 的存储空间中，则 fileId 一定符合某种规则<br>
-     * 操作文件前，先判断 fileId 是否符合这个规则<br>
-     * 若不符合，则认为文件不存在，不必再进行后续操作</p>
-     * */
-    public boolean isValidFileId(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix);
+    private String generateFileId(String folderPath, String filename) {
+        return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
+    }
+
+    private String parseFileIdToFileKey(String fileId) {
+        return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
     /**
-     * 上传文件（文件会更名，存储在特定目录下）
+     * <p>通过 fileId 判断文件是否可能存储在阿里云 OSS 的存储空间中</p>
+     * <p>如果文件存储在阿里云 OSS 的存储空间中，则 fileId 一定符合存储规则<br>
+     * 操作文件前，务必先判断 fileId 是否符合这个规则<br>
+     * 若不符合，则认为文件不存在，不必再进行后续操作</p>
+     * */
+    public boolean isValidFileId(String fileId) {
+        return fileId.startsWith(uploadedFileIdPrefix + "/");
+    }
+
+    /**
+     * <p>上传文件到指定目录（文件会更名）<br>
+     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录（根目录用单个斜杠表示）</p>
      * @return 如果成功返回 fileId，如果上传途中出现异常则返回 null
      * */
-    public String upload(MultipartFile file) {
-        String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
-
-        String fileId = uploadedFileIdPrefix + "/" + newFilename;
-        String fileKey = uploadedFilesFolder + "/" + newFilename;
-
+    public String upload(MultipartFile file, String targetFolder) {
+        // String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+        String newFilename = file.getOriginalFilename();
+        String fileId = generateFileId(targetFolder, newFilename);
+        String fileKey = parseFileIdToFileKey(fileId);
         try {
             aliyunOssStorageDAO.upload(fileKey, file);
 
@@ -63,11 +71,14 @@ public class AliyunOssStorageService {
      * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
      * <li>...</li>
      * </p>
-     * @return 如果获取成功，则返回 URL；如果获取失败（获取时出现异常）则返回 null
+     * @return 获取成功返回 URL，失败返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
-        String fileKey = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
+        if ( ! isValidFileId(fileId)) {
+            return null;
+        }
         try {
+            String fileKey = parseFileIdToFileKey(fileId);
             return aliyunOssStorageDAO.getUrl(fileKey);
         } catch (OSSException | ClientException e) {
             logger.error("获取访问存储于阿里云 OSS 的存储空间中的文件的 url 时出现异常", e);
@@ -80,8 +91,11 @@ public class AliyunOssStorageService {
      * @return 执行时没有发生异常则返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
+        if ( ! isValidFileId(fileId)) {
+            return true;
+        }
         try {
-            String fileKey = uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
+            String fileKey = parseFileIdToFileKey(fileId);
             aliyunOssStorageDAO.delete(fileKey);
             return true;
         } catch (OSSException | ClientException e) {
