@@ -30,7 +30,7 @@ public class TblUserClubController {
     }
 
     @Operation(summary="基地撤销负责人")
-    @PostMapping("/club/member/revoke_manager") // TODO 改名字
+    @PostMapping("/club/member/unset_manager")
     Object quashManager(@Valid @RequestBody UserClubReq req) {
         ucService.quashClubManager(req.getUserId(),req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS)
