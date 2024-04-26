@@ -64,7 +64,7 @@
         <if test="name != ''">
             AND u.name like concat('%',#{name},'%')
         </if>
-        <if test="departmentId != 0">
+        <if test="departmentId != 0 and departmentId != null ">
             AND u.department_id = #{departmentId}
         </if>
     </select>
