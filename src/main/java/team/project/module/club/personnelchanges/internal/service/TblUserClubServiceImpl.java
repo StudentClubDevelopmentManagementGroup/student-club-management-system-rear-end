@@ -134,9 +134,10 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     public PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req) {
         Page<ClubMemberInfoDTO> page = new Page<>(req.getPagenum(), req.getSize());
-        List<ClubMemberInfoDTO> clubMembers = ucMapper.selectClubMemberInfo(
+        Page<ClubMemberInfoDTO> clubMembers = ucMapper.selectClubMemberInfo(page,
                 req.getClubId(), req.getName(), req.getDepartmentId());
         List<ClubMemberInfoVO> result = converter.toClubMemberInfoVOList(clubMembers);
+        page.setTotal(clubMembers.getTotal());
         return  new PageVO<>(result, page);
     }
 

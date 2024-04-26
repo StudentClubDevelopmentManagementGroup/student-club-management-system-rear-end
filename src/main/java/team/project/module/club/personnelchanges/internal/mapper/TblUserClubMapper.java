@@ -50,7 +50,7 @@ int quashMember(String userId, Long clubId);
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
-    List<ClubMemberInfoDTO> selectClubMemberInfo(Long clubId, String name, Long departmentId);
+    Page<ClubMemberInfoDTO> selectClubMemberInfo(@Param("page") Page<ClubMemberInfoDTO> page,Long clubId, String name, Long departmentId);
 
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
 

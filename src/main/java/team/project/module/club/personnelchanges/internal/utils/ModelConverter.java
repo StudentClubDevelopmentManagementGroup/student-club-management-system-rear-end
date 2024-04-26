@@ -1,5 +1,6 @@
 package team.project.module.club.personnelchanges.internal.utils;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
@@ -15,10 +16,10 @@ import static team.project.module.user.export.model.enums.UserRole.TEACHER;
 public class ModelConverter {
     @Autowired
     private DepartmentService departmentService;
-    public List<ClubMemberInfoVO> toClubMemberInfoVOList(List<ClubMemberInfoDTO> clubMembers) {
+    public List<ClubMemberInfoVO> toClubMemberInfoVOList(Page<ClubMemberInfoDTO> clubMembers) {
         List<ClubMemberInfoVO> result = new ArrayList<>();
-
-        for (ClubMemberInfoDTO clubMember : clubMembers) {
+        clubMembers.getRecords().forEach(clubMember ->
+        {
             ClubMemberInfoVO.UserRoleInfo ui = new ClubMemberInfoVO.UserRoleInfo();
             ClubMemberInfoVO.DepartmentInfo departmentInfo = new ClubMemberInfoVO.DepartmentInfo();
             ClubMemberInfoVO clubMemberInfo = new ClubMemberInfoVO();
@@ -38,7 +39,7 @@ public class ModelConverter {
             clubMemberInfo.setTel(clubMember.getTel());
             clubMemberInfo.setEmail(clubMember.getEmail());
             result.add(clubMemberInfo);
-        }
+        });
         return result;
     }
 }
