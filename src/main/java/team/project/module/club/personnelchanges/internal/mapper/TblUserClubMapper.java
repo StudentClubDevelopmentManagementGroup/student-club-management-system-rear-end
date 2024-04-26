@@ -21,7 +21,7 @@ int createManager(String userId, Long clubId);
 
 int quashManager(String userId, Long clubId);
 
-Boolean selectManagerRole(String userId, Long clubId);
+TblUserClubDO selectManagerRole(String userId, Long clubId);
 
 int createMember(String userId, Long clubId);
 
@@ -53,5 +53,11 @@ int quashMember(String userId, Long clubId);
     Page<UserInfoDTO> selectClubMemberInfo(@Param("page") Page<UserInfoDTO> page, Long clubId);
 
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
+
+    Page<UserInfoDTO> selectClubMemberInfoByNameAndDepartmentId(@Param("page") Page<UserInfoDTO> page, Long departmentId, String name);
+
+    Page<UserInfoDTO> selectClubMemberInfoByName(@Param("page") Page<UserInfoDTO> page, String name);
+
+    Page<UserMsgDTO> selectClubMemberByDepartmentId(@Param("page") Page<UserMsgDTO> page, Long departmentId);
 
 }

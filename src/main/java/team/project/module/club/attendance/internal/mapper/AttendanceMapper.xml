@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
+
+    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
+    <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
+        <!-- 数据库字段 -->                                   <!-- java 类属性 -->
+        <result column="user_id"                            property="userId" />
+        <result column="attendance_duration_time"           property="attendanceDurationTime" />
+
+    </resultMap>
+
+
+    <resultMap id="AttendanceInfoVO" type="team.project.module.club.attendance.internal.model.view.AttendanceInfoVO">
+        <!-- 数据库字段 -->                           <!-- java 类属性 -->
+        <result column="id"                         property="id" />
+        <result column="user_id"                    property="userId" />
+        <result column="club_id"                    property="clubId" />
+        <result column="checkin_time"               property="checkInTime" />
+        <result column="checkout_time"              property="checkoutTime" />
+        <result column="is_deleted"                 property="isDeleted" />
+
+    </resultMap>
+
+    <!--查询打卡记录-->
+    <select id="getAttendanceRecord"
+            resultMap="AttendanceInfoVO">
+        SELECT *
+        FROM tbl_user_club_attendance
+        WHERE is_deleted = 0
+        AND club_id = #{clubId}
+        <if test="userId != null">
+            AND user_id = #{userId}
+        </if>
+        <if test="startTime != null and endTime != null">
+            AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+    </select>
+
+
+
+
+    <!--查询社团一个成员指定时间段的打卡时长 -->
+    <select id="getOneAttendanceDurationTime"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
+            resultType="Long">
+        SELECT
+        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) AS attendance_duration_time
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        AND user_id = #{userId}
+        <if test="startTime != null and endTime != null">
+        AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+    </select>
+
+
+    <!-- 查询社团每个成员指定时间段的打卡时长 -->
+    <select id="getEachAttendanceDurationTime"
+            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
+            resultMap="ClubAttendanceDurationVO">
+        SELECT
+        user_id,
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS attendance_duration_time
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+        <if test="startTime != null and endTime != null">
+            AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        </if>
+        GROUP BY
+        user_id;
+
+    </select>
+
+
+
+</mapper>

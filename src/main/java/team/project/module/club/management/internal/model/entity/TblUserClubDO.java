@@ -18,7 +18,15 @@ public class TblUserClubDO {
     @TableField(value="is_deleted")    Boolean   isDeleted;
     @TableField(value="create_time")   Timestamp createTime;
     @TableField(value="update_time")   Timestamp updateTime;
-    @TableField(value="user_id")       Long      userId;
-    @TableField(value="club_id")       String    clubId;
+    @TableField(value="user_id")       String    userId;
+    @TableField(value="club_id")       Long      clubId;
     @TableField(value="role")          Integer   role;
+
+
+    public boolean isMember() {
+        return (this.role & 1)!=0;
+    }
+    public boolean isManager() {
+        return (this.role & 2)!=0;
+    }
 }

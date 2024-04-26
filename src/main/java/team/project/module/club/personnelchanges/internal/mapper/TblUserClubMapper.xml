@@ -22,19 +22,19 @@
 
     <update id="setManager">
         update tbl_user_club set role = role | 2
-        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=0
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2
     </update>
 
     <update id="quashManager">
         update tbl_user_club set role = role &amp; ~2
-        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and (role &amp; 2)=1
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2
     </update>
 
     <update id="quashMember">
         update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
-    <select id="selectManagerRole" resultType="java.lang.Boolean">
+    <select id="selectManagerRole" resultType="team.project.module.club.management.internal.model.entity.TblUserClubDO">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2
     </select>
 
@@ -59,6 +59,21 @@
             resultMap="userInfo">
         select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
         select user_id from tbl_user_club where  club_id = #{clubId} and  is_deleted = 0 )
+    </select>
+    <select id="selectClubMemberInfoByNameAndDepartmentId"
+            resultType="team.project.module.user.export.model.datatransfer.UserInfoDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.department_id = #{departmentId} and c.name like #{name}
+    </select>
+    <select id="selectClubMemberInfoByName"
+            resultType="team.project.module.user.export.model.datatransfer.UserInfoDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.name like #{name}
+    </select>
+    <select id="selectClubMemberByDepartmentId"
+            resultType="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO">
+        select c.user_id,c.department_id, c.name, c.tel, c.mail, c.role from tbl_user c where user_id in (
+        select user_id from tbl_user_club where  is_deleted = 0 ) and c.department_id = #{departmentId}
     </select>
 
     <!--     TODO xml文件加上逻辑删除-->
