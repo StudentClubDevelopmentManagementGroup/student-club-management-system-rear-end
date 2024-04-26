@@ -14,6 +14,10 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(ServiceException.class)
     Object handle(ServiceException exception) {
-        return new Response<>(exception.getStatus()).data(exception.getMessage());
+        if (exception.getStatus().is5XX()){
+            return new Response<>(exception.getStatus());
+        } else {
+            return new Response<>(exception.getStatus()).data(exception.getMessage());
+        }
     }
 }

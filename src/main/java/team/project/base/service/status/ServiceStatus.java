@@ -28,4 +28,8 @@ public enum ServiceStatus {
     ;
     private final int    statusCode;
     private final String statusText;
+
+    public boolean is5XX() {
+        return statusCode / 100 == 5;
+    }
 }
