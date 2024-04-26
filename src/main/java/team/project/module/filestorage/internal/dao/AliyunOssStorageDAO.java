@@ -46,9 +46,16 @@ public class AliyunOssStorageDAO {
     /**
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
      * */
-    public void upload(String key, MultipartFile file) throws IOException {
+    public void upload(MultipartFile file, String key) throws IOException {
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
         PutObjectResult result = ossClient.putObject(putObjectRequest);
+    }
+
+    /**
+     * 判断文件是否存在
+     * */
+    public boolean isFileExist(String key) {
+        return ossClient.doesObjectExist(bucketName, key);
     }
 
     /**

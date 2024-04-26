@@ -20,12 +20,25 @@ public class LocalFileSystemDAO {
         this.rootFolder = cfg.rootFolder;
     }
 
-    public void save(String filePath, MultipartFile file) throws IOException {
+    /**
+     * 保存文件（如果文件已存在，则覆盖）
+     * */
+    public void save(MultipartFile file, String filePath) throws IOException {
         File fileToSave = new File(rootFolder, filePath);
         boolean ignored = fileToSave.getParentFile().mkdirs();
         file.transferTo(fileToSave);
     }
 
+    /**
+     * 判断文件是否存在
+     * */
+    public boolean isFileExist(String filePath) {
+        return new File(rootFolder, filePath).exists();
+    }
+
+    /**
+     * 删除文件
+     * */
     public boolean delete(String filePath) {
         File file = new File(rootFolder,  filePath);
         return file.delete(); /* <- 只要真的删除成功，才返回是 true，其他情况都是 false */

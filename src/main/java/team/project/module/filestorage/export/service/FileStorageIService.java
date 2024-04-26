@@ -5,30 +5,28 @@ import org.springframework.web.multipart.MultipartFile;
 public interface FileStorageIService {
 
     /**
-     * 上传文件到本地文件系统
+     * <p>上传文件到指定目录<br>
      * @param file 要上传的文件
-     * @param targetFolder 指定目录（路径要求：以'/'开头、以'/'开头分隔目录）
-     * @return 如果上传成功，返回 fileId，上传失败（上传途中出现异常）则返回 null
+     * @param targetFolder 目标目录（以'/'开头、以'/'开头分隔目录，根目录用"/"表示）
+     * @param filename 文件名
+     * @param overwrite 如果文件已存在，是否覆盖
+     * @return fileId
      * */
-    String uploadFileToLocalFileSystem(MultipartFile file, String targetFolder);
+    String uploadFile(MultipartFile file, String targetFolder, String filename, boolean overwrite);
 
     /**
-     * 上传文件到云存储空间
-     * @param file 要上传的文件
-     * @param targetFolder 指定目录（路径要求：以'/'开头、以'/'开头分隔目录）
-     * @return 如果上传成功，返回 fileId，上传失败（上传途中出现异常）则返回 null
+     * 判断文件是否存在
      * */
-    String uploadFileToCloudStorage(MultipartFile file, String targetFolder);
+    boolean isFileExist(String fileId);
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>
      * <p>但该 URL 不一定真的能访问到文件，比如下述情况无法访问到文件：
-     * <li>文件不存在，此时访问该 URL 可能会返回 404 </li>
+     * <li>文件不存在（此时访问该 URL 可能会返回 404）</li>
      * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
      * <li>...</li>
      * </p>
-     *
-     * @return 获取成功返回 URL，失败返回 null
+     * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
      * */
     String getUploadedFileUrl(String fileId);
 

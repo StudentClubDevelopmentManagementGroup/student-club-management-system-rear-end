@@ -6,11 +6,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.filestorage.export.exception.FileStoreException;
 import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssStorageDAO;
 import team.project.module.filestorage.internal.util.Util;
 
 import java.io.IOException;
+
+import static team.project.module.filestorage.export.exception.FileStoreException.Status.FILE_EXIST;
+import static team.project.module.filestorage.export.exception.FileStoreException.Status.UNSOLVABLE;
 
 @Service
 public class AliyunOssStorageService {
@@ -26,10 +30,16 @@ public class AliyunOssStorageService {
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }
 
+    /**
+     * 生成 fileId
+     * */
     private String generateFileId(String folderPath, String filename) {
         return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
     }
 
+    /**
+     * 从 fileId 解析出 fileKey
+     * */
     private String parseFileIdToFileKey(String fileId) {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
@@ -45,23 +55,35 @@ public class AliyunOssStorageService {
     }
 
     /**
-     * <p>上传文件到指定目录（文件会更名）<br>
-     * 指定目录的路径要求：以'/'开头、以'/'开头分隔目录（根目录用单个斜杠表示）</p>
-     * @return 如果成功返回 fileId，如果上传途中出现异常则返回 null
+     * <p>上传文件到指定目录<br>
+     * @param file 要上传的文件
+     * @param targetFolder 目标目录（以'/'开头、以'/'开头分隔目录，根目录用"/"表示）
+     * @param filename 文件名
+     * @param overwrite 如果文件已存在，是否覆盖
+     * @return fileId
      * */
-    public String upload(MultipartFile file, String targetFolder) {
-        // String newFilename = Util.generateRandomFileName(file.getOriginalFilename());
+    public String upload(MultipartFile file, String targetFolder, String filename, boolean overwrite) {
         String newFilename = file.getOriginalFilename();
-        String fileId = generateFileId(targetFolder, newFilename);
+        String fileId = generateFileId(targetFolder, filename);
         String fileKey = parseFileIdToFileKey(fileId);
+        if ( ! overwrite && aliyunOssStorageDAO.isFileExist(fileKey)) {
+            throw new FileStoreException(FILE_EXIST);
+        }
         try {
-            aliyunOssStorageDAO.upload(fileKey, file);
+            aliyunOssStorageDAO.upload(file, fileKey);
 
             return fileId;
         } catch (OSSException | ClientException | IOException e) {
             logger.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
-            return null;
+            throw new FileStoreException(UNSOLVABLE);
         }
+    }
+
+    /**
+     * 判断文件是否存在
+     * */
+    public boolean isFileExist(String fileId) {
+        return isValidFileId(fileId) && aliyunOssStorageDAO.isFileExist(parseFileIdToFileKey(fileId));
     }
 
     /**
@@ -71,7 +93,7 @@ public class AliyunOssStorageService {
      * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
      * <li>...</li>
      * </p>
-     * @return 获取成功返回 URL，失败返回 null
+     * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
         if ( ! isValidFileId(fileId)) {
@@ -87,7 +109,7 @@ public class AliyunOssStorageService {
     }
 
     /**
-     * 删除文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
+     * 删除 fileId 指向的文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
      * @return 执行时没有发生异常则返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
