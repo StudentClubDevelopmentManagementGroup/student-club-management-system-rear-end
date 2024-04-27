@@ -81,6 +81,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
         return attendanceMapper.getOneAttendanceDurationTime(getAttendanceTimeReq);
     }
+
     @Override
     //查询社团每个成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){

@@ -28,11 +28,11 @@ public class GetAttendanceRecordReq {
     @JsonProperty("currentPage")
     @NotNull(message = "当前页不能为空")
     @Min(value = 1, message = "当前页必须大于等于1")
-    private Long currentPage;
+    private Integer currentPage;
 
     @JsonProperty("pageSize")
     @NotNull(message = "页大小不能为空")
     @Min(value = 1, message = "页大小必须大于等于1")
-    private Long pageSize;
+    private Integer pageSize;
 
 }
