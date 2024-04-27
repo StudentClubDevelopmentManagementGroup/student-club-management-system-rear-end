@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
-
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
 import java.time.LocalDateTime;
@@ -37,6 +36,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         if(insertSuccess>0){
             // 获取刚刚插入的记录的主键值
             Long attendanceId = attendanceDO.getId(); // 假设 id 是自增主键
+            System.out.println("刚刚插入的记录的主键值"+attendanceId);
             // 根据主键查询刚刚插入的记录
             AttendanceDO attendanceDO1 = this.selectById(attendanceId); // 使用 MyBatis-Plus 提供的 getById 方法查询数据
             return attendanceDO1;
@@ -89,8 +89,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
                 .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
-                .between(getAttendanceRecordReq.getStartTime() != null
-                                && getAttendanceRecordReq.getEndTime() != null, "checkin_time", getAttendanceRecordReq.getStartTime(),
+                .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
+                        "checkin_time", getAttendanceRecordReq.getStartTime(),
                         getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
                 .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
 
@@ -106,28 +106,27 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
 
-
-
-
     //社团成员申请补签
-    default Integer userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
+    default AttendanceDO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
 
         //创建更新条件
         UpdateWrapper<AttendanceDO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("user_id", applyAttendanceReq.getUserId())
                 .eq("club_id", applyAttendanceReq.getClubId())
                 .eq("checkin_time",applyAttendanceReq.getCheckInTime())
-                //签到时间要在七天内
                 .ge("checkin_time", LocalDateTime.now().minus(7, ChronoUnit.DAYS))
                 .eq("is_deleted", true)
                 .isNull("checkout_time");
-
         //创建要更新的字段
-        AttendanceDO attendanceDO = new AttendanceDO();
-        attendanceDO.setCheckoutTime(applyAttendanceReq.getCheckoutTime());
-        attendanceDO.setDeleted(false);
-
-        return this.update(attendanceDO,updateWrapper);
+        AttendanceDO attendanceDO = this.selectOne(updateWrapper);
+        if (attendanceDO != null){
+            attendanceDO.setCheckoutTime(applyAttendanceReq.getCheckoutTime());
+            attendanceDO.setDeleted(false);
+            int rowsAffected = this.update(attendanceDO,updateWrapper);
+            //获取并返回刚刚更新的数据
+            return attendanceDO;
+        }
+        return null;
 
     }
 

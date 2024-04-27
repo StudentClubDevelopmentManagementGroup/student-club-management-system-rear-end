@@ -20,7 +20,7 @@ import java.util.List;
 
 @Tag(name="签到签退模块")
 @RestController
-@RequestMapping("/clockIn")
+@RequestMapping("/attendance")
 public class AttendanceController {
 
     @Autowired //注入
@@ -115,7 +115,7 @@ public class AttendanceController {
                     -学号为空则查询社团全部成员的打卡时长 \n
                     -开始结束时间都为空则查询成员进入社团以来的全部打卡时长
                     """)
-    @PostMapping("/attendance/durationTime")
+    @PostMapping("/durationTime")
     public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
         if(getAttendanceTimeReq.getUserId() ==null){
             List<ClubAttendanceDurationVO> eachAttendanceTime =
@@ -138,15 +138,16 @@ public class AttendanceController {
                     -学号为空则查询社团全部成员的打卡记录 \n
                     -开始结束时间都为空则查询成员进入社团以来的全部打卡记录
                     """)
-    @PostMapping("/attendance/record")
+    @PostMapping("/record")
     public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
         PageVO<AttendanceInfoVO> eachAttendanceRecord =
                 //getAttendanceRecordT
-                attendanceService.getAttendanceRecordT(getAttendanceRecordReq);
+                attendanceService.getAttendanceRecord(getAttendanceRecordReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(eachAttendanceRecord);
     }
+
 
 
     @Operation(summary="补签",
@@ -155,16 +156,16 @@ public class AttendanceController {
                     """)
     @PostMapping("/replenish")
     public Object replenishAttendanceRecord(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq){
-        Integer rowsAffected = attendanceService.userReplenishAttendance(applyAttendanceReq);
-        if(rowsAffected > 0){
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("补签成功");
-
-        }else {
+        if(!applyAttendanceReq.getCheckInTime().toLocalDate()
+                .equals(applyAttendanceReq.getCheckoutTime().toLocalDate())) {
             return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("无效请求,超过补签时间");
+                    .statusText("非法请求，时间无效");
         }
 
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userReplenishAttendance(applyAttendanceReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("补签成功")
+                .data(attendanceInfoVO);
 
     }
 

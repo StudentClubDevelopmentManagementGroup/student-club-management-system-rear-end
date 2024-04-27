@@ -1,6 +1,6 @@
 package team.project.module.club.attendance.internal.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +13,9 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import team.project.module.club.attendance.internal.util.ConvertToAttendanceInfoVO;
 import team.project.module.user.export.service.UserInfoIService;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,29 +28,20 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     private AttendanceMapper attendanceMapper;
     @Autowired
     private UserInfoIService userInfoIService;
+    @Autowired
+    private ConvertToAttendanceInfoVO convertToAttendanceInfoVO;
 
 
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
         AttendanceDO attendanceDO = attendanceMapper.userCheckIn(userCheckinReq);
-        // 创建一个 AttendanceInfoVO 对象，用于存储签到信息
-        AttendanceInfoVO attendanceInfo = new AttendanceInfoVO();
         // 如果插入成功，则设置签到信息的ID属性
         if (attendanceDO !=null) {
-            attendanceInfo.setId(attendanceDO.getId());
-            attendanceInfo.setUserId(userCheckinReq.getUserId());
-            attendanceInfo.setClubId(userCheckinReq.getClubId());
-            String userName = userInfoIService.selectUserBasicInfo(userCheckinReq.getUserId()).getName();
-            attendanceInfo.setUserName(userName);
-            attendanceInfo.setCheckInTime(userCheckinReq.getCheckInTime());
-            attendanceInfo.setDeleted(attendanceDO.isDeleted());
-            attendanceInfo.setCheckoutTime(null); // 用户签到时还未签出，因此设置签出时间为 null
+            return convertToAttendanceInfoVO.convert(attendanceDO);
         }
-        return attendanceInfo;
+        return null;
     }
-
-
 
 
     @Override
@@ -76,6 +67,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
             // 复制空对象会引发异常
             AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
             BeanUtils.copyProperties(attendanceMapper.getLatestCheckInRecord(userId,clubId), attendanceInfoVO);
+            String userName = userInfoIService.selectUserBasicInfo(userId).getName();
+            attendanceInfoVO.setUserName(userName);
             return attendanceInfoVO;
         }else{
             return null;
@@ -100,91 +93,28 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         return clubAttendanceDurationVOList;
     }
 
-//    @Override
-//    //查社团成员指定时间打卡记录
-//    public List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq){
-//        List<AttendanceInfoVO> attendanceInfoVOList = attendanceMapper.getAttendanceRecord(getAttendanceRecordReq);
-//        for(AttendanceInfoVO attendanceInfoVO : attendanceInfoVOList){
-//            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
-//            attendanceInfoVO.setUserName(userName);
-//        }
-//        return attendanceInfoVOList;
-//    }
-//
 
-
+    //查签到记录优化分页
     @Override
-// 查社团所有成员指定时间打卡记录（分页）
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
-        // 构造分页对象
-        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
-        // 构建查询条件
-        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
-                .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
-                .between(getAttendanceRecordReq.getStartTime() != null
-                                && getAttendanceRecordReq.getEndTime() != null, "checkin_time", getAttendanceRecordReq.getStartTime(),
-                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
-                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
-
-
-        List<AttendanceDO> attendanceRecordList = attendanceMapper.selectList(page, queryWrapper);
-
-        List<AttendanceInfoVO> result = new ArrayList<>();
-        // DO转为VO展示给前端
-        for (AttendanceDO attendanceDO : attendanceRecordList) {
-            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-
-            attendanceInfoVO.setId(attendanceDO.getId());
-            attendanceInfoVO.setClubId(attendanceDO.getClubId());
-            attendanceInfoVO.setUserId(attendanceDO.getUserId());
-            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
-            attendanceInfoVO.setUserName(userName);
-            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
-            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
-            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
-
-            result.add(attendanceInfoVO);
-        }
-
-        // 封装分页查询结果并返回
-        return new PageVO<>(result,page);
-
-    }
-
-
-    @Override
-    public PageVO<AttendanceInfoVO> getAttendanceRecordT(GetAttendanceRecordReq getAttendanceRecordReq) {
 
         Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq);
+
         List<AttendanceInfoVO> result = new ArrayList<>();
         for (AttendanceDO attendanceDO : page.getRecords()) {
-            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-            attendanceInfoVO.setId(attendanceDO.getId());
-            attendanceInfoVO.setClubId(attendanceDO.getClubId());
-            attendanceInfoVO.setUserId(attendanceDO.getUserId());
-            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
-            attendanceInfoVO.setUserName(userName);
-            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
-            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
-            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
-            result.add(attendanceInfoVO);
+            //自定义转换器方法
+            result.add(convertToAttendanceInfoVO.convert(attendanceDO));
         }
         return new PageVO<>(result, page);
     }
 
+    //社团成员申请补签,返回补签记录
+    public AttendanceInfoVO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
+            AttendanceDO attendanceDO = attendanceMapper.userReplenishAttendance(applyAttendanceReq);
+            return convertToAttendanceInfoVO.convert(attendanceDO);
 
-    //社团成员申请补签
-    public Integer userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
-        System.out.println(applyAttendanceReq.getCheckInTime().toLocalDate());
-        //签到签退时间要在同一天
-        if(applyAttendanceReq.getCheckInTime().toLocalDate() != applyAttendanceReq.getCheckoutTime().toLocalDate()){
-            return 0;
-        }
-        Integer rowsAffected = attendanceMapper.userReplenishAttendance(applyAttendanceReq);
-        return rowsAffected;
+
     }
-
 
 
     //定时逻辑删除签到记录
