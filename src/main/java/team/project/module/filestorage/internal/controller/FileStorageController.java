@@ -16,7 +16,6 @@ import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.internal.service.AliyunObjectStorageService;
 import team.project.module.filestorage.export.service.impl.FileStorageIServiceImpl;
 import team.project.module.filestorage.internal.service.LocalFileSystemStorageService;
-import team.project.module.filestorage.internal.util.Util;
 
 @Tag(name="文件存储")
 @Controller
@@ -61,27 +60,24 @@ public class FileStorageController {
             if (FileStorageException.Status.FILE_EXIST.equals(e.getFileStorageExceptionStatus())) {
                 return new Response<>(ServiceStatus.CONFLICT).statusText("文件已存在，且无法覆盖");
             } else {
-                return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("无法解决的异常");
+                return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
             }
         }
         catch (Exception e) {
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("上传失败");
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Operation(summary="获取访问已上传的文件的URL")
     @GetMapping("/get_uploaded_file_url")
     @ResponseBody
-    Object getUploadedFileUrl(
-        @NotBlank(message="未输入文件id")
-        @RequestParam("file_id") String fileId
-    ) {
-        if (localStorageService.isValidFileId(fileId)) {
+    Object getUploadedFileUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
+        if (localStorageService.maybeStoredInLocalFileSystem(fileId)) {
             String url = localStorageService.getUploadedFileUrl(fileId);
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
 
-        if (cloudStorageService.isValidFileId(fileId)) {
+        if (cloudStorageService.maybeStoredInAliyunOSS(fileId)) {
             String url = cloudStorageService.getUploadedFileUrl(fileId);
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
@@ -91,10 +87,7 @@ public class FileStorageController {
 
     @Operation(summary="获取访问已上传的文件")
     @GetMapping("/get_uploaded_file")
-    Object getUploadedFile(
-        @NotBlank(message="未输入文件id")
-        @RequestParam("file_id") String fileId
-    ) {
+    Object getUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:null”，响应 404 */
         return "redirect:" + fileStorageService.getUploadedFileUrl(fileId);
     }
@@ -102,10 +95,7 @@ public class FileStorageController {
     @Operation(summary="删除已上传的文件")
     @PostMapping("/delete_uploaded_file")
     @ResponseBody
-    Object deleteUploadedFile(
-        @NotBlank(message="未输入文件id")
-        @RequestParam("file_id") String fileId
-    ) {
+    Object deleteUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         if (fileStorageService.deleteUploadedFile(fileId)) {
             return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
         } else {

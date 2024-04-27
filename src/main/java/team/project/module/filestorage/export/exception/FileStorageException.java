@@ -10,14 +10,19 @@ public class FileStorageException extends ServiceException {
 
     @AllArgsConstructor
     public enum Status {
-        FILE_EXIST,     /* 文件已存在 */
-        UNSOLVABLE,     /* 无法解决的异常 */
+        INVALID_FILE_PATH,  /* 文件路径不合约束 */
+        FILE_EXIST,         /* 文件已存在 */
+        UNSOLVABLE,         /* 无法解决的异常 */
     }
 
     private final Status fileStorageExceptionStatus;
 
     public FileStorageException(Status status) {
-        super(ServiceStatus.INTERNAL_SERVER_ERROR, null);
+        this(status, null);
+    }
+
+    public FileStorageException(Status status, String message) {
+        super(ServiceStatus.INTERNAL_SERVER_ERROR, message);
         this.fileStorageExceptionStatus = status;
     }
 }

@@ -20,12 +20,11 @@ public interface FileStorageIService {
      * @param overwrite         如果文件已存在，是否覆盖
      * @return fileId
      * @throws FileStorageException
-     *      <li>如果文件已存在，且 {@code overwrite} 为 false，则 {@code status} 为 {@code FILE_EXIST}
-     *      <li>如果上传途中遇到其他异常，则 {@code status} 为 {@code UNSOLVABLE}
+     *      <li>如果文件已存在，且 {@code overwrite} 为 false
+     *      <li>或是上传途中遇到其他异常
      * */
     String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite);
 /*  TODO: ljh_FIXME:FIXME: targetFolder禁止使用".."和"."越界访问其他文件夹的文件 */
-/*  TODO: ljh_FIXME:FIXME: 路径和文件名不支持中文 */
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>

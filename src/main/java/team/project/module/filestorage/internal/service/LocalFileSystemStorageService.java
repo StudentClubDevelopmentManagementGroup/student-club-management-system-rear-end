@@ -10,6 +10,9 @@ import team.project.module.filestorage.internal.config.LocalFileSystemConfig;
 import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
 import team.project.module.filestorage.internal.util.Util;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
@@ -49,7 +52,7 @@ public class LocalFileSystemStorageService {
      * <br> 操作文件前，先判断 fileId 是否符合这个规则
      * <br> 若不符合，则认为文件不存在，不必再进行后续操作</p>
      * */
-    public boolean isValidFileId(String fileId) {
+    public boolean maybeStoredInLocalFileSystem(String fileId) {
         return fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
@@ -61,8 +64,9 @@ public class LocalFileSystemStorageService {
      * @param overwrite         如果文件已存在，是否覆盖
      * @return fileId
      * @throws FileStorageException
-     *      <li>如果文件已存在，且 {@code overwrite} 为 false，则 {@code status} 为 {@code FILE_EXIST}
-     *      <li>如果上传途中遇到其他异常，则 {@code status} 为 {@code UNSOLVABLE}
+     *      <li>目标目录路径或目标文件名不合约束
+     *      <li>如果文件已存在，且 {@code overwrite} 为 false
+     *      <li>或是上传途中遇到其他异常
      * */
     public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
 
@@ -75,9 +79,13 @@ public class LocalFileSystemStorageService {
         }
 
         String fileId = generateFileId(targetFolder, filename);
+        if ( ! Util.isValidFileId(fileId)) {
+            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+        }
+
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! overwrite && localFileSystemDAO.isFileExist(filePath)) {
-            throw new FileStorageException(FILE_EXIST);
+            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
         }
         try {
             localFileSystemDAO.save(toUploadFile, filePath);
@@ -98,10 +106,21 @@ public class LocalFileSystemStorageService {
      * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
-        if (isValidFileId(fileId))
-            return baseUrl + parseFileIdToFilePath(fileId);
-        else
+        if ( ! maybeStoredInLocalFileSystem(fileId)) {
             return null;
+        }
+        if ( ! Util.isValidFileId(fileId)) {
+            return null;
+        }
+
+        String filePath = parseFileIdToFilePath(fileId);
+        String[] pathSplit = filePath.split("/");
+
+        StringBuilder urlEncodedPath = new StringBuilder();
+        for (int i = 1; i < pathSplit.length; i++) { /* <- i 从 1 开始，因为[0]是空字符串 "" */
+            urlEncodedPath.append("/").append(URLEncoder.encode(pathSplit[i], StandardCharsets.UTF_8));
+        }
+        return baseUrl + urlEncodedPath;
     }
 
     /**
@@ -109,7 +128,10 @@ public class LocalFileSystemStorageService {
      * @return 删除成功返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
-        if ( ! isValidFileId(fileId)) {
+        if ( ! maybeStoredInLocalFileSystem(fileId)) {
+            return true;
+        }
+        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {

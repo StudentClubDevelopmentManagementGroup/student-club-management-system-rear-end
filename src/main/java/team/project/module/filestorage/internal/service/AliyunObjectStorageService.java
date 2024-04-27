@@ -14,8 +14,7 @@ import team.project.module.filestorage.internal.util.Util;
 
 import java.io.IOException;
 
-import static team.project.module.filestorage.export.exception.FileStorageException.Status.FILE_EXIST;
-import static team.project.module.filestorage.export.exception.FileStorageException.Status.UNSOLVABLE;
+import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
 public class AliyunObjectStorageService {
@@ -51,7 +50,7 @@ public class AliyunObjectStorageService {
      * <br> 操作文件前，先判断 fileId 是否符合这个规则
      * <br> 若不符合，则认为文件不存在，不必再进行后续操作</p>
      * */
-    public boolean isValidFileId(String fileId) {
+    public boolean maybeStoredInAliyunOSS(String fileId) {
         return fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
@@ -63,8 +62,9 @@ public class AliyunObjectStorageService {
      * @param overwrite         如果文件已存在，是否覆盖
      * @return fileId
      * @throws FileStorageException
-     *      <li>如果文件已存在，且 {@code overwrite} 为 false，则 {@code status} 为 {@code FILE_EXIST}
-     *      <li>如果上传途中遇到其他异常，则 {@code status} 为 {@code UNSOLVABLE}
+     *      <li>目标目录路径或目标文件名不合约束
+     *      <li>如果文件已存在，且 {@code overwrite} 为 false
+     *      <li>或是上传途中遇到其他异常
      * */
     public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
 
@@ -77,9 +77,13 @@ public class AliyunObjectStorageService {
         }
 
         String fileId = generateFileId(targetFolder, filename);
+        if ( ! Util.isValidFileId(fileId)) {
+            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+        }
+
         String fileKey = parseFileIdToFileKey(fileId);
         if ( ! overwrite && aliyunOssDAO.isFileExist(fileKey)) {
-            throw new FileStorageException(FILE_EXIST);
+            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
         }
         try {
             aliyunOssDAO.upload(toUploadFile, fileKey);
@@ -101,7 +105,10 @@ public class AliyunObjectStorageService {
      * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
-        if ( ! isValidFileId(fileId)) {
+        if ( ! maybeStoredInAliyunOSS(fileId)) {
+            return null;
+        }
+        if ( ! Util.isValidFileId(fileId)) {
             return null;
         }
         try {
@@ -118,7 +125,10 @@ public class AliyunObjectStorageService {
      * @return 删除成功返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
-        if ( ! isValidFileId(fileId)) {
+        if ( ! maybeStoredInAliyunOSS(fileId)) {
+            return true;
+        }
+        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {

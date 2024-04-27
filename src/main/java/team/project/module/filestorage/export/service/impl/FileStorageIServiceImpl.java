@@ -28,10 +28,10 @@ public class FileStorageIServiceImpl implements FileStorageIService {
 
     @Override
     public String getUploadedFileUrl(String fileId) {
-        if (localStorageService.isValidFileId(fileId))
+        if (localStorageService.maybeStoredInLocalFileSystem(fileId))
             return localStorageService.getUploadedFileUrl(fileId);
 
-        if (cloudStorageService.isValidFileId(fileId))
+        if (cloudStorageService.maybeStoredInAliyunOSS(fileId))
             return cloudStorageService.getUploadedFileUrl(fileId);
 
         return null;
@@ -39,10 +39,10 @@ public class FileStorageIServiceImpl implements FileStorageIService {
 
     @Override
     public boolean deleteUploadedFile(String fileId) {
-        if (localStorageService.isValidFileId(fileId))
+        if (localStorageService.maybeStoredInLocalFileSystem(fileId))
             return localStorageService.deleteUploadedFile(fileId);
 
-        if (cloudStorageService.isValidFileId(fileId))
+        if (cloudStorageService.maybeStoredInAliyunOSS(fileId))
             return cloudStorageService.deleteUploadedFile(fileId);
 
         return true;
