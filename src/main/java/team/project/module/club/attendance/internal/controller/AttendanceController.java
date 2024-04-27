@@ -40,7 +40,9 @@ public class AttendanceController {
 
 
 
-    @Operation(summary="社团成员签到,时间格式为(2024-04-15 13:01:33)")
+    @Operation(summary="签到",description = """
+            时间格式为(2024-04-15 13:01:33)
+            """)
     @PostMapping("/checkIn")
     public Object userCheckIn( @Valid @RequestBody  UserCheckInReq userCheckinReq) {
         LocalDateTime checkInTime = userCheckinReq.getCheckInTime();
@@ -76,7 +78,10 @@ public class AttendanceController {
     }
 
 
-    @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
+    @Operation(summary="签退",
+    description = """
+            时间格式为(2024-04-15 13:01:33)
+            """)
     @PatchMapping ("/checkout")
     public Object userCheckout(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
         //获取签退时间
@@ -104,10 +109,11 @@ public class AttendanceController {
 
     }
 
-    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）",
+    @Operation(summary="查时长，返回秒",
             description = """
+                    时间格式（2024-04-18 23:59:59）\n
                     -学号为空则查询社团全部成员的打卡时长 \n
-                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡时长
+                    -开始结束时间都为空则查询成员进入社团以来的全部打卡时长
                     """)
     @PostMapping("/attendance/durationTime")
     public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
@@ -126,18 +132,40 @@ public class AttendanceController {
     }
 
     //查询社团成员指定时间段打卡记录
-    @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）",
+    @Operation(summary="查打卡记录",
             description = """
+                    时间格式（2024-04-18 23:59:59）\n
                     -学号为空则查询社团全部成员的打卡记录 \n
-                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡记录
+                    -开始结束时间都为空则查询成员进入社团以来的全部打卡记录
                     """)
     @PostMapping("/attendance/record")
     public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
         PageVO<AttendanceInfoVO> eachAttendanceRecord =
-                attendanceService.getAttendanceRecord(getAttendanceRecordReq);
+                //getAttendanceRecordT
+                attendanceService.getAttendanceRecordT(getAttendanceRecordReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(eachAttendanceRecord);
+    }
+
+
+    @Operation(summary="补签",
+            description = """
+                    社团成员申请补签，超过签到时间七天请求无效
+                    """)
+    @PostMapping("/replenish")
+    public Object replenishAttendanceRecord(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq){
+        Integer rowsAffected = attendanceService.userReplenishAttendance(applyAttendanceReq);
+        if(rowsAffected > 0){
+            return new Response<>(ServiceStatus.SUCCESS)
+                    .statusText("补签成功");
+
+        }else {
+            return new Response<>(ServiceStatus.BAD_REQUEST)
+                    .statusText("无效请求,超过补签时间");
+        }
+
+
     }
 
 

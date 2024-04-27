@@ -1,7 +1,5 @@
 package team.project.module.club.attendance.internal.service.impl;
 
-
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.BeanUtils;
@@ -16,8 +14,8 @@ import team.project.module.club.attendance.internal.model.view.ClubAttendanceDur
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.user.export.service.UserInfoIService;
-import team.project.module.user.internal.model.entity.TblUserDO;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,7 +33,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
-        AttendanceDO attendanceDO = attendanceMapper.userCheckInTest(userCheckinReq);
+        AttendanceDO attendanceDO = attendanceMapper.userCheckIn(userCheckinReq);
         // 创建一个 AttendanceInfoVO 对象，用于存储签到信息
         AttendanceInfoVO attendanceInfo = new AttendanceInfoVO();
         // 如果插入成功，则设置签到信息的ID属性
@@ -131,8 +129,9 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
 
         List<AttendanceDO> attendanceRecordList = attendanceMapper.selectList(page, queryWrapper);
+
         List<AttendanceInfoVO> result = new ArrayList<>();
-        // 对查询结果进行进一步处理
+        // DO转为VO展示给前端
         for (AttendanceDO attendanceDO : attendanceRecordList) {
             AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
 
@@ -151,6 +150,39 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 封装分页查询结果并返回
         return new PageVO<>(result,page);
 
+    }
+
+
+    @Override
+    public PageVO<AttendanceInfoVO> getAttendanceRecordT(GetAttendanceRecordReq getAttendanceRecordReq) {
+
+        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq);
+        List<AttendanceInfoVO> result = new ArrayList<>();
+        for (AttendanceDO attendanceDO : page.getRecords()) {
+            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+            attendanceInfoVO.setId(attendanceDO.getId());
+            attendanceInfoVO.setClubId(attendanceDO.getClubId());
+            attendanceInfoVO.setUserId(attendanceDO.getUserId());
+            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
+            attendanceInfoVO.setUserName(userName);
+            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
+            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
+            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
+            result.add(attendanceInfoVO);
+        }
+        return new PageVO<>(result, page);
+    }
+
+
+    //社团成员申请补签
+    public Integer userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
+        System.out.println(applyAttendanceReq.getCheckInTime().toLocalDate());
+        //签到签退时间要在同一天
+        if(applyAttendanceReq.getCheckInTime().toLocalDate() != applyAttendanceReq.getCheckoutTime().toLocalDate()){
+            return 0;
+        }
+        Integer rowsAffected = attendanceMapper.userReplenishAttendance(applyAttendanceReq);
+        return rowsAffected;
     }
 
 

@@ -1,18 +1,18 @@
 package team.project.module.club.attendance.internal.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Update;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
-import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
+
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
-
-
-import java.util.ArrayList;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 
@@ -25,36 +25,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
 
     //签到返回签到信息
-    default AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq) {
-
-
-        // 插入签到信息到数据库中
-        AttendanceDO attendanceDO = new AttendanceDO();
-
-        attendanceDO.setUserId(userCheckinReq.getUserId());
-        attendanceDO.setClubId(userCheckinReq.getClubId());
-        attendanceDO.setCheckInTime(userCheckinReq.getCheckInTime());
-
-        int insertSuccess = this.insert(attendanceDO); // 使用 MyBatis-Plus 提供的 save 方法插入数据
-
-        // 创建一个 AttendanceInfoVO 对象，用于存储签到信息
-        AttendanceInfoVO attendanceInfo = new AttendanceInfoVO();
-        // 如果插入成功，则设置签到信息的ID属性
-        if (insertSuccess>0) {
-            attendanceInfo.setId(attendanceDO.getId());
-            attendanceInfo.setUserId(userCheckinReq.getUserId());
-            attendanceInfo.setClubId(userCheckinReq.getClubId());
-            attendanceInfo.setCheckInTime(userCheckinReq.getCheckInTime());
-            attendanceInfo.setDeleted(attendanceDO.isDeleted());
-            attendanceInfo.setCheckoutTime(null); // 用户签到时还未签出，因此设置签出时间为 null
-        }
-        // 返回签到信息
-        return attendanceInfo;
-    }
-
-
-    //签到返回签到信息
-    default AttendanceDO userCheckInTest(UserCheckInReq userCheckinReq) {
+    default AttendanceDO userCheckIn(UserCheckInReq userCheckinReq) {
 
         // 插入签到信息到数据库中
         AttendanceDO attendanceDO = new AttendanceDO();
@@ -110,8 +81,21 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     }
 
-    // 定义分页查询方法，返回Page<AttendanceInfoVO>类型的分页结果
-    Page<AttendanceInfoVO> findAttendanceInfoVOPage(Page<AttendanceInfoVO> page);
+    //返回分页查询对象
+    default Page<AttendanceDO> findAttendanceInfoVOPage(GetAttendanceRecordReq getAttendanceRecordReq){
+        // 构造分页对象
+        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
+        // 构建查询条件
+        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
+                .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
+                .between(getAttendanceRecordReq.getStartTime() != null
+                                && getAttendanceRecordReq.getEndTime() != null, "checkin_time", getAttendanceRecordReq.getStartTime(),
+                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
+                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
+
+        return this.selectPage(page, queryWrapper);
+    }
 
 
     //查社团一个成员指定时间打卡时长
@@ -120,6 +104,32 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     //查询社团每个成员指定时间段打卡时长
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
+
+
+
+
+
+    //社团成员申请补签
+    default Integer userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
+
+        //创建更新条件
+        UpdateWrapper<AttendanceDO> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", applyAttendanceReq.getUserId())
+                .eq("club_id", applyAttendanceReq.getClubId())
+                .eq("checkin_time",applyAttendanceReq.getCheckInTime())
+                //签到时间要在七天内
+                .ge("checkin_time", LocalDateTime.now().minus(7, ChronoUnit.DAYS))
+                .eq("is_deleted", true)
+                .isNull("checkout_time");
+
+        //创建要更新的字段
+        AttendanceDO attendanceDO = new AttendanceDO();
+        attendanceDO.setCheckoutTime(applyAttendanceReq.getCheckoutTime());
+        attendanceDO.setDeleted(false);
+
+        return this.update(attendanceDO,updateWrapper);
+
+    }
 
 
     //定时逻辑删除记录

@@ -43,7 +43,7 @@ public class DepartmentController {
 
     @Operation(summary="根据id查询院系名称")
     @GetMapping("/name")
-    public Response<Object> getDepartmentName(@RequestParam("departmentId") @NotNull Long id) {
+    public Response<Object> getDepartmentName( @RequestParam("departmentId") @NotNull Long id) {
         String departmentName = departmentService.getDepartmentName(id);
         if (departmentName != null) {
             return new Response<>(ServiceStatus.SUCCESS)

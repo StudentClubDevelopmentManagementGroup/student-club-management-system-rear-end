@@ -30,6 +30,13 @@ public interface AttendanceService {
 
     PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
 
+    PageVO<AttendanceInfoVO> getAttendanceRecordT(GetAttendanceRecordReq getAttendanceRecordReq);
+
+
+
+        //社团成员申请补签
+    Integer userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq);
+
 
     //每天23.59.59逻辑删除当天未签退的记录
     int timedDeleteRecord();
