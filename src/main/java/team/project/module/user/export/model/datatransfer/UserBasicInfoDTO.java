@@ -2,7 +2,6 @@ package team.project.module.user.export.model.datatransfer;
 
 import lombok.Data;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 @Data
 public class UserBasicInfoDTO {

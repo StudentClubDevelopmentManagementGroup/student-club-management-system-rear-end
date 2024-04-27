@@ -64,11 +64,11 @@ public class UserInfoIServiceImpl implements UserInfoIService {
 
     @Override
     public int addRoleToUser(String userId, UserRole roleToAdd) {
-        return userMapper.addRoleToUser(userId, roleToAdd.r);
+        return userMapper.addRoleToUser(userId, roleToAdd);
     }
 
     @Override
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {
-        return userMapper.removeRoleFromUser(userId, roleToRemove.r);
+        return userMapper.removeRoleFromUser(userId, roleToRemove);
     }
 }

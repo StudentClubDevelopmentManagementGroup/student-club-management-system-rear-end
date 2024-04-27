@@ -2,7 +2,6 @@ package team.project.module.club.personnelchanges.internal.model.datatransfer;
 
 import lombok.Data;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.model.enums.UserRoleEnum;
 
 @Data
 public class ClubMemberInfoDTO {
@@ -16,7 +15,7 @@ public class ClubMemberInfoDTO {
 
     /* 判断用户是否拥有指定角色 */
     public boolean hasRole(UserRole role) {
-        return UserRoleEnum.hasRole(this.role, role.r);
+        return UserRole.hasRole(this.role, role);
     }
 
     public boolean isMember() {
