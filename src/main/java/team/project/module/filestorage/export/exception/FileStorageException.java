@@ -6,19 +6,18 @@ import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 
 @Getter
-public class FileStoreException extends ServiceException {
+public class FileStorageException extends ServiceException {
 
     @AllArgsConstructor
     public enum Status {
         FILE_EXIST,     /* 文件已存在 */
-        UNSOLVABLE,     /* 无法解决 */
-        ;
+        UNSOLVABLE,     /* 无法解决的异常 */
     }
 
-    Status status;
+    private final Status fileStorageExceptionStatus;
 
-    public FileStoreException(Status status) {
+    public FileStorageException(Status status) {
         super(ServiceStatus.INTERNAL_SERVER_ERROR, null);
-        this.status = status;
+        this.fileStorageExceptionStatus = status;
     }
 }

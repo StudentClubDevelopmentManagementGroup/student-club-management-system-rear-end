@@ -22,10 +22,10 @@ public enum UserRoleEnum {
     }
 
     /**
-     * 通过用户的角色码，判断用户是否拥有指定角色
+     * 通过用户的角色码，判断该角色码是否拥有指定角色
      * @param userRoleCode 当前用户的角色码
      * @param role 要判断的指定角色
-     * @return 如果用户拥有指定角色，则返回 true，否则返回 false
+     * @return 如果该角色码拥有指定角色，则返回 true，否则返回 false
      * */
     public static boolean hasRole(int userRoleCode, UserRoleEnum role) {
         return switch (role) {

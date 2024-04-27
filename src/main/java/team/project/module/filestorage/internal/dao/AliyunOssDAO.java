@@ -28,13 +28,13 @@ import java.util.Date;
 */
 
 @Component
-public class AliyunOssStorageDAO {
+public class AliyunOssDAO {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String bucketName;
     private final OSS    ossClient;
 
-    AliyunOssStorageDAO(AliyunOssConfig cfg) {
+    AliyunOssDAO(AliyunOssConfig cfg) {
         String endpoint        = cfg.endpoint;
         String accessKeyId     = cfg.accessKeyId;
         String accessKeySecret = cfg.accessKeySecret;
@@ -70,9 +70,9 @@ public class AliyunOssStorageDAO {
     }
 
     /**
-     * 删除文件
+     * 删除单个文件
      * */
     public void delete(String key) {
-        ossClient.deleteObject(bucketName, key);
+        ossClient.deleteObject(bucketName, key); /* <- 无论要删除的文件是否存在，删除成功后均会返回 204 状态码 */
     }
 }

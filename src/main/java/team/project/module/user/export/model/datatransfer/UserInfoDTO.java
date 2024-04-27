@@ -15,6 +15,6 @@ public class UserInfoDTO {
 
     /* 判断用户是否拥有指定角色 */
     public boolean hasRole(UserRole role) {
-        return UserRoleEnum.hasRole(this.role, role.r);
+        return UserRole.hasRole(this.role, role);
     }
 }

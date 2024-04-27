@@ -13,4 +13,9 @@ public enum UserRole {
     ;
 
     /* private ! */ public final UserRoleEnum r; /* <- 当前枚举类，是这个枚举类的封装 */
+
+    /* 通过用户的角色码，判断该角色码是否拥有指定角色 */
+    public static boolean hasRole(int userRoleCode, UserRole role) {
+        return UserRoleEnum.hasRole(userRoleCode, role.r);
+    }
 }

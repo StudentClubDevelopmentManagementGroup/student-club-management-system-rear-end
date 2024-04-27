@@ -1,23 +1,31 @@
 package team.project.module.filestorage.export.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.filestorage.export.exception.FileStorageException;
 
 public interface FileStorageIService {
 
-    /**
-     * <p>上传文件到指定目录<br>
-     * @param file 要上传的文件
-     * @param targetFolder 目标目录（以'/'开头、以'/'开头分隔目录，根目录用"/"表示）
-     * @param filename 文件名
-     * @param overwrite 如果文件已存在，是否覆盖
-     * @return fileId
-     * */
-    String uploadFile(MultipartFile file, String targetFolder, String filename, boolean overwrite);
+    /* 存储类型 */
+    enum StorageType {
+        LOCAL, /* 本地存储 */
+        CLOUD, /* 云存储 */
+    }
 
     /**
-     * 判断文件是否存在
+     * 上传文件
+     * @param toUploadFile      要上传的文件
+     * @param storageType       存储类型
+     * @param targetFolder      目标目录（路径分隔符用'/'，路径以'/'开头，根目录用"/"表示）（如果传 null 或 ""，则使用根目录）
+     * @param targetFilename    目标文件名（不包括扩展名）（如果传 null 或 ""，则使用 {@code toUploadFile} 的原文件名）
+     * @param overwrite         如果文件已存在，是否覆盖
+     * @return fileId
+     * @throws FileStorageException
+     *      <li>如果文件已存在，且 {@code overwrite} 为 false，则 {@code status} 为 {@code FILE_EXIST}
+     *      <li>如果上传途中遇到其他异常，则 {@code status} 为 {@code UNSOLVABLE}
      * */
-    boolean isFileExist(String fileId);
+    String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite);
+/*  TODO: ljh_FIXME:FIXME: targetFolder禁止使用".."和"."越界访问其他文件夹的文件 */
+/*  TODO: ljh_FIXME:FIXME: 路径和文件名不支持中文 */
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>
@@ -32,7 +40,7 @@ public interface FileStorageIService {
 
     /**
      * 删除 fileId 指向的文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
-     * @return 执行时没有发生异常则返回 true，否则返回 false
+     * @return 删除成功返回 true，否则返回 false
      * */
     boolean deleteUploadedFile(String fileId);
 }

@@ -1,19 +1,19 @@
 package team.project.module.filestorage.internal.service;
+import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import team.project.module.filestorage.export.exception.FileStoreException;
+import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.internal.config.LocalFileSystemConfig;
 import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
 import team.project.module.filestorage.internal.util.Util;
 
-import static team.project.module.filestorage.export.exception.FileStoreException.Status.FILE_EXIST;
-import static team.project.module.filestorage.export.exception.FileStoreException.Status.UNSOLVABLE;
+import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class LocalFileSystemService {
+public class LocalFileSystemStorageService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
@@ -23,7 +23,7 @@ public class LocalFileSystemService {
     @Autowired
     private LocalFileSystemDAO localFileSystemDAO;
 
-    LocalFileSystemService(LocalFileSystemConfig cfg) {
+    LocalFileSystemStorageService(LocalFileSystemConfig cfg) {
         this.uploadedFilesFolder = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
         this.baseUrl = cfg.baseUrl;
@@ -44,44 +44,49 @@ public class LocalFileSystemService {
     }
 
     /**
-     * <p>通过 fileId 判断文件是否可能存储在本地文件系统中</p>
-     * <p>如果文件存储在本地文件系统中，则 fileId 一定符合存储规则<br>
-     * 操作文件前，先判断 fileId 是否符合这个规则<br>
-     * 若不符合，则认为文件不存在，不必再进行后续操作</p>
+     * <p>  通过 fileId 判断文件是否可能存储在本地文件系统中</p>
+     * <p>  如果文件存储在本地文件系统中，则 fileId 一定符合存储规则
+     * <br> 操作文件前，先判断 fileId 是否符合这个规则
+     * <br> 若不符合，则认为文件不存在，不必再进行后续操作</p>
      * */
     public boolean isValidFileId(String fileId) {
         return fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
     /**
-     * <p>上传文件到指定目录<br>
-     * @param file 要上传的文件
-     * @param targetFolder 目标目录（以'/'开头、以'/'开头分隔目录，根目录用"/"表示）
-     * @param filename 文件名
-     * @param overwrite 如果文件已存在，是否覆盖
+     * 上传文件到指定目录
+     * @param toUploadFile      要上传的文件
+     * @param targetFolder      目标目录（路径分隔符用'/'，路径以'/'开头，根目录用"/"表示）（如果传 null 或 ""，则使用根目录）
+     * @param targetFilename    目标文件名（不包括扩展名）（如果传 null 或 ""，则使用 {@code toUploadFile} 的原文件名）
+     * @param overwrite         如果文件已存在，是否覆盖
      * @return fileId
+     * @throws FileStorageException
+     *      <li>如果文件已存在，且 {@code overwrite} 为 false，则 {@code status} 为 {@code FILE_EXIST}
+     *      <li>如果上传途中遇到其他异常，则 {@code status} 为 {@code UNSOLVABLE}
      * */
-    public String upload(MultipartFile file, String targetFolder, String filename, boolean overwrite) {
+    public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
+
+        String filename;
+        if (targetFilename == null || targetFilename.isEmpty()) {
+            filename = toUploadFile.getOriginalFilename();
+        } else {
+            String extension = FilenameUtils.getExtension(toUploadFile.getOriginalFilename());
+            filename = targetFilename + ("".equals(extension) ? "" : "." + extension);
+        }
+
         String fileId = generateFileId(targetFolder, filename);
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! overwrite && localFileSystemDAO.isFileExist(filePath)) {
-            throw new FileStoreException(FILE_EXIST);
+            throw new FileStorageException(FILE_EXIST);
         }
         try {
-            localFileSystemDAO.save(file, filePath);
+            localFileSystemDAO.save(toUploadFile, filePath);
             return fileId;
         }
         catch (Exception e) {
             logger.error("上传文件到本地文件系统时出现异常", e);
-            throw new FileStoreException(UNSOLVABLE);
+            throw new FileStorageException(UNSOLVABLE);
         }
-    }
-
-    /**
-     * 判断文件是否存在
-     * */
-    public boolean isFileExist(String fileId) {
-        return isValidFileId(fileId) && localFileSystemDAO.isFileExist(parseFileIdToFilePath(fileId));
     }
 
     /**
@@ -93,12 +98,15 @@ public class LocalFileSystemService {
      * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
      * */
     public String getUploadedFileUrl(String fileId) {
-        return isValidFileId(fileId) ? (baseUrl + parseFileIdToFilePath(fileId)) : null;
+        if (isValidFileId(fileId))
+            return baseUrl + parseFileIdToFilePath(fileId);
+        else
+            return null;
     }
 
     /**
      * 删除 fileId 指向的文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
-     * @return 执行时没有发生异常则返回 true，否则返回 false
+     * @return 删除成功返回 true，否则返回 false
      * */
     public boolean deleteUploadedFile(String fileId) {
         if ( ! isValidFileId(fileId)) {
