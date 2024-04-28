@@ -147,13 +147,11 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
         */
 
         TblUserDO user = this.selectRole(userId);
-        if (user == null) {
+
+        if (user == null || user.hasRole(roleToAdd)) {
             return 0;
         }
 
-        if (user.hasRole(roleToAdd)) {
-            return 0;
-        }
         user.addRole(roleToAdd);
 
         return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
@@ -166,14 +164,13 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * 给指定用户移除角色
      * */
     default int removeRoleFromUser(String userId, UserRole roleToRemove) {
+
         TblUserDO user = this.selectRole(userId);
-        if (user == null) {
+
+        if (user == null || ! user.hasRole(roleToRemove)) {
             return 0;
         }
 
-        if ( ! user.hasRole(roleToRemove)) {
-            return 0;
-        }
         user.removeRole(roleToRemove);
 
         return this.update(null, new LambdaUpdateWrapper<TblUserDO>()

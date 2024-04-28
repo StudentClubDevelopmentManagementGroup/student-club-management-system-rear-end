@@ -13,9 +13,9 @@ import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.service.FileStorageIService;
-import team.project.module.filestorage.internal.service.AliyunObjectStorageService;
+import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
 import team.project.module.filestorage.export.service.impl.FileStorageIServiceImpl;
-import team.project.module.filestorage.internal.service.LocalFileSystemStorageService;
+import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
 
 @Tag(name="文件存储")
 @Controller
@@ -72,12 +72,12 @@ public class FileStorageController {
     @GetMapping("/get_uploaded_file_url")
     @ResponseBody
     Object getUploadedFileUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        if (localStorageService.maybeStoredInLocalFileSystem(fileId)) {
+        if (localStorageService.mayBeStored(fileId)) {
             String url = localStorageService.getUploadedFileUrl(fileId);
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
 
-        if (cloudStorageService.maybeStoredInAliyunOSS(fileId)) {
+        if (cloudStorageService.mayBeStored(fileId)) {
             String url = cloudStorageService.getUploadedFileUrl(fileId);
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }

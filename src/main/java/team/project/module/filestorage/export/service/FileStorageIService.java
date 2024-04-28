@@ -13,18 +13,18 @@ public interface FileStorageIService {
 
     /**
      * 上传文件
-     * @param toUploadFile      要上传的文件
-     * @param storageType       存储类型
-     * @param targetFolder      目标目录（路径分隔符用'/'，路径以'/'开头，根目录用"/"表示）（如果传 null 或 ""，则使用根目录）
-     * @param targetFilename    目标文件名（不包括扩展名）（如果传 null 或 ""，则使用 {@code toUploadFile} 的原文件名）
-     * @param overwrite         如果文件已存在，是否覆盖
+     * @param toUploadFile   要上传的文件
+     * @param storageType    存储类型
+     * @param targetFolder   目标目录（路径分隔符用'/'，如果传 null 或 ""，则使用根目录）
+     * @param targetFilename 目标文件名（不包括扩展名，如果传 null 或 ""，则使用 {@code toUploadFile} 的原文件名）
+     * @param overwrite      如果文件已存在，是否覆盖
      * @return fileId
      * @throws FileStorageException
+     *      <li>如果目标目录路径或目标文件名不合约束
      *      <li>如果文件已存在，且 {@code overwrite} 为 false
      *      <li>或是上传途中遇到其他异常
      * */
     String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite);
-/*  TODO: ljh_FIXME:FIXME: targetFolder禁止使用".."和"."越界访问其他文件夹的文件 */
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>
@@ -33,7 +33,7 @@ public interface FileStorageIService {
      * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
      * <li>...</li>
      * </p>
-     * @return 如果 fileId 符合存储规则返回 URL，否则返回 null
+     * @return 如果 fileId 符合约束，且符合存储规则，返回 URL，否则返回 null
      * */
     String getUploadedFileUrl(String fileId);
 

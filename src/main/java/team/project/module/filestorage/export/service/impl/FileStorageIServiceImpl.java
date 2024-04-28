@@ -5,8 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.service.FileStorageIService;
-import team.project.module.filestorage.internal.service.AliyunObjectStorageService;
-import team.project.module.filestorage.internal.service.LocalFileSystemStorageService;
+import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
+import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
 
 @Service
 public class FileStorageIServiceImpl implements FileStorageIService {
@@ -18,6 +18,9 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     @Autowired
     AliyunObjectStorageService cloudStorageService;
 
+    /**
+     *  详见：{@link FileStorageIService#uploadFile}
+     * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite) {
         return switch (storageType) {
@@ -26,23 +29,29 @@ public class FileStorageIServiceImpl implements FileStorageIService {
         };
     }
 
+    /**
+     *  详见：{@link FileStorageIService#getUploadedFileUrl}
+     * */
     @Override
     public String getUploadedFileUrl(String fileId) {
-        if (localStorageService.maybeStoredInLocalFileSystem(fileId))
+        if (localStorageService.mayBeStored(fileId))
             return localStorageService.getUploadedFileUrl(fileId);
 
-        if (cloudStorageService.maybeStoredInAliyunOSS(fileId))
+        if (cloudStorageService.mayBeStored(fileId))
             return cloudStorageService.getUploadedFileUrl(fileId);
 
         return null;
     }
 
+    /**
+     *  详见：{@link FileStorageIService#deleteUploadedFile}
+     * */
     @Override
     public boolean deleteUploadedFile(String fileId) {
-        if (localStorageService.maybeStoredInLocalFileSystem(fileId))
+        if (localStorageService.mayBeStored(fileId))
             return localStorageService.deleteUploadedFile(fileId);
 
-        if (cloudStorageService.maybeStoredInAliyunOSS(fileId))
+        if (cloudStorageService.mayBeStored(fileId))
             return cloudStorageService.deleteUploadedFile(fileId);
 
         return true;

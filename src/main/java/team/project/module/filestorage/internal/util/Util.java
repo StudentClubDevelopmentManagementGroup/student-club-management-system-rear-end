@@ -24,18 +24,6 @@ public class Util {
         return replaced.endsWith("/") ? replaced.substring(0, replaced.length() - 1) : replaced;
     }
 
-    public static boolean isValidFileId(String fileId) {
-        if (fileId.endsWith(".") || fileId.startsWith(".")) {
-            return false;
-        }
-        for (String illegal : new String[]{"/.", "<", ">", "|", "?", ":", "*"}) {
-            if (fileId.contains(illegal)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     /**
      * 生成随机的文件名（保留文件扩展名）
      * @return 随机文件名
