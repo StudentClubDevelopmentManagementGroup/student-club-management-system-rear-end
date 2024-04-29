@@ -25,6 +25,9 @@ public class AttendanceInfoVO {
     @JsonProperty("checkoutTime")
     private LocalDateTime checkoutTime;
 
+    @JsonProperty("attendanceDuration")
+    private Long attendanceDuration;
+
     @JsonProperty("isDeleted")
     private boolean isDeleted;
 

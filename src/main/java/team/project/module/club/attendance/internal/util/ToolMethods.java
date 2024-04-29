@@ -6,12 +6,15 @@ import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.user.export.service.UserInfoIService;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+
 /**
  *
  * 把 DO 对象转换为 VO
  */
 @Component
-public class ConvertToAttendanceInfoVO {
+public class ToolMethods {
     @Autowired
     private UserInfoIService userInfoIService;
     public AttendanceInfoVO convert(AttendanceDO attendanceDO) {
@@ -24,8 +27,29 @@ public class ConvertToAttendanceInfoVO {
         attendanceInfoVO.setUserName(userName);
         attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
         attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
+        // 获取时长的总秒数
+        long seconds = calculateDurationTime(attendanceDO.getCheckInTime(),attendanceDO.getCheckoutTime());
+        attendanceInfoVO.setAttendanceDuration(seconds);
         attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
 
         return attendanceInfoVO;
+    }
+
+
+
+    public Long calculateDurationTime(LocalDateTime t1, LocalDateTime t2) {
+        // 如果 t2 为 null，则使用当前时间作为 t2
+        if (t2 == null) {
+            t2 = LocalDateTime.now();
+        }
+
+        // 计算 t1 和 t2 之间的时长
+        Duration duration = Duration.between(t1, t2);
+
+        // 获取时长的总秒数
+        long seconds = duration.getSeconds();
+
+        // 将结果作为 Long 类型返回（如果需要处理可能很大的值）
+        return seconds;
     }
 }
