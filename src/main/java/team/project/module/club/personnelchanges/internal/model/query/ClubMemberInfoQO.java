@@ -6,16 +6,9 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class ClubMemberInfoQO {
-
     Long     departmentId;
-
     String   name;
-
     Long     clubId;
-
-    Integer  pagenum=1;
-
-    Integer  size=20;
+    Integer  pagenum;
+    Integer  size;
 }
-
-

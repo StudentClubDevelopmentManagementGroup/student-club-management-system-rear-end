@@ -23,12 +23,12 @@
         <result column="state"              property="state" />
     </resultMap>
 
-
     <select id="findByNameAndDepartmentId"
             resultMap="tbl_club_DO">
         select * from tbl_club
         where name LIKE CONCAT('%', #{name}, '%') and department_id = #{departmentId}
     </select>
+
     <select id="selectByNameAndDepartmentId"
             resultMap="tbl_club_DO">
         select * from tbl_club
@@ -67,6 +67,7 @@
     <update id="recoverClub">
         update tbl_club set is_deleted = 0 where name = #{name} and department_id = #{departmentId} and is_deleted = 1
     </update>
+
     <sql id="clubSummaryQuery">
         SELECT
         c.name AS name,

@@ -9,7 +9,6 @@ import team.project.module.club.personnelchanges.internal.model.query.ClubMember
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
 
-
 @Service
 public interface TblUserClubService extends IService<TblUserClubDO> {
 
@@ -26,7 +25,4 @@ public interface TblUserClubService extends IService<TblUserClubDO> {
      Boolean selectTheMember(String userId, Long clubId);
 
      PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req);
-
-
 }
-

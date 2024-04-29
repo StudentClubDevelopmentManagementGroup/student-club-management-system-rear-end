@@ -5,6 +5,7 @@ import team.project.module.club.personnelchanges.internal.model.datatransfer.Use
 import team.project.module.club.personnelchanges.export.model.request.ClubReq;
 
 public interface PceIService {
+
     boolean isClubManager(String userId, Long clubId);
 
     // TODO: boolean isClubMember(String userId, Long clubId);

@@ -14,10 +14,10 @@ public class TblUserClubDO {
 
     @TableId(value="id")               Long      id;
     @TableLogic(value="0", delval="1")
-    @TableField(value="is_deleted")    Boolean   isDeleted;
+    @TableField(value="is_deleted")    Boolean   deleted;
     @TableField(value="create_time")   Timestamp createTime;
     @TableField(value="update_time")   Timestamp updateTime;
-    @TableField(value="user_id")       String      userId;
-    @TableField(value="club_id")       Long        clubId;
+    @TableField(value="user_id")       String    userId;
+    @TableField(value="club_id")       Long      clubId;
     @TableField(value="role")          Integer   role;
 }
