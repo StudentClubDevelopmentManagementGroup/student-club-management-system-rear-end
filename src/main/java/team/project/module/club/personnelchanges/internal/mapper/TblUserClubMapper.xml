@@ -22,7 +22,7 @@
 
     <update id="setManager">
         update tbl_user_club set role = role | 2
-        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2
+        where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; ~2
     </update>
 
     <update id="quashManager">
