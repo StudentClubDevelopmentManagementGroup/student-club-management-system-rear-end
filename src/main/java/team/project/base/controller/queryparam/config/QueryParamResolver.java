@@ -14,9 +14,8 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import team.project.base.controller.exception.InvalidParamException;
 import team.project.base.controller.queryparam.QueryParam;
-import team.project.base.service.exception.ServiceException;
-import team.project.base.service.status.ServiceStatus;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -60,14 +59,14 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
         try {
             result = processFiledValue(webRequest, parameter.getParameterType());
         } catch (Exception e) {
-            throw new ServiceException(ServiceStatus.BAD_REQUEST, "请求参数的类型与所需的类型不匹配");
+            throw new InvalidParamException("请求参数的类型与所需的类型不匹配");
         }
 
         if (parameter.hasParameterAnnotation(Valid.class)) {
             Set<ConstraintViolation<Object>> violations = validator.validate(result);
             if ( ! violations.isEmpty()) {
                 for (ConstraintViolation<Object> violation : violations) {
-                    throw new ServiceException(ServiceStatus.BAD_REQUEST, "参数校验未通过：" + violation.getMessage());
+                    throw new InvalidParamException(violation.getMessage());
                 }
             }
         }

@@ -3,6 +3,7 @@ package team.project.module.club.seat.internal.model.request;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
 import lombok.Data;
+import team.project.base.controller.exception.InvalidParamException;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
@@ -20,10 +21,10 @@ public class UpdateSeatReq {
 
     @NotEmpty(message="“更新座位”列表不能为空")
     @JsonProperty("seat_list")
-    List<ToUpdateSeatInfo> seatList;
+    List<ToUpdateSeat> seatList;
 
     @Data
-    public static class ToUpdateSeatInfo {
+    public static class ToUpdateSeat {
         @NotNull(message="未指定座位id")
         @JsonProperty("seat_id")
         private Long seatId;
@@ -47,6 +48,13 @@ public class UpdateSeatReq {
         private String ownerId; /* <- nullable */
 
         @JsonProperty(value="unset_owner", defaultValue="false")
-        private Boolean unsetOwner = false;
+        private Boolean unsetOwner = false; /* <- 是否将座位置空 */
+    }
+
+    /* 校验：如果要将座位置空，则不该指明所属者的学号/工号 */
+    public static void validate(UpdateSeatReq req) {
+        if (req.seatList.stream().anyMatch(seat -> seat.unsetOwner && seat.ownerId != null)) {
+            throw new InvalidParamException("如果要将座位置空，则不该指明所属者的学号/工号");
+        }
     }
 }

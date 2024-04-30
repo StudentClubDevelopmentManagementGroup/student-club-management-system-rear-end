@@ -7,7 +7,9 @@ import lombok.Setter;
 
 import java.util.List;
 
-/* 用来封装分页查询的返回结果 */
+/**
+ * 用来封装分页查询的返回结果
+ * */
 @Getter
 @Setter
 public class PageVO<VO> {

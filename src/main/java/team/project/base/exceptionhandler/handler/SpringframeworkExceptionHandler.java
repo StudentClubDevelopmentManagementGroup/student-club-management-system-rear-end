@@ -33,13 +33,13 @@ public class SpringframeworkExceptionHandler {
     /* http 请求缺少必要的参数 */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public Object handle(MissingServletRequestParameterException exception) {
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("缺少必要的请求参数：" + exception.getParameterName());
+        return new Response<>(ServiceStatus.BAD_REQUEST).statusText("缺少必要的请求参数").data(exception.getParameterName());
     }
 
     /* http 请求缺少必要的部分 */
     @ExceptionHandler(MissingServletRequestPartException.class)
     public Object handle(MissingServletRequestPartException exception) {
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("缺少必要的请求部分：" + exception.getRequestPartName());
+        return new Response<>(ServiceStatus.BAD_REQUEST).statusText("缺少必要的请求部分").data(exception.getRequestPartName());
     }
 
     /* http 请求中的数据绑定到 controller 方法的参数对象时绑定失败 */
@@ -47,7 +47,7 @@ public class SpringframeworkExceptionHandler {
     public Object handle(BindException exception) {
         FieldError fieldError = exception.getFieldError();
         String errMsg = fieldError != null ? fieldError.getDefaultMessage() : exception.getMessage();
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("入参不合约束：" + errMsg);
+        return new Response<>(ServiceStatus.BAD_REQUEST).statusText("入参不合约束").data(errMsg);
     }
 
     /* 参数校验 */
@@ -56,16 +56,13 @@ public class SpringframeworkExceptionHandler {
 
         ParameterValidationResult validationResult = exception.getAllValidationResults().get(0);
         String defaultMessage = validationResult.getResolvableErrors().get(0).getDefaultMessage();
-        String errorMessage = "参数校验未通过：" + defaultMessage;
 
         if (exception.getStatusCode().is4xxClientError()) {
-            return new Response<>(ServiceStatus.BAD_REQUEST).data(errorMessage);
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("参数校验未通过").data(defaultMessage);
         }
-        if (exception.getStatusCode().is5xxServerError()) {
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).data(errorMessage);
+        else {
+            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
         }
-
-        return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
     }
 
     /* 参数转换失败 */

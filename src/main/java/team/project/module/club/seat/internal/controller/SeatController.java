@@ -5,22 +5,21 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.controller.response.Response;
+import team.project.base.model.request.PagingQueryReq;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.model.view.SeatVO;
-import team.project.module.club.seat.internal.model.view.UserInfoVO;
 import team.project.module.club.seat.internal.service.SeatService;
 
-import java.util.HashMap;
 import java.util.List;
 
 @Tag(name="座位安排")
@@ -48,12 +47,7 @@ public class SeatController {
     @PostMapping("/club/seat/update")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object update(@Valid @RequestBody UpdateSeatReq req) {
-
-        for (UpdateSeatReq.ToUpdateSeatInfo seat : req.getSeatList()) {
-            if (seat.getUnsetOwner() && seat.getOwnerId() != null) {
-                return new Response<>(ServiceStatus.BAD_REQUEST).statusText("如果要将座位置空，则不该指明所属者的学号/工号");
-            }
-        }
+        UpdateSeatReq.validate(req);
 
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
         seatService.updateSeat(arrangerId, req);
@@ -78,46 +72,18 @@ public class SeatController {
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
-    @Operation(summary="查询没有座位的社团成员")
+    @Operation(summary="查询没有座位的成员（分页查询）")
     @GetMapping("/club/seat/members/no_seat")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object membersNoSeat(
-        @NotNull(message="未指定社团id") @ClubIdConstraint
+        @NotNull(message="未指定社团id")
+        @ClubIdConstraint
         @RequestParam("club_id") Long clubId,
 
-        @Min(value=1, message="分页查询指定当前页码不能小于 1")
-        @RequestParam(value="page_num", required=false)  Long pageNum,
-
-        @Min(value=1, message="每页大小最小不能小于 1")
-        @RequestParam(value="page_size", required=false) Long pageSize
+        @QueryParam PagingQueryReq pageReq
     ) {
-        if ((pageNum != null && pageSize == null) || (pageNum == null && pageSize != null)) {
-            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("分页查询需同时指定页码与页大小");
-        }
-
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
-        List<UserInfoVO> result = seatService.membersNoSeat(arrangerId, clubId);
-
-        HashMap<String, Object> resultMap = new HashMap<>();
-
-        if (pageNum != null) { /* ljh_TODO: 伪分页 */
-            resultMap.put("current_page", pageNum);
-            resultMap.put("page_size",    pageSize);
-            resultMap.put("total_pages",  (long)Math.ceil((double) result.size() / pageSize));
-            resultMap.put("total_item",   (long)result.size());
-            result = result.subList(
-                Math.min(result.size(), (int)((pageNum - 1) * pageSize)),
-                Math.min(result.size(), (int)(pageNum * pageSize))
-            );
-        }
-        else {
-            resultMap.put("current_page", 1L);
-            resultMap.put("page_size",    (long)result.size());
-            resultMap.put("total_pages",  1L);
-            resultMap.put("total_item",   (long)result.size());
-        }
-        resultMap.put("records", result);
-
-        return new Response<>(ServiceStatus.SUCCESS).data(resultMap);
+        return new Response<>(ServiceStatus.SUCCESS)
+            .data(seatService.membersNoSeat(arrangerId, clubId, pageReq));
     }
 }

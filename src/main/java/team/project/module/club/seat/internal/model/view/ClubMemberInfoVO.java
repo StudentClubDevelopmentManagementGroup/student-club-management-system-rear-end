@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 @Data
-public class UserInfoVO {
+public class ClubMemberInfoVO {
     @JsonProperty("user_id")    private String  userId;
     @JsonProperty("name")       private String  name;
     @JsonProperty("is_student") private Boolean student;
