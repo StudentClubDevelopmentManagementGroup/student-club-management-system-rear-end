@@ -12,10 +12,10 @@ public class PceIServiceImpl implements PceIService {
     TblUserClubMapper tblUserClubMapper;
 
     public boolean isClubManager(String userId, Long clubId) {
-        return tblUserClubMapper.isManagerRole(userId, clubId);
+        return tblUserClubMapper.isManagerRole(userId, clubId)!=null;
     }
 
     public boolean isClubMember(String userId, Long clubId) {
-        return tblUserClubMapper.isMemberRole(userId, clubId);
+        return tblUserClubMapper.isMemberRole(userId, clubId)!=null;
     }
 }
