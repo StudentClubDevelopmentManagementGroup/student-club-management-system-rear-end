@@ -1,10 +1,13 @@
 package team.project.module.club.seat.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import team.project.base.model.request.PagingQueryReq;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.export.service.PceIService;
@@ -12,9 +15,8 @@ import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.model.view.SeatVO;
-import team.project.module.club.seat.internal.model.view.UserInfoVO;
+import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
-import team.project.module.club.seat.tmp.ClubMemberService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoIService;
@@ -28,9 +30,6 @@ public class SeatService {
 
     @Autowired
     PceIService clubMemberRoleService;
-
-    @Autowired
-    ClubMemberService clubMemberService;
 
     @Autowired
     UserInfoIService userInfoService;
@@ -79,13 +78,15 @@ public class SeatService {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        /*for (UpdateSeatReq.ToUpdate seatInfo : req.getSeatList()) {
-            if (seatInfo.getOwnerId() != null &&  ! clubMemberRoleService.isClubMember(seatInfo.getOwnerId(), req.getClubId())) {
-                throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
-            }
+        /* ljh_TODO
+        for (UpdateSeatReq.ToUpdate seatInfo : req.getSeatList()) {
+        if (seatInfo.getOwnerId() != null && ! clubMemberRoleService.isClubMember(seatInfo.getOwnerId(), req.getClubId())) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
+        }
         }*/
 
-        for (UpdateSeatReq.ToUpdateSeatInfo seatInfo : req.getSeatList()) {
+        /* 批量修改可优化，但无所谓了，毕竟修改座位不是频繁的操作 */
+        for (UpdateSeatReq.ToUpdateSeat seatInfo : req.getSeatList()) {
 
             TblUserClubSeatDO seat = new TblUserClubSeatDO();
             seat.setClubId(req.getClubId());
@@ -141,30 +142,28 @@ public class SeatService {
         }
     }
 
-    public List<UserInfoVO> membersNoSeat(String arrangerId, Long clubId) {
+    public PageVO<ClubMemberInfoVO> membersNoSeat(String arrangerId, Long clubId, PagingQueryReq pageReq) {
+
         if ( ! clubMemberRoleService.isClubManager(arrangerId, clubId)) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该社团的负责人");
         }
 
-        List<String> members = clubMemberService.allMember(clubId);
-        List<TblUserClubSeatDO> occupiedSeats = seatMapper.selectOccupiedSeats(clubId);
-        List<String> membersNoSeat = members.stream().filter(
-                userId -> occupiedSeats.stream().noneMatch(seat -> userId.equals(seat.getOwnerId()))
-            ).toList();
+        Page<Object> page = Page.of(pageReq.getPageNum(), pageReq.getPageSize());
+        List<String> membersId = seatMapper.selectNoSeatMembersId(page, clubId);
 
-        List<UserInfoVO> result = new ArrayList<>();
-        for (String userId : membersNoSeat) {
+        List<ClubMemberInfoVO> result = new ArrayList<>();
+        for (String userId : membersId) {
             UserBasicInfoDTO userBasicInfo = userInfoService.selectUserBasicInfo(userId);
 
-            UserInfoVO userInfo = new UserInfoVO();
-            userInfo.setUserId(userId);
-            userInfo.setName(userBasicInfo.getName());
-            userInfo.setStudent(userBasicInfo.hasRole(UserRole.STUDENT));
-            userInfo.setTeacher(userBasicInfo.hasRole(UserRole.TEACHER));
+            ClubMemberInfoVO memberInfo = new ClubMemberInfoVO();
+            memberInfo.setUserId(userId);
+            memberInfo.setName(userBasicInfo.getName());
+            memberInfo.setStudent(userBasicInfo.hasRole(UserRole.STUDENT));
+            memberInfo.setTeacher(userBasicInfo.hasRole(UserRole.TEACHER));
 
-            result.add(userInfo);
+            result.add(memberInfo);
         }
 
-        return result;
+        return new PageVO<>(result, page);
     }
 }

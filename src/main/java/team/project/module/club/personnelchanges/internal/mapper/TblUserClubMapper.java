@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
+import team.project.base.mapper.CrossModuleSQL;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 
@@ -54,6 +55,7 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
+    @CrossModuleSQL({"tbl_user"})
     Page<ClubMemberInfoDTO> selectClubMemberInfo(@Param("page") Page<ClubMemberInfoDTO> page, Long clubId, String name, Long departmentId);
 
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);

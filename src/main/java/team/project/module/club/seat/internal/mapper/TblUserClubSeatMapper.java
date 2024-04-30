@@ -3,7 +3,10 @@ package team.project.module.club.seat.internal.mapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import team.project.base.mapper.CrossModuleSQL;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
 
 import java.util.List;
@@ -74,4 +77,22 @@ public interface TblUserClubSeatMapper extends BaseMapper<TblUserClubSeatDO> {
             .isNotNull(TblUserClubSeatDO::getOwnerId)
         );
     }
+
+    /**
+     * 查询没有座位的成员 id
+     * */
+    @CrossModuleSQL({"tbl_user_club"})
+    @Select("""
+        SELECT user_id
+        FROM   tbl_user_club
+        WHERE  is_deleted = 0
+        AND    club_id = #{ clubId }
+        AND    user_id NOT IN (
+            SELECT owner_id AS user_id
+            FROM   tbl_user_club_seat
+            WHERE  club_id = #{ clubId }
+            AND    owner_id IS NOT NULL
+        )
+    """)
+    List<String> selectNoSeatMembersId(Page<Object> page, Long clubId);
 }
