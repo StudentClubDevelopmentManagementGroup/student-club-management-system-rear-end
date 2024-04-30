@@ -17,7 +17,6 @@ import team.project.module.club.seat.internal.model.request.*;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
-import team.project.module.club.seat.tmp.ClubMemberService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoIService;
@@ -31,9 +30,6 @@ public class SeatService {
 
     @Autowired
     PceIService clubMemberRoleService;
-
-    @Autowired
-    ClubMemberService clubMemberService;
 
     @Autowired
     UserInfoIService userInfoService;
@@ -168,6 +164,6 @@ public class SeatService {
             result.add(memberInfo);
         }
 
-        return new PageVO(result, page);
+        return new PageVO<>(result, page);
     }
 }
