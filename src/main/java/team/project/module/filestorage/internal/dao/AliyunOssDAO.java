@@ -63,7 +63,7 @@ public class AliyunOssDAO {
      * */
     public String getUrl(String key) {
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
-        request.setExpiration(new Date(new Date().getTime() + 10 * 1000L)); /* 设置过期时间 10 分钟 */
+        request.setExpiration(new Date(new Date().getTime() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
 
         URL url = ossClient.generatePresignedUrl(request);
         return url.toString();
