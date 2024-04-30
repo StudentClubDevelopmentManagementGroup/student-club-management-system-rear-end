@@ -66,11 +66,11 @@
         SELECT u.user_id, u.department_id, u.name, u.tel, u.mail, u.role,uc.role AS ucrole
         FROM tbl_user u
         JOIN tbl_user_club uc ON u.user_id = uc.user_id
-        WHERE uc.club_id = #{clubId} AND uc.is_deleted = 0
-        <if test="name != '' and name != null">
+        WHERE uc.club_id = #{clubId} AND uc.is_deleted = 0 AND u.is_deleted = 0
+        <if test="name != null and name != '' ">
             AND u.name like concat('%',#{name},'%')
         </if>
-        <if test="departmentId != 0 and departmentId != null ">
+        <if test="departmentId != null and  departmentId != 0">
             AND u.department_id = #{departmentId}
         </if>
     </select>
