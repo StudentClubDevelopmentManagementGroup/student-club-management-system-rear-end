@@ -78,12 +78,11 @@ public class SeatService {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "座位安排者不是该社团的负责人");
         }
 
-        /* ljh_TODO
-        for (UpdateSeatReq.ToUpdate seatInfo : req.getSeatList()) {
-        if (seatInfo.getOwnerId() != null && ! clubMemberRoleService.isClubMember(seatInfo.getOwnerId(), req.getClubId())) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
+        for (UpdateSeatReq.ToUpdateSeat seat : req.getSeatList()) {
+            if (seat.getOwnerId() != null && ! clubMemberRoleService.isClubMember(seat.getOwnerId(), req.getClubId())) {
+                throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
+            }
         }
-        }*/
 
         /* 批量修改可优化，但无所谓了，毕竟修改座位不是频繁的操作 */
         for (UpdateSeatReq.ToUpdateSeat seatInfo : req.getSeatList()) {
@@ -116,10 +115,10 @@ public class SeatService {
     }
 
     public List<SeatVO> view(String userId, Long clubId) {
-        /* ljh_TODO
+
         if ( ! clubMemberRoleService.isClubMember(userId, clubId)) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该社团的成员");
-        }*/
+        }
 
         List<TblUserClubSeatDO> seatList = seatMapper.selectAll(clubId);
 
