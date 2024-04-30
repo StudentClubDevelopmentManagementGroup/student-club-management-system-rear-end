@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;

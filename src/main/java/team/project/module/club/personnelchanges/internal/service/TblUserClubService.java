@@ -3,7 +3,7 @@ package team.project.module.club.personnelchanges.internal.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
-import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubMemberInfoQO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;

@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 
@@ -21,6 +21,10 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
     int quashManager(String userId, Long clubId);
 
     TblUserClubDO selectManagerRole(String userId, Long clubId);
+
+    boolean isManagerRole(String userId, Long clubId);
+
+    boolean isMemberRole(String userId, Long clubId);
 
     int createMember(String userId, Long clubId);
 
