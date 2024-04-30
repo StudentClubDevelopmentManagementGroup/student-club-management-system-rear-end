@@ -23,9 +23,9 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
 
     TblUserClubDO selectManagerRole(String userId, Long clubId);
 
-    boolean isManagerRole(String userId, Long clubId);
+    Boolean isManagerRole(String userId, Long clubId);
 
-    boolean isMemberRole(String userId, Long clubId);
+    Boolean isMemberRole(String userId, Long clubId);
 
     int createMember(String userId, Long clubId);
 
