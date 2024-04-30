@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
  *
  * <p>
  *       如果 mapper 中的要执行的某个 SQL 是跨模块的，建议加上此注解
- * <br>  对此注解“查询用法（排除 import 的用法）”，可快速找到跨模块的 SQL
+ * <br>  对此注解“查询用法”，可快速找到跨模块的 SQL
  * <p>
  * <b>   加上此注解，相当于给函数加上了如下说明：   </b>
  * <br>  此 SQL 涉及对 tbl_XXX 表的操作，而 tbl_XXX 表并非由本模块管理
