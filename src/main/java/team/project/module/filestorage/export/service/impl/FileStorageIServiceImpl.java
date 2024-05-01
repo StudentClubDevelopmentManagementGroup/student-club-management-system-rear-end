@@ -5,13 +5,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
-import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
+import team.project.module.filestorage.internal.service.impl.LocalFileStorageService;
 
 @Service
 public class FileStorageIServiceImpl implements FileStorageIService {
 
     @Autowired
-    LocalFileSystemStorageService localStorageService;
+    LocalFileStorageService localStorageService;
 
     @Autowired
     AliyunObjectStorageService cloudStorageService;

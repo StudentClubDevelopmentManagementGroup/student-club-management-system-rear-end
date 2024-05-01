@@ -9,17 +9,18 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssDAO;
-import team.project.module.filestorage.internal.service.FileStorageAService;
+import team.project.module.filestorage.internal.service.FileStorageBasicIService;
 import team.project.module.filestorage.internal.util.Util;
 
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class AliyunObjectStorageService extends FileStorageAService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class AliyunObjectStorageService implements FileStorageBasicIService {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
     private final String uploadedFileIdPrefix;
+
     @Autowired
     private AliyunOssDAO aliyunOssDAO;
 
@@ -43,7 +44,7 @@ public class AliyunObjectStorageService extends FileStorageAService {
     }
 
     /**
-     * 详见：{@link FileStorageAService#mayBeStored}
+     * 详见：{@link FileStorageBasicIService#mayBeStored}
      * */
     @Override
     public boolean mayBeStored(String fileId) {
@@ -51,7 +52,7 @@ public class AliyunObjectStorageService extends FileStorageAService {
     }
 
     /**
-     * 详见：{@link FileStorageAService#uploadFile}
+     * 详见：{@link FileStorageBasicIService#uploadFile}
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
@@ -67,7 +68,7 @@ public class AliyunObjectStorageService extends FileStorageAService {
         }
 
         String fileId = generateFileId(folder, filename);
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
         }
 
@@ -81,20 +82,20 @@ public class AliyunObjectStorageService extends FileStorageAService {
             return fileId;
         }
         catch (Exception e) {
-            logger.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
+            log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
             throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
     }
 
     /**
-     * 详见：{@link FileStorageAService#getUploadedFileUrl}
+     * 详见：{@link FileStorageBasicIService#getUploadedFileUrl}
      * */
     @Override
     public String getUploadedFileUrl(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             return null;
         }
         try {
@@ -102,20 +103,20 @@ public class AliyunObjectStorageService extends FileStorageAService {
             return aliyunOssDAO.getUrl(fileKey);
         }
         catch (Exception e) {
-            logger.error("获取访问存储于阿里云 OSS 的存储空间中的文件的 url 时出现异常", e);
+            log.error("获取访问存储于阿里云 OSS 的存储空间中的文件的 url 时出现异常", e);
             return null;
         }
     }
 
     /**
-     * 详见：{@link FileStorageAService#deleteUploadedFile}
+     * 详见：{@link FileStorageBasicIService#deleteUploadedFile}
      * */
     @Override
     public boolean deleteUploadedFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return true;
         }
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {
@@ -124,7 +125,7 @@ public class AliyunObjectStorageService extends FileStorageAService {
             return true;
         }
         catch (Exception e) {
-            logger.error("从阿里云 OSS 的存储空间中删除文件时出现异常", e);
+            log.error("从阿里云 OSS 的存储空间中删除文件时出现异常", e);
             return false;
         }
     }

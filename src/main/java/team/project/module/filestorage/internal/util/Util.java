@@ -21,6 +21,25 @@ public class Util {
         return replaced.endsWith("/") ? replaced.substring(0, replaced.length() - 1) : replaced;
     }
 
+    /* fileId 不允许出现的非法字符集 */
+    private static final String[] ILLEGAL_CHARS = { ":", "*", "?", "\"", "<", ">", "|" };
+
+    /**
+     * 判断 fileId 是否符合约束
+     * 没有出现非法字符“:*?"'<>|”，路径中没有出现“/..”和“/.”
+     * */
+    public static boolean isValidFileId(String fileId) {
+        if (fileId.endsWith(".") || fileId.startsWith(".") || fileId.contains("/.")) {
+            return false;
+        }
+        for (String illegal : ILLEGAL_CHARS) {
+            if (fileId.contains(illegal)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     /**
      * 生成随机的文件名（保留文件扩展名）
      * @return 随机文件名

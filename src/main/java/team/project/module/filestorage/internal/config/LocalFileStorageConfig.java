@@ -12,7 +12,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Configuration
-public class LocalFileSystemConfig implements WebMvcConfigurer {
+public class LocalFileStorageConfig implements WebMvcConfigurer {
 
     @Value("${file-storage.local-file-system.root-folder}")
     public String rootFolder;

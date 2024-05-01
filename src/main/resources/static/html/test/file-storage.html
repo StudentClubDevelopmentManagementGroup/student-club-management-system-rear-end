@@ -8,7 +8,7 @@
   <style>
     :root {
       --color-llight-green: #a6e9a2;
-      --color-light-green: #2eb526;
+      --color-light-green: #2fc627;
       --color-green: #09a800;
     }
 
@@ -19,17 +19,20 @@
   </style>
 
   <style>
+    /* 表单 */
     form.green_form {
       margin: 8px;
       margin-right: 2px;
       font-size: 17px;
       height: fit-content;
-      width: 20em;
+      width: max(20em, 30vw);
       display: flex;
       flex-direction: column;
       border: 1.5px solid var(--color-green);
       padding-bottom: 0.2em;
     }
+
+    /* 标题 */
     form.green_form > h1 {
       margin: 0 0 0.5em 0;
       padding: 0.2em 0 0.3em 0.5em;
@@ -37,19 +40,30 @@
       color: white;
       background-color: var(--color-green);
     }
+
+    /* 表单项 */
     form.green_form > label {
       display: flex;
       padding: 0.2em 0.5em;
     }
     form.green_form > label > span {
-      width: 6em;
+      min-width: 5em;
+      margin-right: 0.5em;
     }
+
+    /* 文件选择框 */
     form.green_form > label > input[type="file"] {
+      width: 100%;
+      padding-left: 0.5em;
+      line-height: 1.6em;
+      border: 1px solid var(--color-green);
       cursor: pointer;
     }
     form.green_form > label > input[type="file"]::file-selector-button {
       display: none;
     }
+
+    /* 下拉选择菜单 */
     form.green_form > label > select {
       flex: 1;
       padding-left: 0.2em;
@@ -59,29 +73,47 @@
     form.green_form > label > select > option {
       font-size: 1.2em;
     }
-    form.green_form > label > input {
+
+    /* 单行文本框 */
+    form.green_form > label > input[type="text"] {
       flex: 1;
       padding-left: 0.5em;
       border: 1px solid var(--color-green);
       outline: none;
     }
-    form.green_form > label input[type="checkbox"] {
+
+    /* 单选框 */
+    form.green_form > label > label > input[type="checkbox"] {
       display: none;
     }
-    form.green_form > label input[type="checkbox"] + span {
+    form.green_form > label > label > input[type="checkbox"] + span {
       display: inline-block;
-      height: 1em;
+      height: 100%;
       width: 1em;
       border: 1px solid var(--color-green);
       cursor: pointer;
       position: relative;
     }
-    form.green_form > label input[type="checkbox"]:checked + span::after {
+    form.green_form > label > label > input[type="checkbox"]:checked + span::after {
       content: "√";
       position: absolute;
-      left: 20%;
-      font-size: 0.8em;
+      left: 15%;
     }
+
+    /* 多行文本框 */
+    form.green_form > label > textarea {
+      width: 100%;
+      min-height: 9em;
+      padding-left: 0.2em;
+      border: 1px solid var(--color-green);
+      outline: none;
+      resize: vertical;
+      font-weight: bold;
+      scroll-behavior: smooth;
+    }
+
+
+    /* 按钮 */
     form.green_form > label > button {
       width: fit-content;
       margin-left: auto;
@@ -100,7 +132,10 @@
       color: var(--color-green);
       background-color: white;
     }
-    
+  </style>
+
+  <style>
+    /* 输出 */
     div#output {
       margin: 8px;
       margin-left: 2px;
@@ -118,8 +153,8 @@
 <body>
 
   <div style="overflow-y: scroll; height: 100vh;">
-    <form action="/upload_file" method="post" enctype="multipart/form-data" target="output"
-      class="green_form">
+
+    <form action="/upload_file" method="post" enctype="multipart/form-data" target="output" class="green_form">
       <h1>上传文件</h1>
       <label for=""><span>选择文件</span>
         <input class="green-input" type="file" name="file">
@@ -139,7 +174,8 @@
       </label>
       <label for=""><span>覆盖上传</span>
         <label>
-          <input type="checkbox" name="overwrite" va><span></span>
+          <input type="checkbox" name="overwrite">
+          <span></span>
         </label>
       </label>
       <label for="">
@@ -147,8 +183,7 @@
       </label>
     </form>
 
-    <form action="" method="get" target="output"
-      class="green_form">
+    <form action="" method="get" target="output" class="green_form">
       <h1>获取访问已上传的文件</h1>
       <label><span>file_id</span>
         <input type="text" name="file_id">
@@ -159,8 +194,7 @@
       </label>
     </form>
 
-    <form action="/delete_uploaded_file" method="post" target="output"
-      class="green_form">
+    <form action="/delete_uploaded_file" method="post" target="output" class="green_form">
       <h1>删除已上传的文件</h1>
       <label><span>file_id</span>
         <input type="text" name="file_id">
@@ -169,9 +203,21 @@
         <button type="submit">删除文件</button>
       </label>
     </form>
+    
+    <form action="/upload_text" method="post" target="output" class="green_form">
+      <h1>上传一段文本，并将其存为文本文件</h1>
+      <label><span>标题</span>
+        <input type="text" name="title">
+      </label>
+      <label><span>内容</span>
+        <textarea name="content"></textarea>
+      </label>
+      <label for="">
+        <button type="submit">上传</button>
+      </label>
+    </form>
 
-    <form action="/" method="get" target="output"
-      class="green_form">
+    <form action="/" method="get" target="output" class="green_form">
       <h1>快速链接</h1>
       <label for="">
         <button type="submit" formaction="/swagger-ui/index.html" style="margin-left: 0;">跳转 swagger</button>

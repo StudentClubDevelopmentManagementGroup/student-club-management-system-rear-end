@@ -1,14 +1,16 @@
 package team.project.module.filestorage.internal.service.impl;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.exception.FileStorageException;
-import team.project.module.filestorage.internal.config.LocalFileSystemConfig;
-import team.project.module.filestorage.internal.dao.LocalFileSystemDAO;
-import team.project.module.filestorage.internal.service.FileStorageAService;
+import team.project.module.filestorage.internal.config.LocalFileStorageConfig;
+import team.project.module.filestorage.internal.dao.LocalFileStorageDAO;
+import team.project.module.filestorage.internal.service.FileStorageBasicIService;
 import team.project.module.filestorage.internal.util.Util;
 
 import java.net.URLEncoder;
@@ -17,18 +19,19 @@ import java.nio.charset.StandardCharsets;
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class LocalFileSystemStorageService extends FileStorageAService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+@Primary
+public class LocalFileStorageService implements FileStorageBasicIService {
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    private final String uploadedFilesFolder;
-    private final String uploadedFileIdPrefix;
-    private final String baseUrl;
+    protected final String uploadedFilesFolder;
+    protected final String uploadedFileIdPrefix;
+    protected final String baseUrl;
 
     @Autowired
-    private LocalFileSystemDAO localFileSystemDAO;
+    protected LocalFileStorageDAO localFileStorageDAO;
 
-    LocalFileSystemStorageService(LocalFileSystemConfig cfg) {
-        this.uploadedFilesFolder = cfg.uploadedFilesFolder;
+    protected LocalFileStorageService(LocalFileStorageConfig cfg) {
+        this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
         this.baseUrl = cfg.baseUrl;
     }
@@ -36,19 +39,19 @@ public class LocalFileSystemStorageService extends FileStorageAService {
     /**
      * 由 filePath 生成 fileId
      * */
-    private String generateFileId(String folderPath, String filename) {
+    protected String generateFileId(String folderPath, String filename) {
         return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
     }
 
     /**
      * 从 fileId 解析出 filePath
      * */
-    private String parseFileIdToFilePath(String fileId) {
+    protected String parseFileIdToFilePath(String fileId) {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
     /**
-     * 详见：{@link FileStorageAService#mayBeStored}
+     * 详见：{@link FileStorageBasicIService#mayBeStored}
      * */
     @Override
     public boolean mayBeStored(String fileId) {
@@ -56,7 +59,7 @@ public class LocalFileSystemStorageService extends FileStorageAService {
     }
 
     /**
-     * 详见：{@link FileStorageAService#uploadFile}
+     * 详见：{@link FileStorageBasicIService#uploadFile}
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
@@ -72,35 +75,35 @@ public class LocalFileSystemStorageService extends FileStorageAService {
         }
 
         String fileId = generateFileId(folder, filename);
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
         }
 
         String filePath = parseFileIdToFilePath(fileId);
 
-        if ( ! overwrite && localFileSystemDAO.isFileExist(filePath)) {
+        if ( ! overwrite && localFileStorageDAO.isFileExist(filePath)) {
             throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
         }
 
         try {
-            localFileSystemDAO.save(toUploadFile, filePath);
+            localFileStorageDAO.save(toUploadFile, filePath);
             return fileId;
         }
         catch (Exception e) {
-            logger.error("上传文件到本地文件系统时出现异常", e);
+            log.error("上传文件到本地文件系统时出现异常", e);
             throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
     }
 
     /**
-     * 详见：{@link FileStorageAService#getUploadedFileUrl}
+     * 详见：{@link FileStorageBasicIService#getUploadedFileUrl}
      * */
     @Override
     public String getUploadedFileUrl(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             return null;
         }
 
@@ -115,23 +118,23 @@ public class LocalFileSystemStorageService extends FileStorageAService {
     }
 
     /**
-     * 详见：{@link FileStorageAService#deleteUploadedFile}
+     * 详见：{@link FileStorageBasicIService#deleteUploadedFile}
      * */
     @Override
     public boolean deleteUploadedFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return true;
         }
-        if ( ! isValidFileId(fileId)) {
+        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {
             String filePath = parseFileIdToFilePath(fileId);
-            boolean ignored = localFileSystemDAO.delete(filePath);
+            boolean ignored = localFileStorageDAO.delete(filePath);
             return true;
         }
         catch (Exception e) {
-            logger.error("从本地文件系统中删除文件时出现异常", e);
+            log.error("从本地文件系统中删除文件时出现异常", e);
             return false;
         }
     }
