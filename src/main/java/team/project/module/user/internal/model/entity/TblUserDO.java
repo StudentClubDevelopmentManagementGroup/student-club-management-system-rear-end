@@ -4,10 +4,12 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import team.project.module.user.export.model.enums.UserRole;
 
-@Data
+@Getter
+@Setter
 @TableName("tbl_user")
 public class TblUserDO {
     @TableLogic(value="0", delval="1")

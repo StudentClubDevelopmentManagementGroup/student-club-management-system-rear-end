@@ -1,9 +1,11 @@
 package team.project.module.user.export.model.datatransfer;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import team.project.module.user.export.model.enums.UserRole;
 
-@Data
+@Getter
+@Setter
 public class UserInfoDTO {
     String  userId;
     Long    departmentId;

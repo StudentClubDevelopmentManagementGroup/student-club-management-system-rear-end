@@ -2,14 +2,16 @@ package team.project.module.club.seat.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 import java.util.List;
 
 import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
 
-@Data
+@Getter
+@Setter
 public class AddSeatReq {
 
     @NotNull(message="未指定社团id")
@@ -21,7 +23,8 @@ public class AddSeatReq {
     @JsonProperty("seat_list")
     private List<ToAddSeat> seatList;
 
-    @Data
+    @Getter
+    @Setter
     static public class ToAddSeat {
         @Max(value=xyMax, message="坐标值x不合约束")
         @Min(value=xyMin, message="坐标值x不合约束")

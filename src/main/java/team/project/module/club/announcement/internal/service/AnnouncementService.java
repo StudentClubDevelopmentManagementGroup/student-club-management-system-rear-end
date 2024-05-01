@@ -14,8 +14,8 @@ public class AnnouncementService {
     PceIService clubMemberRoleService;
 
     public void upload(String authorId, UploadAnnouncementReq req) {
-        if ( ! clubMemberRoleService.isClubManager(authorId, req.getClubId())) {
+        /*if ( ! clubMemberRoleService.isClubManager(authorId, req.getClubId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "公告发布者不是该社团的负责人");
-        }
+        }*/
     }
 }

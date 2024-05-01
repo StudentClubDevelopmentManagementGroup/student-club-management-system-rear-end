@@ -3,9 +3,11 @@ package team.project.module.club.seat.internal.model.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 @TableName("tbl_user_club_seat")
 public class TblUserClubSeatDO {
 
