@@ -15,8 +15,6 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.export.service.impl.FileStorageIServiceImpl;
-import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
-import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
 
 @Tag(name="文件存储")
 @Controller
@@ -24,12 +22,6 @@ public class FileStorageController {
 
     @Autowired
     FileStorageIServiceImpl fileStorageService;
-
-    @Autowired
-    LocalFileSystemStorageService localStorageService;
-
-    @Autowired
-    AliyunObjectStorageService cloudStorageService;
 
     @Operation(summary="上传文件")
     @PostMapping("/upload_file")
@@ -53,15 +45,11 @@ public class FileStorageController {
         }
 
         try {
-            String fileId = fileStorageService.uploadFile(file, storageTypeEnum, folder, filename, overwrite != null && overwrite);
+            String fileId = fileStorageService.uploadFile(file, storageTypeEnum, folder, filename, (overwrite != null && overwrite));
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }
         catch (FileStorageException e) {
-            if (FileStorageException.Status.FILE_EXIST.equals(e.getFileStorageExceptionStatus())) {
-                return new Response<>(ServiceStatus.CONFLICT).statusText("文件已存在，且无法覆盖");
-            } else {
-                return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
-            }
+            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("上传失败").data(e.getMessage());
         }
         catch (Exception e) {
             return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR);
@@ -72,24 +60,21 @@ public class FileStorageController {
     @GetMapping("/get_uploaded_file_url")
     @ResponseBody
     Object getUploadedFileUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        if (localStorageService.mayBeStored(fileId)) {
-            String url = localStorageService.getUploadedFileUrl(fileId);
+        String url = fileStorageService.getUploadedFileUrl(fileId);
+        if (url != null) {
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
-
-        if (cloudStorageService.mayBeStored(fileId)) {
-            String url = cloudStorageService.getUploadedFileUrl(fileId);
-            return new Response<>(ServiceStatus.SUCCESS).data(url);
+        else {
+            return new Response<>(ServiceStatus.NOT_FOUND).statusText("无效的 file_id");
         }
-
-        return new Response<>(ServiceStatus.BAD_REQUEST).statusText("无效的 file_id");
     }
 
     @Operation(summary="获取访问已上传的文件")
     @GetMapping("/get_uploaded_file")
     Object getUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:null”，响应 404 */
-        return "redirect:" + fileStorageService.getUploadedFileUrl(fileId);
+        /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:”，响应 404 */
+        String url = fileStorageService.getUploadedFileUrl(fileId);
+        return url == null ? "" : ("redirect:" + url);
     }
 
     @Operation(summary="删除已上传的文件")
@@ -99,7 +84,7 @@ public class FileStorageController {
         if (fileStorageService.deleteUploadedFile(fileId)) {
             return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
         } else {
-            return new Response<>(ServiceStatus.INTERNAL_SERVER_ERROR).statusText("删除失败");
+            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("删除失败");
         }
     }
 }

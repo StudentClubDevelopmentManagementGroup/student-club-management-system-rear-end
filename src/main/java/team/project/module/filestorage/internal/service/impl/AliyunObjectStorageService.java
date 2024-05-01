@@ -82,7 +82,7 @@ public class AliyunObjectStorageService extends FileStorageAService {
         }
         catch (Exception e) {
             logger.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE);
+            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
     }
 

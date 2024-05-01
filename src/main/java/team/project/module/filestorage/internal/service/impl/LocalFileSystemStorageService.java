@@ -88,7 +88,7 @@ public class LocalFileSystemStorageService extends FileStorageAService {
         }
         catch (Exception e) {
             logger.error("上传文件到本地文件系统时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE);
+            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
     }
 
