@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class ExceptionHandlerLogAspect {
-    Logger logger = LoggerFactory.getLogger("【全局异常捕获】");
+    Logger log = LoggerFactory.getLogger("【全局异常捕获】");
 
     @Before("""
         (   execution(* team.project.base..SaTokenExceptionHandler.*(..))         ||
@@ -22,7 +22,7 @@ public class ExceptionHandlerLogAspect {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
-        logger.info(
+        log.info(
             "【" + simpleClassName + "】捕获到异常\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
         );
@@ -33,7 +33,7 @@ public class ExceptionHandlerLogAspect {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
-        logger.error(
+        log.error(
             "【" + simpleClassName + "】捕获到异常（该异常由通用异常处理器捕获，请考虑是否为其配备专门的异常处理器）\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
             , exception
@@ -45,7 +45,7 @@ public class ExceptionHandlerLogAspect {
         Signature signature       = jp.getSignature();
         String    simpleClassName = signature.getDeclaringType().getSimpleName();
 
-        logger.error(
+        log.error(
             "【" + simpleClassName + "】捕获到异常（执行 SQL 时出现的异常最好在 service 层或 dao 层将其捕获）\n" +
             exception.getClass().getSimpleName() + ": " + exception.getMessage()
             , exception

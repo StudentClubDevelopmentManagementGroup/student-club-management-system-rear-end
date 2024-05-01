@@ -1,7 +1,6 @@
 package team.project.module.user.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Min;
 import lombok.Data;
 
 @Data

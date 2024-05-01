@@ -18,7 +18,7 @@ import java.util.regex.Pattern;
 
 @Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
-    Logger logger = LoggerFactory.getLogger("[命名风格检测]");
+    Logger log = LoggerFactory.getLogger("[命名风格检测]");
 
     @Value("team.project")
     private String rootPackage;
@@ -62,7 +62,7 @@ final class NamingStyleChecker {
             for (String packageName : invalidPackageNames) {
                 sb.append(" - ").append(packageName).append("\n");
             }
-            logger.error("""
+            log.error("""
                 包名使用全小写形式，不使用下划线分隔单词
                 请修改如下包名：
                 {}""", sb);
@@ -76,7 +76,7 @@ final class NamingStyleChecker {
             for (String[] className : invalidTmplPrefix) {
                 sb.append(" - ").append(className[0]).append(" （").append(className[1]).append("）\n");
             }
-            logger.error("""
+            log.error("""
                 类名使用大驼峰形式，每个单词的首字母都大写，不使用下划线分隔单词。不要使用模板包的 Tmpl 前缀
                 请修改如下类名：
                 {}""", sb);
@@ -87,7 +87,7 @@ final class NamingStyleChecker {
             for (String[] methodAndClass : invalidMethodName) {
                 sb.append(" - ").append(methodAndClass[0]).append(" （位于：").append(methodAndClass[1]).append("）\n");
             }
-            logger.error("""
+            log.error("""
                 函数名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下函数名：
                 {}""", sb);
@@ -98,7 +98,7 @@ final class NamingStyleChecker {
             for (String[] paramAndMethod : invalidParamName) {
                 sb.append(" - ").append(paramAndMethod[0]).append(" （位于：").append(paramAndMethod[1]).append("）\n");
             }
-            logger.error("""
+            log.error("""
                 函数入参采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下入参名：
                 {}""", sb);
@@ -109,7 +109,7 @@ final class NamingStyleChecker {
             for (String[] fieldAndClass : invalidFieldName) {
                 sb.append(" - ").append(fieldAndClass[0]).append(" （位于：").append(fieldAndClass[1]).append("）\n");
             }
-            logger.error("""
+            log.error("""
                 字段名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 常量可以采用所有单词的字母全大写，使用下划线分隔单词
                 请修改如下字段名：

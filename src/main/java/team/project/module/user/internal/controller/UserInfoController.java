@@ -7,16 +7,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import team.project.base.controller.response.Response;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.queryparam.QueryParam;
+import team.project.base.controller.response.Response;
+import team.project.base.model.request.PagingQueryReq;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
-import team.project.base.model.request.PagingQueryReq;
 import team.project.module.user.internal.model.request.SearchUserReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.UserInfoService;
@@ -24,7 +24,6 @@ import team.project.module.user.internal.service.UserInfoService;
 @Tag(name="用户信息管理")
 @RestController
 public class UserInfoController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     UserInfoService userInfoService;

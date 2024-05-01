@@ -8,6 +8,7 @@ import team.project.module.filestorage.internal.util.Util;
 
 @Configuration
 public class AliyunOssConfig {
+
     @Value("${file-storage.aliyun-oss.endpoint}")
     public String endpoint;
 

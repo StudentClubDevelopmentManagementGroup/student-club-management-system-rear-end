@@ -1,6 +1,5 @@
 package team.project.module.filestorage.internal.service.impl;
-import com.aliyun.oss.ClientException;
-import com.aliyun.oss.OSSException;
+
 import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,8 +11,6 @@ import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssDAO;
 import team.project.module.filestorage.internal.service.FileStorageAService;
 import team.project.module.filestorage.internal.util.Util;
-
-import java.io.IOException;
 
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 

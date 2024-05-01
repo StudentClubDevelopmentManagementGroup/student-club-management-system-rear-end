@@ -1,8 +1,6 @@
 package team.project.module.club.seat.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,9 +11,11 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
-import team.project.module.club.seat.internal.model.request.*;
-import team.project.module.club.seat.internal.model.view.SeatVO;
+import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.DelSeatReq;
+import team.project.module.club.seat.internal.model.request.UpdateSeatReq;
 import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
+import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
@@ -26,7 +26,6 @@ import java.util.List;
 
 @Service
 public class SeatService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     PceIService clubMemberRoleService;

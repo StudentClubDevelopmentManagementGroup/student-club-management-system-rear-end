@@ -1,11 +1,8 @@
 package team.project.module.filestorage.internal.util;
 
 import org.apache.commons.io.FilenameUtils;
-import team.project.module.filestorage.export.exception.FileStorageException;
 
 import java.util.UUID;
-
-import static team.project.module.filestorage.export.exception.FileStorageException.Status.INVALID_FILE_PATH;
 
 public class Util {
 

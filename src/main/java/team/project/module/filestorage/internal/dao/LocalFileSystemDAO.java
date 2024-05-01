@@ -1,7 +1,5 @@
 package team.project.module.filestorage.internal.dao;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.internal.config.LocalFileSystemConfig;
@@ -11,7 +9,6 @@ import java.io.IOException;
 
 @Component
 public class LocalFileSystemDAO {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     /* 本地文件系统中，存储用户数据文件的根目录（在配置文件中以绝对路径形式给出）*/
     private final String rootFolder;

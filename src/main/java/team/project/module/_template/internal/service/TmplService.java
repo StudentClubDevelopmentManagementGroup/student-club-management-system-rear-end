@@ -9,7 +9,7 @@ import team.project.module._template.internal.mapper.TmplMybatisPlusMapper;
 
 @Service
 public class TmplService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TmplMybatisMapper tmplMybatisMapper;    /* mybatis（java 接口与 xml SQL） */
