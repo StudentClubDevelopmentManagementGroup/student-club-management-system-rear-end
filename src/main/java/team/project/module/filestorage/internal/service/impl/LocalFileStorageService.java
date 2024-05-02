@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.exception.FileStorageException;
+import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.internal.config.LocalFileStorageConfig;
 import team.project.module.filestorage.internal.dao.LocalFileStorageDAO;
 import team.project.module.filestorage.internal.service.FileStorageBasicIService;
@@ -62,26 +63,25 @@ public class LocalFileStorageService implements FileStorageBasicIService {
      * 详见：{@link FileStorageBasicIService#uploadFile}
      * */
     @Override
-    public String uploadFile(MultipartFile toUploadFile, String targetFolder, String targetFilename, boolean overwrite) {
+    public String uploadFile(MultipartFile toUploadFile, UploadFileQO uploadFileQO) {
 
-        String folder = (targetFolder == null || targetFolder.isEmpty()) ? "/" : targetFolder;
+        String targetFolder = uploadFileQO.isTargetRootFolder() ? "/" : uploadFileQO.getTargetFolder();
 
-        String filename;
-        if (targetFilename == null || targetFilename.isEmpty()) {
-            filename = toUploadFile.getOriginalFilename();
+        String targetFilename;
+        if (uploadFileQO.isUsingOriginalFilename()) {
+            targetFilename = toUploadFile.getOriginalFilename();
         } else {
             String extension = FilenameUtils.getExtension(toUploadFile.getOriginalFilename());
-            filename = targetFilename + ("".equals(extension) ? "" : "." + extension);
+            targetFilename = uploadFileQO.getTargetFilename() + ("".equals(extension) ? "" : "." + extension);
         }
 
-        String fileId = generateFileId(folder, filename);
+        String fileId = generateFileId(targetFolder, targetFilename);
         if ( ! Util.isValidFileId(fileId)) {
             throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
         }
 
         String filePath = parseFileIdToFilePath(fileId);
-
-        if ( ! overwrite && localFileStorageDAO.isFileExist(filePath)) {
+        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
             throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
         }
 

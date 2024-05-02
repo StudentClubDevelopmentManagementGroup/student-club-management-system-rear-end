@@ -16,11 +16,14 @@ public class DepartmentService {
     @Autowired
     private TblDepartmentMapper departmentMapper;
 
+    @Autowired
+    team.project.module.department.service.DepartmentService departmentService; /* <- tmp */
+
     /* 院系表长期不变动，用缓存避免多次查询数据库
        一旦院系表发生变动，则需要重启 java 后端 */
     private HashMap<Long, TblDepartmentDO> cache;
 
-    @PostConstruct
+    // @PostConstruct
     private void selectAllDepartment() {
         List<TblDepartmentDO> departmentList = departmentMapper.selectList(null);
         cache = new HashMap<>();
@@ -36,6 +39,7 @@ public class DepartmentService {
 
     public String getNameById(Long departmentId) {
         TblDepartmentDO tblDepartmentDO = cache.get(departmentId);
-        return tblDepartmentDO.getFullName();
+        // return tblDepartmentDO.getFullName();
+        return departmentService.getDepartmentName(departmentId);
     }
 }

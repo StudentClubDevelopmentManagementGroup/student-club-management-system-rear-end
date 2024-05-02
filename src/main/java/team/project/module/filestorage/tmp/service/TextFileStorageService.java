@@ -18,7 +18,7 @@ public class TextFileStorageService extends LocalFileStorageService{
     }
 
     public String uploadText(UploadTextReq req) {
-        return uploadText(req.getContent(), uploadedFilesFolder, Util.generateRandomFileName("x.txt"), true);
+        return uploadText(req.getContent(), "/text", Util.generateRandomFileName("x.txt"), true);
     }
 
     private String uploadText(String content, String targetFolder, String targetFilename, boolean overwrite) {

@@ -13,7 +13,8 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.filestorage.export.exception.FileStorageException;
-import team.project.module.filestorage.export.service.FileStorageIService;
+import team.project.module.filestorage.export.model.enums.FileStorageType;
+import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.impl.FileStorageIServiceImpl;
 
 @Tag(name="文件存储")
@@ -37,15 +38,21 @@ public class FileStorageController {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
         }
 
-        FileStorageIService.StorageType storageTypeEnum;
+        FileStorageType storageTypeEnum;
         try {
-            storageTypeEnum = FileStorageIService.StorageType.valueOf(storageType);
+            storageTypeEnum = FileStorageType.valueOf(storageType);
         } catch (Exception e) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("无效的存储类型");
         }
 
         try {
-            String fileId = fileStorageService.uploadFile(file, storageTypeEnum, folder, filename, (overwrite != null && overwrite));
+            UploadFileQO uploadFileQO = new UploadFileQO();
+            uploadFileQO.setTargetFolder(folder);
+            uploadFileQO.setTargetFilename(filename);
+            uploadFileQO.setOverwrite(overwrite != null && overwrite);
+
+            String fileId = fileStorageService.uploadFile(file, storageTypeEnum, uploadFileQO);
+
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }
         catch (FileStorageException e) {
