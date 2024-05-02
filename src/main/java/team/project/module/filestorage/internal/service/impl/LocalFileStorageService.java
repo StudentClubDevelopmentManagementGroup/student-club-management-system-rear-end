@@ -15,9 +15,7 @@ import team.project.module.filestorage.internal.service.TextFileStorageIService;
 import team.project.module.filestorage.internal.util.Util;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
@@ -26,7 +24,6 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
 
     private final String uploadedFilesFolder;
     private final String uploadedFileIdPrefix;
-    private final String baseUrl;
 
     @Autowired
     private LocalFileStorageDAO localFileStorageDAO;
@@ -34,7 +31,6 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
     private LocalFileStorageService(LocalFileStorageConfig cfg) {
         this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
-        this.baseUrl = cfg.baseUrl;
     }
 
     /**
@@ -102,15 +98,8 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         if ( ! mayBeStored(fileId)) {
             return null;
         }
-
         String filePath = parseFileIdToFilePath(fileId);
-        String[] pathSplit = filePath.split("/");
-
-        StringBuilder urlEncodedPath = new StringBuilder();
-        for (int i = 1; i < pathSplit.length; i++) { /* <- i 从 1 开始，因为[0]是空字符串 "" */
-            urlEncodedPath.append("/").append(URLEncoder.encode(pathSplit[i], UTF_8));
-        }
-        return baseUrl + urlEncodedPath;
+        return localFileStorageDAO.getUrl(filePath);
     }
 
     /**

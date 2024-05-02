@@ -6,6 +6,7 @@ import team.project.module.filestorage.internal.config.LocalFileStorageConfig;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -15,9 +16,11 @@ public class LocalFileStorageDAO {
 
     /* 本地文件系统中，存储用户数据文件的根目录（在配置文件中以绝对路径形式给出）*/
     private final String rootFolder;
+    private final String baseUrl;
 
     LocalFileStorageDAO(LocalFileStorageConfig cfg) {
         this.rootFolder = cfg.rootFolder;
+        this.baseUrl    = cfg.baseUrl;
     }
 
     /**
@@ -26,7 +29,6 @@ public class LocalFileStorageDAO {
     public void saveFile(MultipartFile file, String filePath) throws IOException {
         File fileToSave = new File(rootFolder, filePath);
         boolean ignored = fileToSave.getParentFile().mkdirs();
-
         file.transferTo(fileToSave);
     }
 
@@ -35,6 +37,24 @@ public class LocalFileStorageDAO {
      * */
     public boolean isFileExist(String filePath) {
         return new File(rootFolder, filePath).exists();
+    }
+
+    /**
+     * 获取访问文件的 URL（fileId 指向的文件不存在则会返回 null）
+     * */
+    public String getUrl(String filePath) {
+
+        File file = new File(rootFolder, filePath);
+        if ( ! file.exists() || file.isDirectory()) {
+            return null;
+        }
+
+        String[] pathSplit = filePath.split("/");
+        StringBuilder url = new StringBuilder(baseUrl);
+        for (int i = 1; i < pathSplit.length; i++) { /* <- i 从 1 开始，因为[0]是空字符串 "" */
+            url.append("/").append(URLEncoder.encode(pathSplit[i], UTF_8));
+        }
+        return url.toString();
     }
 
     /**
@@ -57,10 +77,8 @@ public class LocalFileStorageDAO {
      * */
     public void saveTextToFile(String text, String filePath) throws IOException {
         File fileToSave = new File(rootFolder, filePath);
-
         { boolean ignored = fileToSave.getParentFile().mkdirs(); }
         { boolean ignored = fileToSave.createNewFile(); }
-
         Files.writeString(fileToSave.toPath(), text, UTF_8);
     }
 
