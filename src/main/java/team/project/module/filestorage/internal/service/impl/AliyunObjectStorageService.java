@@ -1,6 +1,7 @@
 package team.project.module.filestorage.internal.service.impl;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
      * 生成 fileId
      * */
     private String generateFileId(String folderPath, String filename) {
-        return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
+        return Util.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
     }
 
     /**
@@ -60,15 +61,12 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
     @Override
     public String uploadFile(MultipartFile toUploadFile, UploadFileQO uploadFileQO) {
 
-        String targetFolder = uploadFileQO.isTargetRootFolder() ? "/" : uploadFileQO.getTargetFolder();
-
-        String targetFilename;
-        if (uploadFileQO.isUsingOriginalFilename()) {
-            targetFilename = toUploadFile.getOriginalFilename();
-        } else {
-            String extension = FilenameUtils.getExtension(toUploadFile.getOriginalFilename());
-            targetFilename = uploadFileQO.getTargetFilename() + ("".equals(extension) ? "" : "." + extension);
-        }
+        String targetFolder   = StringUtils.isBlank(uploadFileQO.getTargetFolder())
+                                  ? "/"
+                                  : uploadFileQO.getTargetFolder();
+        String targetFilename = StringUtils.isBlank(uploadFileQO.getTargetFilename())
+                                  ? toUploadFile.getOriginalFilename()
+                                  : uploadFileQO.getTargetFilename();
 
         String fileId = generateFileId(targetFolder, targetFilename);
         if ( ! Util.isValidFileId(fileId)) {
