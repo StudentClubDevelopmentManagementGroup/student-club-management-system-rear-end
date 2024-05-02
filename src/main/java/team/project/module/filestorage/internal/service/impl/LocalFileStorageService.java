@@ -4,7 +4,6 @@ import org.apache.commons.io.FilenameUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.exception.FileStorageException;
@@ -12,15 +11,17 @@ import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.internal.config.LocalFileStorageConfig;
 import team.project.module.filestorage.internal.dao.LocalFileStorageDAO;
 import team.project.module.filestorage.internal.service.FileStorageBasicIService;
+import team.project.module.filestorage.internal.service.TextFileStorageIService;
 import team.project.module.filestorage.internal.util.Util;
 
+import java.io.IOException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class LocalFileStorageService implements FileStorageBasicIService {
+public class LocalFileStorageService implements FileStorageBasicIService, TextFileStorageIService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
@@ -55,8 +56,10 @@ public class LocalFileStorageService implements FileStorageBasicIService {
      * */
     @Override
     public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/");
+        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
     }
+
+    /* --------- */
 
     /**
      * 详见：{@link FileStorageBasicIService#uploadFile}
@@ -85,7 +88,7 @@ public class LocalFileStorageService implements FileStorageBasicIService {
         }
 
         try {
-            localFileStorageDAO.save(toUploadFile, filePath);
+            localFileStorageDAO.saveFile(toUploadFile, filePath);
             return fileId;
         }
         catch (Exception e) {
@@ -102,16 +105,13 @@ public class LocalFileStorageService implements FileStorageBasicIService {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
-        if ( ! Util.isValidFileId(fileId)) {
-            return null;
-        }
 
         String filePath = parseFileIdToFilePath(fileId);
         String[] pathSplit = filePath.split("/");
 
         StringBuilder urlEncodedPath = new StringBuilder();
         for (int i = 1; i < pathSplit.length; i++) { /* <- i 从 1 开始，因为[0]是空字符串 "" */
-            urlEncodedPath.append("/").append(URLEncoder.encode(pathSplit[i], StandardCharsets.UTF_8));
+            urlEncodedPath.append("/").append(URLEncoder.encode(pathSplit[i], UTF_8));
         }
         return baseUrl + urlEncodedPath;
     }
@@ -122,9 +122,6 @@ public class LocalFileStorageService implements FileStorageBasicIService {
     @Override
     public boolean deleteFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
-            return true;
-        }
-        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {
@@ -141,12 +138,10 @@ public class LocalFileStorageService implements FileStorageBasicIService {
     /* --------- */
 
     /**
-     * （试验）
-     * 将一段文本保存到 .txt 文件中
-     * @param text         要保存的文本
-     * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
+     * 详见：{@link TextFileStorageIService#writeTextToFile}
      * */
-    public String saveTextToFile(String text, UploadFileQO uploadFileQO) {
+    @Override
+    public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (uploadFileQO.isUsingOriginalFilename()) {
             throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
@@ -166,12 +161,29 @@ public class LocalFileStorageService implements FileStorageBasicIService {
         }
 
         try {
-            localFileStorageDAO.save(text, filePath);
+            localFileStorageDAO.saveTextToFile(text, filePath);
             return fileId;
         }
         catch (Exception e) {
             log.error("上传文件到本地文件系统时出现异常", e);
             throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+        }
+    }
+
+    /**
+     * 详见：{@link TextFileStorageIService#readTextFromFile}
+     * */
+    @Override
+    public String readTextFromFile(String fileId) {
+        if ( ! mayBeStored(fileId)) {
+            return null;
+        }
+        try {
+            String filePath = parseFileIdToFilePath(fileId);
+            return localFileStorageDAO.readTextFromFile(filePath);
+        } catch (IOException e) {
+            log.error("从本地文件系统中读取文件时出现异常", e);
+            throw new FileStorageException(UNSOLVABLE, "读取文件失败");
         }
     }
 }

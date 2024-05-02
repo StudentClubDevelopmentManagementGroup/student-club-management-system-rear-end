@@ -18,6 +18,7 @@ public interface FileStorageBasicIService {
      * <p>  如果文件在此存储空间中，则 fileId 一定符合规则
      * <br> 操作文件前，先判断 fileId 是否符合这个规则
      * <br> 若不符合，则认为文件不存在，不必再进行后续操作</p>
+     * @return 如果文件可能在此存储空间中返回 true，否则返回 false
      * */
     boolean mayBeStored(String fileId);
 
@@ -28,7 +29,7 @@ public interface FileStorageBasicIService {
      * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
      * <li>...</li>
      * </p>
-     * @return 如果 fileId 符合约束，且符合存储规则，返回 URL，否则返回 null
+     * @return 如果文件可能在此存储空间中，则返回 URL，否则返回 null
      * */
     String getFileUrl(String fileId);
 

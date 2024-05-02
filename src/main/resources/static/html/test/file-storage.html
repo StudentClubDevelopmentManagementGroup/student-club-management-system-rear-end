@@ -173,10 +173,7 @@
         <input type="text" name="filename" placeholder="若不指定，则使用原文件名">
       </label>
       <label for=""><span>覆盖上传</span>
-        <label>
-          <input type="checkbox" name="overwrite">
-          <span></span>
-        </label>
+        <label><input type="checkbox" name="overwrite"><span></span></label>
       </label>
       <label for="">
         <button type="submit">上传文件</button>
@@ -189,12 +186,12 @@
         <input type="text" name="file_id">
       </label>
       <label for="">
-        <button type="submit" formaction="/get_uploaded_file_url">获取URL</button>
-        <button type="submit" formaction="/get_uploaded_file" style="margin-left: 1em;">获取文件</button>
+        <button type="submit" formaction="/get_file_url">获取URL</button>
+        <button type="submit" formaction="/get_file" style="margin-left: 1em;">获取文件</button>
       </label>
     </form>
 
-    <form action="/delete_uploaded_file" method="post" target="output" class="green_form">
+    <form action="/delete_file" method="post" target="output" class="green_form">
       <h1>删除已上传的文件</h1>
       <label><span>file_id</span>
         <input type="text" name="file_id">
@@ -205,15 +202,31 @@
     </form>
     
     <form action="/upload_text" method="post" target="output" class="green_form">
-      <h1>上传一段文本，并将其存为文本文件</h1>
-      <label><span>标题</span>
-        <input type="text" name="title">
+      <h1>上传一段文本，将其存为文本文件</h1>
+      <label><span>指定目录</span>
+        <input type="text" name="folder" placeholder="若不指定，则存储至根目录">
+      </label>
+      <label><span>重命名文件</span>
+        <input type="text" name="filename">
+      </label>
+      <label for=""><span>覆盖上传</span>
+        <label><input type="checkbox" name="overwrite"><span></span></label>
       </label>
       <label><span>内容</span>
         <textarea name="content"></textarea>
       </label>
       <label for="">
         <button type="submit">上传</button>
+      </label>
+    </form>
+    
+    <form action="/get_text" method="get" target="output" class="green_form">
+      <h1>读取纯文本文件里的内容</h1>
+      <label><span>file_id</span>
+        <input type="text" name="file_id">
+      </label>
+      <label for="">
+        <button type="submit">读取</button>
       </label>
     </form>
 

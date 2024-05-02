@@ -26,7 +26,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
     private AliyunOssDAO aliyunOssDAO;
 
     AliyunObjectStorageService(AliyunOssConfig cfg) {
-        this.uploadedFilesFolder = cfg.uploadedFilesFolder;
+        this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }
 
@@ -44,12 +44,14 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
+    /* --------- */
+
     /**
      * 详见：{@link FileStorageBasicIService#mayBeStored}
      * */
     @Override
     public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/");
+        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
     }
 
     /**
@@ -96,9 +98,6 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
-        if ( ! Util.isValidFileId(fileId)) {
-            return null;
-        }
         try {
             String fileKey = parseFileIdToFileKey(fileId);
             return aliyunOssDAO.getUrl(fileKey);
@@ -115,9 +114,6 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
     @Override
     public boolean deleteFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
-            return true;
-        }
-        if ( ! Util.isValidFileId(fileId)) {
             return true;
         }
         try {
