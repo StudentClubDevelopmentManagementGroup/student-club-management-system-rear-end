@@ -19,7 +19,7 @@ public class UploadFileQO {
     String targetFolder = "/";
 
     /**
-     * 指定文件名（传 null 或 "" 则不指定）
+     * 指定文件名（不包括扩展名）（传 null 或 "" 则不指定）
      * */
     String targetFilename = null;
 

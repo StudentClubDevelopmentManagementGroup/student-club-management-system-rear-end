@@ -67,7 +67,7 @@ public class FileStorageController {
     @GetMapping("/get_uploaded_file_url")
     @ResponseBody
     Object getUploadedFileUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        String url = fileStorageService.getUploadedFileUrl(fileId);
+        String url = fileStorageService.getFileUrl(fileId);
         if (url != null) {
             return new Response<>(ServiceStatus.SUCCESS).data(url);
         }
@@ -80,7 +80,7 @@ public class FileStorageController {
     @GetMapping("/get_uploaded_file")
     Object getUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         /* NOTE: 如果找不到文件，则重定向的地址是：“redirect:”，响应 404 */
-        String url = fileStorageService.getUploadedFileUrl(fileId);
+        String url = fileStorageService.getFileUrl(fileId);
         return url == null ? "" : ("redirect:" + url);
     }
 
@@ -88,7 +88,7 @@ public class FileStorageController {
     @PostMapping("/delete_uploaded_file")
     @ResponseBody
     Object deleteUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        if (fileStorageService.deleteUploadedFile(fileId)) {
+        if (fileStorageService.deleteFile(fileId)) {
             return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
         } else {
             return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("删除失败");

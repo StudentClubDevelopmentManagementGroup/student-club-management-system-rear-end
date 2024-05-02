@@ -20,18 +20,17 @@ import java.nio.charset.StandardCharsets;
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-@Primary
 public class LocalFileStorageService implements FileStorageBasicIService {
-    protected final Logger log = LoggerFactory.getLogger(this.getClass());
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
-    protected final String uploadedFilesFolder;
-    protected final String uploadedFileIdPrefix;
-    protected final String baseUrl;
+    private final String uploadedFilesFolder;
+    private final String uploadedFileIdPrefix;
+    private final String baseUrl;
 
     @Autowired
-    protected LocalFileStorageDAO localFileStorageDAO;
+    private LocalFileStorageDAO localFileStorageDAO;
 
-    protected LocalFileStorageService(LocalFileStorageConfig cfg) {
+    private LocalFileStorageService(LocalFileStorageConfig cfg) {
         this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
         this.baseUrl = cfg.baseUrl;
@@ -40,14 +39,14 @@ public class LocalFileStorageService implements FileStorageBasicIService {
     /**
      * 由 filePath 生成 fileId
      * */
-    protected String generateFileId(String folderPath, String filename) {
+    private String generateFileId(String folderPath, String filename) {
         return Util.fixPath(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
     }
 
     /**
      * 从 fileId 解析出 filePath
      * */
-    protected String parseFileIdToFilePath(String fileId) {
+    private String parseFileIdToFilePath(String fileId) {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
@@ -96,10 +95,10 @@ public class LocalFileStorageService implements FileStorageBasicIService {
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#getUploadedFileUrl}
+     * 详见：{@link FileStorageBasicIService#getFileUrl}
      * */
     @Override
-    public String getUploadedFileUrl(String fileId) {
+    public String getFileUrl(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
@@ -118,10 +117,10 @@ public class LocalFileStorageService implements FileStorageBasicIService {
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#deleteUploadedFile}
+     * 详见：{@link FileStorageBasicIService#deleteFile}
      * */
     @Override
-    public boolean deleteUploadedFile(String fileId) {
+    public boolean deleteFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return true;
         }
@@ -136,6 +135,43 @@ public class LocalFileStorageService implements FileStorageBasicIService {
         catch (Exception e) {
             log.error("从本地文件系统中删除文件时出现异常", e);
             return false;
+        }
+    }
+
+    /* --------- */
+
+    /**
+     * （试验）
+     * 将一段文本保存到 .txt 文件中
+     * @param text         要保存的文本
+     * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
+     * */
+    public String saveTextToFile(String text, UploadFileQO uploadFileQO) {
+
+        if (uploadFileQO.isUsingOriginalFilename()) {
+            throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
+        }
+
+        String targetFolder = uploadFileQO.isTargetRootFolder() ? "/" : uploadFileQO.getTargetFolder();
+        String targetFilename = uploadFileQO.getTargetFilename() + ".txt";
+
+        String fileId = generateFileId(targetFolder, targetFilename);
+        if ( ! Util.isValidFileId(fileId)) {
+            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+        }
+
+        String filePath = parseFileIdToFilePath(fileId);
+        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
+            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+        }
+
+        try {
+            localFileStorageDAO.save(text, filePath);
+            return fileId;
+        }
+        catch (Exception e) {
+            log.error("上传文件到本地文件系统时出现异常", e);
+            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
     }
 }

@@ -5,8 +5,12 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.internal.config.LocalFileStorageConfig;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 @Component
 public class LocalFileStorageDAO {
@@ -29,15 +33,29 @@ public class LocalFileStorageDAO {
     }
 
     /**
-     * 将一段文本保存到文件中（如果文件已存在，则覆盖）
+     * 将一段文本以 UTF8 编码保存到文本文件中（如果文件已存在，则覆盖）
      * */
-    public void save(String content, String filePath) throws IOException {
+    public void save(String text, String filePath) throws IOException {
         File fileToSave = new File(rootFolder, filePath);
 
         { boolean ignored = fileToSave.getParentFile().mkdirs(); }
         { boolean ignored = fileToSave.createNewFile(); }
 
-        Files.write(fileToSave.toPath(), content.getBytes());
+        Files.writeString(fileToSave.toPath(), text, UTF_8);
+    }
+
+    /**
+     * 将一段数据保存到文件中（如果文件已存在，则覆盖）
+     * */
+    public void save(byte[] data, String filePath) throws IOException {
+        File fileToSave = new File(rootFolder, filePath);
+
+        { boolean ignored = fileToSave.getParentFile().mkdirs(); }
+        { boolean ignored = fileToSave.createNewFile(); }
+
+        try (FileOutputStream outputStream = new FileOutputStream(fileToSave)) {
+            outputStream.write(data);
+        }
     }
 
     /**

@@ -23,9 +23,6 @@ public class TextFileStorageController {
     @PostMapping("/upload_text")
     @ResponseBody
     Object uploadFile(@Valid UploadTextReq req) {
-        System.out.println("title: " + req.getTitle());
-        System.out.println("content: " + req.getContent());
-
         return new Response<>(ServiceStatus.SUCCESS)
             .data(textFileStorageService.uploadText(req));
     }

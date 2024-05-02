@@ -30,29 +30,29 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     }
 
     /**
-     * 详见：{@link FileStorageIService#getUploadedFileUrl}
+     * 详见：{@link FileStorageIService#getFileUrl}
      * */
     @Override
-    public String getUploadedFileUrl(String fileId) {
+    public String getFileUrl(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.getUploadedFileUrl(fileId);
+            return localStorageService.getFileUrl(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.getUploadedFileUrl(fileId);
+            return cloudStorageService.getFileUrl(fileId);
 
         return null;
     }
 
     /**
-     * 详见：{@link FileStorageIService#deleteUploadedFile}
+     * 详见：{@link FileStorageIService#deleteFile}
      * */
     @Override
-    public boolean deleteUploadedFile(String fileId) {
+    public boolean deleteFile(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.deleteUploadedFile(fileId);
+            return localStorageService.deleteFile(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.deleteUploadedFile(fileId);
+            return cloudStorageService.deleteFile(fileId);
 
         return true;
     }

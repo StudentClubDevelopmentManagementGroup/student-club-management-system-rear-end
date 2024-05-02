@@ -89,10 +89,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#getUploadedFileUrl}
+     * 详见：{@link FileStorageBasicIService#getFileUrl}
      * */
     @Override
-    public String getUploadedFileUrl(String fileId) {
+    public String getFileUrl(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }
@@ -110,10 +110,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#deleteUploadedFile}
+     * 详见：{@link FileStorageBasicIService#deleteFile}
      * */
     @Override
-    public boolean deleteUploadedFile(String fileId) {
+    public boolean deleteFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return true;
         }
