@@ -56,4 +56,20 @@ public class FileStorageIServiceImpl implements FileStorageIService {
 
         return true;
     }
+
+    /**
+     * 详见：{@link FileStorageIService#writeTextToFile}
+     */
+    @Override
+    public String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
+        return null;
+    }
+
+    /**
+     * 详见：{@link FileStorageIService#readTextFromFile}
+     */
+    @Override
+    public String readTextFromFile(String fileId) {
+        return null;
+    }
 }

@@ -43,7 +43,7 @@ public class LocalFileStorageDAO {
     /**
      * 获取访问文件的 URL（fileId 指向的文件不存在则会返回 null）
      * */
-    public String getUrl(String filePath) {
+    public String getFileUrl(String filePath) {
 
         File file = new File(rootFolder, filePath);
         if ( ! file.exists() || file.isDirectory()) {
@@ -62,7 +62,7 @@ public class LocalFileStorageDAO {
      * <p> 删除文件
      * <p> 如果文件删除成功后文件夹为空，则一路删除空的文件夹，直到根文件夹
      * */
-    public boolean delete(String filePath) {
+    public boolean deleteFile(String filePath) {
 
         File file = new File(rootFolder,  filePath);
         if ( ! file.exists() || file.isDirectory()) {
@@ -91,7 +91,7 @@ public class LocalFileStorageDAO {
         return result;
     }
 
-    /* -- 处理纯文本文件的读写 -- */
+    /* -- 读写纯文本文件 -- */
 
     /**
      * 将一段文本以 UTF8 编码保存到文本文件中（如果文件已存在，则覆盖）

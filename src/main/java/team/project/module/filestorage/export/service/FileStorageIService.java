@@ -6,6 +6,8 @@ import team.project.module.filestorage.export.model.query.UploadFileQO;
 
 public interface FileStorageIService {
 
+    /* -- 基本操作（上传、获取、删除） -- */
+
     /**
      * 上传文件
      * @param toUploadFile 要上传的文件
@@ -31,4 +33,19 @@ public interface FileStorageIService {
      * @return 删除成功返回 true，否则返回 false
      * */
     boolean deleteFile(String fileId);
+
+    /* -- 读写纯文本文件 -- */
+
+    /**
+     * 将一段文本保存到文件中
+     * @param text         要保存的文本
+     * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
+     * @return fileId
+     * */
+    String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
+
+    /**
+     * 读取纯文本文件里的内容
+     * */
+    String readTextFromFile(String fileId);
 }

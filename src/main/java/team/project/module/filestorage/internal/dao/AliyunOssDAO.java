@@ -47,7 +47,7 @@ public class AliyunOssDAO {
     /**
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
      * */
-    public void upload(MultipartFile file, String key) throws IOException {
+    public void uploadFile(MultipartFile file, String key) throws IOException {
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
         PutObjectResult result = ossClient.putObject(putObjectRequest);
     }
@@ -62,7 +62,7 @@ public class AliyunOssDAO {
     /**
      * 获取访问文件的 URL（fileId 指向的文件不存在也会返回 URL，访问这个 URL 会响应文件不存在）
      * */
-    public String getUrl(String key) {
+    public String getFileUrl(String key) {
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
         request.setExpiration(new Date(new Date().getTime() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
 
@@ -73,7 +73,10 @@ public class AliyunOssDAO {
     /**
      * 删除单个文件
      * */
-    public void delete(String key) {
+    public void deleteFile(String key) {
         ossClient.deleteObject(bucketName, key); /* <- 无论要删除的文件是否存在，删除成功后均会返回 204 状态码 */
     }
+
+    /* -- 读写纯文本文件 -- */
+
 }

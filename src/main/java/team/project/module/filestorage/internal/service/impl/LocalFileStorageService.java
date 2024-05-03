@@ -99,7 +99,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
             return null;
         }
         String filePath = parseFileIdToFilePath(fileId);
-        return localFileStorageDAO.getUrl(filePath);
+        return localFileStorageDAO.getFileUrl(filePath);
     }
 
     /**
@@ -112,7 +112,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         }
         try {
             String filePath = parseFileIdToFilePath(fileId);
-            boolean ignored = localFileStorageDAO.delete(filePath);
+            boolean ignored = localFileStorageDAO.deleteFile(filePath);
             return true;
         }
         catch (Exception e) {
@@ -121,7 +121,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         }
     }
 
-    /* -- 处理纯文本文件的读写 -- */
+    /* -- 读写纯文本文件 -- */
 
     /**
      * 详见：{@link TextFileStorageIService#writeTextToFile}

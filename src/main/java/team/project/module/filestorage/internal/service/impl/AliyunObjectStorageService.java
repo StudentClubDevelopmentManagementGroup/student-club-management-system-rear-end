@@ -1,6 +1,5 @@
 package team.project.module.filestorage.internal.service.impl;
 
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,12 +11,13 @@ import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssDAO;
 import team.project.module.filestorage.internal.service.FileStorageBasicIService;
+import team.project.module.filestorage.internal.service.TextFileStorageIService;
 import team.project.module.filestorage.internal.util.Util;
 
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class AliyunObjectStorageService implements FileStorageBasicIService {
+public class AliyunObjectStorageService implements FileStorageBasicIService, TextFileStorageIService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
@@ -71,7 +71,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         }
 
         try {
-            aliyunOssDAO.upload(toUploadFile, fileKey);
+            aliyunOssDAO.uploadFile(toUploadFile, fileKey);
             return fileId;
         }
         catch (Exception e) {
@@ -98,7 +98,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         }
         try {
             String fileKey = parseFileIdToFileKey(fileId);
-            return aliyunOssDAO.getUrl(fileKey);
+            return aliyunOssDAO.getFileUrl(fileKey);
         }
         catch (Exception e) {
             log.error("获取访问存储于阿里云 OSS 的存储空间中的文件的 url 时出现异常", e);
@@ -116,12 +116,30 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         }
         try {
             String fileKey = parseFileIdToFileKey(fileId);
-            aliyunOssDAO.delete(fileKey);
+            aliyunOssDAO.deleteFile(fileKey);
             return true;
         }
         catch (Exception e) {
             log.error("从阿里云 OSS 的存储空间中删除文件时出现异常", e);
             return false;
         }
+    }
+
+    /* -- 读写纯文本文件 -- */
+
+    /**
+     * 详见：{@link TextFileStorageIService#writeTextToFile}
+     * */
+    @Override
+    public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
+        return null;
+    }
+
+    /**
+     * 详见：{@link TextFileStorageIService#readTextFromFile}
+     * */
+    @Override
+    public String readTextFromFile(String fileId) {
+        return null;
     }
 }
