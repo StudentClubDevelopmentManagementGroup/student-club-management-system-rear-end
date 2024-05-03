@@ -45,7 +45,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
-    /* -- 基本操作（上传、获取、删除） -- */
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 详见：{@link FileStorageBasicIService#uploadFile}
@@ -132,14 +132,50 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
      * */
     @Override
     public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
-        return null;
+
+        if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
+            throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
+        }
+
+        String targetFolder   = StringUtils.isBlank(uploadFileQO.getTargetFolder()) ? "/" : uploadFileQO.getTargetFolder();
+        String targetFilename = uploadFileQO.getTargetFilename();
+
+        String fileId = generateFileId(targetFolder, targetFilename);
+        if ( ! Util.isValidFileId(fileId)) {
+            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+        }
+
+        String fileKey = parseFileIdToFileKey(fileId);
+        if ( ! uploadFileQO.isOverwrite() && aliyunOssDAO.isFileExist(fileKey)) {
+            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+        }
+
+        try {
+            aliyunOssDAO.uploadTextToFile(text, fileKey);
+            return fileId;
+        }
+        catch (Exception e) {
+            log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
+            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+        }
     }
 
     /**
-     * 详见：{@link TextFileStorageIService#readTextFromFile}
+     * 如果文件不是纯文本文件，或是编码不匹配，会读取出乱码文本
+     * 其他介绍详见：{@link TextFileStorageIService#readTextFromFile}
      * */
     @Override
     public String readTextFromFile(String fileId) {
-        return null;
+        if ( ! mayBeStored(fileId)) {
+            return null;
+        }
+        try {
+            String fileKey = parseFileIdToFileKey(fileId);
+            return aliyunOssDAO.readTextFromFile(fileKey);
+        }
+        catch (Exception e) {
+            log.error("从阿里云 OSS 的存储空间中读取文件时出现异常", e);
+            return null;
+        }
     }
 }

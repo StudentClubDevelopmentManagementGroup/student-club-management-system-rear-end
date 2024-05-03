@@ -4,15 +4,18 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.OSSObject;
 import com.aliyun.oss.model.PutObjectRequest;
 import com.aliyun.oss.model.PutObjectResult;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.internal.config.AliyunOssConfig;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /* 对象（Object）是 OSS 存储数据的基本单元，也被称为 OSS 的文件
    和传统的文件系统不同，Object 没有文件目录层级结构的关系，OSS 通过键名（Key）唯一标识存储的 Object
@@ -42,7 +45,7 @@ public class AliyunOssDAO {
         ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 
-    /* -- 基本操作（上传、获取、删除） -- */
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
@@ -79,4 +82,35 @@ public class AliyunOssDAO {
 
     /* -- 读写纯文本文件 -- */
 
+    /**
+     * 上传一段以 UTF8 编码的文本，以文本文件的形式保存
+     * */
+    public void uploadTextToFile(String text, String key) {
+        InputStream inputStream = new ByteArrayInputStream(text.getBytes(UTF_8));
+        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream);
+        ossClient.putObject(putObjectRequest);
+    }
+
+    /**
+     * 以 UTF8 编码规则来读取文件
+     * <br>（如果文件不是纯文本文件，或者编码不匹配，则结果可能呈现乱码）
+     * */
+    public String readTextFromFile(String key) throws IOException {
+
+        OSSObject ossObject = ossClient.getObject(bucketName, key);
+        BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent(), UTF_8));
+
+        StringBuilder result = new StringBuilder();
+        try (ossObject; reader) {
+
+            int readBufLen = 2048;
+            char[] buffer = new char[readBufLen];
+            int numCharRead;
+            while (-1 != (numCharRead = reader.read(buffer, 0, readBufLen))) {
+                result.append(buffer, 0, numCharRead);
+            }
+        }
+
+        return result.toString();
+    }
 }

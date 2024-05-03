@@ -22,7 +22,7 @@ public class LocalFileStorageDAO {
         this.baseUrl    = cfg.baseUrl;
     }
 
-    /* -- 基本操作（上传、获取、删除） -- */
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 将上传的文件保存到指定路径下（如果文件已存在，则覆盖）
@@ -105,7 +105,7 @@ public class LocalFileStorageDAO {
 
     /**
      * 以 UTF8 编码规则来读取文件
-     * <br>（如果文件不是文本文件，或者编码不匹配、包含无效的字节序列，则读取失败抛出异常）
+     * <br>（如果文件不是纯文本文件，或者编码不匹配，则读取失败，抛出异常）
      * */
     public String readTextFromFile(String filePath) throws IOException {
         File file = new File(rootFolder, filePath);

@@ -7,9 +7,8 @@
 
   <style>
     :root {
-      --color-llight-green: #a6e9a2;
-      --color-light-green: #2fc627;
-      --color-green: #09a800;
+      --color-light-green: #97bc78;
+      --color-green: #71994f;
     }
 
     body {
@@ -48,7 +47,16 @@
     }
     form.green_form > label > span {
       min-width: 5em;
+      margin-left: 0.2em;
       margin-right: 0.5em;
+      position: relative;
+    }
+    form.green_form > label > span.required::before {
+      content: "*";
+      color: red;
+      position: absolute;
+      top: 0.15em;
+      left: -0.55em;
     }
 
     /* 文件选择框 */
@@ -156,10 +164,10 @@
 
     <form action="/upload_file" method="post" enctype="multipart/form-data" target="output" class="green_form">
       <h1>上传文件</h1>
-      <label for=""><span>选择文件</span>
+      <label for=""><span class="required">选择文件</span>
         <input type="file" name="file">
       </label>
-      <label><span>存储类型</span>
+      <label><span class="required">存储类型</span>
         <select name="storage_type">
           <option value=""></option>
           <option value="LOCAL">本地文件系统</option>
@@ -167,10 +175,10 @@
         </select>
       </label>
       <label><span>指定目录</span>
-        <input type="text" name="folder" placeholder="若不指定，则存储至根目录">
+        <input type="text" name="folder" placeholder="/">
       </label>
       <label><span>重命名文件</span>
-        <input type="text" name="filename" placeholder="若不指定，则使用原文件名">
+        <input type="text" name="filename" placeholder="含扩展名">
       </label>
       <label for=""><span>覆盖上传</span>
         <label><input type="checkbox" name="overwrite"><span></span></label>
@@ -182,7 +190,7 @@
 
     <form action="" method="get" target="output" class="green_form">
       <h1>获取访问已上传的文件</h1>
-      <label><span>file_id</span>
+      <label><span class="required">file_id</span>
         <input type="text" name="file_id">
       </label>
       <label for="">
@@ -193,7 +201,7 @@
 
     <form action="/delete_file" method="post" target="output" class="green_form">
       <h1>删除已上传的文件</h1>
-      <label><span>file_id</span>
+      <label><span class="required">file_id</span>
         <input type="text" name="file_id">
       </label>
       <label for="">
@@ -204,10 +212,18 @@
     <form action="/upload_text" method="post" target="output" class="green_form">
       <h1>上传一段文本，将其存为文本文件</h1>
       <label><span>指定目录</span>
-        <input type="text" name="folder" placeholder="若不指定，则存储至根目录">
+        <input type="text" name="folder" placeholder="/">
       </label>
-      <label><span>指定文件名</span>
-        <input type="text" name="filename">
+
+      <label><span class="required">文件名</span>
+        <input type="text" name="filename" placeholder="含扩展名">
+      </label>
+      <label><span class="required">存储类型</span>
+        <select name="storage_type">
+          <option value=""></option>
+          <option value="LOCAL">本地文件系统</option>
+          <option value="CLOUD">云存储空间</option>
+        </select>
       </label>
       <label for=""><span>覆盖上传</span>
         <label><input type="checkbox" name="overwrite"><span></span></label>
@@ -222,7 +238,7 @@
     
     <form action="/get_text" method="get" target="output" class="green_form">
       <h1>读取纯文本文件里的内容</h1>
-      <label><span>file_id</span>
+      <label><span class="required">file_id</span>
         <input type="text" name="file_id">
       </label>
       <label for="">

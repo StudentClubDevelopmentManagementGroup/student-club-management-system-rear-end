@@ -18,6 +18,8 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     @Autowired
     AliyunObjectStorageService cloudStorageService;
 
+    /* -- 基本操作（上传、获取 url、删除） -- */
+
     /**
      * 详见：{@link FileStorageIService#uploadFile}
      * */
@@ -57,12 +59,17 @@ public class FileStorageIServiceImpl implements FileStorageIService {
         return true;
     }
 
+    /* -- 读写纯文本文件 -- */
+
     /**
      * 详见：{@link FileStorageIService#writeTextToFile}
      */
     @Override
     public String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
-        return null;
+        return switch (storageType) {
+            case LOCAL -> localStorageService.writeTextToFile(text, uploadFileQO);
+            case CLOUD -> cloudStorageService.writeTextToFile(text, uploadFileQO);
+        };
     }
 
     /**
@@ -70,6 +77,12 @@ public class FileStorageIServiceImpl implements FileStorageIService {
      */
     @Override
     public String readTextFromFile(String fileId) {
+        if (localStorageService.mayBeStored(fileId))
+            return localStorageService.readTextFromFile(fileId);
+
+        if (cloudStorageService.mayBeStored(fileId))
+            return cloudStorageService.readTextFromFile(fileId);
+
         return null;
     }
 }

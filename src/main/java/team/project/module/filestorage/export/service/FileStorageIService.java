@@ -6,7 +6,7 @@ import team.project.module.filestorage.export.model.query.UploadFileQO;
 
 public interface FileStorageIService {
 
-    /* -- 基本操作（上传、获取、删除） -- */
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 上传文件
@@ -46,6 +46,10 @@ public interface FileStorageIService {
 
     /**
      * 读取纯文本文件里的内容
+     * @return 如果读取成功，则返回文本文件里的所有内容
+     *    <br> 如果 fileId 不符合约束，或不符合存储规则，则返回 null
+     *    <br> 如果读取中途出现异常，则返回 null
+     *    <br> 如果文件不是文本文件，可能读取失败，返回 null，也可能读取出乱码文本
      * */
     String readTextFromFile(String fileId);
 }

@@ -47,7 +47,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
-    /* -- 基本操作（上传、获取、删除） -- */
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 详见：{@link FileStorageBasicIService#uploadFile}
@@ -169,7 +169,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
             return localFileStorageDAO.readTextFromFile(filePath);
         } catch (IOException e) {
             log.error("从本地文件系统中读取文件时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE, "读取文件失败");
+            return null;
         }
     }
 }
