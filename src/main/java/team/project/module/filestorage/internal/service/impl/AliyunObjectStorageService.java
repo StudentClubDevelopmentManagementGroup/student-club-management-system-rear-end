@@ -128,10 +128,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link TextFileStorageIService#writeTextToFile}
+     * 详见：{@link TextFileStorageIService#uploadTextToFile}
      * */
     @Override
-    public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
+    public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
             throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
@@ -162,10 +162,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
 
     /**
      * 如果文件不是纯文本文件，或是编码不匹配，会读取出乱码文本
-     * 其他介绍详见：{@link TextFileStorageIService#readTextFromFile}
+     * 其他介绍详见：{@link TextFileStorageIService#getTextFromFile}
      * */
     @Override
-    public String readTextFromFile(String fileId) {
+    public String getTextFromFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }

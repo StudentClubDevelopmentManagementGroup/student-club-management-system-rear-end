@@ -37,12 +37,13 @@ public interface FileStorageIService {
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 将一段文本保存到文件中
+     * 将一段文本，将其保存到纯文本文件中
+     * @param storageType  存储类型
      * @param text         要保存的文本
      * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
      * @return fileId
      * */
-    String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
+    String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
 
     /**
      * 读取纯文本文件里的内容
@@ -51,5 +52,5 @@ public interface FileStorageIService {
      *    <br> 如果读取中途出现异常，则返回 null
      *    <br> 如果文件不是文本文件，可能读取失败，返回 null，也可能读取出乱码文本
      * */
-    String readTextFromFile(String fileId);
+    String getTextFromFile(String fileId);
 }
