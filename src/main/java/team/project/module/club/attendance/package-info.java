@@ -1,6 +1,6 @@
 /**
  * <h3> 介绍
  * <p>  TODO： 写一下模块介绍
- * <p>  
+ * <p>
  */
-package team.project.module.department;
+package team.project.module.club.attendance;

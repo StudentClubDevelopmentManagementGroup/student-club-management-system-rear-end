@@ -2,11 +2,13 @@ package team.project.module.user.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
-import team.project.module.user.internal.model.annotation.UserPasswordConstraint;
+import lombok.Getter;
+import lombok.Setter;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.annotation.UserPasswordConstraint;
 
-@Data
+@Getter
+@Setter
 public class UserIdAndPasswordReq {
 
     @NotBlank(message="学号/工号不能为空")

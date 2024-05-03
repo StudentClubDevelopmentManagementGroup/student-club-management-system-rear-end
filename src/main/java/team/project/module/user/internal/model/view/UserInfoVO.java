@@ -1,9 +1,11 @@
 package team.project.module.user.internal.model.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UserInfoVO {
     @JsonProperty("user_id")    private String         userId;
     @JsonProperty("department") private DepartmentInfo department;
@@ -12,7 +14,8 @@ public class UserInfoVO {
     @JsonProperty("mail")       private String         email;
     @JsonProperty("role")       private UserRoleInfo   role;
 
-    @Data
+    @Getter
+    @Setter
     public static class UserRoleInfo {
         @JsonProperty("is_student")      private Boolean student;
         @JsonProperty("is_teacher")      private Boolean teacher;
@@ -21,7 +24,8 @@ public class UserInfoVO {
         @JsonProperty("is_super_admin")  private Boolean superAdmin;
     }
 
-    @Data
+    @Getter
+    @Setter
     public static class DepartmentInfo {
         @JsonProperty("department_id")   private Long    departmentId;
         @JsonProperty("department_name") private String  departmentName;

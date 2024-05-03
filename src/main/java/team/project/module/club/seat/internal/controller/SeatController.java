@@ -6,8 +6,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.queryparam.QueryParam;
@@ -16,7 +14,9 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
-import team.project.module.club.seat.internal.model.request.*;
+import team.project.module.club.seat.internal.model.request.AddSeatReq;
+import team.project.module.club.seat.internal.model.request.DelSeatReq;
+import team.project.module.club.seat.internal.model.request.UpdateSeatReq;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.service.SeatService;
 
@@ -25,7 +25,6 @@ import java.util.List;
 @Tag(name="座位安排")
 @RestController
 public class SeatController {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     SeatService seatService;

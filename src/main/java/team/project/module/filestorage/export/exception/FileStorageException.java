@@ -17,10 +17,6 @@ public class FileStorageException extends ServiceException {
 
     private final Status fileStorageExceptionStatus;
 
-    public FileStorageException(Status status) {
-        this(status, null);
-    }
-
     public FileStorageException(Status status, String message) {
         super(ServiceStatus.INTERNAL_SERVER_ERROR, message);
         this.fileStorageExceptionStatus = status;

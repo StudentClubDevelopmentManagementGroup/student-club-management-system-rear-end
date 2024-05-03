@@ -8,6 +8,7 @@ import team.project.module.filestorage.internal.util.Util;
 
 @Configuration
 public class AliyunOssConfig {
+
     @Value("${file-storage.aliyun-oss.endpoint}")
     public String endpoint;
 
@@ -31,9 +32,9 @@ public class AliyunOssConfig {
         /* 检测配置文件中是否存在格式不正确的项
            统一使用（/）作为文件夹的分隔符，以斜杠开头，不以斜杠结尾，不要出现连续的斜杠 */
         Assert.isTrue(
-                uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
+                uploadedFilesFolder.equals(Util.fixSeparator(uploadedFilesFolder))
             &&  uploadedFilesFolder.startsWith("/")
-            &&  uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
+            &&  uploadedFileIdPrefix.equals(Util.fixSeparator(uploadedFileIdPrefix))
         , "配置文件中存在格式不正确的项");
 
         /* 阿里云的 OSS 存储路径规范要求不以斜杠开头，在这里去除斜杠
