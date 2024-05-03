@@ -22,6 +22,8 @@ public class LocalFileStorageDAO {
         this.baseUrl    = cfg.baseUrl;
     }
 
+    /* -- 基本操作（上传、获取、删除） -- */
+
     /**
      * 将上传的文件保存到指定路径下（如果文件已存在，则覆盖）
      * */
@@ -57,8 +59,8 @@ public class LocalFileStorageDAO {
     }
 
     /**
-     * <p>删除文件
-     * <p>如果文件删除成功后文件夹为空，则一路删除空的文件夹，直到根文件夹
+     * <p> 删除文件
+     * <p> 如果文件删除成功后文件夹为空，则一路删除空的文件夹，直到根文件夹
      * */
     public boolean delete(String filePath) {
 
@@ -89,7 +91,7 @@ public class LocalFileStorageDAO {
         return result;
     }
 
-    /* --------- */
+    /* -- 处理纯文本文件的读写 -- */
 
     /**
      * 将一段文本以 UTF8 编码保存到文本文件中（如果文件已存在，则覆盖）

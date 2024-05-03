@@ -42,6 +42,8 @@ public class AliyunOssDAO {
         ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 
+    /* -- 基本操作（上传、获取、删除） -- */
+
     /**
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
      * */

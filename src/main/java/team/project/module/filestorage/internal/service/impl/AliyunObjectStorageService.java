@@ -45,15 +45,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
-    /* --------- */
-
-    /**
-     * 详见：{@link FileStorageBasicIService#mayBeStored}
-     * */
-    @Override
-    public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
-    }
+    /* -- 基本操作（上传、获取、删除） -- */
 
     /**
      * 详见：{@link FileStorageBasicIService#uploadFile}
@@ -86,6 +78,14 @@ public class AliyunObjectStorageService implements FileStorageBasicIService {
             log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
             throw new FileStorageException(UNSOLVABLE, "上传文件失败");
         }
+    }
+
+    /**
+     * 详见：{@link FileStorageBasicIService#mayBeStored}
+     * */
+    @Override
+    public boolean mayBeStored(String fileId) {
+        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
     }
 
     /**

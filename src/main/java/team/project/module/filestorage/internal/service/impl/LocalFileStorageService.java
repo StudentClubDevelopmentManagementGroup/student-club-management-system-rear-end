@@ -47,15 +47,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
     }
 
-    /**
-     * 详见：{@link FileStorageBasicIService#mayBeStored}
-     * */
-    @Override
-    public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
-    }
-
-    /* --------- */
+    /* -- 基本操作（上传、获取、删除） -- */
 
     /**
      * 详见：{@link FileStorageBasicIService#uploadFile}
@@ -91,6 +83,14 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
     }
 
     /**
+     * 详见：{@link FileStorageBasicIService#mayBeStored}
+     * */
+    @Override
+    public boolean mayBeStored(String fileId) {
+        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
+    }
+
+    /**
      * 详见：{@link FileStorageBasicIService#getFileUrl}
      * */
     @Override
@@ -121,7 +121,7 @@ public class LocalFileStorageService implements FileStorageBasicIService, TextFi
         }
     }
 
-    /* --------- */
+    /* -- 处理纯文本文件的读写 -- */
 
     /**
      * 详见：{@link TextFileStorageIService#writeTextToFile}
