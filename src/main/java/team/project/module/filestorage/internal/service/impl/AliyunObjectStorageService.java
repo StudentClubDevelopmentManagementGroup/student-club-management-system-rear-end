@@ -128,10 +128,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link TextFileStorageIService#writeTextToFile}
+     * 详见：{@link TextFileStorageIService#uploadTextToFile}
      * */
     @Override
-    public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
+    public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
             throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");

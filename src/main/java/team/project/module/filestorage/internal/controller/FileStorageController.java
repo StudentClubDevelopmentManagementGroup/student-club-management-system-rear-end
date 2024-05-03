@@ -116,7 +116,7 @@ public class FileStorageController {
         uploadFileQO.setOverwrite(overwrite);
 
         try {
-            String fileId = fileStorageService.writeTextToFile(storageTypeEnum, text, uploadFileQO);
+            String fileId = fileStorageService.uploadTextToFile(storageTypeEnum, text, uploadFileQO);
 
             return new Response<>(ServiceStatus.SUCCESS).data(fileId);
         }
