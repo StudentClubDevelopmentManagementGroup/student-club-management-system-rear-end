@@ -8,12 +8,9 @@ import lombok.Data;
 
 import java.sql.Timestamp;
 
-
 @Data
 @TableName("tbl_club")
 public class TblClubDO {
-
-
     @TableId(value="id")               Long      id;
     @TableLogic(value="0", delval="1")
     @TableField(value="is_deleted")    Boolean   isDeleted;

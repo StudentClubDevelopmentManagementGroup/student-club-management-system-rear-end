@@ -8,9 +8,9 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.enums.UserRoleEnum;
 import team.project.module.user.internal.model.request.RegisterReq;
 
 @Service
@@ -34,17 +34,17 @@ public class RegisterService {
         } */
 
         user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- TODO: 待加密 */
+        user.setPassword(req.getPassword()); /* <- ljh_TODO: 待加密 */
         user.setName(req.getName());
         user.setEmail(req.getEmail());
         user.setTel(req.getTel());
 
-        user.setRole(UserRoleEnum.getEmptyRoleCode());
+        user.setRole(UserRole.getEmptyRoleCode());
         if ("student".equals(req.getRole())) {
-            user.addRole(UserRoleEnum.STUDENT);
+            user.addRole(UserRole.STUDENT);
         }
         else if ("teacher".equals(req.getRole())) {
-            user.addRole(UserRoleEnum.TEACHER);
+            user.addRole(UserRole.TEACHER);
         }
         else {
             /* controller 的入参校验保证程序不会执行到此处 */

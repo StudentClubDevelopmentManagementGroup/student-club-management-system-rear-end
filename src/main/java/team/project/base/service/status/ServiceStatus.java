@@ -2,10 +2,11 @@ package team.project.base.service.status;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.ToString;
 
-/* 自定义的服务端响应状态码（虽然和 http 的状态码一致，但
-   注意，这个是 ServiceStatus，而不是 HttpStatus） */
+/**
+ * <p>自定义的服务端响应状态码</p>
+ * <p>虽然和 http 的状态码一致，但注意：这个是 ServiceStatus，而不是 HttpStatus</p>
+ * */
 @AllArgsConstructor
 @Getter
 public enum ServiceStatus {
@@ -22,11 +23,18 @@ public enum ServiceStatus {
     CONFLICT             (409, "冲突"), /* 请求与服务器的当前状态冲突 */
     PAYLOAD_TOO_LARGE    (413, "请求体过大"), /* 上传的文件太大 */
     UNPROCESSABLE_ENTITY (422, "无法处理"), /* 请求格式正确，但语义错误 */
-    /* 服务的异常 */
+    /* 服务端异常 */
     INTERNAL_SERVER_ERROR(500, "服务器内部异常"), /* 服务器遇到了不知道如何处理的情况 */
     NOT_IMPLEMENTED      (501, "没有实现该功能"), /* 请求了未实现的功能 */
 
     ;
     private final int    statusCode;
     private final String statusText;
+
+    /**
+     * 判断是否是 5 开头的状态码（服务端异常）
+     * */
+    public boolean is5XX() {
+        return statusCode / 100 == 5;
+    }
 }

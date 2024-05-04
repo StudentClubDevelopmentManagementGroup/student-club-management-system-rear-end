@@ -5,52 +5,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.service.FileStorageIService;
-import team.project.module.filestorage.internal.service.AliyunOssStorageService;
-import team.project.module.filestorage.internal.service.LocalFileSystemService;
+import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
+import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
 
 @Service
 public class FileStorageIServiceImpl implements FileStorageIService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    private LocalFileSystemService localFileSystemService;
+    LocalFileSystemStorageService localStorageService;
 
     @Autowired
-    private AliyunOssStorageService aliyunOssStorageService;
+    AliyunObjectStorageService cloudStorageService;
 
+    /**
+     *  详见：{@link FileStorageIService#uploadFile}
+     * */
     @Override
-    public String uploadFileToLocalFileSystem(MultipartFile file) {
-        return localFileSystemService.upload(file);
+    public String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite) {
+        return switch (storageType) {
+            case LOCAL -> localStorageService.uploadFile(toUploadFile, targetFolder, targetFilename, overwrite);
+            case CLOUD -> cloudStorageService.uploadFile(toUploadFile, targetFolder, targetFilename, overwrite);
+        };
     }
 
-    @Override
-    public String uploadFileToCloudStorage(MultipartFile file) {
-        return aliyunOssStorageService.upload(file);
-    }
-
+    /**
+     *  详见：{@link FileStorageIService#getUploadedFileUrl}
+     * */
     @Override
     public String getUploadedFileUrl(String fileId) {
-        if (aliyunOssStorageService.isValidFileId(fileId)) {
-            return aliyunOssStorageService.getUploadedFileUrl(fileId);
-        }
-        else if (localFileSystemService.isValidFileId(fileId)) {
-            return localFileSystemService.getUploadedFileUrl(fileId);
-        }
-        else {
-            return null;
-        }
+        if (localStorageService.mayBeStored(fileId))
+            return localStorageService.getUploadedFileUrl(fileId);
+
+        if (cloudStorageService.mayBeStored(fileId))
+            return cloudStorageService.getUploadedFileUrl(fileId);
+
+        return null;
     }
 
+    /**
+     *  详见：{@link FileStorageIService#deleteUploadedFile}
+     * */
     @Override
     public boolean deleteUploadedFile(String fileId) {
-        if (aliyunOssStorageService.isValidFileId(fileId)) {
-            return aliyunOssStorageService.deleteUploadedFile(fileId);
-        }
-        else if (localFileSystemService.isValidFileId(fileId)) {
-            return localFileSystemService.deleteUploadedFile(fileId);
-        }
-        else {
-            return false;
-        }
+        if (localStorageService.mayBeStored(fileId))
+            return localStorageService.deleteUploadedFile(fileId);
+
+        if (cloudStorageService.mayBeStored(fileId))
+            return cloudStorageService.deleteUploadedFile(fileId);
+
+        return true;
     }
 }

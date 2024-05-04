@@ -8,6 +8,7 @@ import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 @Data
 public class UserClubReq {
+
     @NotNull(message = "学号工号不能为空")
     @UserIdConstraint
     @JsonProperty("user_id")
@@ -17,5 +18,3 @@ public class UserClubReq {
     @JsonProperty("club_id")
     Long     clubId;
 }
-
-

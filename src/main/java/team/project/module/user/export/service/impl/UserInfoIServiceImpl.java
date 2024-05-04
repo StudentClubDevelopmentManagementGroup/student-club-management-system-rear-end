@@ -18,6 +18,7 @@ public class UserInfoIServiceImpl implements UserInfoIService {
     @Autowired
     TblUserMapper userMapper;
 
+    @Override
     public UserInfoDTO selectUserInfo(String userId) {
         TblUserDO userInfo = userMapper.selectOne(userId);
         if (userInfo == null) {
@@ -35,6 +36,7 @@ public class UserInfoIServiceImpl implements UserInfoIService {
         return result;
     }
 
+    @Override
     public UserBasicInfoDTO selectUserBasicInfo(String userId) {
         TblUserDO userBasicInfo = userMapper.selectBasicInfo(userId);
         if (userBasicInfo == null) {
@@ -49,6 +51,7 @@ public class UserInfoIServiceImpl implements UserInfoIService {
         return result;
     }
 
+    @Override
     public UserInfoDTO selectUserRole(String userId) {
         TblUserDO userInfo = userMapper.selectRole(userId);
         if (userInfo == null) {
@@ -59,11 +62,13 @@ public class UserInfoIServiceImpl implements UserInfoIService {
         return result;
     }
 
+    @Override
     public int addRoleToUser(String userId, UserRole roleToAdd) {
-        return userMapper.addRoleToUser(userId, roleToAdd.r);
+        return userMapper.addRoleToUser(userId, roleToAdd);
     }
 
+    @Override
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {
-        return userMapper.removeRoleFromUser(userId, roleToRemove.r);
+        return userMapper.removeRoleFromUser(userId, roleToRemove);
     }
 }

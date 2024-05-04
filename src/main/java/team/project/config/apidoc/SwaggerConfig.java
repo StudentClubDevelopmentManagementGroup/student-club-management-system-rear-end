@@ -65,6 +65,14 @@ public class SwaggerConfig {
     }
 
     @Bean
+    GroupedOpenApi clubAnnouncement() {
+        return GroupedOpenApi.builder()
+            .group("社团-公告")
+            .packagesToScan("team.project.module.club.announcement")
+            .build();
+    }
+
+    @Bean
     GroupedOpenApi fileStorage() {
         return GroupedOpenApi.builder()
             .group("文件存储")

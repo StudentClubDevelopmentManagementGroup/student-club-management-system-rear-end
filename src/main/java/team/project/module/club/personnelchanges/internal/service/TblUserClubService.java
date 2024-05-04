@@ -2,12 +2,12 @@ package team.project.module.club.personnelchanges.internal.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.stereotype.Service;
-import team.project.base.model.PageVO;
-import team.project.module.club.management.internal.model.entity.TblUserClubDO;
+import team.project.base.model.view.PageVO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
+import team.project.module.club.personnelchanges.internal.model.query.ClubMemberInfoQO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
-import team.project.module.user.export.model.datatransfer.UserInfoDTO;
-
+import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
 
 @Service
 public interface TblUserClubService extends IService<TblUserClubDO> {
@@ -24,7 +24,5 @@ public interface TblUserClubService extends IService<TblUserClubDO> {
 
      Boolean selectTheMember(String userId, Long clubId);
 
-     PageVO<UserInfoDTO> selectClubMemberInfo(ClubQO req);
-
+     PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req);
 }
-

@@ -2,8 +2,8 @@ package team.project.module.user.internal.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.enums.UserRoleEnum;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.tmp.service.DepartmentService;
 
@@ -11,16 +11,16 @@ import team.project.module.user.tmp.service.DepartmentService;
 public class ModelConverter {
 
     @Autowired
-    DepartmentService departmentService; /* TODO */
+    DepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
     public UserInfoVO toUserInfoVO(TblUserDO userDO) {
 
         UserInfoVO.UserRoleInfo role = new UserInfoVO.UserRoleInfo();
-        role.setStudent(userDO.hasRole(UserRoleEnum.STUDENT));
-        role.setTeacher(userDO.hasRole(UserRoleEnum.TEACHER));
-        role.setClubMember(userDO.hasRole(UserRoleEnum.CLUB_MEMBER));
-        role.setClubManager(userDO.hasRole(UserRoleEnum.CLUB_MANAGER));
-        role.setSuperAdmin(userDO.hasRole(UserRoleEnum.SUPER_ADMIN));
+        role.setStudent(userDO.hasRole(UserRole.STUDENT));
+        role.setTeacher(userDO.hasRole(UserRole.TEACHER));
+        role.setClubMember(userDO.hasRole(UserRole.CLUB_MEMBER));
+        role.setClubManager(userDO.hasRole(UserRole.CLUB_MANAGER));
+        role.setSuperAdmin(userDO.hasRole(UserRole.SUPER_ADMIN));
 
         UserInfoVO.DepartmentInfo department = new UserInfoVO.DepartmentInfo();
         department.setDepartmentId(userDO.getDepartmentId());

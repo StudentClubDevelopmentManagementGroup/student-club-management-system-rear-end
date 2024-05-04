@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import team.project.base.controller.Response;
+import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
@@ -25,7 +25,7 @@ public class LoginController {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    LoginService service;
+    LoginService loginService;
 
     @Operation(summary="使用密码登录")
     @PostMapping("/user/login/password")
@@ -34,7 +34,7 @@ public class LoginController {
         String userId = req.getUserId();
         String password = req.getPassword();
 
-        UserInfoVO userInfo = service.login(userId, password);
+        UserInfoVO userInfo = loginService.login(userId, password);
         if (userInfo == null) {
             /* 依前端要求，登录失败返回 400 状态码 */
             return new Response<>(ServiceStatus.BAD_REQUEST).statusText("用户不存在或密码错误");

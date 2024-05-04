@@ -7,57 +7,103 @@
 
   <style>
     :root {
+      --color-llight-green: #a6e9a2;
       --color-light-green: #2eb526;
       --color-green: #09a800;
     }
 
     body {
-      padding: 0;
       margin: 0;
-      height: 120vh;
+      display: flex;
+    }
+  </style>
+
+  <style>
+    form.green_form {
+      margin: 8px;
+      margin-right: 2px;
+      font-size: 17px;
+      height: fit-content;
+      width: 20em;
       display: flex;
       flex-direction: column;
+      border: 1.5px solid var(--color-green);
+      padding-bottom: 0.2em;
     }
-
-    form {
-      display: flex;
-      margin: 1em 1em 0 1em;
-    }
-    form > button {
-      width: 18em;
+    form.green_form > h1 {
+      margin: 0 0 0.5em 0;
+      padding: 0.2em 0 0.3em 0.5em;
+      font-size: 1em;
       color: white;
       background-color: var(--color-green);
-      border: 1.5px solid var(--color-green);
+    }
+    form.green_form > label {
+      display: flex;
+      padding: 0.2em 0.5em;
+    }
+    form.green_form > label > span {
+      width: 6em;
+    }
+    form.green_form > label > input[type="file"] {
+      cursor: pointer;
+    }
+    form.green_form > label > input[type="file"]::file-selector-button {
+      display: none;
+    }
+    form.green_form > label > select {
+      flex: 1;
+      padding-left: 0.2em;
+      border: 1px solid var(--color-green);
+      outline: none;
+    }
+    form.green_form > label > select > option {
+      font-size: 1.2em;
+    }
+    form.green_form > label > input {
+      flex: 1;
+      padding-left: 0.5em;
+      border: 1px solid var(--color-green);
+      outline: none;
+    }
+    form.green_form > label input[type="checkbox"] {
+      display: none;
+    }
+    form.green_form > label input[type="checkbox"] + span {
+      display: inline-block;
+      height: 1em;
+      width: 1em;
+      border: 1px solid var(--color-green);
+      cursor: pointer;
+      position: relative;
+    }
+    form.green_form > label input[type="checkbox"]:checked + span::after {
+      content: "√";
+      position: absolute;
+      left: 20%;
+      font-size: 0.8em;
+    }
+    form.green_form > label > button {
+      width: fit-content;
+      margin-left: auto;
+      margin-right: 0;
+      padding: 0.3em 1.2em;
+      color: white;
+      background-color: var(--color-green);
+      border: 1px solid var(--color-green);
       font-size: 14px;
       cursor: pointer;
     }
-    form > button:hover {
+    form.green_form > label > button:hover {
       background-color: var(--color-light-green);
     }
-    form > button:active {
+    form.green_form > label > button:active {
       color: var(--color-green);
       background-color: white;
     }
-    form > input {
-      flex: 1;
-      padding-left: 1em;
-      min-height: 2em;
-      line-height: 2em;
-      outline: none;
-      border: 1.5px solid var(--color-green);
-      border-left: none;
-      text-align: left;
-      cursor: pointer;
-    }
-    form > input[type="file"]::file-selector-button {
-      display: none;
-    }
-    form > input::placeholder {
-      color: black;
-    }
-
+    
     div#output {
-      margin: 1em;
+      margin: 8px;
+      margin-left: 2px;
       flex: 1;
       border: 1.5px solid var(--color-green);
     }
@@ -65,39 +111,81 @@
       width: 100%;
       height: 100%;
       border: none;
-      font-size: 25px;
     }
   </style>
 </head>
 
 <body>
-  <form action="/upload_file_to_local_file_system" method="post" enctype="multipart/form-data" target="output">
-    <button type="submit" class="green-btn">上传文件至服务器的本地文件系统</button>
-    <input class="green-input" type="file" name="file">
-  </form>
 
-  <form action="/upload_file_to_cloud_storage" method="post" enctype="multipart/form-data" target="output">
-    <button type="submit" class="green-btn">上传文件至云存储空间</button>
-    <input class="green-input" type="file" name="file">
-  </form>
+  <div style="overflow-y: scroll; height: 100vh;">
+    <form action="/upload_file" method="post" enctype="multipart/form-data" target="output"
+      class="green_form">
+      <h1>上传文件</h1>
+      <label for=""><span>选择文件</span>
+        <input class="green-input" type="file" name="file">
+      </label>
+      <label><span>存储类型</span>
+        <select name="storage_type">
+          <option value=""></option>
+          <option value="LOCAL">本地文件系统</option>
+          <option value="CLOUD">云存储空间</option>
+        </select>
+      </label>
+      <label><span>指定目录</span>
+        <input type="text" name="folder" placeholder="若不指定，则存储至根目录">
+      </label>
+      <label><span>重命名文件</span>
+        <input type="text" name="filename" placeholder="若不指定，则使用原文件名">
+      </label>
+      <label for=""><span>覆盖上传</span>
+        <label>
+          <input type="checkbox" name="overwrite" va><span></span>
+        </label>
+      </label>
+      <label for="">
+        <button type="submit">上传文件</button>
+      </label>
+    </form>
 
-  <form action="/get_uploaded_file_url" method="get" target="output">
-    <button class="green-btn" type="submit">获取访问已上传的文件的URL</button>
-    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
-  </form>
+    <form action="" method="get" target="output"
+      class="green_form">
+      <h1>获取访问已上传的文件</h1>
+      <label><span>file_id</span>
+        <input type="text" name="file_id">
+      </label>
+      <label for="">
+        <button type="submit" formaction="/get_uploaded_file_url">获取URL</button>
+        <button type="submit" formaction="/get_uploaded_file" style="margin-left: 1em;">获取文件</button>
+      </label>
+    </form>
 
-  <form action="/get_uploaded_file" method="get" target="output">
-    <button class="green-btn" type="submit">获取访问已上传的文件</button>
-    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
-  </form>
+    <form action="/delete_uploaded_file" method="post" target="output"
+      class="green_form">
+      <h1>删除已上传的文件</h1>
+      <label><span>file_id</span>
+        <input type="text" name="file_id">
+      </label>
+      <label for="">
+        <button type="submit">删除文件</button>
+      </label>
+    </form>
 
-  <form action="/delete_uploaded_file" method="post" target="output">
-    <button class="green-btn" type="submit">删除已上传的文件</button>
-    <input class="green-input" type="text" name="file_id" placeholder="请输入文件id">
-  </form>
+    <form action="/" method="get" target="output"
+      class="green_form">
+      <h1>快速链接</h1>
+      <label for="">
+        <button type="submit" formaction="/swagger-ui/index.html" style="margin-left: 0;">跳转 swagger</button>
+      </label>
+      <label for="">
+        <button type="submit" formaction="/html/test/swagger-with-login.html" style="margin-left: 0;">跳转 swagger（快速登录）</button>
+      </label>
+    </form>
 
-  <div id="output">
+  </div>
+
+  <div id="output" >
     <iframe name="output"></iframe>
   </div>
+
 </body>
 </html>

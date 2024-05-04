@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import team.project.module.user.internal.model.enums.UserRoleEnum;
+import team.project.module.user.export.model.enums.UserRole;
 
 @Data
 @TableName("tbl_user")
@@ -22,17 +22,17 @@ public class TblUserDO {
     @TableField(value="role")          private Integer   role;
 
     /* 判断用户是否拥有指定角色 */
-    public boolean hasRole(UserRoleEnum role) {
-        return UserRoleEnum.hasRole(this.role, role);
+    public boolean hasRole(UserRole role) {
+        return UserRole.hasRole(this.role, role);
     }
 
     /* 更新用户的身份，使其拥有指定角色 */
-    public void addRole(UserRoleEnum role) {
-        this.role = UserRoleEnum.addRole(this.role, role);
+    public void addRole(UserRole role) {
+        this.role = UserRole.addRole(this.role, role);
     }
 
     /* 移除指定角色 */
-    public void removeRole(UserRoleEnum role) {
-        this.role = UserRoleEnum.removeRole(this.role, role);
+    public void removeRole(UserRole role) {
+        this.role = UserRole.removeRole(this.role, role);
     }
 }

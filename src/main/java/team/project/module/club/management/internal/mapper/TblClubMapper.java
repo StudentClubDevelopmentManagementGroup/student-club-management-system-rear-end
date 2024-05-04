@@ -9,17 +9,10 @@ import team.project.module.club.management.internal.model.datatransfer.ClubMsgDT
 
 import java.util.List;
 
-/* 封装对数据库的操作，是 sql 语句的直接映射 */
 @Mapper
 public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
-
-//    Page<User> selectPageByUser(@Param("page") Page<User> page, @Param("age") Integer age);
-
-
-
     List<TblClubDO> findByNameAndDepartmentId(Long departmentId, String name);
-
 
     Page<TblClubDO> selectByNameAndDepartmentId(@Param("page") Page<TblClubDO> page, Long departmentId, String name);
 
