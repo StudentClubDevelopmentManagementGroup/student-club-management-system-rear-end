@@ -23,6 +23,6 @@ public class TblDuty {
     @TableField(value="arranger_id")   String    arranger_id;
     @TableField(value="cleaner_id")    String    cleaner_id;
     @TableField(value="club_id")       Long      club_id;
-    @TableField(value="Image_id")      String    Image_id;
-    @TableField(value="ismixed")       Boolean   ismixed;
+    @TableField(value="image_file")    String    image_file;
+    @TableField(value="is_mixed")      Boolean   is_mixed;
 }

@@ -8,27 +8,28 @@ import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 import java.sql.Timestamp;
 @Data
-public class DutyInfoReq {
-   @NotBlank
-   String    number;
+public class DutyInfoGroupReq {
+    @NotBlank
+    String    number;
 
-   String    area;
+    String    area;
 
-   @NotNull
-   Timestamp dutyTime;
+    @NotNull
+    Timestamp dutyTime;
 
-   @UserIdConstraint
-   @NotNull
-   String    arrangerId;
+    @UserIdConstraint
+    String    arrangerId;
 
-   @UserIdConstraint
-   @NotNull
-   String    cleanerId;
+    @UserIdConstraint
+    String    cleanerId;
 
-   @ClubIdConstraint
-   @NotNull
-   Long      clubId;
+    @ClubIdConstraint
+    @NotNull
+    Long      clubId;
 
-   @NotNull
-   Boolean   isMixed;
+    @NotNull
+    Boolean   isMixed;
+
+    @NotBlank
+    String    groupName;
 }

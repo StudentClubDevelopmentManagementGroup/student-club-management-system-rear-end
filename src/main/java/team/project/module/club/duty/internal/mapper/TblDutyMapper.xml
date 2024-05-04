@@ -4,4 +4,11 @@
 <mapper namespace="team.project.module.club.duty.internal.mapper.TblDutyMapper">
 
 
+    <insert id="createDuty">
+        insert into tbl_user_club_duty (number,area,duty_time,arranger_id,cleaner_id,club_id,is_mixed)
+        values (#{number},#{area},#{duty_time},#{arranger_id},#{cleaner_id},#{club_id},#{is_mixed})
+    </insert>
+    <select id="selectOne" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+
+    </select>
 </mapper>

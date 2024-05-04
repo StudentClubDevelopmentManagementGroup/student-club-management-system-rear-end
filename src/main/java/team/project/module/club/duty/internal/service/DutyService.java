@@ -6,8 +6,11 @@ import team.project.module.club.duty.internal.model.entity.TblDuty;
 
 import java.sql.Timestamp;
 
-@Service
+
 public interface DutyService extends IService<TblDuty> {
-    void createDuty(String number,String area,Timestamp duty_time,String arranger_id
-            ,String cleaner_id,Long club_id,Boolean ismixed);
+    void createDuty(String number, String area, Timestamp dutyTime, String arrangerId
+            , String cleanerId, Long club_id, Boolean isMixed);
+
+    void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId
+            , String cleanerId, Long clubId, Boolean isMixed, String groupName);
 }

@@ -38,6 +38,7 @@ public interface FileStorageIService {
 
     /**
      * 将一段文本保存到文件中
+     * @param storageType  存储类型
      * @param text         要保存的文本
      * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
      * @return fileId

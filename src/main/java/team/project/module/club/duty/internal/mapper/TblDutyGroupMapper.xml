@@ -15,5 +15,9 @@
             resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
 
     </select>
+    <select id="selectUserIdByGroupName"
+            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+
+    </select>
 
 </mapper>
