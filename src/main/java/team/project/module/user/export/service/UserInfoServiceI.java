@@ -17,9 +17,14 @@ public interface UserInfoServiceI {
     UserBasicInfoDTO selectUserBasicInfo(String userId);
 
     /**
-     * 从 tbl_user 表中查询指定用户的角色（只获取角色，其他属性为 null）
+     * 从 tbl_user 表中查询指定用户的角色码
      * */
-    UserInfoDTO selectUserRole(String userId);
+    Integer selectUserRole(String userId);
+
+    /**
+     * 判断用户是否拥有指定角色
+     * */
+    boolean hasRole(String userId, UserRole role);
 
     /**
      * 更新 tbl_user 表，给指定用户添加角色（不需要考虑用户当前是否拥有这个角色）

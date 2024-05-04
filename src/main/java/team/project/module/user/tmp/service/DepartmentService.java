@@ -38,7 +38,7 @@ public class DepartmentService {
     }
 
     public String getNameById(Long departmentId) {
-        TblDepartmentDO tblDepartmentDO = cache.get(departmentId);
+        // TblDepartmentDO tblDepartmentDO = cache.get(departmentId);
         // return tblDepartmentDO.getFullName();
         return departmentService.getDepartmentName(departmentId);
     }

@@ -49,14 +49,14 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     @Override
-    public UserInfoDTO selectUserRole(String userId) {
-        TblUserDO userInfo = userMapper.selectRole(userId);
-        if (userInfo == null) {
-            return null;
-        }
-        UserInfoDTO result = new UserInfoDTO();
-        result.setRole(userInfo.getRole());
-        return result;
+    public Integer selectUserRole(String userId) {
+        return userMapper.selectRoleCode(userId);
+    }
+
+    @Override
+    public boolean hasRole(String userId, UserRole role) {
+        Integer roleCode = userMapper.selectRoleCode(userId);
+        return roleCode != null && UserRole.hasRole(roleCode, role);
     }
 
     @Override
