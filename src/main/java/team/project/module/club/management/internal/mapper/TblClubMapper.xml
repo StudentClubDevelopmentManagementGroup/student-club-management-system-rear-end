@@ -107,5 +107,9 @@
         WHERE c.department_id = #{departmentId} and c.name LIKE CONCAT('%', #{name}, '%')
         GROUP BY c.id
     </select>
+    <select id="selectById" resultType="team.project.module.club.management.internal.model.entity.TblClubDO"
+            parameterType="java.lang.Long">
+        select * from tbl_club where id = #{id} and is_deleted = 0
+    </select>
     <!--     TODO xml文件加上逻辑删除-->
 </mapper>

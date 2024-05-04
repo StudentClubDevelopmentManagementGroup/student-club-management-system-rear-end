@@ -37,4 +37,6 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
     Page<ClubMsgDTO> findAllByName(Page<ClubMsgDTO> page, String name);
 
     Page<ClubMsgDTO> findAllByDepartmentIdAndName(Page<ClubMsgDTO> page, Long departmentId, String name);
+
+    TblClubDO selectById(Long id);
 }
