@@ -29,16 +29,13 @@ public class AliyunOssConfig {
 
     @PostConstruct
     private void postConstruct() {
-        /* 检测配置文件中是否存在格式不正确的项
-           统一使用（/）作为文件夹的分隔符，以斜杠开头，不以斜杠结尾，不要出现连续的斜杠 */
         Assert.isTrue(
-                uploadedFilesFolder.equals(Util.fixSeparator(uploadedFilesFolder))
-            &&  uploadedFilesFolder.startsWith("/")
-            &&  uploadedFileIdPrefix.equals(Util.fixSeparator(uploadedFileIdPrefix))
-        , "配置文件中存在格式不正确的项");
+               ! Util.isNotValidFilePath(uploadedFilesFolder)
+            && ! Util.isNotValidFilePath(uploadedFileIdPrefix)
+        , "配置文件中某项的路径配置格式不正确");
+        /* 文件路径的书写规则见本模块的 package-info.java */
 
-        /* 阿里云的 OSS 存储路径规范要求不以斜杠开头，在这里去除斜杠
-           （上方要求以斜杠开头，是为了统一配置文件中的路径格式） */
+        /* aliyunOSS 要求路径不以斜杠开头，在这里去除斜杠（配置文件中要求路径以斜杠开头，是为了统一格式） */
         uploadedFilesFolder = uploadedFilesFolder.substring(1);
     }
 }

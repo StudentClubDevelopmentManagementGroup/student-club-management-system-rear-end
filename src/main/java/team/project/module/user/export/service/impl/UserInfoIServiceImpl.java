@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 
 @Service
-public class UserInfoIServiceImpl implements UserInfoIService {
+public class UserInfoIServiceImpl implements UserInfoServiceI {
 
     @Autowired
     TblUserMapper userMapper;

@@ -3,7 +3,7 @@ package team.project.module.filestorage.internal.service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 
-public interface FileStorageBasicIService {
+public interface FileStorageBasicServiceI {
 
     /**
      * 上传文件到指定目录

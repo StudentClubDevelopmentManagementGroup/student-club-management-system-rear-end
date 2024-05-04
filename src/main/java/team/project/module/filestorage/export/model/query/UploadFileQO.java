@@ -2,6 +2,7 @@ package team.project.module.filestorage.export.model.query;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.commons.io.FilenameUtils;
 
 @Getter
 @Setter
@@ -9,12 +10,10 @@ public class UploadFileQO {
 
     /**
      * <p>  指定存储目录
-     * <ol> 格式要求：
-     * <li> 路径分隔符用 '/'
-     * <li> 路径中不能出现 "/.." 和 "/."
-     * <li> 路径中不能含非法字符： * : ? " ' < > |
-     * </ol>
-     * <p>  根目录用 "/"，传 null 或 "" 也默认使用根目录
+     * <br> 默认使用根目录，根目录用 "/"（传 null 或 "" 也表示使用根目录）
+     *
+     * <p>  路径规则见本模块的 package-info.java
+     * <p> 处理路径、文件名可以使用工具类：{@link FilenameUtils}
      * */
     String targetFolder = "/";
 

@@ -7,13 +7,13 @@ import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 @Component("club-seat-util-ModelConverter")
 public class ModelConverter {
 
     @Autowired
-    UserInfoIService userInfoService;
+    UserInfoServiceI userInfoService;
 
     public SeatVO toSeatVO(TblUserClubSeatDO seat) {
 

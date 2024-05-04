@@ -7,8 +7,8 @@
 
   <style>
     :root {
-      --color-light-green: #97bc78;
-      --color-green: #71994f;
+      --color-primary-light: #81b2b4;
+      --color-primary: #629698;
     }
 
     body {
@@ -27,7 +27,7 @@
       width: max(20em, 30vw);
       display: flex;
       flex-direction: column;
-      border: 1.5px solid var(--color-green);
+      border: 1.5px solid var(--color-primary);
       padding-bottom: 0.2em;
     }
 
@@ -37,7 +37,7 @@
       padding: 0.2em 0 0.3em 0.5em;
       font-size: 1em;
       color: white;
-      background-color: var(--color-green);
+      background-color: var(--color-primary);
     }
 
     /* 表单项 */
@@ -64,7 +64,7 @@
       width: 100%;
       padding-left: 0.5em;
       line-height: 1.6em;
-      border: 1px solid var(--color-green);
+      border: 1px solid var(--color-primary);
       cursor: pointer;
     }
     form.green_form > label > input[type="file"]::file-selector-button {
@@ -75,7 +75,7 @@
     form.green_form > label > select {
       flex: 1;
       padding-left: 0.2em;
-      border: 1px solid var(--color-green);
+      border: 1px solid var(--color-primary);
       outline: none;
     }
     form.green_form > label > select > option {
@@ -86,7 +86,7 @@
     form.green_form > label > input[type="text"] {
       flex: 1;
       padding-left: 0.5em;
-      border: 1px solid var(--color-green);
+      border: 1px solid var(--color-primary);
       outline: none;
     }
 
@@ -98,7 +98,7 @@
       display: inline-block;
       height: 100%;
       width: 1em;
-      border: 1px solid var(--color-green);
+      border: 1px solid var(--color-primary);
       cursor: pointer;
       position: relative;
     }
@@ -113,7 +113,7 @@
       width: 100%;
       min-height: 9em;
       padding-left: 0.2em;
-      border: 1px solid var(--color-green);
+      border: 1px solid var(--color-primary);
       outline: none;
       resize: vertical;
       font-weight: bold;
@@ -128,16 +128,16 @@
       margin-right: 0;
       padding: 0.3em 1.2em;
       color: white;
-      background-color: var(--color-green);
-      border: 1px solid var(--color-green);
+      background-color: var(--color-primary);
+      border: 1px solid var(--color-primary);
       font-size: 14px;
       cursor: pointer;
     }
     form.green_form > label > button:hover {
-      background-color: var(--color-light-green);
+      background-color: var(--color-primary-light);
     }
     form.green_form > label > button:active {
-      color: var(--color-green);
+      color: var(--color-primary);
       background-color: white;
     }
   </style>
@@ -148,7 +148,7 @@
       margin: 8px;
       margin-left: 2px;
       flex: 1;
-      border: 1.5px solid var(--color-green);
+      border: 1.5px solid var(--color-primary);
     }
     div#output > iframe {
       width: 100%;

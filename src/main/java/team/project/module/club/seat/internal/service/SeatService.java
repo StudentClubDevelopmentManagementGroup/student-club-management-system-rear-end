@@ -19,7 +19,7 @@ import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SeatService {
     PceIService clubMemberRoleService;
 
     @Autowired
-    UserInfoIService userInfoService;
+    UserInfoServiceI userInfoService;
 
     @Autowired
     TblUserClubSeatMapper seatMapper;

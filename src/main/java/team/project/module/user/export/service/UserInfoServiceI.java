@@ -4,7 +4,7 @@ import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 
-public interface UserInfoIService {
+public interface UserInfoServiceI {
 
     /**
      * 从 tbl_user 表中查询指定用户的信息

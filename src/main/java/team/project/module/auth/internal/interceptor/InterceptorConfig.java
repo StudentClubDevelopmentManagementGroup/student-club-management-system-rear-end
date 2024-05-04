@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     /* -- 校验权限和身份 -- */
 
     @Autowired
-    UserInfoIService userService;
+    UserInfoServiceI userService;
 
     /**
      * 返回指定账号 id 所拥有的权限码集合

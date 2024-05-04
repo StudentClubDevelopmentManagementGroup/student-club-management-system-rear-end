@@ -7,16 +7,14 @@ import java.util.UUID;
 public class Util {
 
     /**
-     * <p>  按如下规则处理路径中的文件分割符：
+     * <p>  按如下规则处理路径中的分割符：
      * <ol>
-     * <li> 统一使用 '/' 作为文件夹的分隔符
+     * <li> 替换 '\' 为 '/'，统一使用 '/' 作为文件夹的分隔符
      * <li> 合并连续的斜杠为单个斜杠
-     * <li> 并移除路径末尾的斜杠（如果存在）
-     * <li> 不移除路径最打头的斜杠（如果存在）
+     * <li> 移除路径末尾的斜杠（如果存在）
+     * <li> <u>不移除</u>路径最打头的斜杠（如果存在）
+     * <li> <u>不处理</u>路径中的 ".." 和 "."
      * </ol>
-     *
-     * <p>  不处理路径中的 ".." 和 "."
-     * <p>  更多路径处理函数，见工具类： {@link FilenameUtils}
      *
      * @return 处理后的路径字符串
      * */
@@ -25,27 +23,38 @@ public class Util {
         return replaced.endsWith("/") ? replaced.substring(0, replaced.length() - 1) : replaced;
     }
 
-    /** fileId 不允许出现的非法字符集 */
-    private static final String[] ILLEGAL_CHARS = { ":", "*", "?", "\"", "<", ">", "|" };
+    /**
+     * <p> 判断文件路径的书写是否<b>不符合</b>规则
+     * <p> 判断路径是否有效有诸多步骤，而这里只判断一部分
+     * <p> 路径的书写规则见本模块的 package-info.java
+     * */
+    public static boolean isNotValidFilePath(String filePath) {
+        return hasInvalidChar(filePath)
+          ||   hasRelativePathPart(filePath)
+          ||   filePath.endsWith(".")
+          || ! filePath.equals(fixSeparator(filePath))
+        ;
+    }
 
     /**
-     * <p>  判断 fileId 是否符合约束：
-     * <ol>
-     * <li> 不以 "." 开头，不以 "." 结尾
-     * <li> 不含 "/.." 或 "/."
-     * <li> 不含非法字符： * : ? " ' < > |
-     * </ol>
+     * 判断文件路径中是否含有非法字符
      * */
-    public static boolean isValidFileId(String fileId) {
-        if (fileId.endsWith(".") || fileId.startsWith(".") || fileId.contains("/.")) {
-            return false;
-        }
-        for (String illegal : ILLEGAL_CHARS) {
-            if (fileId.contains(illegal)) {
-                return false;
-            }
-        }
-        return true;
+    public static boolean hasInvalidChar(String filePath) {
+        return -1 != filePath.indexOf(':')
+            || -1 != filePath.indexOf('*')
+            || -1 != filePath.indexOf('?')
+            || -1 != filePath.indexOf('\"')
+            || -1 != filePath.indexOf('\\')
+            || -1 != filePath.indexOf('<')
+            || -1 != filePath.indexOf('>')
+            || -1 != filePath.indexOf('|');
+    }
+
+    /**
+     * 判断文件路径中是否含 "/.." 或 "/."表示相对路径的部分
+     * */
+    public static boolean hasRelativePathPart(String filePath) {
+        return filePath.contains("/.");
     }
 
     /**
