@@ -8,6 +8,6 @@ import lombok.Data;
 public class ClubInfoQO {
     Long     departmentId;
     String   name;
-    Integer  pagenum;
+    Integer  pageNum;
     Integer  size;
 }
