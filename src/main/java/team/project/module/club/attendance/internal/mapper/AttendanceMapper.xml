@@ -23,22 +23,6 @@
 
     </resultMap>
 
-    <!--查询打卡记录-->
-    <select id="getAttendanceRecord"
-            resultMap="AttendanceInfoVO">
-        SELECT *
-        FROM tbl_user_club_attendance
-        WHERE is_deleted = 0
-        AND club_id = #{clubId}
-        <if test="userId != null">
-            AND user_id = #{userId}
-        </if>
-        <if test="startTime != null and endTime != null">
-            AND checkin_time BETWEEN #{startTime} AND #{endTime}
-        </if>
-    </select>
-
-
 
 
     <!--查询社团一个成员指定时间段的打卡时长 -->

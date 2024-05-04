@@ -81,14 +81,15 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     }
 
-    //返回分页查询对象
+
+    //查签到记录，返回分页查询对象
     default Page<AttendanceDO> findAttendanceInfoVOPage(GetAttendanceRecordReq getAttendanceRecordReq){
         // 构造分页对象
         Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
         // 构建查询条件
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
-                .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
+                .eq(getAttendanceRecordReq.getUserId() != "","user_id", getAttendanceRecordReq.getUserId())
                 .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
                         "checkin_time", getAttendanceRecordReq.getStartTime(),
                         getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件

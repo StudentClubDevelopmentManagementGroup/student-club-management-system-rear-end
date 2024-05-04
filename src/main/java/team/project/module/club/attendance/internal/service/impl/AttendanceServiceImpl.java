@@ -2,7 +2,6 @@ package team.project.module.club.attendance.internal.service.impl;
 
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.PageVO;
@@ -49,11 +48,6 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
         AttendanceDO attendanceDO = attendanceMapper.userCheckOut(userCheckoutReq);
         if(attendanceDO !=null){
-//            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-//            String userName = userInfoIService.selectUserBasicInfo(attendanceDO.getUserId()).getName();
-//            attendanceInfoVO.setUserName(userName);
-//            BeanUtils.copyProperties(attendanceDO, attendanceInfoVO);
-//            return attendanceInfoVO;
             return toolMethods.convert(attendanceDO);
         }else {
             return null;
@@ -64,13 +58,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     public AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId){
         if(attendanceMapper.getLatestCheckInRecord(userId,clubId) != null) {
-//            //BeanUtils.copyProperties方法将一个对象的属性复制到另一个对象
-//            // 复制空对象会引发异常
-//            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-//            BeanUtils.copyProperties(attendanceMapper.getLatestCheckInRecord(userId,clubId), attendanceInfoVO);
-//            String userName = userInfoIService.selectUserBasicInfo(userId).getName();
-//            attendanceInfoVO.setUserName(userName);
-//            return attendanceInfoVO;
+
             return toolMethods.convert(attendanceMapper.getLatestCheckInRecord(userId,clubId));
         }else{
             return null;
@@ -102,6 +90,9 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
 
         Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq);
+//        if(getAttendanceRecordReq.getUserId() != ""){
+//            String userName = userInfoIService.selectUserBasicInfo(getAttendanceRecordReq.getUserId()).getName();
+//        }
 
         List<AttendanceInfoVO> result = new ArrayList<>();
         for (AttendanceDO attendanceDO : page.getRecords()) {

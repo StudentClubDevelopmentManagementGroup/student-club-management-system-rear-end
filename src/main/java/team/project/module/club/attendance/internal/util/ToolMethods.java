@@ -35,6 +35,24 @@ public class ToolMethods {
         return attendanceInfoVO;
     }
 
+    public AttendanceInfoVO convert(AttendanceDO attendanceDO,String userName) {
+        AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+
+        attendanceInfoVO.setId(attendanceDO.getId());
+        attendanceInfoVO.setClubId(attendanceDO.getClubId());
+        attendanceInfoVO.setUserId(attendanceDO.getUserId());
+        attendanceInfoVO.setUserName(userName);
+        attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
+        attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
+        // 获取时长的总秒数
+        long seconds = calculateDurationTime(attendanceDO.getCheckInTime(),attendanceDO.getCheckoutTime());
+        attendanceInfoVO.setAttendanceDuration(seconds);
+        attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
+
+        return attendanceInfoVO;
+    }
+
+
 
 
     public Long calculateDurationTime(LocalDateTime t1, LocalDateTime t2) {
