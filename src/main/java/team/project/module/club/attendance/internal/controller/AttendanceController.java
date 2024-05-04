@@ -112,7 +112,7 @@ public class AttendanceController {
     @Operation(summary="查时长，返回秒",
             description = """
                     时间格式（2024-04-18 23:59:59）\n
-                    没有userId参数，删掉即可
+                    查询社团全部人的打卡时长没有userId参数，删掉即可\n
                     -开始结束时间都为 "" 则查询成员进入社团以来的全部打卡时长
                     """)
     @PostMapping("/durationTime")

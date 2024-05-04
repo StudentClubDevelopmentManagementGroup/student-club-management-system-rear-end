@@ -90,17 +90,22 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
 
         Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq);
-//        if(getAttendanceRecordReq.getUserId() != ""){
-//            String userName = userInfoIService.selectUserBasicInfo(getAttendanceRecordReq.getUserId()).getName();
-//        }
-
         List<AttendanceInfoVO> result = new ArrayList<>();
-        for (AttendanceDO attendanceDO : page.getRecords()) {
-            //自定义转换器方法
-            result.add(toolMethods.convert(attendanceDO));
+
+        if (getAttendanceRecordReq.getUserId() != "") {
+            String userName = userInfoIService.selectUserBasicInfo(getAttendanceRecordReq.getUserId()).getName();
+            for (AttendanceDO attendanceDO : page.getRecords()) {
+                result.add(toolMethods.convert(attendanceDO, userName));
+            }
+        } else {
+            for (AttendanceDO attendanceDO : page.getRecords()) {
+                result.add(toolMethods.convert(attendanceDO));
+            }
         }
+
         return new PageVO<>(result, page);
     }
+
 
     //社团成员申请补签,返回补签记录
     public AttendanceInfoVO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
