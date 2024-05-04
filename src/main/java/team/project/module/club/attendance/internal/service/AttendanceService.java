@@ -21,10 +21,9 @@ public interface AttendanceService {
     //签退返回签到信息
     AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq);
 
-    //查社团一个成员指定时间打卡时长
-    Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
-    //查询社团每个成员指定时间段打卡时长
+
+    //查询社团成员指定时间段打卡时长
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
     PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);

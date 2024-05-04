@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 
@@ -37,4 +38,8 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
     Page<ClubMsgDTO> findAllByName(Page<ClubMsgDTO> page, String name);
 
     Page<ClubMsgDTO> findAllByDepartmentIdAndName(Page<ClubMsgDTO> page, Long departmentId, String name);
+
+    //根据id查询社团信息
+    @Select("SELECT * FROM tbl_club WHERE id = #{clubId}")
+    TblClubDO selectClubByCustomQuery(@Param("clubId") long clubId);
 }

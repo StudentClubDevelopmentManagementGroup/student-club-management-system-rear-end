@@ -112,24 +112,19 @@ public class AttendanceController {
     @Operation(summary="查时长，返回秒",
             description = """
                     时间格式（2024-04-18 23:59:59）\n
-                    查询社团全部人的打卡时长没有userId参数，删掉即可\n
+                    userId为""查询社团全部成员的打卡时长\n
                     -开始结束时间都为 "" 则查询成员进入社团以来的全部打卡时长
                     """)
     @PostMapping("/durationTime")
     public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
-        if(getAttendanceTimeReq.getUserId() ==null){
-            List<ClubAttendanceDurationVO> eachAttendanceTime =
-                    attendanceService.getEachAttendanceDurationTime(getAttendanceTimeReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(eachAttendanceTime);
-        }else {
-            Long totalAnySeconds = attendanceService.getOneAttendanceDurationTime(getAttendanceTimeReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(totalAnySeconds);
-        }
+        List<ClubAttendanceDurationVO> eachAttendanceTime =
+                attendanceService.getEachAttendanceDurationTime(getAttendanceTimeReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachAttendanceTime);
     }
+
+
 
     //查询社团成员指定时间段打卡记录
     @Operation(summary="查打卡记录",

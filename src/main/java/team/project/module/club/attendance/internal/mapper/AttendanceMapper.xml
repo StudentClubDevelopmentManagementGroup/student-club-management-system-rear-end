@@ -25,25 +25,8 @@
 
 
 
-    <!--查询社团一个成员指定时间段的打卡时长 -->
-    <select id="getOneAttendanceDurationTime"
-            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
-            resultType="Long">
-        SELECT
-        SUM(TIMESTAMPDIFF(SECOND, checkin_time, IFNULL(checkout_time, NOW()))) AS attendance_duration_time
-        FROM
-        tbl_user_club_attendance
-        WHERE
-        is_deleted = 0
-        AND club_id = #{clubId}
-        AND user_id = #{userId}
-        <if test="startTime != null and endTime != null">
-        AND checkin_time BETWEEN #{startTime} AND #{endTime}
-        </if>
-    </select>
 
-
-    <!-- 查询社团每个成员指定时间段的打卡时长 -->
+    <!-- 查询社团成员指定时间段的打卡时长 -->
     <select id="getEachAttendanceDurationTime"
             parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
             resultMap="ClubAttendanceDurationVO">
@@ -55,6 +38,9 @@
         WHERE
         is_deleted = 0
         AND club_id = #{clubId}
+        <if test="userId != null and userId != ''">
+            AND user_id = #{userId}
+        </if>
         <if test="startTime != null and endTime != null">
             AND checkin_time BETWEEN #{startTime} AND #{endTime}
         </if>

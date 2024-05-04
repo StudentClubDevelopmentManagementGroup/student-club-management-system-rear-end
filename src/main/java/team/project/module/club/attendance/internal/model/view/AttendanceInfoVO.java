@@ -7,11 +7,12 @@ import java.time.LocalDateTime;
 
 @Data
 public class AttendanceInfoVO {
-    @JsonProperty("id")
-    private Long id;
+    @JsonProperty("departmentName")
+    private String departmentName;
 
-    @JsonProperty("clubId")
-    private Long clubId;
+
+    @JsonProperty("clubName")
+    private String clubName;
 
     @JsonProperty("userId")
     private String userId;

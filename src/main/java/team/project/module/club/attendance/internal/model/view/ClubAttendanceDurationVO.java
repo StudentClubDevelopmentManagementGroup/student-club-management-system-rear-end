@@ -11,6 +11,9 @@ public class ClubAttendanceDurationVO {
     @JsonProperty("userName")
     private String userName;
 
+    @JsonProperty("clubName")
+    private String clubName;
+
     @JsonProperty("attendanceDurationTime")
     private Long attendanceDurationTime;
 

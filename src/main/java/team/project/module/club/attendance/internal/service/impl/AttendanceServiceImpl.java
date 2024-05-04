@@ -13,6 +13,8 @@ import team.project.module.club.attendance.internal.model.view.ClubAttendanceDur
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.club.attendance.internal.util.ToolMethods;
+import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
+import team.project.module.club.management.export.servivce.ManagementIService;
 import team.project.module.user.export.service.UserInfoIService;
 
 import java.util.ArrayList;
@@ -29,6 +31,9 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     private UserInfoIService userInfoIService;
     @Autowired
     private ToolMethods toolMethods;
+
+    @Autowired
+    public ManagementIService managementIService;
 
 
     @Override
@@ -66,20 +71,19 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     }
 
 
-    @Override
-    //查社团一个成员指定时间打卡时长
-    public Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
-        return attendanceMapper.getOneAttendanceDurationTime(getAttendanceTimeReq);
-    }
 
     @Override
-    //查询社团每个成员指定时间段打卡时长
+    //查询社团成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
         List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
                 attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq);
         for (ClubAttendanceDurationVO clubAttendanceDurationVO : clubAttendanceDurationVOList){
             String userName = userInfoIService.selectUserBasicInfo(clubAttendanceDurationVO.getUserId()).getName();
             clubAttendanceDurationVO.setUserName(userName);
+
+            ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(getAttendanceTimeReq.getClubId());
+            String clubName = clubBasicMsgDTO.getName();
+            clubAttendanceDurationVO.setClubName(clubName);
         }
         return clubAttendanceDurationVOList;
     }
