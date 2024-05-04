@@ -1,30 +1,21 @@
 package team.project.module.filestorage.export.service;
 
 import org.springframework.web.multipart.MultipartFile;
-import team.project.module.filestorage.export.exception.FileStorageException;
+import team.project.module.filestorage.export.model.enums.FileStorageType;
+import team.project.module.filestorage.export.model.query.UploadFileQO;
 
 public interface FileStorageIService {
 
-    /* 存储类型 */
-    enum StorageType {
-        LOCAL, /* 本地存储 */
-        CLOUD, /* 云存储 */
-    }
+    /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
      * 上传文件
-     * @param toUploadFile   要上传的文件
-     * @param storageType    存储类型
-     * @param targetFolder   目标目录（路径分隔符用'/'，如果传 null 或 ""，则使用根目录）
-     * @param targetFilename 目标文件名（不包括扩展名，如果传 null 或 ""，则使用 {@code toUploadFile} 的原文件名）
-     * @param overwrite      如果文件已存在，是否覆盖
+     * @param toUploadFile 要上传的文件
+     * @param storageType  存储类型
+     * @param uploadFileQO 详见：{@link UploadFileQO}
      * @return fileId
-     * @throws FileStorageException
-     *      <li>如果目标目录路径或目标文件名不合约束
-     *      <li>如果文件已存在，且 {@code overwrite} 为 false
-     *      <li>或是上传途中遇到其他异常
      * */
-    String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite);
+    String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO);
 
     /**
      * <p>通过 fileId 获取访问该文件的 URL</p>
@@ -35,11 +26,31 @@ public interface FileStorageIService {
      * </p>
      * @return 如果 fileId 符合约束，且符合存储规则，返回 URL，否则返回 null
      * */
-    String getUploadedFileUrl(String fileId);
+    String getFileUrl(String fileId);
 
     /**
      * 删除 fileId 指向的文件（无论要删除的文件是否存在，只要执行操作时没有抛出异常都视为删除成功）
      * @return 删除成功返回 true，否则返回 false
      * */
-    boolean deleteUploadedFile(String fileId);
+    boolean deleteFile(String fileId);
+
+    /* -- 读写纯文本文件 -- */
+
+    /**
+     * 将一段文本保存到文件中
+     * @param storageType  存储类型
+     * @param text         要保存的文本
+     * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
+     * @return fileId
+     * */
+    String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
+
+    /**
+     * 读取纯文本文件里的内容
+     * @return 如果读取成功，则返回文本文件里的所有内容
+     *    <br> 如果 fileId 不符合约束，或不符合存储规则，则返回 null
+     *    <br> 如果读取中途出现异常，则返回 null
+     *    <br> 如果文件不是文本文件，可能读取失败，返回 null，也可能读取出乱码文本
+     * */
+    String readTextFromFile(String fileId);
 }

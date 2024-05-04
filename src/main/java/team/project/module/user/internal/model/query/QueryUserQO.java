@@ -1,8 +1,10 @@
 package team.project.module.user.internal.model.query;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class QueryUserQO {
     private String  userId;
     private String  userName;

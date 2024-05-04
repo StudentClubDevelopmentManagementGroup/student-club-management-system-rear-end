@@ -1,59 +1,88 @@
 package team.project.module.filestorage.export.service.impl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.filestorage.export.model.enums.FileStorageType;
+import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
-import team.project.module.filestorage.internal.service.impl.LocalFileSystemStorageService;
+import team.project.module.filestorage.internal.service.impl.LocalFileStorageService;
 
 @Service
 public class FileStorageIServiceImpl implements FileStorageIService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    LocalFileSystemStorageService localStorageService;
+    LocalFileStorageService localStorageService;
 
     @Autowired
     AliyunObjectStorageService cloudStorageService;
 
+    /* -- 基本操作（上传、获取 url、删除） -- */
+
     /**
-     *  详见：{@link FileStorageIService#uploadFile}
+     * 详见：{@link FileStorageIService#uploadFile}
      * */
     @Override
-    public String uploadFile(MultipartFile toUploadFile, StorageType storageType, String targetFolder, String targetFilename, boolean overwrite) {
+    public String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO) {
         return switch (storageType) {
-            case LOCAL -> localStorageService.uploadFile(toUploadFile, targetFolder, targetFilename, overwrite);
-            case CLOUD -> cloudStorageService.uploadFile(toUploadFile, targetFolder, targetFilename, overwrite);
+            case LOCAL -> localStorageService.uploadFile(toUploadFile, uploadFileQO);
+            case CLOUD -> cloudStorageService.uploadFile(toUploadFile, uploadFileQO);
         };
     }
 
     /**
-     *  详见：{@link FileStorageIService#getUploadedFileUrl}
+     * 详见：{@link FileStorageIService#getFileUrl}
      * */
     @Override
-    public String getUploadedFileUrl(String fileId) {
+    public String getFileUrl(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.getUploadedFileUrl(fileId);
+            return localStorageService.getFileUrl(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.getUploadedFileUrl(fileId);
+            return cloudStorageService.getFileUrl(fileId);
 
         return null;
     }
 
     /**
-     *  详见：{@link FileStorageIService#deleteUploadedFile}
+     * 详见：{@link FileStorageIService#deleteFile}
      * */
     @Override
-    public boolean deleteUploadedFile(String fileId) {
+    public boolean deleteFile(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.deleteUploadedFile(fileId);
+            return localStorageService.deleteFile(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.deleteUploadedFile(fileId);
+            return cloudStorageService.deleteFile(fileId);
 
         return true;
+    }
+
+    /* -- 读写纯文本文件 -- */
+
+    /**
+     * 详见：{@link FileStorageIService#writeTextToFile}
+     */
+    @Override
+    public String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
+        return switch (storageType) {
+            case LOCAL -> localStorageService.writeTextToFile(text, uploadFileQO);
+            case CLOUD -> cloudStorageService.writeTextToFile(text, uploadFileQO);
+        };
+    }
+
+    /**
+     * 详见：{@link FileStorageIService#readTextFromFile}
+     */
+    @Override
+    public String readTextFromFile(String fileId) {
+        if (localStorageService.mayBeStored(fileId))
+            return localStorageService.readTextFromFile(fileId);
+
+        if (cloudStorageService.mayBeStored(fileId))
+            return cloudStorageService.readTextFromFile(fileId);
+
+        return null;
     }
 }

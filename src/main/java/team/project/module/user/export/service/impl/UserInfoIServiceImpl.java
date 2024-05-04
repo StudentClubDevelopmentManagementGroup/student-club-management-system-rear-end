@@ -1,7 +1,5 @@
 package team.project.module.user.export.service.impl;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
@@ -13,7 +11,6 @@ import team.project.module.user.internal.model.entity.TblUserDO;
 
 @Service
 public class UserInfoIServiceImpl implements UserInfoIService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TblUserMapper userMapper;

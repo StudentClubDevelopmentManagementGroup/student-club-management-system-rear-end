@@ -1,9 +1,11 @@
 package team.project.module.club.seat.internal.model.view;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ClubMemberInfoVO {
     @JsonProperty("user_id")    private String  userId;
     @JsonProperty("name")       private String  name;

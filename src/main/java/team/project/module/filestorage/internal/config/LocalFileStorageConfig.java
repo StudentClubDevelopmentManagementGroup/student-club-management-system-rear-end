@@ -12,7 +12,8 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 
 @Configuration
-public class LocalFileSystemConfig implements WebMvcConfigurer {
+public class LocalFileStorageConfig implements WebMvcConfigurer {
+
     @Value("${file-storage.local-file-system.root-folder}")
     public String rootFolder;
 
@@ -33,10 +34,10 @@ public class LocalFileSystemConfig implements WebMvcConfigurer {
            统一使用（/）作为文件夹的分隔符，不以斜杠结尾，不要出现连续的斜杠
            先对路径的文件夹以斜杠开头 */
         Assert.isTrue(
-                rootFolder.equals(Util.fixPath(rootFolder))
-            &&  uploadedFilesFolder.equals(Util.fixPath(uploadedFilesFolder))
+                rootFolder.equals(Util.fixSeparator(rootFolder))
+            &&  uploadedFilesFolder.equals(Util.fixSeparator(uploadedFilesFolder))
             &&  uploadedFilesFolder.startsWith("/")
-            &&  uploadedFileIdPrefix.equals(Util.fixPath(uploadedFileIdPrefix))
+            &&  uploadedFileIdPrefix.equals(Util.fixSeparator(uploadedFileIdPrefix))
             &&  uploadedFileIdPrefix.startsWith("/")
         , "配置文件中存在格式不正确的项");
 

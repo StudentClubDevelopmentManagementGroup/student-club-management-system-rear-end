@@ -30,9 +30,9 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     TblClubMapper cMapper;
 
     public void createClub(Long departmentId, String name) {
-        if(cMapper.findByNameAndDepartmentId(departmentId,name).isEmpty()){
+        if (cMapper.findByNameAndDepartmentId(departmentId, name).isEmpty()) {
             cMapper.createClub(departmentId, name);
-        }else{
+        } else {
             throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团");
         }
     }
@@ -41,13 +41,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<TblClubDO> selectByNameAndDepartmentId(ClubInfoQO req) {
 
         Page<TblClubDO> page = cMapper.selectByNameAndDepartmentId(
-                new Page<>(req.getPagenum(), req.getSize()),req.getDepartmentId(), req.getName()
+                new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName()
         );
 
-        if(page.getTotal() == 0){
+        if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page);
         }
     }
@@ -56,13 +55,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<TblClubDO> selectByName(ClubInfoQO req) {
 
         Page<TblClubDO> page = cMapper.selectByName(
-                new Page<>(req.getPagenum(), req.getSize()), req.getName()
+                new Page<>(req.getPageNum(), req.getSize()), req.getName()
         );
 
-        if(page.getTotal() == 0){
+        if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page);
         }
     }
@@ -70,13 +68,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<TblClubDO> selectByDepartmentId(ClubInfoQO req) {
 
         Page<TblClubDO> page = cMapper.selectByDepartmentId(
-                new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId()
+                new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId()
         );
 
-        if(page.getTotal() == 0){
+        if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page);
         }
     }
@@ -90,7 +87,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     public void reuseClub(Long departmentId, String name) {
         int result = cMapper.reuseClub(departmentId, name);
-        if(result == 0){
+        if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "修改失败");
         }
     }
@@ -98,7 +95,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     @Override
     public void deactivateClub(Long departmentId, String name) {
         int result = cMapper.deactivateClub(departmentId, name);
-        if(result == 0){
+        if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
@@ -106,13 +103,13 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     @Override
     public void recoverClub(Long departmentId, String name) {
         int result = cMapper.recoverClub(departmentId, name);
-        if(result == 0){
+        if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         }
     }
 
     public PageVO<ClubMsgDTO> findAll(ClubInfoQO page) {
-        Page<ClubMsgDTO> page1 = new Page<>(page.getPagenum(), page.getSize());
+        Page<ClubMsgDTO> page1 = new Page<>(page.getPageNum(), page.getSize());
         page1 = cMapper.findAll(page1);
         return new PageVO<>(page1);
     }
@@ -120,13 +117,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<ClubMsgDTO> findAllByDepartmentId(ClubInfoQO page) {
 
         Page<ClubMsgDTO> page2 = cMapper.findAllByDepartmentId(
-                new Page<>(page.getPagenum(), page.getSize()), page.getDepartmentId()
+                new Page<>(page.getPageNum(), page.getSize()), page.getDepartmentId()
         );
 
-        if(page2.getTotal() == 0){
+        if (page2.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page2);
         }
     }
@@ -134,13 +130,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<ClubMsgDTO> findAllByName(ClubInfoQO req) {
 
         Page<ClubMsgDTO> page = cMapper.findAllByName(
-                new Page<>(req.getPagenum(), req.getSize()), req.getName()
+                new Page<>(req.getPageNum(), req.getSize()), req.getName()
         );
 
-        if(page.getTotal() == 0){
+        if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page);
         }
     }
@@ -148,13 +143,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public PageVO<ClubMsgDTO> findAllByDepartmentIdAndName(ClubInfoQO req) {
 
         Page<ClubMsgDTO> page = cMapper.findAllByDepartmentIdAndName(
-                new Page<>(req.getPagenum(), req.getSize()), req.getDepartmentId(), req.getName()
+                new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName()
         );
 
-        if(page.getTotal() == 0){
+        if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        }
-        else {
+        } else {
             return new PageVO<>(page);
         }
     }

@@ -1,10 +1,11 @@
 package team.project.module.user.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.Min;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class SearchUserReq {
 
     @JsonProperty("user_id")

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="team.project.module.club.duty.internal.mapper.TblDutyGroupMapper">
+
+    <insert id="createDutyGroup">
+        INSERT INTO tbl_user_club_duty_group (club_id, member_id, name)
+        VALUES (#{clubId}, #{memberId}, #{name})
+    </insert>
+    <delete id="deleteDutyGroup">
+        DELETE FROM tbl_user_club_duty_group
+        WHERE club_id = #{clubId} AND member_id = #{memberId} AND name = #{name}
+    </delete>
+    <select id="selectByClubIdAndMemberIdAndName"
+            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+
+    </select>
+    <select id="selectUserIdByGroupName"
+            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+
+    </select>
+
+</mapper>

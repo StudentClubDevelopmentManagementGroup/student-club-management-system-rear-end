@@ -3,7 +3,6 @@ package team.project.debug;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
-import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -12,29 +11,29 @@ import org.springframework.stereotype.Component;
 // @Aspect /* <-- 开启切面 debug */
 public class TraceLogAspect {
 
-    Logger controllerLogger = LoggerFactory.getLogger("【controller 层】");
-    Logger serviceLogger    = LoggerFactory.getLogger("【service 层】");
-    Logger daoLogger        = LoggerFactory.getLogger("【dao 层】");
-    Logger mapperLogger     = LoggerFactory.getLogger("【mapper 层】");
+    Logger logC = LoggerFactory.getLogger("【controller 层】");
+    Logger logS = LoggerFactory.getLogger("【service 层】");
+    Logger logD = LoggerFactory.getLogger("【dao 层】");
+    Logger logM = LoggerFactory.getLogger("【mapper 层】");
 
     @Around("execution(* team.project.module..controller..*(..))")
     public Object controllerLog(ProceedingJoinPoint jp) throws Throwable {
-        return traceLog(jp, controllerLogger);
+        return traceLog(jp, logC);
     }
 
     @Around("execution(* team.project.module..service..*(..))")
     public Object serviceLog(ProceedingJoinPoint jp) throws Throwable {
-        return traceLog(jp, serviceLogger);
+        return traceLog(jp, logS);
     }
 
     @Around("execution(* team.project.module..mapper..*(..))")
     public Object mapperLog(ProceedingJoinPoint jp) throws Throwable {
-        return traceLog(jp, mapperLogger);
+        return traceLog(jp, logM);
     }
 
     @Around("execution(* team.project.module..dao..*(..))")
     public Object daoLog(ProceedingJoinPoint jp) throws Throwable {
-        return traceLog(jp, daoLogger);
+        return traceLog(jp, logD);
     }
 
     private Object traceLog(ProceedingJoinPoint jp, Logger logger) throws Throwable {

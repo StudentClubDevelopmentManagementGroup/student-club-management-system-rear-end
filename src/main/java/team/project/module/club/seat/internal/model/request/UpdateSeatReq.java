@@ -2,7 +2,8 @@ package team.project.module.club.seat.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import team.project.base.controller.exception.InvalidParamException;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
@@ -11,7 +12,8 @@ import java.util.List;
 
 import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
 
-@Data
+@Getter
+@Setter
 public class UpdateSeatReq {
 
     @NotNull(message="未指定社团id")
@@ -23,7 +25,8 @@ public class UpdateSeatReq {
     @JsonProperty("seat_list")
     List<ToUpdateSeat> seatList;
 
-    @Data
+    @Getter
+    @Setter
     public static class ToUpdateSeat {
         @NotNull(message="未指定座位id")
         @JsonProperty("seat_id")
