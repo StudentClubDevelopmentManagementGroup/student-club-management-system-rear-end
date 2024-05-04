@@ -1,4 +1,4 @@
-package team.project.module.club.management.internal.model.datatransfer;
+package team.project.module.club.management.export.model.datatransfer;
 
 import lombok.Data;
 
