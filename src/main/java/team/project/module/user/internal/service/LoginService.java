@@ -17,7 +17,7 @@ public class LoginService {
     ModelConverter modelConverter;
 
     public UserInfoVO login(String userId, String password) {
-        TblUserDO user = userMapper.selectOne(userId, password);
+        TblUserDO user = userMapper.selectUserInfo(userId, password);
         return user == null ? null : modelConverter.toUserInfoVO(user);
     }
 }

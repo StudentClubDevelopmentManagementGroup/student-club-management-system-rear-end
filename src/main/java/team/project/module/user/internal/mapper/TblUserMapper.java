@@ -17,7 +17,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     /**
      * 查询指定用户的账号信息
      * */
-    default TblUserDO selectOne(String userId) {
+    default TblUserDO selectUserInfo(String userId) {
         return this.selectOne(new LambdaQueryWrapper<TblUserDO>()
             .select(
                 TblUserDO::getUserId,
@@ -35,7 +35,7 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     /**
      * 查询指定用户的账号信息
      * */
-    default TblUserDO selectOne(String userId, String password) {
+    default TblUserDO selectUserInfo(String userId, String password) {
         return this.selectOne(new LambdaQueryWrapper<TblUserDO>()
             .eq(TblUserDO::getUserId, userId)
             .eq(TblUserDO::getPassword, password)
@@ -68,9 +68,9 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
     }
 
     /**
-     * 搜索用户（模糊查询）
+     * 搜索相关用户的账号信息（模糊查询、分页查询）
      * */
-    default List<TblUserDO> searchUsers(Page<TblUserDO> page, QueryUserQO queryQO) {
+    default List<TblUserDO> searchUsersInfo(Page<TblUserDO> page, QueryUserQO queryQO) {
         Long   departmentId = queryQO.getDepartmentId();
         String userId       = queryQO.getUserId();
         String userName     = queryQO.getUserName();
@@ -88,6 +88,21 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             )
             .eq(departmentId != null, TblUserDO::getDepartmentId, departmentId)
             .like(userId != null, TblUserDO::getUserId, userIdLike)
+            .like(userName != null, TblUserDO::getName, userNameLike)
+        );
+    }
+
+    /**
+     * 搜索相关用户的基本信息（模糊查询）
+     * */
+    default List<TblUserDO> searchUsersBasicInfo(String userName) {
+        String userNameLike = (userName != null) ? userName.replace("%", "") : "";
+        return this.selectList(new LambdaQueryWrapper<TblUserDO>()
+            .select(
+                TblUserDO::getUserId,
+                TblUserDO::getName,
+                TblUserDO::getRole
+            )
             .like(userName != null, TblUserDO::getName, userNameLike)
         );
     }
