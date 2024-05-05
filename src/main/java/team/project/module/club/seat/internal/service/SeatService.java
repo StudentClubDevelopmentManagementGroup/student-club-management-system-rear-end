@@ -8,7 +8,6 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
 import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
@@ -29,9 +28,6 @@ import java.util.List;
 public class SeatService {
 
     @Autowired
-    private AuthServiceI authService;
-
-    @Autowired
     private PceIService clubMemberRoleService;
 
     @Autowired
@@ -45,8 +41,6 @@ public class SeatService {
 
     @Transactional
     public List<SeatVO> addSeat(String arrangerId, AddSeatReq req) {
-
-        authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能给该社团添加座位");
 
         List<TblUserClubSeatDO> seatsToAdd = new ArrayList<>();
         for (AddSeatReq.ToAddSeat seatInfo : req.getSeatList()) {
@@ -76,14 +70,11 @@ public class SeatService {
 
     @Transactional
     public void updateSeat(String arrangerId, UpdateSeatReq req) {
-        long clubId = req.getClubId();
-
-        authService.requireClubManager(arrangerId, clubId, "不是该社团的负责人，不能更新该社团的座位信息");
 
         for (UpdateSeatReq.ToUpdateSeat seat : req.getSeatList()) {
             String ownerId = seat.getOwnerId();
-            if (ownerId != null && ! clubMemberRoleService.isClubMember(ownerId, clubId)) {
-                throw new ServiceException(ServiceStatus.FORBIDDEN, "座位所属者不是该社团的成员");
+            if (ownerId != null && ! clubMemberRoleService.isClubMember(ownerId, req.getClubId())) {
+                throw new ServiceException(ServiceStatus.FORBIDDEN, "座位只能分配给社团成员");
             }
         }
 
@@ -91,7 +82,7 @@ public class SeatService {
         for (UpdateSeatReq.ToUpdateSeat seatInfo : req.getSeatList()) {
 
             TblUserClubSeatDO seat = new TblUserClubSeatDO();
-            seat.setClubId(clubId);
+            seat.setClubId(req.getClubId());
             seat.setSeatId(seatInfo.getSeatId());
             seat.setArrangerId(arrangerId);
 
@@ -125,19 +116,14 @@ public class SeatService {
         return result;
     }
 
-    public void deleteSeat(String arrangerId, DelSeatReq req) {
-
-        authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能删除该社团的座位");
-
+    public void deleteSeat(DelSeatReq req) {
         int result = seatMapper.delete(req.getClubId(), req.getSeatId());
         if (1 != result) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "删除座位失败");
         }
     }
 
-    public PageVO<ClubMemberInfoVO> membersNoSeat(String arrangerId, long clubId, PagingQueryReq pageReq) {
-
-        authService.requireClubManager(arrangerId, clubId, "不是该社团的负责人，不能查询该社团没有座位的成员");
+    public PageVO<ClubMemberInfoVO> membersNoSeat(long clubId, PagingQueryReq pageReq) {
 
         Page<Object> page = Page.of(pageReq.getPageNum(), pageReq.getPageSize());
         List<String> membersId = seatMapper.selectNoSeatMembersId(page, clubId);

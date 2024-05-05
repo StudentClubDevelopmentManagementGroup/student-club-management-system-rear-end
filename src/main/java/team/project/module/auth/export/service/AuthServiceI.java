@@ -5,13 +5,12 @@ import team.project.base.service.status.ServiceStatus;
 
 public interface AuthServiceI {
 
-    boolean isSuperAdmin(String userId);
-
-    boolean isClubManager(String userId, long clubId);
-
-    default void requireClubManager(String userId, long clubId, String message) {
-        if (userId == null || ! isClubManager(userId, clubId) || ! isSuperAdmin(userId)) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, message);
-        }
-    }
+    /**
+     * <p> 验证用户身份，要求用户在指定社团担任负责人（或者是超级管理员）
+     * <p> 如果用户身份不满足要求，则抛出 {@link ServiceException}，状态码为 {@link ServiceStatus#FORBIDDEN}
+     * @param userId 用户的学号/工号
+     * @param clubId 社团编号
+     * @param message 用户身份不符合要求时，所抛出异常携带的提示信息
+     * */
+    void requireClubManager(String userId, long clubId, String message);
 }
