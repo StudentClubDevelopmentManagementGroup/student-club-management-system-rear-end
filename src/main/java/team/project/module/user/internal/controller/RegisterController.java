@@ -1,5 +1,6 @@
 package team.project.module.user.internal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +30,7 @@ public class RegisterController {
 
     @Operation(summary="注销账号")
     @PostMapping("/user/unregister")
+    @SaCheckLogin
     Object unregister(@Valid @RequestBody UserIdAndPasswordReq req) {
         registerService.unregister(req.getUserId(), req.getPassword());
         return new Response<>(ServiceStatus.SUCCESS).statusText("销号成功");

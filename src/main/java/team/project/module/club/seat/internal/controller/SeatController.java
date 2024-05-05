@@ -11,12 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.controller.response.Response;
 import team.project.base.model.request.PagingQueryReq;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.UpdateSeatReq;
+import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.service.SeatService;
 
@@ -34,6 +36,7 @@ public class SeatController {
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+
         List<SeatVO> result = seatService.addSeat(arrangerId, req);
         return new Response<>(ServiceStatus.CREATED).data(result);
     }
@@ -49,16 +52,16 @@ public class SeatController {
         UpdateSeatReq.validate(req);
 
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+
         seatService.updateSeat(arrangerId, req);
+
         return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="查看座位表")
     @GetMapping("/club/seat/view")
-    @SaCheckRole(AuthRole.CLUB_MEMBER)
     Object view(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
-        String userId = (String)( StpUtil.getSession().getLoginId() );
-        List<SeatVO> result = seatService.view(userId, clubId);
+        List<SeatVO> result = seatService.view(clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
@@ -67,6 +70,7 @@ public class SeatController {
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@Valid @RequestBody DelSeatReq req) {
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+
         seatService.deleteSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
     }
@@ -82,7 +86,8 @@ public class SeatController {
         @QueryParam PagingQueryReq pageReq
     ) {
         String arrangerId = (String)( StpUtil.getSession().getLoginId() );
-        return new Response<>(ServiceStatus.SUCCESS)
-            .data(seatService.membersNoSeat(arrangerId, clubId, pageReq));
+
+        PageVO<ClubMemberInfoVO> result = seatService.membersNoSeat(arrangerId, clubId, pageReq);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }
