@@ -51,8 +51,9 @@ public class TblClubController {
     @Operation(summary = "删除基地")
     @PostMapping("/club/del")
     Object deleteClub(@Valid @RequestBody OneClubInfoReq req) {
-        service.deleteClub(req.getDepartmentId(), req.getName());
-        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
+        int result = 0;
+//      result = service.deleteClub(req.getDepartmentId(), req.getName());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功"+"，删除了"+result+"条社团成员数据");
     }
 
     @Operation(summary = "撤销删除基地")

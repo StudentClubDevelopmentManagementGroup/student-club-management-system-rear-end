@@ -34,6 +34,10 @@
         update tbl_user_club set is_deleted = 1 where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
+    <update id="quashAllMember">
+        update tbl_user_club set is_deleted = 1 where  club_id = #{clubId} and is_deleted = 0
+    </update>
+
     <select id="selectManagerRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2 and is_deleted = 0
     </select>

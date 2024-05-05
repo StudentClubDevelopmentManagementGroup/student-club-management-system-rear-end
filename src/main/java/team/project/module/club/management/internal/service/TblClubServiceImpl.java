@@ -13,6 +13,7 @@ import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.query.ClubInfoQO;
+import team.project.module.club.personnelchanges.export.service.PceIService;
 
 /**
  * <p style="color: #f23215;">
@@ -28,6 +29,9 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     @Autowired
     TblClubMapper cMapper;
+
+    @Autowired
+    PceIService pceIService;
 
     public void createClub(Long departmentId, String name) {
         if (cMapper.findByNameAndDepartmentId(departmentId, name).isEmpty()) {
@@ -78,11 +82,13 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         }
     }
 
-    public void deleteClub(Long departmentId, String name) {
+    public int deleteClub(Long departmentId, String name) {
         int result = cMapper.deleteClub(departmentId, name);
         if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
         }
+        TblClubDO club = cMapper.selectByNameAndDepartmentId(name, departmentId);
+        return pceIService.deleteClubAllMember(club.getId());
     }
 
     public void reuseClub(Long departmentId, String name) {
