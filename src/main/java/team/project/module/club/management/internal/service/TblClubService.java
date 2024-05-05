@@ -21,7 +21,7 @@ public interface TblClubService extends IService<TblClubDO> {
 
     PageVO<TblClubDO> selectByDepartmentId(ClubInfoQO page);
 
-    void deleteClub(Long departmentId, String name);
+    int deleteClub(Long departmentId, String name);
 
     void reuseClub(Long departmentId, String name);
 

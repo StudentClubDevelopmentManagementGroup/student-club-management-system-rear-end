@@ -18,4 +18,8 @@ public class PceIServiceImpl implements PceIService {
     public boolean isClubMember(String userId, Long clubId) {
         return tblUserClubMapper.isMemberRole(userId, clubId) != null;
     }
+
+    public int deleteClubAllMember(Long clubId){
+        return tblUserClubMapper.quashAllMember(clubId);
+    }
 }
