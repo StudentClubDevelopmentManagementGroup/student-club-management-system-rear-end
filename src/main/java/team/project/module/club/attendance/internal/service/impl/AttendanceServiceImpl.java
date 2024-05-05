@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.club.attendance.internal.util.ToolMethods;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
 import team.project.module.club.management.export.servivce.ManagementIService;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
 
 import java.util.ArrayList;
@@ -114,22 +115,21 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
 
+
         Long clubId = managementIService.selectClubIdByName(getAttendanceRecordReq.getClubName());
 
-        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
-        List<AttendanceInfoVO> result = new ArrayList<>();
-
-        if (getAttendanceRecordReq.getUserId() != "") {
-            String userName = userInfoIService.selectUserBasicInfo(getAttendanceRecordReq.getUserId()).getName();
-            for (AttendanceDO attendanceDO : page.getRecords()) {
-                result.add(toolMethods.convert(attendanceDO, userName));
-            }
-        } else {
-            for (AttendanceDO attendanceDO : page.getRecords()) {
-                result.add(toolMethods.convert(attendanceDO));
-            }
+        // 根据用户名字查询学号
+        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceRecordReq.getUserName());
+        List<String> userIds = new ArrayList<>();
+        for (UserBasicInfoDTO user : users) {
+            userIds.add(user.getUserId());
         }
-
+//        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
+        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPageTest(getAttendanceRecordReq,clubId,userIds);
+        List<AttendanceInfoVO> result = new ArrayList<>();
+        for (AttendanceDO attendanceDO : page.getRecords()) {
+            result.add(toolMethods.convert(attendanceDO));
+        }
         return new PageVO<>(result, page);
     }
 

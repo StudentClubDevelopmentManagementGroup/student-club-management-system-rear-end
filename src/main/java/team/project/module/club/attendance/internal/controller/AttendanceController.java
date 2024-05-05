@@ -130,6 +130,7 @@ public class AttendanceController {
     @Operation(summary="查打卡记录",
             description = """
                     时间格式（2024-04-18 23:59:59）\n
+                    支持名字 或者 学号查询,支持模糊查询 \n
                     -学号为 "" 则查询社团全部成员的打卡记录 \n
                     -开始结束时间都为 "" 则查询成员进入社团以来的全部打卡记录
                     """)

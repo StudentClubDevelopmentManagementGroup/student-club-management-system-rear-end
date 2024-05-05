@@ -4,17 +4,21 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
 
 
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -93,10 +97,32 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         // 构造分页对象
         Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
         // 构建查询条件
+
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("club_id", clubId)
                 .eq(getAttendanceRecordReq.getUserId() != "", "user_id", getAttendanceRecordReq.getUserId())
 //                .eq(getAttendanceRecordReq.getUserName() != "", "user_id",)
+                .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
+                        "checkin_time", getAttendanceRecordReq.getStartTime(),
+                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
+                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
+
+        return this.selectPage(page, queryWrapper);
+    }
+
+
+
+    //查签到记录，返回分页查询对象
+    default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq,Long clubId,List<String> userIds){
+        // 构造分页对象
+        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
+        // 构建查询条件
+
+        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("club_id", clubId)
+                .like(StringUtils.isNotBlank(getAttendanceRecordReq.getUserId()), "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+//                .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+                .in(getAttendanceRecordReq.getUserName() != "", "user_id",userIds)
                 .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
                         "checkin_time", getAttendanceRecordReq.getStartTime(),
                         getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件

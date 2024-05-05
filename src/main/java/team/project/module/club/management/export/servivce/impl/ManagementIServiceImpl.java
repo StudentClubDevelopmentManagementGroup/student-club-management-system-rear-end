@@ -19,7 +19,6 @@ public class ManagementIServiceImpl implements ManagementIService {
     @Override
     public ClubBasicMsgDTO selectClubBasicMsg(long clubId) {
         TblClubDO tblClubDO = tblClubMapper.selectById(clubId);
-        System.out.println("tblClubDO对象" + tblClubDO);
         ClubBasicMsgDTO clubBasicMsgDTO = new ClubBasicMsgDTO();
         clubBasicMsgDTO.setName(tblClubDO.getName());
         clubBasicMsgDTO.setDepartmentName(departmentService.getDepartmentName(tblClubDO.getDepartmentId()));

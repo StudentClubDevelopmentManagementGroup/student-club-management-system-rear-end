@@ -25,8 +25,6 @@ public class ToolMethods {
         AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
 
         ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(attendanceDO.getClubId());
-        System.out.println("clubBasicMsgDTO对象" + clubBasicMsgDTO);
-
         String departmentName = clubBasicMsgDTO.getDepartmentName();
         attendanceInfoVO.setDepartmentName(departmentName);
         String clubName = clubBasicMsgDTO.getName();
@@ -44,30 +42,6 @@ public class ToolMethods {
 
         return attendanceInfoVO;
     }
-
-
-    //如果输入了学号就只通过学号查询一次名字而已
-    public AttendanceInfoVO convert(AttendanceDO attendanceDO,String userName) {
-        AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-
-        ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(attendanceDO.getClubId());
-        String departmentName = clubBasicMsgDTO.getDepartmentName();
-        attendanceInfoVO.setDepartmentName(departmentName);
-        String clubName = clubBasicMsgDTO.getName();
-        attendanceInfoVO.setClubName(clubName);
-
-        attendanceInfoVO.setUserId(attendanceDO.getUserId());
-        attendanceInfoVO.setUserName(userName);
-        attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
-        attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
-        // 获取时长的总秒数
-        long seconds = calculateDurationTime(attendanceDO.getCheckInTime(),attendanceDO.getCheckoutTime());
-        attendanceInfoVO.setAttendanceDuration(seconds);
-        attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
-
-        return attendanceInfoVO;
-    }
-
 
 
 
