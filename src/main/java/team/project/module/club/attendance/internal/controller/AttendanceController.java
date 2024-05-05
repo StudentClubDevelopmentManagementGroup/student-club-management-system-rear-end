@@ -111,11 +111,11 @@ public class AttendanceController {
 
     @Operation(summary="查时长，返回秒",
             description = """
-                    时间格式（2024-04-18 23:59:59）\n
-                    支持名字 或者 学号查询,支持模糊查询 \n
-                    userId和userName都为""查询社团全部成员的打卡时长\n
-                    -开始结束时间都为 "" 则查询成员进入社团以来的全部打卡时长\n
-                    起止时间要么都为空，要么一起出现
+                    - 时间格式（2024-04-18 23:59:59） \n
+                    - 支持名字 或者 学号查询,支持模糊查询 \n
+                    - userId和userName都为""查询社团全部成员的打卡时长 \n
+                    - 开始结束时间都为 "" 则查询成员进入社团以来的全部打卡时长 \n
+                    - 起止时间要么都为空，要么一起出现
                     """)
     @PostMapping("/durationTime")
     public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
@@ -131,11 +131,11 @@ public class AttendanceController {
     //查询社团成员指定时间段打卡记录
     @Operation(summary="查打卡记录",
             description = """
-                    时间格式（2024-04-18 23:59:59）\n
-                    支持名字 或者 学号查询,支持模糊查询 \n
+                    - 时间格式（2024-04-18 23:59:59） \n
+                    - 支持名字 或者 学号查询,支持模糊查询 \n
                     - userId和userName都为"" 则查询社团全部成员的打卡记录 \n
-                    -开始结束时间都为 "" 则查询成员进入社团以来的全部打卡记录\n
-                    起止时间要么都为空，要么一起出现
+                    - 开始结束时间都为 "" 则查询成员进入社团以来的全部打卡记录 \n
+                    - 起止时间要么都为空，要么一起出现
                     """)
     @PostMapping("/record")
     public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
