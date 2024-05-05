@@ -89,7 +89,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         // 构建查询条件
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
-                .eq(getAttendanceRecordReq.getUserId() != "","user_id", getAttendanceRecordReq.getUserId())
+                .eq(getAttendanceRecordReq.getUserId() != "", "user_id", getAttendanceRecordReq.getUserId())
+//                .eq(getAttendanceRecordReq.getUserName() != "", "user_id",)
                 .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
                         "checkin_time", getAttendanceRecordReq.getStartTime(),
                         getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件

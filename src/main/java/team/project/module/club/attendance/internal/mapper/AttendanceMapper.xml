@@ -3,26 +3,13 @@
 
 <mapper namespace="team.project.module.club.attendance.internal.mapper.AttendanceMapper">
 
-    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起（mybatis-plus 的注解对 xml 里的 SQL 不起作用） -->
+    <!-- 使用 resultMap 将数据库字段和 java 类属性映射到一起,在配置关闭了下划线命名和驼峰命名的自动转换 -->
     <resultMap id="ClubAttendanceDurationVO" type="team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO">
         <!-- 数据库字段 -->                                   <!-- java 类属性 -->
         <result column="user_id"                            property="userId" />
         <result column="attendance_duration_time"           property="attendanceDurationTime" />
 
     </resultMap>
-
-
-    <resultMap id="AttendanceInfoVO" type="team.project.module.club.attendance.internal.model.view.AttendanceInfoVO">
-        <!-- 数据库字段 -->                           <!-- java 类属性 -->
-        <result column="id"                         property="id" />
-        <result column="user_id"                    property="userId" />
-        <result column="club_id"                    property="clubId" />
-        <result column="checkin_time"               property="checkInTime" />
-        <result column="checkout_time"              property="checkoutTime" />
-        <result column="is_deleted"                 property="isDeleted" />
-
-    </resultMap>
-
 
 
 
@@ -32,7 +19,7 @@
             resultMap="ClubAttendanceDurationVO">
         SELECT
         user_id,
-        SUM( TIMESTAMPDIFF( SECOND, checkin_time, IFNULL(checkout_time, NOW()) ) ) AS attendance_duration_time
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, checkout_time ) ) AS attendance_duration_time
         FROM
         tbl_user_club_attendance
         WHERE
@@ -44,10 +31,11 @@
         <if test="startTime != null and endTime != null">
             AND checkin_time BETWEEN #{startTime} AND #{endTime}
         </if>
+        AND checkout_time IS NOT NULL
         GROUP BY
         user_id;
-
     </select>
+
 
 
 
