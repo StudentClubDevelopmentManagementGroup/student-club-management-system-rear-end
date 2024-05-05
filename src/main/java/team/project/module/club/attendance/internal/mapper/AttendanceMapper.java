@@ -120,8 +120,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("club_id", clubId)
-                .like(StringUtils.isNotBlank(getAttendanceRecordReq.getUserId()), "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
-//                .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+//                .like(StringUtils.isNotBlank(getAttendanceRecordReq.getUserId()), "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+                .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
                 .in(getAttendanceRecordReq.getUserName() != "", "user_id",userIds)
                 .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
                         "checkin_time", getAttendanceRecordReq.getStartTime(),
@@ -140,6 +140,15 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(
             @Param("getAttendanceTimeReq") GetAttendanceTimeReq getAttendanceTimeReq,
             @Param("clubId") Long clubId
+    );
+
+
+    //        List<String> userIds
+    //查询社团每个成员指定时间段打卡时长
+    List<ClubAttendanceDurationVO> getEachAttendanceDurationTimeTest(
+            @Param("getAttendanceTimeReq") GetAttendanceTimeReq getAttendanceTimeReq,
+            @Param("clubId") Long clubId,
+            @Param("userIds") List<String> userIds
     );
 
     //社团成员申请补签

@@ -97,15 +97,26 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     //查询社团成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
         Long clubId = managementIService.selectClubIdByName(getAttendanceTimeReq.getClubName());
+        // 根据用户名字查询学号
+        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceTimeReq.getUserName());
+        List<String> userIds = new ArrayList<>();
+        for (UserBasicInfoDTO user : users) {
+            userIds.add(user.getUserId());
+        }
+
+//        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
+//                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
+
         List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
-                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
+                attendanceMapper.getEachAttendanceDurationTimeTest(getAttendanceTimeReq,clubId,userIds);
+
         for (ClubAttendanceDurationVO clubAttendanceDurationVO : clubAttendanceDurationVOList){
+
             String userName = userInfoIService.selectUserBasicInfo(clubAttendanceDurationVO.getUserId()).getName();
             clubAttendanceDurationVO.setUserName(userName);
 
-            ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(clubId);
-            String clubName = clubBasicMsgDTO.getName();
-            clubAttendanceDurationVO.setClubName(clubName);
+
+            clubAttendanceDurationVO.setClubName(getAttendanceTimeReq.getClubName());
         }
         return clubAttendanceDurationVOList;
     }

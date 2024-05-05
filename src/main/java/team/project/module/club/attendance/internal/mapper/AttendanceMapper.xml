@@ -36,4 +36,38 @@
     </select>
 
 
+    <select id="getEachAttendanceDurationTimeTest"
+            parameterType="map"
+            resultMap="ClubAttendanceDurationVO">
+        SELECT
+        user_id,
+        SUM( TIMESTAMPDIFF( SECOND, checkin_time, checkout_time ) ) AS attendance_duration_time
+        FROM
+        tbl_user_club_attendance
+        WHERE
+        is_deleted = 0
+        AND club_id = #{clubId}
+
+        <if test="getAttendanceTimeReq.userId != null and getAttendanceTimeReq.userId != ''">
+            AND user_id LIKE CONCAT('%', #{getAttendanceTimeReq.userId}, '%')
+        </if>
+
+
+        <if test="userIds != null and !userIds.isEmpty()">
+            AND user_id IN
+            <foreach item="userId" collection="userIds" open="(" separator="," close=")">
+                #{userId}
+            </foreach>
+        </if>
+        <if test="getAttendanceTimeReq.startTime != null and getAttendanceTimeReq.endTime != null">
+            AND checkin_time BETWEEN #{getAttendanceTimeReq.startTime} AND #{getAttendanceTimeReq.endTime}
+        </if>
+        AND checkout_time IS NOT NULL
+        GROUP BY
+        user_id;
+    </select>
+
+
+
+
 </mapper>
