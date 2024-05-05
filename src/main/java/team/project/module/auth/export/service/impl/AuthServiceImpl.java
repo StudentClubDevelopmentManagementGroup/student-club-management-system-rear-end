@@ -2,8 +2,7 @@ package team.project.module.auth.export.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import team.project.base.service.exception.ServiceException;
-import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.exception.AuthenticationFailureException;
 import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.enums.UserRole;
@@ -18,6 +17,11 @@ public class AuthServiceImpl implements AuthServiceI {
     @Autowired
     PceIService clubMemberRoleService;
 
+    private boolean isSuperAdmin(String userId) {
+        Integer roleCode = userInfoService.selectUserRole(userId);
+        return null != roleCode && UserRole.hasRole(roleCode, UserRole.SUPER_ADMIN);
+    }
+
     /**
      * 详见：{@link AuthServiceI#requireClubManager}
      * */
@@ -26,10 +30,22 @@ public class AuthServiceImpl implements AuthServiceI {
         Integer roleCode;
         if (   null == userId
           || ! clubMemberRoleService.isClubManager(userId, clubId)
-          ||   null == (roleCode = userInfoService.selectUserRole(userId))
-          || ! UserRole.hasRole(roleCode, UserRole.SUPER_ADMIN)
+          || ! isSuperAdmin(userId)
         ) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, message);
+            throw new AuthenticationFailureException(message);
+        }
+    }
+
+    /**
+     * 详见：{@link AuthServiceI#requireClubMember}
+     */
+    @Override
+    public void requireClubMember(String userId, long clubId, String message) {
+        if (   null == userId
+          || ! clubMemberRoleService.isClubMember(userId, clubId)
+          || ! isSuperAdmin(userId)
+        ) {
+            throw new AuthenticationFailureException(message);
         }
     }
 }

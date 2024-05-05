@@ -42,8 +42,6 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
 
     @PostConstruct
     void initAllRoles() {
-        allRoles.add(AuthRole.STUDENT);
-        allRoles.add(AuthRole.TEACHER);
         allRoles.add(AuthRole.CLUB_MEMBER);
         allRoles.add(AuthRole.CLUB_MANAGER);
         allRoles.add(AuthRole.SUPER_ADMIN);
@@ -64,8 +62,6 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
         if (userRole == null) return list;
 
         if (UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))  return allRoles;
-        if (UserRole.hasRole(userRole, UserRole.STUDENT))      list.add(AuthRole.STUDENT);
-        if (UserRole.hasRole(userRole, UserRole.TEACHER))      list.add(AuthRole.TEACHER);
         if (UserRole.hasRole(userRole, UserRole.CLUB_MEMBER))  list.add(AuthRole.CLUB_MEMBER);
         if (UserRole.hasRole(userRole, UserRole.CLUB_MANAGER)) list.add(AuthRole.CLUB_MANAGER);
 
