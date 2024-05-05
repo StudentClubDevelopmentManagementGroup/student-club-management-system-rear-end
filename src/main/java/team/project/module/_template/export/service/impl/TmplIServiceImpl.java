@@ -5,11 +5,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import team.project.module._template.export.model.datatransfer.TmplDTO;
 import team.project.module._template.export.model.query.TmplQO;
-import team.project.module._template.export.service.TmplIService;
+import team.project.module._template.export.service.TmplServiceI;
 
-/* 注意接口实现类是以 "IServiceImpl" 结尾 */
+/* 注意接口实现类是以 "ServiceImpl" 结尾 */
 @Service
-public class TmplIServiceImpl implements TmplIService {
+public class TmplIServiceImpl implements TmplServiceI {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public TmplDTO example(TmplQO queryObject) {

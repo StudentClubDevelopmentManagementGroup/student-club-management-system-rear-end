@@ -116,7 +116,7 @@ public class FileStorageController {
         uploadFileQO.setOverwrite(overwrite);
 
         try {
-            String fileId = fileStorageService.writeTextToFile(storageTypeEnum, text, uploadFileQO);
+            String fileId = fileStorageService.uploadTextToFile(storageTypeEnum, text, uploadFileQO);
 
             return new Response<>(ServiceStatus.SUCCESS).data(fileId);
         }
@@ -131,7 +131,7 @@ public class FileStorageController {
     Object readTextFormFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         String text;
         try {
-            text = fileStorageService.readTextFromFile(fileId);
+            text = fileStorageService.getTextFromFile(fileId);
         }
         catch (FileStorageException e) {
             return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("读取失败");

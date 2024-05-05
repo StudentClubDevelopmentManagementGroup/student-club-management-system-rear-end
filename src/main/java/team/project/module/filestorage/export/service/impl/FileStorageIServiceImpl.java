@@ -62,26 +62,26 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link FileStorageIService#writeTextToFile}
+     * 详见：{@link FileStorageIService#uploadTextToFile}
      */
     @Override
-    public String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
+    public String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
         return switch (storageType) {
-            case LOCAL -> localStorageService.writeTextToFile(text, uploadFileQO);
-            case CLOUD -> cloudStorageService.writeTextToFile(text, uploadFileQO);
+            case LOCAL -> localStorageService.uploadTextToFile(text, uploadFileQO);
+            case CLOUD -> cloudStorageService.uploadTextToFile(text, uploadFileQO);
         };
     }
 
     /**
-     * 详见：{@link FileStorageIService#readTextFromFile}
+     * 详见：{@link FileStorageIService#getTextFromFile}
      */
     @Override
-    public String readTextFromFile(String fileId) {
+    public String getTextFromFile(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.readTextFromFile(fileId);
+            return localStorageService.getTextFromFile(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.readTextFromFile(fileId);
+            return cloudStorageService.getTextFromFile(fileId);
 
         return null;
     }

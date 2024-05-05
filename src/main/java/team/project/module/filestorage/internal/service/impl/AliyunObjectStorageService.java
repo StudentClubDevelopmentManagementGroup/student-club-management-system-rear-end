@@ -10,14 +10,14 @@ import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.filestorage.internal.dao.AliyunOssDAO;
-import team.project.module.filestorage.internal.service.FileStorageBasicIService;
-import team.project.module.filestorage.internal.service.TextFileStorageIService;
+import team.project.module.filestorage.internal.service.FileStorageBasicServiceI;
+import team.project.module.filestorage.internal.service.TextFileStorageServiceI;
 import team.project.module.filestorage.internal.util.Util;
 
 import static team.project.module.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
-public class AliyunObjectStorageService implements FileStorageBasicIService, TextFileStorageIService {
+public class AliyunObjectStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
@@ -32,14 +32,21 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     }
 
     /**
-     * 生成 fileId
+     * 依据文件路径生成 fileId
      * */
     private String generateFileId(String folderPath, String filename) {
         return Util.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
     }
 
     /**
-     * 从 fileId 解析出 fileKey
+     * 判断 fileId 是否一定无效
+     * */
+    private boolean isFileIdNotValid(String fileId) {
+        return Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId);
+    }
+
+    /**
+     * 从 fileId 解析出 fileKey（解析前先确保 fileId 的格式正确）
      * */
     private String parseFileIdToFileKey(String fileId) {
         return uploadedFilesFolder + fileId.substring(uploadedFileIdPrefix.length());
@@ -48,7 +55,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
-     * 详见：{@link FileStorageBasicIService#uploadFile}
+     * 详见：{@link FileStorageBasicServiceI#uploadFile}
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, UploadFileQO uploadFileQO) {
@@ -61,7 +68,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
                                   : uploadFileQO.getTargetFilename();
 
         String fileId = generateFileId(targetFolder, targetFilename);
-        if ( ! Util.isValidFileId(fileId)) {
+        if (isFileIdNotValid(fileId)) {
             throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
         }
 
@@ -81,15 +88,15 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#mayBeStored}
+     * 详见：{@link FileStorageBasicServiceI#mayBeStored}
      * */
     @Override
     public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/") && Util.isValidFileId(fileId);
+        return fileId.startsWith(uploadedFileIdPrefix + "/") && ! isFileIdNotValid(fileId);
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#getFileUrl}
+     * 详见：{@link FileStorageBasicServiceI#getFileUrl}
      * */
     @Override
     public String getFileUrl(String fileId) {
@@ -107,7 +114,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     }
 
     /**
-     * 详见：{@link FileStorageBasicIService#deleteFile}
+     * 详见：{@link FileStorageBasicServiceI#deleteFile}
      * */
     @Override
     public boolean deleteFile(String fileId) {
@@ -128,10 +135,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link TextFileStorageIService#writeTextToFile}
+     * 详见：{@link TextFileStorageServiceI#uploadTextToFile}
      * */
     @Override
-    public String writeTextToFile(String text, UploadFileQO uploadFileQO) {
+    public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
             throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
@@ -141,7 +148,7 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
         String targetFilename = uploadFileQO.getTargetFilename();
 
         String fileId = generateFileId(targetFolder, targetFilename);
-        if ( ! Util.isValidFileId(fileId)) {
+        if (isFileIdNotValid(fileId)) {
             throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
         }
 
@@ -162,10 +169,10 @@ public class AliyunObjectStorageService implements FileStorageBasicIService, Tex
 
     /**
      * 如果文件不是纯文本文件，或是编码不匹配，会读取出乱码文本
-     * 其他介绍详见：{@link TextFileStorageIService#readTextFromFile}
+     * 其他介绍详见：{@link TextFileStorageServiceI#getTextFromFile}
      * */
     @Override
-    public String readTextFromFile(String fileId) {
+    public String getTextFromFile(String fileId) {
         if ( ! mayBeStored(fileId)) {
             return null;
         }

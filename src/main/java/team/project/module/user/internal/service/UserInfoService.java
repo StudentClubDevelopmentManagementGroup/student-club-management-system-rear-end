@@ -30,7 +30,7 @@ public class UserInfoService {
      * @return 如果查询到成功则账号信息，否则返回 null
      * */
     public UserInfoVO selectUserInfo(String userId) {
-        TblUserDO userDO = userMapper.selectOne(userId);
+        TblUserDO userDO = userMapper.selectUserInfo(userId);
         if (userDO == null) {
             return null;
         }
@@ -68,7 +68,7 @@ public class UserInfoService {
         queryQO.setUserName( "".equals(searchUserName) ? null : searchUserName );
         queryQO.setDepartmentId(Objects.equals(0L, searchDepartmentId) ? null : searchDepartmentId);
 
-        List<TblUserDO> userDOList = userMapper.searchUsers(page, queryQO);
+        List<TblUserDO> userDOList = userMapper.searchUsersInfo(page, queryQO);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
         for (TblUserDO userDO : userDOList) {

@@ -18,12 +18,11 @@ public interface FileStorageIService {
     String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO);
 
     /**
-     * <p>通过 fileId 获取访问该文件的 URL</p>
-     * <p>但该 URL 不一定真的能访问到文件，比如下述情况无法访问到文件：
-     * <li>文件不存在（此时访问该 URL 可能会返回 404）</li>
-     * <li>URL 设置了有效访问时长，访问时可能已经过期</li>
-     * <li>...</li>
-     * </p>
+     * <p>  通过 fileId 获取访问该文件的 URL
+     * <p>  但该 URL 不一定真的能访问到文件，比如下述情况无法访问到文件：
+     * <li> 文件不存在（此时访问该 URL 可能会返回 404）
+     * <li> URL 设置了有效访问时长，访问时可能已经过期
+     * <li> ...
      * @return 如果 fileId 符合约束，且符合存储规则，返回 URL，否则返回 null
      * */
     String getFileUrl(String fileId);
@@ -37,13 +36,13 @@ public interface FileStorageIService {
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 将一段文本保存到文件中
+     * 将一段文本，将其保存到纯文本文件中
      * @param storageType  存储类型
      * @param text         要保存的文本
      * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
      * @return fileId
      * */
-    String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
+    String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
 
     /**
      * 读取纯文本文件里的内容
@@ -52,5 +51,5 @@ public interface FileStorageIService {
      *    <br> 如果读取中途出现异常，则返回 null
      *    <br> 如果文件不是文本文件，可能读取失败，返回 null，也可能读取出乱码文本
      * */
-    String readTextFromFile(String fileId);
+    String getTextFromFile(String fileId);
 }
