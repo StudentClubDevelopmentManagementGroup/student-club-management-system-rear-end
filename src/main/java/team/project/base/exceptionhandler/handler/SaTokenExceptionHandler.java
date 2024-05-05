@@ -43,12 +43,12 @@ public class SaTokenExceptionHandler {
             case AuthRole.SUPER_ADMIN  -> AuthRole.ROLE_NAME_SUPER_ADMIN;
             default -> "？"; /* <- 不应该匹配到这个 case */
         };
-        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有[ " + roleName + " ]角色，无权执行请求");
+        return new Response<>(ServiceStatus.FORBIDDEN).data("用户未拥有[ " + roleName + " ]角色，无权执行请求");
     }
 
     /* 权限验证失败 */
     @ExceptionHandler(NotPermissionException.class)
     Object handle(NotPermissionException exception) {
-        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有指定权限，无权执行请求");
+        return new Response<>(ServiceStatus.FORBIDDEN).data("用户未拥有指定权限，无权执行请求");
     }
 }
