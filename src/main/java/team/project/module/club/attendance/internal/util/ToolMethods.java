@@ -25,6 +25,8 @@ public class ToolMethods {
         AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
 
         ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(attendanceDO.getClubId());
+        System.out.println("clubBasicMsgDTO对象" + clubBasicMsgDTO);
+
         String departmentName = clubBasicMsgDTO.getDepartmentName();
         attendanceInfoVO.setDepartmentName(departmentName);
         String clubName = clubBasicMsgDTO.getName();

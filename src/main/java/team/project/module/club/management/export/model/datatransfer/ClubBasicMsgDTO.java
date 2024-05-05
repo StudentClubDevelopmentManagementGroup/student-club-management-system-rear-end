@@ -6,5 +6,5 @@ import lombok.Data;
 public class ClubBasicMsgDTO {
     String name;
     String departmentName;
-    Long id;
+
 }

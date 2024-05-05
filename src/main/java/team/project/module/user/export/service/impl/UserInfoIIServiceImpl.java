@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.user.export.service.UserInfoIService;
 import team.project.module.user.internal.mapper.TblUserMapper;
 import team.project.module.user.internal.model.entity.TblUserDO;
 
@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserInfoIServiceImpl implements UserInfoServiceI {
+public class UserInfoIIServiceImpl implements UserInfoIService {
 
     @Autowired
     TblUserMapper userMapper;
 
     /**
-     * 详见：{@link UserInfoServiceI#selectUserInfo}
+     * 详见：{@link UserInfoIService#selectUserInfo}
      * */
     @Override
     public UserInfoDTO selectUserInfo(String userId) {
@@ -40,7 +40,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#selectUserBasicInfo}
+     * 详见：{@link UserInfoIService#selectUserBasicInfo}
      * */
     @Override
     public UserBasicInfoDTO selectUserBasicInfo(String userId) {
@@ -58,7 +58,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#searchUsers}
+     * 详见：{@link UserInfoIService#searchUsers}
      */
     @Override
     public List<UserBasicInfoDTO> searchUsers(String userName) {
@@ -78,7 +78,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#selectUserRole}
+     * 详见：{@link UserInfoIService#selectUserRole}
      * */
     @Override
     public Integer selectUserRole(String userId) {
@@ -86,7 +86,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#addRoleToUser}
+     * 详见：{@link UserInfoIService#addRoleToUser}
      * */
     @Override
     public int addRoleToUser(String userId, UserRole roleToAdd) {
@@ -94,7 +94,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#removeRoleFromUser}
+     * 详见：{@link UserInfoIService#removeRoleFromUser}
      * */
     @Override
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {

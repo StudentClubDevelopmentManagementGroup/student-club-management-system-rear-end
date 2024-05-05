@@ -19,7 +19,7 @@ import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.user.export.service.UserInfoIService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class SeatService {
     PceIService clubMemberRoleService;
 
     @Autowired
-    UserInfoServiceI userInfoService;
+    UserInfoIService userInfoIService;
 
     @Autowired
     TblUserClubSeatMapper seatMapper;
@@ -151,7 +151,7 @@ public class SeatService {
 
         List<ClubMemberInfoVO> result = new ArrayList<>();
         for (String userId : membersId) {
-            UserBasicInfoDTO userBasicInfo = userInfoService.selectUserBasicInfo(userId);
+            UserBasicInfoDTO userBasicInfo = userInfoIService.selectUserBasicInfo(userId);
 
             ClubMemberInfoVO memberInfo = new ClubMemberInfoVO();
             memberInfo.setUserId(userId);

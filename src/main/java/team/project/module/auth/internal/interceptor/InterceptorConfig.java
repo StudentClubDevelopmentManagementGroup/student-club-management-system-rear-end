@@ -8,12 +8,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team.project.module.auth.export.model.enums.AuthRole;
-import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.user.export.service.UserInfoIService;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @Configuration("auth-[SaToken]-InterceptorConfig")
@@ -38,7 +36,7 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     }
 
     @Autowired
-    UserInfoServiceI userService;
+    UserInfoIService userService;
 
     private final List<String> allRoles = new ArrayList<>();
 

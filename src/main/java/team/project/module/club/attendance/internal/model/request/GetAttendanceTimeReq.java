@@ -16,8 +16,8 @@ public class GetAttendanceTimeReq {
     @NotNull(message = "社团名称不能为空")
     private String clubName;
 
-    @JsonProperty("userName")
-    private String userName;
+//    @JsonProperty("userName")
+//    private String userName;
 
     @JsonProperty("userId")
     private String userId;

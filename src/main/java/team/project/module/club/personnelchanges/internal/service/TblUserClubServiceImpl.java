@@ -16,7 +16,7 @@ import team.project.module.club.personnelchanges.internal.model.query.ClubMember
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.personnelchanges.internal.utils.ModelConverter;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.user.export.service.UserInfoIService;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     TblUserClubMapper ucMapper;
 
     @Autowired
-    UserInfoServiceI uiService;
+    UserInfoIService uiService;
 
     @Autowired
     ModelConverter converter;
