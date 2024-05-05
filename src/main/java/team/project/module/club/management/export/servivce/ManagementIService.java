@@ -4,4 +4,6 @@ import team.project.module.club.management.export.model.datatransfer.ClubBasicMs
 
 public interface ManagementIService {
     ClubBasicMsgDTO selectClubBasicMsg(long clubId);
+
+    Long selectClubIdByName(String clubName);
 }

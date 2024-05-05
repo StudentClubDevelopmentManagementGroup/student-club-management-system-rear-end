@@ -30,9 +30,9 @@ public class AttendanceController {
     @GetMapping("/getLatestCheckInRecord")
     public Object getLatestCheckInRecord(
             @RequestParam("userId") String userId,
-            @RequestParam("clubId") Long clubId) {
+            @RequestParam("clubName") String clubName) {
         // 调用服务层方法执行查询当天签到记录的逻辑
-        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubId);
+        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecordTest(userId,clubName);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(attendanceInfoVO);
@@ -53,9 +53,9 @@ public class AttendanceController {
         if (checkInTime.toLocalDate().isEqual(now.toLocalDate()) && checkInTime.isBefore(now)) {
             // 查询当天最新的签到记录
             AttendanceInfoVO latestCheckInRecord =
-                    attendanceService.getLatestCheckInRecord(
+                    attendanceService.getLatestCheckInRecordTest(
                             userCheckinReq.getUserId(),
-                            userCheckinReq.getClubId());
+                            userCheckinReq.getClubName());
 
             // 如果最新签到记录存在且签退时间不为空，则表示上一次签到未签退
             if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
@@ -154,7 +154,7 @@ public class AttendanceController {
         if(!applyAttendanceReq.getCheckInTime().toLocalDate()
                 .equals(applyAttendanceReq.getCheckoutTime().toLocalDate())) {
             return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("非法请求，时间无效");
+                    .statusText("非法请求，签到时间与签退时间不在同一天");
         }
 
         AttendanceInfoVO attendanceInfoVO = attendanceService.userReplenishAttendance(applyAttendanceReq);

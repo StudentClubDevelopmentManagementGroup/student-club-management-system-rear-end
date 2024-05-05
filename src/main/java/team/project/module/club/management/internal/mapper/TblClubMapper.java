@@ -39,7 +39,7 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     Page<ClubMsgDTO> findAllByDepartmentIdAndName(Page<ClubMsgDTO> page, Long departmentId, String name);
 
-    //根据id查询社团信息
-    @Select("SELECT * FROM tbl_club WHERE id = #{clubId}")
-    TblClubDO selectClubByCustomQuery(@Param("clubId") long clubId);
+    @Select("SELECT id FROM tbl_club WHERE name = #{name}")
+    Long selectClubIdByName(@Param("name") String name);
+
 }

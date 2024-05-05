@@ -11,9 +11,10 @@ import java.time.LocalDateTime;
 @Data
 public class GetAttendanceTimeReq {
 
-    @JsonProperty("clubId")
-    @NotNull(message = "社团id不能为空")
-    private Long clubId;
+
+    @JsonProperty("clubName")
+    @NotNull(message = "社团名称不能为空")
+    private String clubName;
 
     @JsonProperty("userName")
     private String userName;

@@ -36,10 +36,16 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public ManagementIService managementIService;
 
 
+
+
+
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
-        AttendanceDO attendanceDO = attendanceMapper.userCheckIn(userCheckinReq);
+
+        Long clubId = managementIService.selectClubIdByName(userCheckinReq.getClubName());
+
+        AttendanceDO attendanceDO = attendanceMapper.userCheckIn(userCheckinReq,clubId);
         // 如果插入成功，则设置签到信息的ID属性
         if (attendanceDO !=null) {
             return toolMethods.convert(attendanceDO);
@@ -51,7 +57,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     //签退返回签到信息
     public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
-        AttendanceDO attendanceDO = attendanceMapper.userCheckOut(userCheckoutReq);
+        Long clubId = managementIService.selectClubIdByName(userCheckoutReq.getClubName());
+        AttendanceDO attendanceDO = attendanceMapper.userCheckOut(userCheckoutReq,clubId);
         if(attendanceDO !=null){
             return toolMethods.convert(attendanceDO);
         }else {
@@ -70,18 +77,32 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         }
     }
 
+    //查询社团成员当天最新的签到记录
+    @Override
+    public AttendanceInfoVO getLatestCheckInRecordTest(String userId, String clubName){
+        Long clubId = managementIService.selectClubIdByName(clubName);
+        System.out.println("社团id"  + clubId);
+        if(attendanceMapper.getLatestCheckInRecord(userId,clubId) != null) {
+            return toolMethods.convert(attendanceMapper.getLatestCheckInRecord(userId,clubId));
+        }else{
+            return null;
+        }
+    }
+
+
 
 
     @Override
     //查询社团成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
+        Long clubId = managementIService.selectClubIdByName(getAttendanceTimeReq.getClubName());
         List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
-                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq);
+                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
         for (ClubAttendanceDurationVO clubAttendanceDurationVO : clubAttendanceDurationVOList){
             String userName = userInfoIService.selectUserBasicInfo(clubAttendanceDurationVO.getUserId()).getName();
             clubAttendanceDurationVO.setUserName(userName);
 
-            ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(getAttendanceTimeReq.getClubId());
+            ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(clubId);
             String clubName = clubBasicMsgDTO.getName();
             clubAttendanceDurationVO.setClubName(clubName);
         }
@@ -93,7 +114,9 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
 
-        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq);
+        Long clubId = managementIService.selectClubIdByName(getAttendanceRecordReq.getClubName());
+
+        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
         List<AttendanceInfoVO> result = new ArrayList<>();
 
         if (getAttendanceRecordReq.getUserId() != "") {
@@ -113,7 +136,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
     //社团成员申请补签,返回补签记录
     public AttendanceInfoVO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
-            AttendanceDO attendanceDO = attendanceMapper.userReplenishAttendance(applyAttendanceReq);
+        Long clubId = managementIService.selectClubIdByName(applyAttendanceReq.getClubName());
+            AttendanceDO attendanceDO = attendanceMapper.userReplenishAttendance(applyAttendanceReq,clubId);
             return toolMethods.convert(attendanceDO);
 
 

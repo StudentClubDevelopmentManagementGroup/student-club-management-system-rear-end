@@ -13,9 +13,8 @@
 
 
 
-    <!-- 查询社团成员指定时间段的打卡时长 -->
     <select id="getEachAttendanceDurationTime"
-            parameterType="team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq"
+            parameterType="map"
             resultMap="ClubAttendanceDurationVO">
         SELECT
         user_id,
@@ -25,18 +24,16 @@
         WHERE
         is_deleted = 0
         AND club_id = #{clubId}
-        <if test="userId != null and userId != ''">
-            AND user_id = #{userId}
+        <if test="getAttendanceTimeReq.userId != null and getAttendanceTimeReq.userId != ''">
+            AND user_id = #{getAttendanceTimeReq.userId}
         </if>
-        <if test="startTime != null and endTime != null">
-            AND checkin_time BETWEEN #{startTime} AND #{endTime}
+        <if test="getAttendanceTimeReq.startTime != null and getAttendanceTimeReq.endTime != null">
+            AND checkin_time BETWEEN #{getAttendanceTimeReq.startTime} AND #{getAttendanceTimeReq.endTime}
         </if>
         AND checkout_time IS NOT NULL
         GROUP BY
         user_id;
     </select>
-
-
 
 
 </mapper>

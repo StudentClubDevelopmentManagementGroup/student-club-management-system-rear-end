@@ -24,4 +24,10 @@ public class ManagementIServiceImpl implements ManagementIService {
         clubBasicMsgDTO.setDepartmentName(departmentService.getDepartmentName(tblClubDO.getDepartmentId()));
         return clubBasicMsgDTO;
     }
+
+    @Override
+    public   Long selectClubIdByName(String clubName){
+        return tblClubMapper.selectClubIdByName(clubName);
+    }
+
 }
