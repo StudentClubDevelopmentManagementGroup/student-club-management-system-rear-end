@@ -50,7 +50,7 @@
  *      并不知道到底是哪个社团的负责人，故之后还需进一步校验）
  * <p>  注意：
  * <ol>
- * <li> 角色码请使用枚举常量：{@link team.project.module.auth.export.model.enums.AuthRole}
+ * <li> 角色码请使用枚举常量：{@link team.project.module.auth.export.model.enums.AuthRole AuthRole}
  * <li> @SaCheckRole 自带登录校验，不需要多写 @SaCheckLogin
  * <li> 如果用户是“超级管理员”，则可以通过所有的 @SaCheckRole( XXX ) 的校验
  * <br> 不需要多写 @SaCheckRole( AuthRole.SUPER_ADMIN )
