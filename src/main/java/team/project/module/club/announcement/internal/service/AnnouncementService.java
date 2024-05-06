@@ -1,7 +1,6 @@
 package team.project.module.club.announcement.internal.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,12 +9,15 @@ import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.announcement.internal.mapper.TblClubAnnouncementMapper;
 import team.project.module.club.announcement.internal.model.entity.TblClubAnnouncementDO;
-import team.project.module.club.announcement.internal.model.request.UploadAnnouncementReq;
+import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
 import team.project.module.club.announcement.internal.model.view.AnnouncementVO;
+import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageServiceI;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -28,7 +30,10 @@ public class AnnouncementService {
     @Autowired
     TblClubAnnouncementMapper announcementMapper;
 
-    public Long upload(String authorId, UploadAnnouncementReq req) {
+    @Autowired
+    ModelConverter modelConverter;
+
+    public Long upload(String authorId, PublishAnnouncementReq req) {
 
         /* 先将公告的内容保存到文件，获取 fileId 后，再将 fileId 和其他信息保存到数据库 */
 
@@ -60,7 +65,7 @@ public class AnnouncementService {
         return announcement.getId();
     }
 
-    public AnnouncementVO read(String userId, Long announcementId) {
+    public AnnouncementVO read(Long announcementId) {
 
         /* ljh_TODO: 设置公告的可见性
             查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
@@ -77,9 +82,20 @@ public class AnnouncementService {
         String fileId = announcementDO.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
 
-        AnnouncementVO result = new AnnouncementVO();
-        result.setTitle(announcementDO.getTitle());
-        result.setContent(content);
+        return modelConverter.toAnnouncementVO(announcementDO, content);
+    }
+
+    public List<AnnouncementVO> list() {
+
+        /* tmp */
+        List<TblClubAnnouncementDO> announcementDOList = announcementMapper.selectList(new LambdaQueryWrapper<TblClubAnnouncementDO>()
+            .orderBy(true, true, TblClubAnnouncementDO::getCreateTime)
+        );
+
+        List<AnnouncementVO> result = new ArrayList<>();
+        for (TblClubAnnouncementDO announcementDO : announcementDOList) {
+            result.add( modelConverter.toAnnouncementVO(announcementDO, null) ); /* <- 不返回 content */
+        }
 
         return result;
     }

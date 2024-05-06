@@ -8,6 +8,9 @@ import lombok.Setter;
 @Setter
 public class AnnouncementVO {
 
+    @JsonProperty("announcement_id")
+    private Long announcementId;
+
     @JsonProperty("title")
     private String title;
 

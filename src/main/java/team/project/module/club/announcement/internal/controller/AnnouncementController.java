@@ -12,9 +12,11 @@ import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.internal.model.request.UploadAnnouncementReq;
+import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
 import team.project.module.club.announcement.internal.model.view.AnnouncementVO;
 import team.project.module.club.announcement.internal.service.AnnouncementService;
+
+import java.util.List;
 
 @Tag(name="公告")
 @RestController
@@ -30,7 +32,7 @@ public class AnnouncementController {
     @Operation(summary="发布公告")
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object publishAnnouncement(@Valid @RequestBody UploadAnnouncementReq req) {
+    Object publish(@Valid @RequestBody PublishAnnouncementReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
@@ -42,12 +44,16 @@ public class AnnouncementController {
 
     @Operation(summary="获取公告内容")
     @GetMapping("/read")
-    Object readAnnouncement(@NotNull(message="未指定公告id") Long announcementId) {
+    Object read(@NotNull(message="未指定公告id") Long announcementId) {
 
-        String userId = (String)( StpUtil.getLoginIdDefaultNull() );
+        AnnouncementVO result = announcementService.read(announcementId);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
 
-        AnnouncementVO result = announcementService.read(userId, announcementId);
-
+    @Operation(summary="公告列表（分页查询、模糊查询）")
+    @GetMapping("/list")
+    Object list() {
+        List<AnnouncementVO> result = announcementService.list();
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }

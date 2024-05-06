@@ -9,7 +9,7 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 
 @Getter
 @Setter
-public class UploadAnnouncementReq {
+public class PublishAnnouncementReq {
     @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
