@@ -30,6 +30,8 @@ public class AnnouncementService {
 
     public Long upload(String authorId, UploadAnnouncementReq req) {
 
+        /* 先将公告的内容保存到文件，获取 fileId 后，再将 fileId 和其他信息保存到数据库 */
+
         String targetFolder = "/club/announcement/" + req.getClubId();
         String randomFileName = UUID.randomUUID().toString().replace("-", "") + ".txt";
 
@@ -59,6 +61,9 @@ public class AnnouncementService {
     }
 
     public AnnouncementVO read(String userId, Long announcementId) {
+
+        /* ljh_TODO: 设置公告的可见性
+            查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
 
         /* tmp */
         TblClubAnnouncementDO announcementDO = announcementMapper.selectOne(new LambdaQueryWrapper<TblClubAnnouncementDO>()

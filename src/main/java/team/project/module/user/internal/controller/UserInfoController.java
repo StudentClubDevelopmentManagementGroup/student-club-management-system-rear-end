@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.queryparam.QueryParam;
@@ -23,13 +24,14 @@ import team.project.module.user.internal.service.UserInfoService;
 
 @Tag(name="用户信息管理")
 @RestController
+@RequestMapping("/user_info")
 public class UserInfoController {
 
     @Autowired
     UserInfoService userInfoService;
 
     @Operation(summary="查询自己的账号信息")
-    @GetMapping({"/user_info/select_self"})
+    @GetMapping("/select_self")
     @SaCheckLogin
     Object selectSelf() {
         String userId = (String)( StpUtil.getLoginId() );
@@ -44,7 +46,7 @@ public class UserInfoController {
     }
 
     @Operation(summary="查询指定用户账号信息")
-    @GetMapping("/user_info/select_one")
+    @GetMapping("/select_one")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectOne(@NotNull @UserIdConstraint @RequestParam("user_id") String userId) {
 
@@ -58,7 +60,7 @@ public class UserInfoController {
     }
 
     @Operation(summary="查询所有用户账号信息（分页查询）")
-    @GetMapping("/user_info/select_all")
+    @GetMapping("/select_all")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectAll(@QueryParam PagingQueryReq pageReq) {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.selectUserInfo(pageReq));
@@ -69,7 +71,7 @@ public class UserInfoController {
      - 姓名传 null 或 "" 表示全匹配
      - 院系 id 传 null 或 0 表示全匹配
     """)
-    @GetMapping("/user_info/search")
+    @GetMapping("/search")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectAll(
         @Valid @QueryParam SearchUserReq  searchReq,

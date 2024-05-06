@@ -7,10 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
@@ -21,6 +18,7 @@ import team.project.module.club.announcement.internal.service.AnnouncementServic
 
 @Tag(name="公告")
 @RestController
+@RequestMapping("/club/announcement")
 public class AnnouncementController {
 
     @Autowired
@@ -30,9 +28,9 @@ public class AnnouncementController {
     AnnouncementService announcementService;
 
     @Operation(summary="发布公告")
-    @PostMapping("/announcement/publish")
+    @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object publish(@Valid @RequestBody UploadAnnouncementReq req) {
+    Object publishAnnouncement(@Valid @RequestBody UploadAnnouncementReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
@@ -43,12 +41,13 @@ public class AnnouncementController {
     }
 
     @Operation(summary="获取公告内容")
-    @GetMapping("/announcement/read")
-    Object publish(@NotNull(message="未指定公告id") Long announcementId) {
+    @GetMapping("/read")
+    Object readAnnouncement(@NotNull(message="未指定公告id") Long announcementId) {
 
         String userId = (String)( StpUtil.getLoginIdDefaultNull() );
 
         AnnouncementVO result = announcementService.read(userId, announcementId);
+
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }

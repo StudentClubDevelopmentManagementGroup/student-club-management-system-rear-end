@@ -27,6 +27,7 @@ import java.util.List;
 
 @Tag(name="座位安排")
 @RestController
+@RequestMapping("/club/seat")
 public class SeatController {
 
     @Autowired
@@ -36,7 +37,7 @@ public class SeatController {
     SeatService seatService;
 
     @Operation(summary="添加座位")
-    @PostMapping("/club/seat/add")
+    @PostMapping("/add")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
 
@@ -52,7 +53,7 @@ public class SeatController {
      - 分配座位：owner_id 传学号/工号，且 unset_owner 传 false 或 null
      - 将座位置空：owner_id 传 null，且 unset_owner 传 true
     """)
-    @PostMapping("/club/seat/update")
+    @PostMapping("/update")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object update(@Valid @RequestBody UpdateSeatReq req) {
         UpdateSeatReq.validate(req);
@@ -65,14 +66,14 @@ public class SeatController {
     }
 
     @Operation(summary="查看座位表")
-    @GetMapping("/club/seat/view")
+    @GetMapping("/view")
     Object view(@NotNull @ClubIdConstraint @RequestParam("club_id") Long clubId) {
         List<SeatVO> result = seatService.view(clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
     @Operation(summary="删除座位")
-    @PostMapping("/club/seat/del")
+    @PostMapping("/del")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@Valid @RequestBody DelSeatReq req) {
 
@@ -84,7 +85,7 @@ public class SeatController {
     }
 
     @Operation(summary="查询没有座位的成员（分页查询）")
-    @GetMapping("/club/seat/members/no_seat")
+    @GetMapping("/members/no_seat")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object membersNoSeat(
         @NotNull(message="未指定社团id")
