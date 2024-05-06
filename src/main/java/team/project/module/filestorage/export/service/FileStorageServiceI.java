@@ -1,10 +1,11 @@
 package team.project.module.filestorage.export.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 
-public interface FileStorageIService {
+public interface FileStorageServiceI {
 
     /* -- 基本操作（上传、获取 url、删除） -- */
 
@@ -14,6 +15,7 @@ public interface FileStorageIService {
      * @param storageType  存储类型
      * @param uploadFileQO 详见：{@link UploadFileQO}
      * @return fileId
+     * @throws FileStorageException 如果上传失败则抛出此异常
      * */
     String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO);
 
@@ -41,6 +43,7 @@ public interface FileStorageIService {
      * @param text         要保存的文本
      * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
      * @return fileId
+     * @throws FileStorageException 如果上传失败则抛出此异常
      * */
     String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO);
 

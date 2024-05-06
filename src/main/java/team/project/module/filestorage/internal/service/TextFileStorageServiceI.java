@@ -1,5 +1,6 @@
 package team.project.module.filestorage.internal.service;
 
+import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 
 public interface TextFileStorageServiceI {
@@ -9,6 +10,7 @@ public interface TextFileStorageServiceI {
      * @param text         要保存的文本
      * @param uploadFileQO 详见 {@link UploadFileQO}（其中，必须要指定文件名）
      * @return fileId
+     * @throws FileStorageException 如果上传失败则抛出此异常
      * */
     String uploadTextToFile(String text, UploadFileQO uploadFileQO);
 
