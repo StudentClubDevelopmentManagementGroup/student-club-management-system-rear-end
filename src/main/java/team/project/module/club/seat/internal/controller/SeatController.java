@@ -40,7 +40,7 @@ public class SeatController {
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
 
-        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+        String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能给该社团添加座位");
 
         List<SeatVO> result = seatService.addSeat(arrangerId, req);
@@ -57,7 +57,7 @@ public class SeatController {
     Object update(@Valid @RequestBody UpdateSeatReq req) {
         UpdateSeatReq.validate(req);
 
-        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+        String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能更新该社团的座位信息");
 
         seatService.updateSeat(arrangerId, req);
@@ -76,7 +76,7 @@ public class SeatController {
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@Valid @RequestBody DelSeatReq req) {
 
-        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+        String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能删除该社团的座位");
 
         seatService.deleteSeat(req);
@@ -93,7 +93,7 @@ public class SeatController {
 
         @QueryParam PagingQueryReq pageReq
     ) {
-        String arrangerId = (String)( StpUtil.getSession().getLoginId() );
+        String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(arrangerId, clubId, "不是该社团的负责人，不能查询该社团没有座位的成员");
 
         PageVO<ClubMemberInfoVO> result = seatService.membersNoSeat(clubId, pageReq);

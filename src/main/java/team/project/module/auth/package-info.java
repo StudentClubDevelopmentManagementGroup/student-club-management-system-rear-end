@@ -40,29 +40,27 @@
  * <p>  已做了配置，用户登录后框架保存 userId，之后都是通过 userId 进行其他校验
  * <p>
  * <h2> 获取当前登录用户的 userId
- * <p>  <b> String userId = (String)( StpUtil.getSession().getLoginId() ); </b>
+ * <p>  <b> String userId = (String)( StpUtil.getLoginId() ); </b>
  * <p>
  * <h2> 角色校验
  * <p>  使用 <b> @SaCheckRole </b> 修饰的方法，必须具有指定角色（且已登录）才能进入
  * <p>  例如：
- * <br> 用 @SaCheckRole( AuthRole.CLUB_MANAGER ) ，可以校验用户是否为“社团负责人”
+ * <br> 用 @SaCheckRole( CLUB_MANAGER ) ，可以校验用户是否为“社团负责人”
  * <br> （这只是初步校验，只用到 userId 而没用到 clubId，所以，如果校验通过，只能说明该用户是某社团的负责人，
  *      并不知道到底是哪个社团的负责人，故之后还需进一步校验）
  * <p>  注意：
  * <ol>
  * <li> 角色码请使用枚举常量：{@link team.project.module.auth.export.model.enums.AuthRole AuthRole}
  * <li> @SaCheckRole 自带登录校验，不需要多写 @SaCheckLogin
- * <li> 如果用户是“超级管理员”，则可以通过所有的 @SaCheckRole( XXX ) 的校验
- * <br> 不需要多写 @SaCheckRole( AuthRole.SUPER_ADMIN )
- * <br> 这是考虑到“超级管理员”角色的特殊性，针对鉴权做的特例。详见拦截器配置中
+ * <li> 超级管理员能通过所有 @SaCheckRole( XXX ) 校验，不需多写 @SaCheckRole( SUPER_ADMIN )
+ * <p>  这是考虑到“超级管理员”角色的特殊性，针对鉴权做的特例，详见拦截器配置中
  *      {@link team.project.module.auth.internal.interceptor.InterceptorConfig#getRoleList getRoleList()}
- *      的实现逻辑
- * <br> 数据库中保存的角色码是分开的，“超级管理员”和其他角色互不干涉
+ *      的实现逻辑。数据库中保存的角色码是分开的，“超级管理员”和其他角色互不干涉
  * </ol>
  * <h1> 进一步鉴权
  * <p>  Sa-Token 框架可以完成一部分鉴权工作，除此之外本模块还提供有用于进一步角色鉴权的方法，
  * <br> 这些进一步的鉴权方法，实际上是整合了各模块所提供的，关于判断用户身份、角色的方法
- * <br> 详见：{@link team.project.module.auth.export.service.AuthServiceI}
+ * <br> 详见：{@link team.project.module.auth.export.service.AuthServiceI AuthServiceI}
  * <p>
  */
 package team.project.module.auth;

@@ -59,7 +59,7 @@ public class LoginController {
     @PostMapping("/user/logout")
     @SaCheckLogin
     Object logout() {
-        String userId = (String)StpUtil.getSession().getLoginId();
+        String userId = (String)( StpUtil.getLoginId() );
         StpUtil.logout(userId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("登出成功");
     }

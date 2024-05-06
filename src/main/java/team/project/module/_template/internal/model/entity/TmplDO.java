@@ -27,11 +27,10 @@ public class TmplDO {
     */
 
     /* 示例（与 tbl_tmp_test 表结构对应） */
-    @TableLogic(value="0", delval="1")                           /* <- 用于 mybatis-plus 做逻辑删除的判断 */
-    @TableField(value="is_deleted")  private Boolean   deleted;  /* <- java bool 类型的字段名不以 is 开头 */
-    @TableId(value="id")             private Long      id;       /* <- 主键*/
- /* @TableField(value="create_time") private Timestamp createTime;  <- 一般的业务逻辑不会处理这两个字段
-    @TableField(value="update_time") private Timestamp updateTime; */
-
-    @TableField(value="str") private String str;
+    @TableId(value="id")               private Long      id;         /* <- 主键 */
+    @TableLogic(value="0", delval="1")                               /* <- 用于 mybatis-plus 做逻辑删除的判断 */
+    @TableField(value="is_deleted")    private Boolean   deleted;    /* <- java bool 类型的字段名不以 is 开头 */
+ /* @TableField(value="create_time")   private Timestamp createTime;    <- 一般的业务逻辑不会处理这两个字段
+    @TableField(value="update_time")   private Timestamp updateTime; */
+    @TableField(value="str")           private String    str;
 }

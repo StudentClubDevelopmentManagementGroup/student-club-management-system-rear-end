@@ -32,7 +32,7 @@ public class UserInfoController {
     @GetMapping({"/user_info/select_self"})
     @SaCheckLogin
     Object selectSelf() {
-        String userId = (String)( StpUtil.getSession().getLoginId() );
+        String userId = (String)( StpUtil.getLoginId() );
 
         UserInfoVO userInfo = userInfoService.selectUserInfo(userId);
 
