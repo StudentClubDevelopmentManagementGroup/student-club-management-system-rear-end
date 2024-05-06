@@ -13,16 +13,14 @@ import java.sql.Timestamp;
 @Setter
 @TableName("tbl_club_announcement")
 public class TblClubAnnouncementDO {
+    @TableId(value="id")               private Long      id;
     @TableLogic(value="0", delval="1")
-    @TableField(value="is_deleted")     private Boolean   deleted;
-    @TableId(value="id")                private Long      id;
-
-    @TableField(value="author_id")      private String    authorId;
-    @TableField(value="club_id")        private Long      clubId;
-    @TableField(value="title")          private String    title;
-    @TableField(value="summary")        private String    summary;
- /* @TableField(value="status")         private Integer   status;
-    @TableField(value="visibility")     private Integer   visibility; */
-    @TableField(value="publish_time")   private Timestamp publishTime;
-    @TableField(value="file_id")        private String    fileId;
+    @TableField(value="is_deleted")    private Boolean   deleted;
+    @TableField(value="create_time")   private Timestamp createTime;
+    @TableField(value="update_time")   private Timestamp updateTime;
+ // @TableField(value="publish_time")  private Timestamp publishTime;
+    @TableField(value="author_id")     private String    authorId;
+    @TableField(value="club_id")       private Long      clubId;
+    @TableField(value="title")         private String    title;
+    @TableField(value="text_file")     private String    textFile;
 }
