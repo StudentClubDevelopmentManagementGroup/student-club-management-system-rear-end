@@ -23,4 +23,6 @@ public class AnnouncementDO {
     @TableField(value="club_id")       private Long      clubId;
     @TableField(value="title")         private String    title;
     @TableField(value="text_file")     private String    textFile;
+
+    public static final int TitleMaxLength = 127;
 }

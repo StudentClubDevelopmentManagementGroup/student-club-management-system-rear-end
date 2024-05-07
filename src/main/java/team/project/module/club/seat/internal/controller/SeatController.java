@@ -42,7 +42,7 @@ public class SeatController {
     Object add(@Valid @RequestBody AddSeatReq req) {
 
         String arrangerId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能给该社团添加座位");
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能给添加座位");
 
         List<SeatVO> result = seatService.addSeat(arrangerId, req);
         return new Response<>(ServiceStatus.CREATED).data(result);
@@ -59,7 +59,7 @@ public class SeatController {
         UpdateSeatReq.validate(req);
 
         String arrangerId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能更新该社团的座位信息");
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能更新座位信息");
 
         seatService.updateSeat(arrangerId, req);
         return new Response<>(ServiceStatus.SUCCESS);
@@ -78,7 +78,7 @@ public class SeatController {
     Object del(@Valid @RequestBody DelSeatReq req) {
 
         String arrangerId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(arrangerId, req.getClubId(), "不是该社团的负责人，不能删除该社团的座位");
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能删除座位");
 
         seatService.deleteSeat(req);
         return new Response<>(ServiceStatus.SUCCESS);
@@ -95,7 +95,7 @@ public class SeatController {
         @QueryParam PagingQueryReq pageReq
     ) {
         String arrangerId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(arrangerId, clubId, "不是该社团的负责人，不能查询该社团没有座位的成员");
+        authService.requireClubManager(arrangerId, clubId, "只有社团负责人能执行该查询");
 
         PageVO<ClubMemberInfoVO> result = seatService.membersNoSeat(clubId, pageReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);

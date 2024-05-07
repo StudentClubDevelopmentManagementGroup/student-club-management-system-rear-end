@@ -27,13 +27,17 @@ public class AuthServiceImpl implements AuthServiceI {
      * */
     @Override
     public void requireClubManager(String userId, long clubId, String message) {
-        Integer roleCode;
-        if (   null == userId
-          || ! clubMemberRoleService.isClubManager(userId, clubId)
-          || ! isSuperAdmin(userId)
-        ) {
+
+        if (null == userId)
             throw new AuthenticationFailureException(message);
-        }
+
+        if (clubMemberRoleService.isClubManager(userId, clubId))
+            return;
+
+        if (isSuperAdmin(userId))
+            return;
+
+        throw new AuthenticationFailureException(message);
     }
 
     /**
@@ -41,11 +45,16 @@ public class AuthServiceImpl implements AuthServiceI {
      */
     @Override
     public void requireClubMember(String userId, long clubId, String message) {
-        if (   null == userId
-          || ! clubMemberRoleService.isClubMember(userId, clubId)
-          || ! isSuperAdmin(userId)
-        ) {
+
+        if (null == userId)
             throw new AuthenticationFailureException(message);
-        }
+
+        if (clubMemberRoleService.isClubMember(userId, clubId))
+            return;
+
+        if (isSuperAdmin(userId))
+            return;
+
+        throw new AuthenticationFailureException(message);
     }
 }

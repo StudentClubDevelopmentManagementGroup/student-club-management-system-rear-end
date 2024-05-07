@@ -37,7 +37,7 @@ public class AnnouncementService {
 
         /* 先将公告的内容保存到文件，获取 fileId 后，再将 fileId 和其他信息保存到数据库 */
 
-        String targetFolder = "/club/announcement/" + req.getClubId();
+        String targetFolder = "/club/announcement/announcement/" + req.getClubId();
         String randomFileName = UUID.randomUUID().toString().replace("-", "") + ".txt";
 
         UploadFileQO uploadFileQO = new UploadFileQO();
