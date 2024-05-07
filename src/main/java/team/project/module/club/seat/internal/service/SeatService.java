@@ -130,15 +130,8 @@ public class SeatService {
 
         List<ClubMemberInfoVO> result = new ArrayList<>();
         for (String userId : membersId) {
-            UserBasicInfoDTO userBasicInfo = userInfoService.selectUserBasicInfo(userId);
-
-            ClubMemberInfoVO memberInfo = new ClubMemberInfoVO();
-            memberInfo.setUserId(userId);
-            memberInfo.setName(userBasicInfo.getName());
-            memberInfo.setStudent(userBasicInfo.hasRole(UserRole.STUDENT));
-            memberInfo.setTeacher(userBasicInfo.hasRole(UserRole.TEACHER));
-
-            result.add(memberInfo);
+            UserBasicInfoDTO memberInfo = userInfoService.selectUserBasicInfo(userId);
+            result.add( modelConverter.toClubMemberInfoVO(memberInfo) );
         }
 
         return new PageVO<>(result, page);
