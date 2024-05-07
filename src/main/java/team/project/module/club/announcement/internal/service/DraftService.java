@@ -36,13 +36,19 @@ public class DraftService {
 
     private static final String DRAFT_FOLDER = "/club/announcement/draft/";
 
+    private void checkAuthor(String authorId, DraftDO draft, String message) {
+        if (draft == null || ! authorId.equals(draft.getAuthorId())) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, message);
+        }
+    }
+
     public void createDraft(String authorId, SaveDraftReq req) {
 
         /* 将草稿的内容保存到文件，获取 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
         uploadFileQO.setTargetFolder(DRAFT_FOLDER);
-        uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".txt"));
+        uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
         String textFileId = fileStorageService.uploadTextToFile(FileStorageType.LOCAL, req.getContent(), uploadFileQO);
@@ -59,7 +65,7 @@ public class DraftService {
             draftMapper.insert(draft);
         }
         catch (Exception e) {
-            fileStorageService.deleteFile(textFileId);
+            fileStorageService.deleteFile(textFileId); /* <- 保存草稿失败，则删除文件 */
             log.error("保存草稿失败", e);
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "保存草稿失败");
         }
@@ -69,18 +75,11 @@ public class DraftService {
 
     public void updateDraft(String authorId, SaveDraftReq req) {
 
-        /* 查询数据库获取，获取旧草稿，获取旧草稿文件的 fileId */
+        /* 查询数据库获取旧草稿，获取旧草稿文件的 fileId */
 
-        DraftDO oldDraft = draftMapper.selectOne(new LambdaQueryWrapper<DraftDO>()
-            .eq(DraftDO::getDraftId, req.getDraftId())
-        );
+        DraftDO oldDraft = draftMapper.selectById(req.getDraftId());
 
-        if (   oldDraft == null                               /* <- 确保该草稿存在 */
-          || ! oldDraft.getAuthorId().equals(authorId)        /* <- 确保这篇草稿属于该作者 */
-          || ! oldDraft.getClubId()  .equals(req.getClubId()) /* <- 确保这篇草稿属于该社团 */
-        ) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, "无权修改");
-        }
+        checkAuthor(authorId, oldDraft, "不是该草稿作者，无权修改");
 
         String oldTextFileId = oldDraft.getTextFile();
 
@@ -88,19 +87,20 @@ public class DraftService {
 
         UploadFileQO uploadFileQO = new UploadFileQO();
         uploadFileQO.setTargetFolder(DRAFT_FOLDER);
-        uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".txt"));
+        uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
         String newTextFileId = fileStorageService.uploadTextToFile(FileStorageType.LOCAL, req.getContent(), uploadFileQO);
 
         /* 更新数据库 */
 
+        DraftDO newDraft = new DraftDO();
+        newDraft.setDraftId(req.getDraftId());
+        newDraft.setTitle(req.getTitle());
+        newDraft.setTextFile(newTextFileId);
+
         try {
-            draftMapper.update(new LambdaUpdateWrapper<DraftDO>() /* tmp */
-                .eq(DraftDO::getDraftId, req.getDraftId())
-                .set(DraftDO::getTitle, req.getTitle())
-                .set(DraftDO::getTextFile, newTextFileId)
-            );
+            draftMapper.updateById(newDraft);
         }
         catch (Exception e) {
             fileStorageService.deleteFile(newTextFileId); /* <- 如果数据库更新失败，则删除新文件 */
@@ -113,24 +113,23 @@ public class DraftService {
         fileStorageService.deleteFile(oldTextFileId);
     }
 
-    public DraftVO readDraft(Long draftId) {
-        /* tmp */
-        DraftDO draftDO = draftMapper.selectOne(new LambdaQueryWrapper<DraftDO>()
-            .eq(DraftDO::getDraftId, draftId)
-        );
+    public DraftVO readDraft(String authorId, Long draftId) {
 
-        if (draftDO == null) {
-            return null;
+        DraftDO draft = draftMapper.selectById(draftId);
+
+        checkAuthor(authorId, draft, "不是该草稿作者，不能查看内容");
+
+        String fileId = draft.getTextFile();
+        String content = fileStorageService.getTextFromFile(fileId);
+        if (content == null) {
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "读取草稿失败");
         }
 
-        String fileId = draftDO.getTextFile();
-        String content = fileStorageService.getTextFromFile(fileId);
-
-        return modelConverter.toDraftVO(draftDO, content);
+        return modelConverter.toDraftVO(draft, content);
     }
 
     public List<DraftVO> list(String authorId, Long clubId) {
-        List<DraftDO> draftDOList = draftMapper.selectList(new LambdaQueryWrapper<DraftDO>()
+        List<DraftDO> draftDOList = draftMapper.selectList(new LambdaQueryWrapper<DraftDO>() /* tmp */
             .eq(DraftDO::getClubId, clubId)
             .eq(DraftDO::getAuthorId, authorId)
             .orderBy(true, true, DraftDO::getCreateTime)
@@ -138,9 +137,22 @@ public class DraftService {
 
         List<DraftVO> result = new ArrayList<>();
         for (DraftDO draftDO : draftDOList) {
-            result.add( modelConverter.toDraftVO(draftDO, null) ); /* <- 不返回 content */
+            result.add( modelConverter.toDraftVO(draftDO, null) ); /* <- 列表页不需显示内容，content 传 null */
         }
 
         return result;
+    }
+
+    public void deleteDraft(String authorId, Long draftId) {
+
+        DraftDO draft = draftMapper.selectById(draftId);
+
+        checkAuthor(authorId, draft, "不是该草稿作者，无权删除");
+
+        String textFileId = draft.getTextFile();
+
+        if (1 == draftMapper.deleteById(draftId)) { /* <- 删除数据库的数据，删除成功后清除文件 */
+            fileStorageService.deleteFile(textFileId);
+        }
     }
 }

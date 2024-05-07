@@ -94,7 +94,7 @@ public class AnnouncementService {
 
         List<AnnouncementVO> result = new ArrayList<>();
         for (AnnouncementDO announcementDO : announcementDOList) {
-            result.add( modelConverter.toAnnouncementVO(announcementDO, null) ); /* <- 不返回 content */
+            result.add( modelConverter.toAnnouncementVO(announcementDO, null) ); /* <- 列表页不需显示内容，content 传 null */
         }
 
         return result;

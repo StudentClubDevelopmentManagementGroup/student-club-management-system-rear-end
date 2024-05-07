@@ -69,17 +69,7 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
     }
 
     /**
-     * 查询非空座位
-     * */
-    default List<SeatDO> selectOccupiedSeat(Long clubId) {
-        return this.selectList(null, new LambdaQueryWrapper<SeatDO>()
-            .eq(SeatDO::getClubId, clubId)
-            .isNotNull(SeatDO::getOwnerId)
-        );
-    }
-
-    /**
-     * 查询没有座位的成员 id
+     * 查询没有座位的成员 id（分页查询）
      * */
     @CrossModuleSQL({"tbl_user_club"})
     @Select("""

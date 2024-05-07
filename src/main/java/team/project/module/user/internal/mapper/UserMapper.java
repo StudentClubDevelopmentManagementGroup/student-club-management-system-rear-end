@@ -18,7 +18,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 查询指定用户的账号信息
      * */
     default UserDO selectUserInfo(String userId) {
-        return this.selectOne(new LambdaQueryWrapper<UserDO>()
+        return selectOne(new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getDepartmentId,
@@ -36,7 +36,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 查询指定用户的账号信息
      * */
     default UserDO selectUserInfo(String userId, String password) {
-        return this.selectOne(new LambdaQueryWrapper<UserDO>()
+        return selectOne(new LambdaQueryWrapper<UserDO>()
             .eq(UserDO::getUserId, userId)
             .eq(UserDO::getPassword, password)
         );
@@ -46,7 +46,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
      * */
     default UserDO selectBasicInfo(String userId) {
-        return this.selectOne(new LambdaQueryWrapper<UserDO>()
+        return selectOne(new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getName,
@@ -60,7 +60,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 查询指定用户的角色码
      * */
     default Integer selectRoleCode(String userId) {
-        UserDO user = this.selectOne(new LambdaQueryWrapper<UserDO>()
+        UserDO user = selectOne(new LambdaQueryWrapper<UserDO>()
             .select(UserDO::getRole)
             .eq(UserDO::getUserId, userId)
         );
@@ -71,13 +71,14 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 搜索相关用户的账号信息（模糊查询、分页查询）
      * */
     default List<UserDO> searchUserInfo(Page<UserDO> page, SearchUserInfoQO qo) {
+
         Long   departmentId = qo.getDepartmentId();
         String userId       = qo.getUserId();
         String userName     = qo.getUserName();
         String userIdLike   = (userId != null)   ? userId.replace("%", "")   : "";
         String userNameLike = (userName != null) ? userName.replace("%", "") : "";
 
-        return this.selectList(page, new LambdaQueryWrapper<UserDO>()
+        return selectList(page, new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getDepartmentId,
@@ -97,7 +98,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * */
     default List<UserDO> searchUserBasicInfo(String userName) {
         String userNameLike = (userName != null) ? userName.replace("%", "") : "";
-        return this.selectList(new LambdaQueryWrapper<UserDO>()
+        return selectList(new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getName,
@@ -112,7 +113,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
      *  @return 如果用户不存在（已注销）或密码错误，则注销失败，返回 0；否则注销成功，返回 1
      * */
     default int logicalDelete(String userId, String password) {
-        return this.update(null, new LambdaUpdateWrapper<UserDO>()
+        return update(new LambdaUpdateWrapper<UserDO>()
             .eq(UserDO::getUserId, userId)
             .eq(UserDO::getPassword, password)
             .set(UserDO::getDeleted, true)
@@ -155,7 +156,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
             也就是，我不打算“将位运算直接落实到 sql”
         */
 
-        Integer role = this.selectRoleCode(userId);
+        Integer role = selectRoleCode(userId);
 
         if (role == null || UserRole.hasRole(role, roleToAdd)) {
             return 0;
@@ -163,7 +164,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
 
         int newRole = UserRole.addRole(role, roleToAdd);
 
-        return this.update(null, new LambdaUpdateWrapper<UserDO>()
+        return update(new LambdaUpdateWrapper<UserDO>()
             .eq(UserDO::getUserId, userId)
             .set(UserDO::getRole, newRole)
         );
@@ -182,7 +183,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
 
         int newRole = UserRole.removeRole(role, roleToRemove);
 
-        return this.update(null, new LambdaUpdateWrapper<UserDO>()
+        return this.update(new LambdaUpdateWrapper<UserDO>()
             .eq(UserDO::getUserId, userId)
             .set(UserDO::getRole, newRole)
         );

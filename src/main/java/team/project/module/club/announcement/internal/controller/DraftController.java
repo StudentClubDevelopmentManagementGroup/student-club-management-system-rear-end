@@ -1,5 +1,6 @@
 package team.project.module.club.announcement.internal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -51,11 +52,12 @@ public class DraftController {
 
     @Operation(summary="获取某篇草稿的内容")
     @GetMapping("/read")
+    @SaCheckLogin
     Object read(@NotNull(message="未指定草稿id") Long draftId) {
 
         String authorId = (String)( StpUtil.getLoginId() ); /* ljh_TODO 身份验证 */
 
-        DraftVO result = draftService.readDraft(draftId);
+        DraftVO result = draftService.readDraft(authorId, draftId);
 
         if (result != null) {
             return new Response<>(ServiceStatus.SUCCESS).data(result);
@@ -68,8 +70,7 @@ public class DraftController {
     @GetMapping("/list")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object list(
-        @NotNull(message="未指定社团id")
-        @ClubIdConstraint
+        @NotNull(message="未指定社团id") @ClubIdConstraint
         @RequestParam("club_id") Long clubId
     ) {
         String authorId = (String)( StpUtil.getLoginId() );
@@ -81,7 +82,12 @@ public class DraftController {
 
     @Operation(summary="删除草稿")
     @PostMapping("/del")
-    Object del() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    @SaCheckLogin
+    Object del(@NotNull(message="未指定草稿id") Long draftId) {
+
+        String authorId = (String)( StpUtil.getLoginId() );
+
+        draftService.deleteDraft(authorId, draftId);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 }
