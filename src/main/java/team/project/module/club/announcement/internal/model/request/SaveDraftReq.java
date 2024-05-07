@@ -22,8 +22,8 @@ public class SaveDraftReq {
     @JsonProperty("club_id")
     private Long clubId;
 
-    @NotBlank(message="未指定标题", message="标题过长")
-    @Size(max=TitleMaxLength)
+    @NotBlank(message="未指定标题")
+    @Size(max=TitleMaxLength, message="标题过长")
     @JsonProperty("title")
     private String title;
 
