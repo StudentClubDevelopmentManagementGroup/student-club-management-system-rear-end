@@ -42,7 +42,7 @@ public class AnnouncementController {
         return new Response<>(ServiceStatus.CREATED).statusText("发布成功").data(announcementId);
     }
 
-    @Operation(summary="获取公告内容")
+    @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
 

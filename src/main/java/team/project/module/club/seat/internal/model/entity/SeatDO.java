@@ -9,7 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("tbl_user_club_seat")
-public class TblUserClubSeatDO {
+public class SeatDO {
     @TableId(value="id")             private Long      seatId;
     @TableField(value="club_id")     private Long      clubId;
     @TableField(value="x")           private Integer   x;

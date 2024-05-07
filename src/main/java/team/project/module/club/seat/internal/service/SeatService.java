@@ -9,8 +9,8 @@ import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.personnelchanges.export.service.PceIService;
-import team.project.module.club.seat.internal.mapper.TblUserClubSeatMapper;
-import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
+import team.project.module.club.seat.internal.mapper.SeatMapper;
+import team.project.module.club.seat.internal.model.entity.SeatDO;
 import team.project.module.club.seat.internal.model.request.AddSeatReq;
 import team.project.module.club.seat.internal.model.request.DelSeatReq;
 import team.project.module.club.seat.internal.model.request.UpdateSeatReq;
@@ -34,7 +34,7 @@ public class SeatService {
     private UserInfoServiceI userInfoService;
 
     @Autowired
-    private TblUserClubSeatMapper seatMapper;
+    private SeatMapper seatMapper;
 
     @Autowired
     private ModelConverter modelConverter;
@@ -42,10 +42,10 @@ public class SeatService {
     @Transactional
     public List<SeatVO> addSeat(String arrangerId, AddSeatReq req) {
 
-        List<TblUserClubSeatDO> seatsToAdd = new ArrayList<>();
+        List<SeatDO> seatsToAdd = new ArrayList<>();
         for (AddSeatReq.ToAddSeat seatInfo : req.getSeatList()) {
 
-            TblUserClubSeatDO seat = new TblUserClubSeatDO();
+            SeatDO seat = new SeatDO();
             seat.setX(seatInfo.getX());
             seat.setY(seatInfo.getY());
             seat.setDescription(seatInfo.getDescription());
@@ -56,13 +56,13 @@ public class SeatService {
         }
 
         /* 批量添加可优化，但无所谓了，毕竟添加座位不是频繁的操作 */
-        for (TblUserClubSeatDO seat : seatsToAdd) {
+        for (SeatDO seat : seatsToAdd) {
             seatMapper.addSeat(seat);
         }
 
         /* 返回添加后的座位信息，携带主键 seat_id */
         List<SeatVO> result = new ArrayList<>();
-        for (TblUserClubSeatDO seat : seatsToAdd) {
+        for (SeatDO seat : seatsToAdd) {
             result.add(modelConverter.toSeatVO(seat));
         }
         return result;
@@ -81,7 +81,7 @@ public class SeatService {
         /* 批量修改可优化，但无所谓了，毕竟修改座位不是频繁的操作 */
         for (UpdateSeatReq.ToUpdateSeat seatInfo : req.getSeatList()) {
 
-            TblUserClubSeatDO seat = new TblUserClubSeatDO();
+            SeatDO seat = new SeatDO();
             seat.setClubId(req.getClubId());
             seat.setSeatId(seatInfo.getSeatId());
             seat.setArrangerId(arrangerId);
@@ -110,14 +110,14 @@ public class SeatService {
 
     public List<SeatVO> view(long clubId) {
         List<SeatVO> result = new ArrayList<>();
-        for (TblUserClubSeatDO seat : seatMapper.selectAll(clubId)) {
+        for (SeatDO seat : seatMapper.selectAllSeat(clubId)) {
             result.add(modelConverter.toSeatVO(seat));
         }
         return result;
     }
 
     public void deleteSeat(DelSeatReq req) {
-        int result = seatMapper.delete(req.getClubId(), req.getSeatId());
+        int result = seatMapper.deleteSeat(req.getClubId(), req.getSeatId());
         if (1 != result) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "删除座位失败");
         }
@@ -126,7 +126,7 @@ public class SeatService {
     public PageVO<ClubMemberInfoVO> membersNoSeat(long clubId, PagingQueryReq pageReq) {
 
         Page<Object> page = Page.of(pageReq.getPageNum(), pageReq.getPageSize());
-        List<String> membersId = seatMapper.selectNoSeatMembersId(page, clubId);
+        List<String> membersId = seatMapper.selectNoSeatMemberId(page, clubId);
 
         List<ClubMemberInfoVO> result = new ArrayList<>();
         for (String userId : membersId) {

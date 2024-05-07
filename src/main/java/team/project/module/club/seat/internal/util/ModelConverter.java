@@ -2,7 +2,7 @@ package team.project.module.club.seat.internal.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO;
+import team.project.module.club.seat.internal.model.entity.SeatDO;
 import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
@@ -15,7 +15,7 @@ public class ModelConverter {
     @Autowired
     UserInfoServiceI userInfoService;
 
-    public SeatVO toSeatVO(TblUserClubSeatDO seat) {
+    public SeatVO toSeatVO(SeatDO seat) {
 
         UserBasicInfoDTO arrangerInfo = userInfoService.selectUserBasicInfo(seat.getArrangerId());
         ClubMemberInfoVO arranger = new ClubMemberInfoVO();

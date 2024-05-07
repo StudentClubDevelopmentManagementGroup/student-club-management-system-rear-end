@@ -12,7 +12,7 @@ import java.sql.Timestamp;
    与数据库表结构一一对应 */
 @Data
 @TableName("tbl_tmp_test")
-public class TmplDO {
+public class TmplDO { /* <- DO 的类名不需要起得和表名相同（如果表名实在太长） */
 
     /*
     create table `tbl_tmp_test` (

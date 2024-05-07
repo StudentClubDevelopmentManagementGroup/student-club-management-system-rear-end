@@ -29,7 +29,7 @@ public interface UserInfoServiceI {
      * @param userName 用户的姓名
      * @return 搜索到的用户基本信息（如果搜索不出结果则返回空列表，不会返回 null）
      * */
-    List<UserBasicInfoDTO> searchUsers(String userName);
+    List<UserBasicInfoDTO> searchUser(String userName);
 
 
     /* -- 查询、更新用户角色 -- */

@@ -5,9 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
-import team.project.module.user.internal.mapper.TblUserMapper;
-import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.query.QueryUserQO;
+import team.project.module.user.internal.mapper.UserMapper;
+import team.project.module.user.internal.model.entity.UserDO;
+import team.project.module.user.internal.model.query.SearchUserInfoQO;
 import team.project.module.user.internal.model.request.SearchUserReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.util.ModelConverter;
@@ -20,7 +20,7 @@ import java.util.Objects;
 public class UserInfoService {
 
     @Autowired
-    TblUserMapper userMapper;
+    UserMapper userMapper;
 
     @Autowired
     ModelConverter modelConverter;
@@ -30,7 +30,7 @@ public class UserInfoService {
      * @return 如果查询到成功则账号信息，否则返回 null
      * */
     public UserInfoVO selectUserInfo(String userId) {
-        TblUserDO userDO = userMapper.selectUserInfo(userId);
+        UserDO userDO = userMapper.selectUserInfo(userId);
         if (userDO == null) {
             return null;
         }
@@ -41,11 +41,11 @@ public class UserInfoService {
      * 查询所有用户的账号信息（分页查询）
      * */
     public PageVO<UserInfoVO> selectUserInfo(PagingQueryReq pageReq) {
-        Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
-        List<TblUserDO> userDOList = userMapper.selectList(page, null);
+        Page<UserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+        List<UserDO> userDOList = userMapper.selectList(page, null);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
-        for (TblUserDO userDO : userDOList) {
+        for (UserDO userDO : userDOList) {
             userInfoList.add( modelConverter.toUserInfoVO(userDO) );
         }
 
@@ -55,23 +55,23 @@ public class UserInfoService {
     /**
     * 搜索用户，返回账号信息（分页查询、模糊查询）
     * */
-    public PageVO<UserInfoVO> searchUsers(PagingQueryReq pageReq, SearchUserReq searchReq) {
+    public PageVO<UserInfoVO> searchUserInfo(PagingQueryReq pageReq, SearchUserReq searchReq) {
 
-        Page<TblUserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+        Page<UserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
 
         String searchUserId       = searchReq.getUserId();
         String searchUserName     = searchReq.getUserName();
         Long   searchDepartmentId = searchReq.getDepartmentId();
 
-        QueryUserQO queryQO = new QueryUserQO();
+        SearchUserInfoQO queryQO = new SearchUserInfoQO();
         queryQO.setUserId(   "".equals(searchUserId)   ? null : searchUserId   );
         queryQO.setUserName( "".equals(searchUserName) ? null : searchUserName );
         queryQO.setDepartmentId(Objects.equals(0L, searchDepartmentId) ? null : searchDepartmentId);
 
-        List<TblUserDO> userDOList = userMapper.searchUsersInfo(page, queryQO);
+        List<UserDO> userDOList = userMapper.searchUserInfo(page, queryQO);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
-        for (TblUserDO userDO : userDOList) {
+        for (UserDO userDO : userDOList) {
             userInfoList.add( modelConverter.toUserInfoVO(userDO) );
         }
 

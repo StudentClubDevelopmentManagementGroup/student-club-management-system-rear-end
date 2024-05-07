@@ -7,8 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.announcement.internal.mapper.TblClubAnnouncementMapper;
-import team.project.module.club.announcement.internal.model.entity.TblClubAnnouncementDO;
+import team.project.module.club.announcement.internal.mapper.AnnouncementMapper;
+import team.project.module.club.announcement.internal.model.entity.AnnouncementDO;
 import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
 import team.project.module.club.announcement.internal.model.view.AnnouncementVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
@@ -28,7 +28,7 @@ public class AnnouncementService {
     FileStorageServiceI fileStorageService;
 
     @Autowired
-    TblClubAnnouncementMapper announcementMapper;
+    AnnouncementMapper announcementMapper;
 
     @Autowired
     ModelConverter modelConverter;
@@ -47,7 +47,7 @@ public class AnnouncementService {
 
         String textFileId = fileStorageService.uploadTextToFile(FileStorageType.LOCAL, req.getContent(), uploadFileQO);
 
-        TblClubAnnouncementDO announcement = new TblClubAnnouncementDO();
+        AnnouncementDO announcement = new AnnouncementDO();
         announcement.setAuthorId(authorId);
         announcement.setClubId(req.getClubId());
         announcement.setTitle(req.getTitle());
@@ -71,12 +71,12 @@ public class AnnouncementService {
             查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
 
         /* tmp */
-        TblClubAnnouncementDO announcementDO = announcementMapper.selectOne(new LambdaQueryWrapper<TblClubAnnouncementDO>()
+        AnnouncementDO announcementDO = announcementMapper.selectOne(new LambdaQueryWrapper<AnnouncementDO>()
             .select(
-                TblClubAnnouncementDO::getTitle,
-                TblClubAnnouncementDO::getTextFile
+                AnnouncementDO::getTitle,
+                AnnouncementDO::getTextFile
             )
-            .eq(TblClubAnnouncementDO::getId, announcementId)
+            .eq(AnnouncementDO::getId, announcementId)
         );
 
         String fileId = announcementDO.getTextFile();
@@ -88,12 +88,12 @@ public class AnnouncementService {
     public List<AnnouncementVO> list() {
 
         /* tmp */
-        List<TblClubAnnouncementDO> announcementDOList = announcementMapper.selectList(new LambdaQueryWrapper<TblClubAnnouncementDO>()
-            .orderBy(true, true, TblClubAnnouncementDO::getCreateTime)
+        List<AnnouncementDO> announcementDOList = announcementMapper.selectList(new LambdaQueryWrapper<AnnouncementDO>()
+            .orderBy(true, true, AnnouncementDO::getCreateTime)
         );
 
         List<AnnouncementVO> result = new ArrayList<>();
-        for (TblClubAnnouncementDO announcementDO : announcementDOList) {
+        for (AnnouncementDO announcementDO : announcementDOList) {
             result.add( modelConverter.toAnnouncementVO(announcementDO, null) ); /* <- 不返回 content */
         }
 

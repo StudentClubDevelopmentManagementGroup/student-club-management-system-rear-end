@@ -73,10 +73,10 @@ public class UserInfoController {
     """)
     @GetMapping("/search")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object selectAll(
+    Object search(
         @Valid @QueryParam SearchUserReq  searchReq,
         @Valid @QueryParam PagingQueryReq pageReq
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.searchUsers(pageReq, searchReq));
+        return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.searchUserInfo(pageReq, searchReq));
     }
 }

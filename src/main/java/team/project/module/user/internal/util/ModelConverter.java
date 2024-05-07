@@ -3,7 +3,7 @@ package team.project.module.user.internal.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.model.entity.TblUserDO;
+import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.tmp.service.DepartmentService;
 
@@ -13,7 +13,7 @@ public class ModelConverter {
     @Autowired
     DepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
-    public UserInfoVO toUserInfoVO(TblUserDO userDO) {
+    public UserInfoVO toUserInfoVO(UserDO userDO) {
 
         UserInfoVO.UserRoleInfo role = new UserInfoVO.UserRoleInfo();
         role.setStudent(userDO.hasRole(UserRole.STUDENT));

@@ -6,8 +6,8 @@ import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
-import team.project.module.user.internal.mapper.TblUserMapper;
-import team.project.module.user.internal.model.entity.TblUserDO;
+import team.project.module.user.internal.mapper.UserMapper;
+import team.project.module.user.internal.model.entity.UserDO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,14 +16,14 @@ import java.util.List;
 public class UserInfoIServiceImpl implements UserInfoServiceI {
 
     @Autowired
-    TblUserMapper userMapper;
+    UserMapper userMapper;
 
     /**
      * 详见：{@link UserInfoServiceI#selectUserInfo}
      * */
     @Override
     public UserInfoDTO selectUserInfo(String userId) {
-        TblUserDO userInfo = userMapper.selectUserInfo(userId);
+        UserDO userInfo = userMapper.selectUserInfo(userId);
         if (userInfo == null) {
             return null;
         }
@@ -44,7 +44,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public UserBasicInfoDTO selectUserBasicInfo(String userId) {
-        TblUserDO userBasicInfo = userMapper.selectBasicInfo(userId);
+        UserDO userBasicInfo = userMapper.selectBasicInfo(userId);
         if (userBasicInfo == null) {
             return null;
         }
@@ -58,13 +58,13 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
-     * 详见：{@link UserInfoServiceI#searchUsers}
+     * 详见：{@link UserInfoServiceI#searchUser}
      */
     @Override
-    public List<UserBasicInfoDTO> searchUsers(String userName) {
+    public List<UserBasicInfoDTO> searchUser(String userName) {
         List<UserBasicInfoDTO> result = new ArrayList<>();
 
-        for (TblUserDO userDO : userMapper.searchUsersBasicInfo(userName)) {
+        for (UserDO userDO : userMapper.searchUserBasicInfo(userName)) {
 
             UserBasicInfoDTO userBasicInfoDTO = new UserBasicInfoDTO();
             userBasicInfoDTO.setUserId(userDO.getUserId());

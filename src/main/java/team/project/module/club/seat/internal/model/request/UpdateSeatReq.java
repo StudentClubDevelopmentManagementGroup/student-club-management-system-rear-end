@@ -10,7 +10,7 @@ import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 import java.util.List;
 
-import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
+import static team.project.module.club.seat.internal.model.entity.SeatDO.*;
 
 @Getter
 @Setter
