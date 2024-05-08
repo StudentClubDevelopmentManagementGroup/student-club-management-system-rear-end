@@ -1,11 +1,13 @@
 package team.project.module.club.announcement.internal.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import team.project.base.model.request.PagingQueryReq;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
@@ -42,6 +44,9 @@ public class DraftService {
         }
     }
 
+    /**
+     * 创建一篇新的草稿
+     * */
     public void createDraft(String authorId, SaveDraftReq req) {
 
         /* 将草稿的内容保存到文件，获取 fileId */
@@ -65,14 +70,24 @@ public class DraftService {
             draftMapper.insert(draft);
         }
         catch (Exception e) {
-            fileStorageService.deleteFile(textFileId); /* <- 保存草稿失败，则删除文件 */
-            log.error("保存草稿失败", e);
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "保存草稿失败");
+            fileStorageService.deleteFile(textFileId); /* <- 保存草稿失败，删除文件 */
+
+            if (e instanceof DataIntegrityViolationException) {
+                log.info("保存草稿失败：（可能是因为外键社团id不存在？）", e);
+                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "保存草稿失败");
+            }
+            else {
+                log.error("保存草稿失败", e);
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "保存草稿失败");
+            }
         }
 
         /* return draft.getDraftId(); */
     }
 
+    /**
+     * 更新草稿（其实是删除旧草稿，创建新草稿）
+     * */
     public void updateDraft(String authorId, SaveDraftReq req) {
 
         /* 查询数据库获取旧草稿，获取旧草稿文件的 fileId */
@@ -113,6 +128,9 @@ public class DraftService {
         fileStorageService.deleteFile(oldTextFileId);
     }
 
+    /**
+     * 获取某篇草稿的内容
+     * */
     public DraftVO readDraft(String authorId, Long draftId) {
 
         DraftDO draft = draftMapper.selectById(draftId);
@@ -128,21 +146,24 @@ public class DraftService {
         return modelConverter.toDraftVO(draft, content);
     }
 
-    public List<DraftVO> list(String authorId, Long clubId) {
-        List<DraftDO> draftDOList = draftMapper.selectList(new LambdaQueryWrapper<DraftDO>() /* tmp */
-            .eq(DraftDO::getClubId, clubId)
-            .eq(DraftDO::getAuthorId, authorId)
-            .orderBy(true, true, DraftDO::getCreateTime)
-        );
+    /**
+     * 查看我的草稿箱
+     * */
+    public PageVO<DraftVO> list(PagingQueryReq req, String authorId, Long clubId) {
+        Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
+        List<DraftDO> draftDOList = draftMapper.listMyDraft(page, authorId, clubId);
 
         List<DraftVO> result = new ArrayList<>();
         for (DraftDO draftDO : draftDOList) {
             result.add( modelConverter.toDraftVO(draftDO, null) ); /* <- 列表页不需显示内容，content 传 null */
         }
 
-        return result;
+        return new PageVO<>(result, page);
     }
 
+    /**
+     * 删除某篇草稿
+     * */
     public void deleteDraft(String authorId, Long draftId) {
 
         DraftDO draft = draftMapper.selectById(draftId);

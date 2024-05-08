@@ -36,7 +36,12 @@ public class SeatController {
     @Autowired
     SeatService seatService;
 
-    @Operation(summary="添加座位")
+    @Operation(summary="添加座位（批量添加）", description="""
+        club_id：社团编号
+        seat_list：“新增座位”列表
+            x、y：座位的坐标值，用于绘制座位表
+            description：座位描述
+    """)
     @PostMapping("/add")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object add(@Valid @RequestBody AddSeatReq req) {
@@ -48,10 +53,15 @@ public class SeatController {
         return new Response<>(ServiceStatus.CREATED).data(result);
     }
 
-    @Operation(summary="更新座位信息", description="""
-     - 修改部分信息：x、y、description 传修改后的值（传 null 则不修改）
-     - 分配座位：owner_id 传学号/工号，且 unset_owner 传 false 或 null
-     - 将座位置空：owner_id 传 null，且 unset_owner 传 true
+    @Operation(summary="更新座位信息（批量更新）", description="""
+        club_id：社团编号
+        seat_list：“更新座位”列表
+             x、y、description：新值（如果传 null，则表示不更新）
+             owner_id：座位所属者的学号/工号
+             unset_owner：是否将座位置空
+
+        分配座位：owner_id 传学号/工号，unset_owner 传 false 或 null
+        将座位置空：owner_id 传 null，unset_owner 传 true
     """)
     @PostMapping("/update")
     @SaCheckRole(AuthRole.CLUB_MANAGER)

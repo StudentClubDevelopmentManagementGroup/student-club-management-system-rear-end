@@ -67,9 +67,11 @@ public class UserInfoController {
     }
 
     @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）", description="""
-     - 学号/工号传 null 或 "" 表示全匹配
-     - 姓名传 null 或 "" 表示全匹配
-     - 院系 id 传 null 或 0 表示全匹配
+        user_id：学号/工号，传 null 或 "" 表示全匹配
+        user_name：姓名，传 null 或 "" 表示全匹配
+        department_id：院系编号，传 null 或 0 表示全匹配
+        page_num：分页查询，当前页码
+        page_size：分页查询，页大小
     """)
     @GetMapping("/search")
     @SaCheckRole(AuthRole.SUPER_ADMIN)

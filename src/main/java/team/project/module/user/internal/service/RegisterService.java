@@ -65,6 +65,7 @@ public class RegisterService {
             }
             else {
                 logger.error("用户注册失败：", e);
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "注册失败");
             }
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "注册失败");
         }
