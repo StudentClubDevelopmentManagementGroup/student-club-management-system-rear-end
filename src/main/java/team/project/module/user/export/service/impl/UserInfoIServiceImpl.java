@@ -58,6 +58,15 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     }
 
     /**
+     * 详见：{@link UserInfoServiceI#getUserName}
+     */
+    @Override
+    public String getUserName(String userId) {
+        UserDO userBasicInfo = userMapper.selectBasicInfo(userId);
+        return userBasicInfo == null ? null : userBasicInfo.getName();
+    }
+
+    /**
      * 详见：{@link UserInfoServiceI#searchUser}
      */
     @Override

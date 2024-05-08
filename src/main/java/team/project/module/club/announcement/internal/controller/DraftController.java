@@ -87,7 +87,7 @@ public class DraftController {
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, clubId, "只有社团负责人能编辑公告");
 
-        PageVO<DraftVO> result = draftService.list(pageReq, authorId, clubId);
+        PageVO<DraftVO> result = draftService.listMyDraft(pageReq, authorId, clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 

@@ -13,6 +13,12 @@ public class DraftVO {
     @JsonProperty("draft_id")
     private Long draftId;
 
+    @JsonProperty("create_time")
+    private Timestamp createTime;
+
+    @JsonProperty("update_time")
+    private Timestamp updateTime;
+
     @JsonProperty("title")
     private String title;
 
@@ -21,10 +27,4 @@ public class DraftVO {
 
     @JsonProperty("summary")
     private String summary;
-
-    @JsonProperty("create_time")
-    private Timestamp createTime;
-
-    @JsonProperty("update_time")
-    private Timestamp updateTime;
 }

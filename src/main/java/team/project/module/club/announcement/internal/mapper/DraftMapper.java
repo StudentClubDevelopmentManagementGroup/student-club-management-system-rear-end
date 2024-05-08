@@ -31,7 +31,7 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
         return selectList(page, new LambdaQueryWrapper<DraftDO>()
             .eq(DraftDO::getClubId, clubId)
             .eq(DraftDO::getAuthorId, authorId)
-            .orderByDesc(true, DraftDO::getUpdateTime) /* 新修改的靠前 */
+            .orderByDesc(true, DraftDO::getUpdateTime) /* 按修改时间排序，新修改的在前面 */
         );
     }
 }

@@ -13,16 +13,23 @@ public interface UserInfoServiceI {
     /**
      * 从 tbl_user 表中查询指定用户的信息
      * @param userId 学号/工号
-     * @return 用户账号信息
+     * @return 用户账号信息（不存在时返回 null）
      */
     UserInfoDTO selectUserInfo(String userId);
 
     /**
      * 从 tbl_user 表中查询指定用户的基本信息
      * @param userId 学号/工号
-     * @return 用户基本信息
+     * @return 用户基本信息（不存在时返回 null）
      */
     UserBasicInfoDTO selectUserBasicInfo(String userId);
+
+    /**
+     * 从 tbl_user 表中查询指定用户的姓名
+     * @param userId 学号/工号
+     * @return 用户姓名（不存在时返回 null）
+     */
+    String getUserName(String userId);
 
     /**
      * 从 tbl_user 表中搜索相关用户的基本信息

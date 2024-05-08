@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
+import static team.project.module.club.announcement.internal.model.entity.AnnouncementDO.SummaryMaxLength;
 import static team.project.module.club.announcement.internal.model.entity.AnnouncementDO.TitleMaxLength;
 
 @Getter
@@ -26,4 +27,9 @@ public class PublishAnnouncementReq {
     @NotBlank(message="未指定内容")
     @JsonProperty("content")
     private String content;
+
+    @NotBlank(message="未指定摘要")
+    @Size(max=SummaryMaxLength, message="摘要过长")
+    @JsonProperty("summary")
+    private String summary;
 }

@@ -77,11 +77,11 @@ public class DraftService {
 
             if (e instanceof DataIntegrityViolationException) {
                 log.info("保存草稿失败：（可能是因为外键社团id不存在？）", e);
-                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "保存草稿失败");
+                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "保存失败");
             }
             else {
                 log.error("保存草稿失败", e);
-                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "保存草稿失败");
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "保存失败");
             }
         }
 
@@ -144,6 +144,7 @@ public class DraftService {
         String fileId = draft.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
         if (content == null) {
+            log.error("读取草稿失败（数据库中存有记录，但是依据 fileId 找不到指定文件）");
             throw new ServiceException(ServiceStatus.NOT_FOUND, "读取草稿失败");
         }
 
@@ -153,7 +154,7 @@ public class DraftService {
     /**
      * 查看我的草稿箱
      * */
-    public PageVO<DraftVO> list(PagingQueryReq req, String authorId, Long clubId) {
+    public PageVO<DraftVO> listMyDraft(PagingQueryReq req, String authorId, Long clubId) {
         Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
         List<DraftDO> draftDOList = draftMapper.listMyDraft(page, authorId, clubId);
 

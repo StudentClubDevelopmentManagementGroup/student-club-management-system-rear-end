@@ -13,7 +13,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
-import team.project.module.club.announcement.internal.model.view.AnnouncementVO;
+import team.project.module.club.announcement.internal.model.view.AnnouncementDetailVO;
 import team.project.module.club.announcement.internal.service.AnnouncementService;
 
 import java.util.List;
@@ -29,26 +29,22 @@ public class AnnouncementController {
     @Autowired
     AnnouncementService announcementService;
 
-    @Operation(summary="发布公告")
+    @Operation(summary="发布公告") /* ljh_TODO: 介绍 */
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object publish(@Valid @RequestBody PublishAnnouncementReq req) {
-        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
 
-        long announcementId = announcementService.upload(authorId, req);
-
-        return new Response<>(ServiceStatus.CREATED).statusText("发布成功").data(announcementId);
+        announcementService.publishAnnouncement(authorId, req);
+        return new Response<>(ServiceStatus.CREATED).statusText("发布成功");
     }
 
     @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
-        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
-
-        AnnouncementVO result = announcementService.read(announcementId);
+        AnnouncementDetailVO result = announcementService.readAnnouncement(announcementId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
@@ -57,7 +53,7 @@ public class AnnouncementController {
     Object list() {
         if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
-        List<AnnouncementVO> result = announcementService.list();
+        List<AnnouncementDetailVO> result = announcementService.list();
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }
