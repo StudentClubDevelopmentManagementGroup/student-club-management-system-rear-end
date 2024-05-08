@@ -33,6 +33,7 @@ public class AnnouncementController {
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object publish(@Valid @RequestBody PublishAnnouncementReq req) {
+        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
@@ -45,6 +46,7 @@ public class AnnouncementController {
     @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
+        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
         AnnouncementVO result = announcementService.read(announcementId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
@@ -53,6 +55,8 @@ public class AnnouncementController {
     @Operation(summary="公告列表（分页查询、模糊查询）")
     @GetMapping("/list")
     Object list() {
+        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+
         List<AnnouncementVO> result = announcementService.list();
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }

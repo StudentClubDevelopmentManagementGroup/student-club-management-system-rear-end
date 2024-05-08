@@ -38,6 +38,8 @@ public class DraftService {
 
     private static final String DRAFT_FOLDER = "/club/announcement/draft/";
 
+    private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
+
     private void checkAuthor(String authorId, DraftDO draft, String message) {
         if (draft == null || ! authorId.equals(draft.getAuthorId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, message);
@@ -56,7 +58,7 @@ public class DraftService {
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String textFileId = fileStorageService.uploadTextToFile(FileStorageType.LOCAL, req.getContent(), uploadFileQO);
+        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, req.getContent(), uploadFileQO);
 
         /* 将 fileId 和其他信息保存到数据库 */
 
@@ -106,7 +108,7 @@ public class DraftService {
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String newTextFileId = fileStorageService.uploadTextToFile(FileStorageType.LOCAL, req.getContent(), uploadFileQO);
+        String newTextFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, req.getContent(), uploadFileQO);
 
         /* 更新数据库 */
 
@@ -142,7 +144,7 @@ public class DraftService {
         String fileId = draft.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
         if (content == null) {
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "读取草稿失败");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "读取草稿失败");
         }
 
         return modelConverter.toDraftVO(draft, content, null);

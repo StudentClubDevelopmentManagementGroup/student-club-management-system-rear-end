@@ -21,7 +21,7 @@ import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.announcement.internal.service.DraftService;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
-@Tag(name="公告（草稿）")
+@Tag(name="公告（草稿箱）")
 @RestController
 @RequestMapping("/club/announcement/draft")
 public class DraftController {
