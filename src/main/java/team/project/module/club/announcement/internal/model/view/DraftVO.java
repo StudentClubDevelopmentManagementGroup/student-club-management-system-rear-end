@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 @Getter
 @Setter
 public class DraftVO {
@@ -16,4 +18,13 @@ public class DraftVO {
 
     @JsonProperty("content")
     private String content;
+
+    @JsonProperty("summary")
+    private String summary;
+
+    @JsonProperty("create_time")
+    private Timestamp createTime;
+
+    @JsonProperty("update_time")
+    private Timestamp updateTime;
 }

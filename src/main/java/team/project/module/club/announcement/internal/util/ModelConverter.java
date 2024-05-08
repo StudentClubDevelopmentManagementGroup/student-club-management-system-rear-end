@@ -20,12 +20,15 @@ public class ModelConverter {
         return result;
     }
 
-    public DraftVO toDraftVO(DraftDO draftDO, String content) {
+    public DraftVO toDraftVO(DraftDO draftDO, String content, String summary) {
 
         DraftVO result = new DraftVO();
         result.setDraftId(draftDO.getDraftId());
         result.setTitle(draftDO.getTitle());
         result.setContent(content);
+        result.setSummary(summary);
+        result.setCreateTime(draftDO.getCreateTime());
+        result.setUpdateTime(draftDO.getUpdateTime());
 
         return result;
     }

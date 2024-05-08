@@ -36,7 +36,8 @@ public class DraftController {
         draft_id：草稿编号，如果 draft_id 传 null，则创建新的草稿；如果指定 draft_id，则更新草稿
         club_id：社团编号，指明该公告所属的社团
         title：公告标题
-        content：公告内容
+        content：公告内容（用于详情页）
+        summary：内容摘要（用于列表页）
     """)
     @PostMapping("/save")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
@@ -72,7 +73,9 @@ public class DraftController {
         }
     }
 
-    @Operation(summary="查看我的草稿箱（分页查询）", description="数据量不大，暂不提供模糊查询")
+    @Operation(summary="查看我的草稿箱（分页查询）", description="""
+        数据量不大，暂不提供模糊查询
+    """)
     @GetMapping("/list")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object list(

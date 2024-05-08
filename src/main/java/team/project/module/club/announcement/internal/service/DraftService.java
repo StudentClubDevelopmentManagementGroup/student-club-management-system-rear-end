@@ -64,6 +64,7 @@ public class DraftService {
         draft.setAuthorId(authorId);
         draft.setClubId(req.getClubId());
         draft.setTitle(req.getTitle());
+        draft.setSummary(req.getSummary());
         draft.setTextFile(textFileId);
 
         try {
@@ -92,7 +93,7 @@ public class DraftService {
 
         /* 查询数据库获取旧草稿，获取旧草稿文件的 fileId */
 
-        DraftDO oldDraft = draftMapper.selectById(req.getDraftId());
+        DraftDO oldDraft = draftMapper.selectAuthorAndTextFile(req.getDraftId());
 
         checkAuthor(authorId, oldDraft, "不是该草稿作者，无权修改");
 
@@ -112,6 +113,7 @@ public class DraftService {
         DraftDO newDraft = new DraftDO();
         newDraft.setDraftId(req.getDraftId());
         newDraft.setTitle(req.getTitle());
+        newDraft.setSummary(req.getSummary());
         newDraft.setTextFile(newTextFileId);
 
         try {
@@ -143,7 +145,7 @@ public class DraftService {
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "读取草稿失败");
         }
 
-        return modelConverter.toDraftVO(draft, content);
+        return modelConverter.toDraftVO(draft, content, null);
     }
 
     /**
@@ -155,7 +157,7 @@ public class DraftService {
 
         List<DraftVO> result = new ArrayList<>();
         for (DraftDO draftDO : draftDOList) {
-            result.add( modelConverter.toDraftVO(draftDO, null) ); /* <- 列表页不需显示内容，content 传 null */
+            result.add( modelConverter.toDraftVO(draftDO, null, draftDO.getSummary()) );
         }
 
         return new PageVO<>(result, page);
@@ -166,7 +168,7 @@ public class DraftService {
      * */
     public void deleteDraft(String authorId, Long draftId) {
 
-        DraftDO draft = draftMapper.selectById(draftId);
+        DraftDO draft = draftMapper.selectAuthorAndTextFile(draftId);
 
         checkAuthor(authorId, draft, "不是该草稿作者，无权删除");
 

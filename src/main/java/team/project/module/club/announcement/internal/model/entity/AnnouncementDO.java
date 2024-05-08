@@ -25,4 +25,5 @@ public class AnnouncementDO {
     @TableField(value="text_file")     private String    textFile;
 
     public static final int TitleMaxLength = 127;
+    public static final int SummaryMaxLength = 190;
 }

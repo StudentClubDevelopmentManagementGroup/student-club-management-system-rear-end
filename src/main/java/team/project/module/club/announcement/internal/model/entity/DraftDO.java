@@ -18,5 +18,6 @@ public class DraftDO {
     @TableField(value="author_id")     private String    authorId;
     @TableField(value="club_id")       private Long      clubId;
     @TableField(value="title")         private String    title;
+    @TableField(value="summary")       private String    summary;
     @TableField(value="text_file")     private String    textFile;
 }
