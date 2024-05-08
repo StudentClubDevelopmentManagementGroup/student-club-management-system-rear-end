@@ -16,4 +16,9 @@
     <select id="selectCirculationByClubId" resultType="java.lang.Integer" parameterType="java.lang.Long">
         SELECT is_circulation FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
     </select>
+    <select id="selectAutoDutyClubid"
+            resultType="team.project.module.club.duty.internal.model.entity.TblDutyCirculation"
+            parameterType="java.lang.Long">
+        SELECT * FROM tbl_user_club_duty_circulation WHERE is_circulation = 0
+    </select>
 </mapper>

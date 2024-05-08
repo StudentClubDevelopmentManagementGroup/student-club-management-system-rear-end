@@ -1,6 +1,9 @@
 package team.project.module.club.duty.internal.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
+import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
+
+import java.util.List;
 
 @Mapper
 public interface TblDutyCirculationMapper {
@@ -11,4 +14,6 @@ public interface TblDutyCirculationMapper {
     int createCirculation(Long clubId);
 
     int deleteCirculation(Long clubId);
+
+    List<TblDutyCirculation> selectAutoDutyClubid();
 }
