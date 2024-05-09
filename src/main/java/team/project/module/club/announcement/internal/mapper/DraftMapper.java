@@ -12,12 +12,13 @@ import java.util.List;
 public interface DraftMapper extends BaseMapper<DraftDO> {
 
     /**
-     * 查询草稿作者和文本文件的 fileId
+     * 查询草稿作者、所属社团，和文本文件的 fileId
      * */
-    default DraftDO selectAuthorAndTextFile(Long draftId) {
+    default DraftDO selectBasicInfo(Long draftId) {
         return selectOne(new LambdaQueryWrapper<DraftDO>()
             .select(
                 DraftDO::getAuthorId,
+                DraftDO::getClubId,
                 DraftDO::getTextFile
             )
             .eq(DraftDO::getDraftId, draftId)

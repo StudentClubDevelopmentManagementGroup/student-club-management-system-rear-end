@@ -41,12 +41,6 @@ public class DraftService {
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 
-    private void checkAuthor(String authorId, DraftDO draft, String message) {
-        if (draft == null || ! authorId.equals(draft.getAuthorId())) {
-            throw new ServiceException(ServiceStatus.FORBIDDEN, message);
-        }
-    }
-
     /**
      * 创建一篇新的草稿
      * */
@@ -96,13 +90,16 @@ public class DraftService {
         Long draftId = req.getDraftId();
         AnnDetail draft = req.getDraft();
 
-        /* 查询数据库获取旧草稿，获取旧草稿文件的 fileId */
+        /* 查询数据库获取旧草稿 */
 
-        DraftDO oldDraftDO = draftMapper.selectAuthorAndTextFile(draftId);
+        DraftDO oldDraftDO = draftMapper.selectBasicInfo(draftId);
 
-        checkAuthor(draft.getAuthorId(), oldDraftDO, "不是该草稿作者，无权修改");
-
-        String oldTextFileId = oldDraftDO.getTextFile();
+        if (draft == null)
+            throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
+        if ( ! oldDraftDO.getAuthorId().equals(draft.getAuthorId()))
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
+        if ( ! oldDraftDO.getClubId().equals(draft.getClubId()))
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "呃"); /* <- 正常业务流不会触发该异常 */
 
         /* 将新草稿的内容保存到新文件，获取新文件的 fileId */
 
@@ -132,6 +129,7 @@ public class DraftService {
 
         /* 数据库更新成功后，删除旧文件 */
 
+        String oldTextFileId = oldDraftDO.getTextFile();
         fileStorageService.deleteFile(oldTextFileId);
     }
 
@@ -142,7 +140,10 @@ public class DraftService {
 
         DraftDO draft = draftMapper.selectById(draftId);
 
-        checkAuthor(authorId, draft, "不是该草稿作者，不能查看内容");
+        if (draft == null)
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到草稿");
+        if ( ! draft.getAuthorId().equals(authorId))
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
 
         String fileId = draft.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
@@ -174,9 +175,12 @@ public class DraftService {
      * */
     public void deleteDraft(String authorId, Long draftId) {
 
-        DraftDO draft = draftMapper.selectAuthorAndTextFile(draftId);
+        DraftDO draft = draftMapper.selectBasicInfo(draftId);
 
-        checkAuthor(authorId, draft, "不是该草稿作者，无权删除");
+        if (draft == null)
+            return;
+        if ( ! draft.getAuthorId().equals(authorId))
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权删除");
 
         String textFileId = draft.getTextFile();
 

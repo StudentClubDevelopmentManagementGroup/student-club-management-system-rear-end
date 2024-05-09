@@ -48,13 +48,12 @@ public class DraftController {
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, draft.getClubId(), "只有社团负责人能编辑公告");
 
-        draft.setAuthorId(authorId);
+        draft.setAuthorId(authorId); /* <- 同时修改 req.draft.authorId */
 
         /* draft_id 为空则创建新的草稿，不为空则更新草稿 */
         if (req.getDraftId() == null) {
             draftService.createDraft(draft);
-        }
-        else {
+        } else {
             draftService.updateDraft(req);
         }
 
