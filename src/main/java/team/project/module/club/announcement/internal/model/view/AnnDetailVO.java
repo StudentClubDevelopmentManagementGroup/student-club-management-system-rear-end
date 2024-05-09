@@ -8,7 +8,7 @@ import java.sql.Timestamp;
 
 @Getter
 @Setter
-public class AnnouncementDetailVO {
+public class AnnDetailVO {
 
     @JsonProperty("announcement_id")
     private Long announcementId;

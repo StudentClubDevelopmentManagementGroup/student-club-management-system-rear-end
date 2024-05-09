@@ -12,7 +12,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @TableName("tbl_club_announcement")
-public class AnnouncementDO {
+public class AnnDO {
     @TableId(value="id")               private Long      announcementId;
     @TableLogic(value="0", delval="1")
     @TableField(value="is_deleted")    private Boolean   deleted;

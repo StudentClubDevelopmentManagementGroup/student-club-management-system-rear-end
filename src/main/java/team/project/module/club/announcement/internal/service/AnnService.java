@@ -7,10 +7,10 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.announcement.internal.mapper.AnnouncementMapper;
-import team.project.module.club.announcement.internal.model.entity.AnnouncementDO;
-import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
-import team.project.module.club.announcement.internal.model.view.AnnouncementDetailVO;
+import team.project.module.club.announcement.internal.mapper.AnnMapper;
+import team.project.module.club.announcement.internal.model.entity.AnnDO;
+import team.project.module.club.announcement.internal.model.request.PublishAnnReq;
+import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
@@ -20,14 +20,14 @@ import team.project.module.filestorage.export.util.FileStorageUtil;
 import java.util.List;
 
 @Service
-public class AnnouncementService {
+public class AnnService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     FileStorageServiceI fileStorageService;
 
     @Autowired
-    AnnouncementMapper announcementMapper;
+    AnnMapper announcementMapper;
 
     @Autowired
     ModelConverter modelConverter;
@@ -36,7 +36,7 @@ public class AnnouncementService {
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.LOCAL; /* <- tmp */
 
-    public void publishAnnouncement(String authorId, PublishAnnouncementReq req) {
+    public void publishAnnouncement(String authorId, PublishAnnReq req) {
 
         /* 将公告的内容保存到文件，获取 fileId */
 
@@ -49,7 +49,7 @@ public class AnnouncementService {
 
         /* 将 fileId 和其他信息保存到数据库 */
 
-        AnnouncementDO announcement = new AnnouncementDO();
+        AnnDO announcement = new AnnDO();
         announcement.setAuthorId(authorId);
         announcement.setClubId(req.getClubId());
         announcement.setTitle(req.getTitle());
@@ -73,12 +73,12 @@ public class AnnouncementService {
         /* return announcement.getAnnouncementId(); */
     }
 
-    public AnnouncementDetailVO readAnnouncement(Long announcementId) {
+    public AnnDetailVO readAnnouncement(Long announcementId) {
 
         /* ljh_TODO: 设置公告的可见性
             查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
 
-        AnnouncementDO announcementDO = announcementMapper.selectById(announcementId);
+        AnnDO announcementDO = announcementMapper.selectById(announcementId);
 
         String fileId = announcementDO.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
@@ -87,10 +87,10 @@ public class AnnouncementService {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "读取公告内容失败");
         }
 
-        return modelConverter.toAnnouncementDetailVO(announcementDO, content);
+        return modelConverter.toAnnDetailVO(announcementDO, content);
     }
 
-    public List<AnnouncementDetailVO> list() {
+    public List<AnnDetailVO> list() {
         return null;
     }
 }

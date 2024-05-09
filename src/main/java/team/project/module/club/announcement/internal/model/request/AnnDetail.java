@@ -1,5 +1,6 @@
 package team.project.module.club.announcement.internal.model.request;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -8,16 +9,24 @@ import lombok.Getter;
 import lombok.Setter;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
-import static team.project.module.club.announcement.internal.model.entity.AnnouncementDO.SummaryMaxLength;
-import static team.project.module.club.announcement.internal.model.entity.AnnouncementDO.TitleMaxLength;
+import static team.project.module.club.announcement.internal.model.entity.AnnDO.SummaryMaxLength;
+import static team.project.module.club.announcement.internal.model.entity.AnnDO.TitleMaxLength;
 
+/**
+ * <p>  公告内容
+ * <p>  不要单独使用本类来接收 controller 入参，
+ * <br> 而应与其他 Req 类组合使用
+ * */
 @Getter
 @Setter
-public class PublishAnnouncementReq {
+public class AnnDetail {
     @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;
+
+    @JsonIgnore
+    private String authorId;
 
     @NotBlank(message="未指定标题")
     @Size(max=TitleMaxLength, message="标题过长")

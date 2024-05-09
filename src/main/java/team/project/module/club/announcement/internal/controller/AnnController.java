@@ -12,27 +12,27 @@ import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.internal.model.request.PublishAnnouncementReq;
-import team.project.module.club.announcement.internal.model.view.AnnouncementDetailVO;
-import team.project.module.club.announcement.internal.service.AnnouncementService;
+import team.project.module.club.announcement.internal.model.request.PublishAnnReq;
+import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
+import team.project.module.club.announcement.internal.service.AnnService;
 
 import java.util.List;
 
 @Tag(name="公告")
 @RestController
 @RequestMapping("/club/announcement")
-public class AnnouncementController {
+public class AnnController {
 
     @Autowired
     AuthServiceI authService;
 
     @Autowired
-    AnnouncementService announcementService;
+    AnnService announcementService;
 
     @Operation(summary="发布公告") /* ljh_TODO: 介绍 */
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object publish(@Valid @RequestBody PublishAnnouncementReq req) {
+    Object publish(@Valid @RequestBody PublishAnnReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
         authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
@@ -44,7 +44,7 @@ public class AnnouncementController {
     @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
-        AnnouncementDetailVO result = announcementService.readAnnouncement(announcementId);
+        AnnDetailVO result = announcementService.readAnnouncement(announcementId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
@@ -53,7 +53,7 @@ public class AnnouncementController {
     Object list() {
         if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
-        List<AnnouncementDetailVO> result = announcementService.list();
+        List<AnnDetailVO> result = announcementService.list();
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }
