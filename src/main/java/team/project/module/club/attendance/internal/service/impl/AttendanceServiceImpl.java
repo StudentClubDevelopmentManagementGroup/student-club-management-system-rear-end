@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
+import team.project.base.service.exception.ServiceException;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.attendance.internal.mapper.AttendanceMapper;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
@@ -13,7 +15,6 @@ import team.project.module.club.attendance.internal.model.view.ClubAttendanceDur
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.club.attendance.internal.util.ToolMethods;
-import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
 import team.project.module.club.management.export.servivce.ManagementIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
@@ -104,6 +105,9 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
             userIds.add(user.getUserId());
         }
 
+        if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
+
+
 //        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
 //                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
 
@@ -135,6 +139,10 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         for (UserBasicInfoDTO user : users) {
             userIds.add(user.getUserId());
         }
+
+        if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
+
+
 //        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
         Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPageTest(getAttendanceRecordReq,clubId,userIds);
         List<AttendanceInfoVO> result = new ArrayList<>();

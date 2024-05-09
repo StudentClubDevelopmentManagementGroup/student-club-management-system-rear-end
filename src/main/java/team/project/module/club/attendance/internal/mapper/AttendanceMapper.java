@@ -114,21 +114,25 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     //查签到记录，返回分页查询对象
     default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq,Long clubId,List<String> userIds){
-        // 构造分页对象
-        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
-        // 构建查询条件
 
-        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("club_id", clubId)
+
+            // 构造分页对象
+            Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
+            // 构建查询条件
+
+            QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+            queryWrapper.eq("club_id", clubId)
 //                .like(StringUtils.isNotBlank(getAttendanceRecordReq.getUserId()), "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
-                .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
-                .in(getAttendanceRecordReq.getUserName() != "", "user_id",userIds)
-                .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
-                        "checkin_time", getAttendanceRecordReq.getStartTime(),
-                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
-                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
+                    .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+                    .in( "user_id", userIds)
+                    .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
+                            "checkin_time", getAttendanceRecordReq.getStartTime(),
+                            getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
+                    .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
 
-        return this.selectPage(page, queryWrapper);
+            return this.selectPage(page, queryWrapper);
+
+
     }
 
 
