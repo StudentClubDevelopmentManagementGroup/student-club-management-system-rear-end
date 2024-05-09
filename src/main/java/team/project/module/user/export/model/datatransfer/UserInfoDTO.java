@@ -12,7 +12,7 @@ public class UserInfoDTO {
     String  name;
     String  tel;
     String  email;
-    Integer role;
+    Integer role; /* <- 标识用户身份的角色码 */
 
     /* 判断用户是否拥有指定角色 */
     public boolean hasRole(UserRole role) {

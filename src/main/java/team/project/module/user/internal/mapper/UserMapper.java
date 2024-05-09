@@ -6,95 +6,105 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.model.entity.TblUserDO;
-import team.project.module.user.internal.model.query.QueryUserQO;
+import team.project.module.user.internal.model.entity.UserDO;
+import team.project.module.user.internal.model.query.SearchUserInfoQO;
 
 import java.util.List;
 
 @Mapper
-public interface TblUserMapper extends BaseMapper<TblUserDO> {
+public interface UserMapper extends BaseMapper<UserDO> {
 
     /**
      * 查询指定用户的账号信息
      * */
-    default TblUserDO selectOne(String userId) {
-        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
+    default UserDO selectUserInfo(String userId) {
+        return selectOne(new LambdaQueryWrapper<UserDO>()
             .select(
-                TblUserDO::getUserId,
-                TblUserDO::getDepartmentId,
+                UserDO::getUserId,
+                UserDO::getDepartmentId,
              /* TblUserDO::getPassword, <- 不查询密码*/
-                TblUserDO::getName,
-                TblUserDO::getTel,
-                TblUserDO::getEmail,
-                TblUserDO::getRole
+                UserDO::getName,
+                UserDO::getTel,
+                UserDO::getEmail,
+                UserDO::getRole
             )
-            .eq(TblUserDO::getUserId, userId)
+            .eq(UserDO::getUserId, userId)
         );
-        return userList.size() == 1 ? userList.get(0) : null;
     }
 
     /**
      * 查询指定用户的账号信息
      * */
-    default TblUserDO selectOne(String userId, String password) {
-        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
-            .eq(TblUserDO::getUserId, userId)
-            .eq(TblUserDO::getPassword, password)
+    default UserDO selectUserInfo(String userId, String password) {
+        return selectOne(new LambdaQueryWrapper<UserDO>()
+            .eq(UserDO::getUserId, userId)
+            .eq(UserDO::getPassword, password)
         );
-        return userList.size() == 1 ? userList.get(0) : null;
     }
 
      /**
      * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
      * */
-    default TblUserDO selectBasicInfo(String userId) {
-        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
+    default UserDO selectBasicInfo(String userId) {
+        return selectOne(new LambdaQueryWrapper<UserDO>()
             .select(
-                TblUserDO::getUserId,
-                TblUserDO::getName,
-                TblUserDO::getRole
+                UserDO::getUserId,
+                UserDO::getName,
+                UserDO::getRole
             )
-            .eq(TblUserDO::getUserId, userId)
+            .eq(UserDO::getUserId, userId)
         );
-        return userList.size() == 1 ? userList.get(0) : null;
     }
 
     /**
-     * 查询指定用户的角色信息（只查询角色，其他属性为 null）
+     * 查询指定用户的角色码
      * */
-    default TblUserDO selectRole(String userId) {
-        List<TblUserDO> userList = this.selectList(new LambdaQueryWrapper<TblUserDO>()
-            .select(
-                TblUserDO::getUserId,
-                TblUserDO::getRole
-            )
-            .eq(TblUserDO::getUserId, userId)
+    default Integer selectRoleCode(String userId) {
+        UserDO user = selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(UserDO::getRole)
+            .eq(UserDO::getUserId, userId)
         );
-        return userList.size() == 1 ? userList.get(0) : null;
+        return user == null ? null : user.getRole();
     }
 
     /**
-     * 搜索用户（模糊查询）
+     * 搜索相关用户的账号信息（模糊查询、分页查询）
      * */
-    default  List<TblUserDO> searchUsers(Page<TblUserDO> page, QueryUserQO queryQO) {
-        Long   departmentId = queryQO.getDepartmentId();
-        String userId       = queryQO.getUserId();
-        String userName     = queryQO.getUserName();
+    default List<UserDO> searchUserInfo(Page<UserDO> page, SearchUserInfoQO qo) {
+
+        Long   departmentId = qo.getDepartmentId();
+        String userId       = qo.getUserId();
+        String userName     = qo.getUserName();
         String userIdLike   = (userId != null)   ? userId.replace("%", "")   : "";
         String userNameLike = (userName != null) ? userName.replace("%", "") : "";
 
-        return this.selectList(page, new LambdaQueryWrapper<TblUserDO>()
+        return selectList(page, new LambdaQueryWrapper<UserDO>()
             .select(
-                TblUserDO::getUserId,
-                TblUserDO::getDepartmentId,
-                TblUserDO::getName,
-                TblUserDO::getTel,
-                TblUserDO::getEmail,
-                TblUserDO::getRole
+                UserDO::getUserId,
+                UserDO::getDepartmentId,
+                UserDO::getName,
+                UserDO::getTel,
+                UserDO::getEmail,
+                UserDO::getRole
             )
-            .eq(departmentId != null, TblUserDO::getDepartmentId, departmentId)
-            .like(userId != null, TblUserDO::getUserId, userIdLike)
-            .like(userName != null, TblUserDO::getName, userNameLike)
+            .eq(departmentId != null, UserDO::getDepartmentId, departmentId)
+            .like(userId != null, UserDO::getUserId, userIdLike)
+            .like(userName != null, UserDO::getName, userNameLike)
+        );
+    }
+
+    /**
+     * 搜索相关用户的基本信息（模糊查询）
+     * */
+    default List<UserDO> searchUserBasicInfo(String userName) {
+        String userNameLike = (userName != null) ? userName.replace("%", "") : "";
+        return selectList(new LambdaQueryWrapper<UserDO>()
+            .select(
+                UserDO::getUserId,
+                UserDO::getName,
+                UserDO::getRole
+            )
+            .like(userName != null, UserDO::getName, userNameLike)
         );
     }
 
@@ -103,10 +113,10 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      *  @return 如果用户不存在（已注销）或密码错误，则注销失败，返回 0；否则注销成功，返回 1
      * */
     default int logicalDelete(String userId, String password) {
-        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
-            .eq(TblUserDO::getUserId, userId)
-            .eq(TblUserDO::getPassword, password)
-            .set(TblUserDO::getDeleted, true)
+        return update(new LambdaUpdateWrapper<UserDO>()
+            .eq(UserDO::getUserId, userId)
+            .eq(UserDO::getPassword, password)
+            .set(UserDO::getDeleted, true)
         );
     }
 
@@ -146,17 +156,17 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
             也就是，我不打算“将位运算直接落实到 sql”
         */
 
-        TblUserDO user = this.selectRole(userId);
+        Integer role = selectRoleCode(userId);
 
-        if (user == null || user.hasRole(roleToAdd)) {
+        if (role == null || UserRole.hasRole(role, roleToAdd)) {
             return 0;
         }
 
-        user.addRole(roleToAdd);
+        int newRole = UserRole.addRole(role, roleToAdd);
 
-        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
-            .eq(TblUserDO::getUserId, userId)
-            .set(TblUserDO::getRole, user.getRole())
+        return update(new LambdaUpdateWrapper<UserDO>()
+            .eq(UserDO::getUserId, userId)
+            .set(UserDO::getRole, newRole)
         );
     }
 
@@ -165,17 +175,17 @@ public interface TblUserMapper extends BaseMapper<TblUserDO> {
      * */
     default int removeRoleFromUser(String userId, UserRole roleToRemove) {
 
-        TblUserDO user = this.selectRole(userId);
+        Integer role = this.selectRoleCode(userId);
 
-        if (user == null || ! user.hasRole(roleToRemove)) {
+        if (role == null || ! UserRole.hasRole(role, roleToRemove)) {
             return 0;
         }
 
-        user.removeRole(roleToRemove);
+        int newRole = UserRole.removeRole(role, roleToRemove);
 
-        return this.update(null, new LambdaUpdateWrapper<TblUserDO>()
-            .eq(TblUserDO::getUserId, userId)
-            .set(TblUserDO::getRole, user.getRole())
+        return this.update(new LambdaUpdateWrapper<UserDO>()
+            .eq(UserDO::getUserId, userId)
+            .set(UserDO::getRole, newRole)
         );
     }
 }

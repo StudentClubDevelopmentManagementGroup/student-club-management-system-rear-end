@@ -5,7 +5,9 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/* 自定义注解，以支持使用对象来接收查询参数 */
+/**
+ * 自定义注解，以支持使用对象来接收查询参数
+ * */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QueryParam {

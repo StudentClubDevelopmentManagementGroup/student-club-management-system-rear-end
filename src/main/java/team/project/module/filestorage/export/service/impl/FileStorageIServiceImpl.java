@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
-import team.project.module.filestorage.export.service.FileStorageIService;
+import team.project.module.filestorage.export.service.FileStorageServiceI;
 import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
 import team.project.module.filestorage.internal.service.impl.LocalFileStorageService;
 
 @Service
-public class FileStorageIServiceImpl implements FileStorageIService {
+public class FileStorageIServiceImpl implements FileStorageServiceI {
 
     @Autowired
     LocalFileStorageService localStorageService;
@@ -21,7 +21,7 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
-     * 详见：{@link FileStorageIService#uploadFile}
+     * 详见：{@link FileStorageServiceI#uploadFile}
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO) {
@@ -32,7 +32,7 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     }
 
     /**
-     * 详见：{@link FileStorageIService#getFileUrl}
+     * 详见：{@link FileStorageServiceI#getFileUrl}
      * */
     @Override
     public String getFileUrl(String fileId) {
@@ -46,7 +46,7 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     }
 
     /**
-     * 详见：{@link FileStorageIService#deleteFile}
+     * 详见：{@link FileStorageServiceI#deleteFile}
      * */
     @Override
     public boolean deleteFile(String fileId) {
@@ -62,26 +62,26 @@ public class FileStorageIServiceImpl implements FileStorageIService {
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link FileStorageIService#writeTextToFile}
+     * 详见：{@link FileStorageServiceI#uploadTextToFile}
      */
     @Override
-    public String writeTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
+    public String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
         return switch (storageType) {
-            case LOCAL -> localStorageService.writeTextToFile(text, uploadFileQO);
-            case CLOUD -> cloudStorageService.writeTextToFile(text, uploadFileQO);
+            case LOCAL -> localStorageService.uploadTextToFile(text, uploadFileQO);
+            case CLOUD -> cloudStorageService.uploadTextToFile(text, uploadFileQO);
         };
     }
 
     /**
-     * 详见：{@link FileStorageIService#readTextFromFile}
+     * 详见：{@link FileStorageServiceI#getTextFromFile}
      */
     @Override
-    public String readTextFromFile(String fileId) {
+    public String getTextFromFile(String fileId) {
         if (localStorageService.mayBeStored(fileId))
-            return localStorageService.readTextFromFile(fileId);
+            return localStorageService.getTextFromFile(fileId);
 
         if (cloudStorageService.mayBeStored(fileId))
-            return cloudStorageService.readTextFromFile(fileId);
+            return cloudStorageService.getTextFromFile(fileId);
 
         return null;
     }

@@ -59,7 +59,7 @@ public class SwaggerConfig {
     @Bean
     GroupedOpenApi clubSeat() {
         return GroupedOpenApi.builder()
-            .group("社团-座位安排")
+            .group("社团-座位")
             .packagesToScan("team.project.module.club.seat")
             .build();
     }

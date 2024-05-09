@@ -9,8 +9,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @TableName("tbl_user_club_seat")
-public class TblUserClubSeatDO {
-
+public class SeatDO {
     @TableId(value="id")             private Long      seatId;
     @TableField(value="club_id")     private Long      clubId;
     @TableField(value="x")           private Integer   x;
@@ -19,7 +18,7 @@ public class TblUserClubSeatDO {
     @TableField(value="arranger_id") private String    arrangerId;
     @TableField(value="owner_id")    private String    ownerId;
 
-    public static final int xyMax = 32767;
+    public static final int xyMax =  32767;
     public static final int xyMin = -32767;
     public static final int descriptionMaxLength = 64;
 }

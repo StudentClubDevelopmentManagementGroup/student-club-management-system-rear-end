@@ -8,7 +8,7 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 
 import java.util.List;
 
-import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
+import static team.project.module.club.seat.internal.model.entity.SeatDO.*;
 
 @Getter
 @Setter

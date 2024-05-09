@@ -15,8 +15,7 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import team.project.module.user.export.service.UserInfoIService;
-import team.project.module.user.internal.model.entity.TblUserDO;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private AttendanceMapper attendanceMapper;
     @Autowired
-    private UserInfoIService userInfoIService;
+    private UserInfoServiceI userInfoIService;
 
     @Override
     //签到返回签到信息
