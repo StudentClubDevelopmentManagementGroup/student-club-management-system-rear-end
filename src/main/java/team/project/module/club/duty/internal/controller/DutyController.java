@@ -68,4 +68,10 @@ public class DutyController {
         dutyService.deleteDutyByUser(req.getDutyTime(), req.getCleanerId(), req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
+
+    @Operation(summary = "上传值日照片")
+    @PostMapping("/club/duty/upload")
+    Object uploadDutyPicture(@Valid @RequestBody DutyInfoReq req) {
+        return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
+    }
 }
