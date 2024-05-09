@@ -1,12 +1,12 @@
-package team.project.module.department.mapper;
+package team.project.module.department.internal.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
-import team.project.module.department.model.entity.Department;
-import team.project.module.department.model.request.AddDepartmentReq;
-import team.project.module.department.model.request.AlterDepartmentNameReq;
-import team.project.module.department.model.view.DepartmentVO;
+import team.project.module.department.internal.model.entity.Department;
+import team.project.module.department.internal.model.request.AddDepartmentReq;
+import team.project.module.department.internal.model.request.AlterDepartmentNameReq;
+import team.project.module.department.internal.model.view.DepartmentVO;
 
 import java.util.List;
 
@@ -28,5 +28,8 @@ public interface DepartmentMapper extends BaseMapper<Department> {
     // 使用 MyBatis 的注解进行 SQL 查询
     @Select("SELECT full_name FROM tbl_department WHERE id = #{id}")
     String getDepartmentName(Long id);
+
+
+
 
 }

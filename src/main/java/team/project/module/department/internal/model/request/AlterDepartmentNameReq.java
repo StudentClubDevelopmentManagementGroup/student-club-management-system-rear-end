@@ -1,17 +1,16 @@
-package team.project.module.department.model.request;
+package team.project.module.department.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-
-public class AddDepartmentReq {
-    @JsonProperty("abbreviation")
+public class AlterDepartmentNameReq {
     @NotNull
-    private String abbreviation;
+    @JsonProperty("id")
+    private Long id;
 
+    @NotNull
     @JsonProperty("fullName")
-    @NotNull
     private String fullName;
 }
