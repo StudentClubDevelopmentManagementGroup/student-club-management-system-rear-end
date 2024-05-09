@@ -10,6 +10,7 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.DraftDO;
 import team.project.module.club.announcement.internal.model.request.AnnDetail;
@@ -23,10 +24,14 @@ import team.project.module.filestorage.export.util.FileStorageUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DraftService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
+
+    @Autowired
+    AuthServiceI authService;
 
     @Autowired
     FileStorageServiceI fileStorageService;
@@ -45,6 +50,8 @@ public class DraftService {
      * 创建一篇新的草稿
      * */
     public void createDraft(AnnDetail draft) {
+
+        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
 
         /* 将草稿的内容保存到文件，获取 fileId */
 
@@ -87,18 +94,19 @@ public class DraftService {
      * 更新草稿（其实是删除旧草稿，创建新草稿）
      * */
     public void updateDraft(SaveDraftReq req) {
-        Long draftId = req.getDraftId();
         AnnDetail draft = req.getDraft();
 
-        /* 查询数据库获取旧草稿 */
+        /* 查询数据库获取旧草稿，并校验权限 */
 
-        DraftDO oldDraftDO = draftMapper.selectBasicInfo(draftId);
+        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
 
-        if (draft == null)
+        DraftDO oldDraftDO = draftMapper.selectBasicInfo(req.getDraftId());
+
+        if (oldDraftDO == null)
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
-        if ( ! oldDraftDO.getAuthorId().equals(draft.getAuthorId()))
+        if ( ! Objects.equals( oldDraftDO.getAuthorId(), draft.getAuthorId() ))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
-        if ( ! oldDraftDO.getClubId().equals(draft.getClubId()))
+        if ( ! Objects.equals( oldDraftDO.getClubId(), draft.getClubId() ))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "呃"); /* <- 正常业务流不会触发该异常 */
 
         /* 将新草稿的内容保存到新文件，获取新文件的 fileId */
@@ -113,7 +121,7 @@ public class DraftService {
         /* 更新数据库 */
 
         DraftDO newDraftDO = new DraftDO();
-        newDraftDO.setDraftId(draftId);
+        newDraftDO.setDraftId(req.getDraftId());
         newDraftDO.setTitle(draft.getTitle());
         newDraftDO.setSummary(draft.getSummary());
         newDraftDO.setTextFile(newTextFileId);
@@ -142,7 +150,7 @@ public class DraftService {
 
         if (draft == null)
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到草稿");
-        if ( ! draft.getAuthorId().equals(authorId))
+        if ( ! Objects.equals( draft.getAuthorId(), authorId ))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
 
         String fileId = draft.getTextFile();
@@ -179,12 +187,12 @@ public class DraftService {
 
         if (draft == null)
             return;
-        if ( ! draft.getAuthorId().equals(authorId))
+        if ( ! Objects.equals( draft.getAuthorId(), authorId ))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权删除");
 
         String textFileId = draft.getTextFile();
 
-        if (1 == draftMapper.deleteById(draftId)) { /* <- 删除数据库的数据，删除成功后清除文件 */
+        if (1 == draftMapper.deleteById(draft)) { /* <- 删除数据库的数据，删除成功后清除文件 */
             fileStorageService.deleteFile(textFileId);
         }
     }

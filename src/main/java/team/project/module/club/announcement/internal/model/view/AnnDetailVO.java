@@ -22,9 +22,6 @@ public class AnnDetailVO {
     @JsonProperty("publish_time")
     private Timestamp publishTime;
 
-    @JsonProperty("update_time")
-    private Timestamp updateTime;
-
     @JsonProperty("title")
     private String title;
 

@@ -7,8 +7,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.mapper.AnnMapper;
+import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
+import team.project.module.club.announcement.internal.model.entity.DraftDO;
+import team.project.module.club.announcement.internal.model.request.AnnDetail;
 import team.project.module.club.announcement.internal.model.request.PublishAnnReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
@@ -17,14 +21,22 @@ import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageServiceI;
 import team.project.module.filestorage.export.util.FileStorageUtil;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AnnService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
+    AuthServiceI authService;
+
+    @Autowired
     FileStorageServiceI fileStorageService;
+
+    @Autowired
+    DraftMapper draftMapper;
 
     @Autowired
     AnnMapper announcementMapper;
@@ -34,46 +46,78 @@ public class AnnService {
 
     private static final String DRAFT_FOLDER = "/club/announcement/announcement/";
 
-    private static final FileStorageType STORAGE_TYPE = FileStorageType.LOCAL; /* <- tmp */
+    private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 
-    public void publishAnnouncement(String authorId, PublishAnnReq req) {
+    public void publishAnn(PublishAnnReq req) {
 
-        /* 将公告的内容保存到文件，获取 fileId */
+        Long      deleteDraft  = req.getDraftId();
+        AnnDetail announcement = req.getAnnouncement();
+        String    authorId     = announcement.getAuthorId();
+        Long      clubId       = announcement.getClubId();
+
+        /* 校验权限 */
+
+        authService.requireClubManager(authorId, clubId, "只有社团负责人能发布公告");
+
+        DraftDO draftDO = null;
+        if (null != deleteDraft) {
+            draftDO = draftMapper.selectBasicInfo(deleteDraft);
+
+            if (draftDO == null)
+                throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
+            if ( ! Objects.equals( draftDO.getAuthorId(), authorId ))
+                throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者");
+            if ( ! Objects.equals( draftDO.getClubId(), clubId ))
+                throw new ServiceException(ServiceStatus.FORBIDDEN, "呃"); /* <- 正常业务流不会触发该异常 */
+        }
+
+        /* 将公告的内容保存到文件，获取文件的 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
         uploadFileQO.setTargetFolder(DRAFT_FOLDER);
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, req.getContent(), uploadFileQO);
+        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, announcement.getContent(), uploadFileQO);
 
-        /* 将 fileId 和其他信息保存到数据库 */
+        /* 更新数据库 */
 
-        AnnDO announcement = new AnnDO();
-        announcement.setAuthorId(authorId);
-        announcement.setClubId(req.getClubId());
-        announcement.setTitle(req.getTitle());
-        announcement.setSummary(req.getSummary());
-        announcement.setTextFile(textFileId);
+        AnnDO announcementDO = new AnnDO();
+     /* announcementDO.setPublishTime(new Timestamp(System.currentTimeMillis())); */
+        announcementDO.setAuthorId(authorId);
+        announcementDO.setClubId(clubId);
+        announcementDO.setTitle(announcement.getTitle());
+        announcementDO.setSummary(announcement.getSummary());
+        announcementDO.setTextFile(textFileId);
 
         try {
-            announcementMapper.insert(announcement);
-        } catch (Exception e) {
+            announcementMapper.insert(announcementDO);
+        }
+        catch (Exception e) {
             fileStorageService.deleteFile(textFileId); /* <- 保存公告失败，删除文件 */
 
             if (e instanceof DataIntegrityViolationException) {
                 log.info("发布公告失败：（可能是因为外键社团id不存在？）", e);
                 throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "发布失败");
-            } else {
+            }
+            else {
                 log.error("发布公告失败", e);
                 throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "发布失败");
             }
         }
 
-        /* return announcement.getAnnouncementId(); */
+        /* 发布成功后删除草稿 */
+
+        if (null != deleteDraft) {
+            if (1 == draftMapper.deleteById(deleteDraft)) { /* <- 删除数据库的数据，删除成功后清除文件 */
+                fileStorageService.deleteFile(draftDO.getTextFile());
+            } else {
+                log.error("发布公告后，顺带删除草稿失败（数据库已查询过，草稿存在）");
+            }
+        }
     }
 
-    public AnnDetailVO readAnnouncement(Long announcementId) {
+    public AnnDetailVO readAnn(Long announcementId) {
 
         /* ljh_TODO: 设置公告的可见性
             查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
@@ -92,5 +136,13 @@ public class AnnService {
 
     public List<AnnDetailVO> list() {
         return null;
+    }
+
+    public List<AnnDetailVO> tmpList() {
+        List<AnnDetailVO> result = new ArrayList<>();
+        for (AnnDO annDO : announcementMapper.selectList(null)) {
+            result.add( modelConverter.toAnnDetailVO(annDO, null) );
+        }
+        return result;
     }
 }

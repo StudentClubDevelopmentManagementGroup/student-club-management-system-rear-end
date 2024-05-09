@@ -29,22 +29,28 @@ public class AnnController {
     @Autowired
     AnnService announcementService;
 
-    @Operation(summary="发布公告") /* ljh_TODO: 介绍 */
+    @Operation(summary="发布公告", description="""
+        club_id：社团编号，指明该公告所属的社团
+        title：公告标题
+        content：公告内容（用于详情页）
+        summary：内容摘要（用于列表页）
+        draft_id：草稿编号，可选，若不为 null 则发布公告后顺带删除该草稿
+    """)
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object publish(@Valid @RequestBody PublishAnnReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(authorId, req.getClubId(), "只有社团负责人能发布公告");
+        req.getAnnouncement().setAuthorId(authorId);
 
-        announcementService.publishAnnouncement(authorId, req);
+        announcementService.publishAnn(req);
         return new Response<>(ServiceStatus.CREATED).statusText("发布成功");
     }
 
     @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
-        AnnDetailVO result = announcementService.readAnnouncement(announcementId);
+        AnnDetailVO result = announcementService.readAnn(announcementId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
@@ -54,6 +60,14 @@ public class AnnController {
         if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
 
         List<AnnDetailVO> result = announcementService.list();
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
+
+    @Operation(summary="公告列表（全查，测试用）")
+    @GetMapping("/tmp_list")
+    Object tmpList() {
+
+        List<AnnDetailVO> result = announcementService.tmpList();
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }

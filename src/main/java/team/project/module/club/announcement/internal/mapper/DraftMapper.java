@@ -17,6 +17,7 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
     default DraftDO selectBasicInfo(Long draftId) {
         return selectOne(new LambdaQueryWrapper<DraftDO>()
             .select(
+             /* DraftDO::getDraftId, <- 不查询 id，业务用不到 */
                 DraftDO::getAuthorId,
                 DraftDO::getClubId,
                 DraftDO::getTextFile

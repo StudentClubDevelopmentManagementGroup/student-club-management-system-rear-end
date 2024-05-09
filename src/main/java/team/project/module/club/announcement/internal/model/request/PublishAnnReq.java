@@ -14,6 +14,6 @@ public class PublishAnnReq {
     @JsonUnwrapped
     private AnnDetail announcement;
 
-    @JsonProperty("delete_draft")
-    private Long deleteDraft; /*  <- nullable，若不为 null 则发布时顺带删除草稿 */
+    @JsonProperty("draft_id")
+    private Long draftId; /*  <- nullable，若不为 null 则发布公告后顺带删除该草稿 */
 }

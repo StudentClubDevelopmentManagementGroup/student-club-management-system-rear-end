@@ -43,16 +43,13 @@ public class DraftController {
     @PostMapping("/save")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object save(@Valid @RequestBody SaveDraftReq req) {
-        AnnDetail draft = req.getDraft();
 
         String authorId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(authorId, draft.getClubId(), "只有社团负责人能编辑公告");
-
-        draft.setAuthorId(authorId); /* <- 同时修改 req.draft.authorId */
+        req.getDraft().setAuthorId(authorId);
 
         /* draft_id 为空则创建新的草稿，不为空则更新草稿 */
         if (req.getDraftId() == null) {
-            draftService.createDraft(draft);
+            draftService.createDraft(req.getDraft());
         } else {
             draftService.updateDraft(req);
         }

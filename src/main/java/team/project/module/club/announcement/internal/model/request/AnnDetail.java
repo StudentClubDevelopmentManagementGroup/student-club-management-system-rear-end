@@ -20,6 +20,7 @@ import static team.project.module.club.announcement.internal.model.entity.AnnDO.
 @Getter
 @Setter
 public class AnnDetail {
+
     @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")

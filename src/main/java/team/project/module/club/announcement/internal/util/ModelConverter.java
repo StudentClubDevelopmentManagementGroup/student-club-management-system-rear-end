@@ -22,7 +22,6 @@ public class ModelConverter {
         result.setClubName("【暂无】等待 club 模块提供接口"); /* ljh_TODO */
         result.setAuthorName(userInfoService.getUserName(announcementDO.getAuthorId()));
         result.setPublishTime(announcementDO.getPublishTime());
-        result.setUpdateTime(announcementDO.getUpdateTime());
         result.setTitle(announcementDO.getTitle());
         result.setContent(content);
 
