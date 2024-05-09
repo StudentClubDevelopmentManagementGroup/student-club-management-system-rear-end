@@ -17,11 +17,6 @@ public class AuthServiceImpl implements AuthServiceI {
     @Autowired
     PceIService clubMemberRoleService;
 
-    private boolean isSuperAdmin(String userId) {
-        Integer roleCode = userInfoService.selectUserRole(userId);
-        return null != roleCode && UserRole.hasRole(roleCode, UserRole.SUPER_ADMIN);
-    }
-
     /**
      * 详见：{@link AuthServiceI#requireClubManager}
      * */
@@ -34,17 +29,40 @@ public class AuthServiceImpl implements AuthServiceI {
         if (clubMemberRoleService.isClubManager(userId, clubId))
             return;
 
-        if (isSuperAdmin(userId))
+        Integer userRole = userInfoService.selectUserRole(userId);
+        if (null != userRole && UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))
             return;
 
         throw new AuthenticationFailureException(message);
     }
 
     /**
-     * 详见：{@link AuthServiceI#requireClubMember}
-     */
+     * 详见：{@link AuthServiceI#requireClubTeacherManager}
+     * */
     @Override
-    public void requireClubMember(String userId, long clubId, String message) {
+    public void requireClubTeacherManager(String userId, long clubId, String message) {
+
+        if (null == userId)
+            throw new AuthenticationFailureException(message);
+
+        Integer userRole = userInfoService.selectUserRole(userId);
+        if (null == userRole)
+            throw new AuthenticationFailureException(message);
+
+        if (UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))
+            return;
+
+        if ( ! UserRole.hasRole(userRole, UserRole.TEACHER))
+            throw new AuthenticationFailureException(message);
+
+        if (clubMemberRoleService.isClubManager(userId, clubId))
+            return;
+
+        throw new AuthenticationFailureException(message);
+    }
+
+    /** 0 个用法，但暂时保留 */
+    private void requireClubMember(String userId, long clubId, String message) {
 
         if (null == userId)
             throw new AuthenticationFailureException(message);
@@ -52,7 +70,8 @@ public class AuthServiceImpl implements AuthServiceI {
         if (clubMemberRoleService.isClubMember(userId, clubId))
             return;
 
-        if (isSuperAdmin(userId))
+        Integer userRole = userInfoService.selectUserRole(userId);
+        if (null != userRole && UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))  /* ? */
             return;
 
         throw new AuthenticationFailureException(message);
