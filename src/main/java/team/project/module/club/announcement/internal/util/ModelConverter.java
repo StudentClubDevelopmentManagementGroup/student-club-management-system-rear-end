@@ -15,7 +15,7 @@ public class ModelConverter {
     @Autowired
     UserInfoServiceI userInfoService;
 
-    public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content) {
+    public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
 
         AnnDetailVO result = new AnnDetailVO();
         result.setAnnouncementId(announcementDO.getAnnouncementId());
@@ -24,6 +24,7 @@ public class ModelConverter {
         result.setPublishTime(announcementDO.getPublishTime());
         result.setTitle(announcementDO.getTitle());
         result.setContent(content);
+        result.setSummary(summary);
 
         return result;
     }

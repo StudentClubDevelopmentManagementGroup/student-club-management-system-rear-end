@@ -14,7 +14,7 @@ import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.DraftDO;
 import team.project.module.club.announcement.internal.model.request.AnnDetail;
-import team.project.module.club.announcement.internal.model.request.SaveDraftReq;
+import team.project.module.club.announcement.internal.model.request.DraftSaveReq;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
@@ -93,14 +93,14 @@ public class DraftService {
     /**
      * 更新草稿（其实是删除旧草稿，创建新草稿）
      * */
-    public void updateDraft(SaveDraftReq req) {
+    public void updateDraft(DraftSaveReq req) {
         AnnDetail draft = req.getDraft();
 
         /* 查询数据库获取旧草稿，并校验权限 */
 
         authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
 
-        DraftDO oldDraftDO = draftMapper.selectBasicInfo(req.getDraftId());
+        DraftDO oldDraftDO = draftMapper.selectDraftBasicInfo(req.getDraftId());
 
         if (oldDraftDO == null)
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
@@ -183,7 +183,7 @@ public class DraftService {
      * */
     public void deleteDraft(String authorId, Long draftId) {
 
-        DraftDO draft = draftMapper.selectBasicInfo(draftId);
+        DraftDO draft = draftMapper.selectDraftBasicInfo(draftId);
 
         if (draft == null)
             return;

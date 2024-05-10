@@ -27,4 +27,7 @@ public class AnnDetailVO {
 
     @JsonProperty("content")
     private String content;
+
+    @JsonProperty("summary")
+    private String summary;
 }

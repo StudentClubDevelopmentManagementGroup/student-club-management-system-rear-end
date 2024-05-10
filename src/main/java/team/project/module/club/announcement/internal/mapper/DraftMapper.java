@@ -14,7 +14,7 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
     /**
      * 查询草稿作者、所属社团，和文本文件的 fileId
      * */
-    default DraftDO selectBasicInfo(Long draftId) {
+    default DraftDO selectDraftBasicInfo(Long draftId) {
         return selectOne(new LambdaQueryWrapper<DraftDO>()
             .select(
              /* DraftDO::getDraftId, <- 不查询 id，业务用不到 */

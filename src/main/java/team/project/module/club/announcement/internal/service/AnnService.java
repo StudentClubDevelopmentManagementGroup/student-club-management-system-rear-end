@@ -1,10 +1,12 @@
 package team.project.module.club.announcement.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import team.project.base.model.request.PagingQueryReq;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
@@ -12,8 +14,10 @@ import team.project.module.club.announcement.internal.mapper.AnnMapper;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
 import team.project.module.club.announcement.internal.model.entity.DraftDO;
+import team.project.module.club.announcement.internal.model.query.AnnSearchQO;
 import team.project.module.club.announcement.internal.model.request.AnnDetail;
-import team.project.module.club.announcement.internal.model.request.PublishAnnReq;
+import team.project.module.club.announcement.internal.model.request.AnnPublishReq;
+import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
@@ -48,7 +52,7 @@ public class AnnService {
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 
-    public void publishAnn(PublishAnnReq req) {
+    public void publishAnn(AnnPublishReq req) {
 
         Long      deleteDraft  = req.getDraftId();
         AnnDetail announcement = req.getAnnouncement();
@@ -61,7 +65,7 @@ public class AnnService {
 
         DraftDO draftDO = null;
         if (null != deleteDraft) {
-            draftDO = draftMapper.selectBasicInfo(deleteDraft);
+            draftDO = draftMapper.selectDraftBasicInfo(deleteDraft);
 
             if (draftDO == null)
                 throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
@@ -131,17 +135,29 @@ public class AnnService {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "读取公告内容失败");
         }
 
-        return modelConverter.toAnnDetailVO(announcementDO, content);
+        return modelConverter.toAnnDetailVO(announcementDO, content, null);
     }
 
-    public List<AnnDetailVO> list() {
-        return null;
+    public List<AnnDetailVO> search(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+        Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+
+        String titleKeyword = searchReq.getTitleKeyword();
+
+        AnnSearchQO searchQO = new AnnSearchQO();
+        searchQO.setClubId(searchReq.getClubId());
+        searchQO.setTitleKeyword(titleKeyword == null || titleKeyword.isBlank() ? null : titleKeyword);
+
+        List<AnnDetailVO> result = new ArrayList<>();
+        for (AnnDO annDO : announcementMapper.searchAnn(page, searchQO)) {
+            result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
+        }
+        return result;
     }
 
     public List<AnnDetailVO> tmpList() {
         List<AnnDetailVO> result = new ArrayList<>();
         for (AnnDO annDO : announcementMapper.selectList(null)) {
-            result.add( modelConverter.toAnnDetailVO(annDO, null) );
+            result.add( modelConverter.toAnnDetailVO(annDO, null, null) );
         }
         return result;
     }

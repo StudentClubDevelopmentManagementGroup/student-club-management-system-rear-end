@@ -16,8 +16,7 @@ import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.internal.model.request.AnnDetail;
-import team.project.module.club.announcement.internal.model.request.SaveDraftReq;
+import team.project.module.club.announcement.internal.model.request.DraftSaveReq;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.announcement.internal.service.DraftService;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
@@ -42,7 +41,7 @@ public class DraftController {
     """)
     @PostMapping("/save")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object save(@Valid @RequestBody SaveDraftReq req) {
+    Object save(@Valid @RequestBody DraftSaveReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
         req.getDraft().setAuthorId(authorId);

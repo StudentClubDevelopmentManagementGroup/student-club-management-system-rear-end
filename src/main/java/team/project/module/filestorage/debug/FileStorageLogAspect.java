@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class FileStorageLogAspect {
 
-    Logger log = LoggerFactory.getLogger("【fileStorage】");
+    Logger log = LoggerFactory.getLogger("【file storage log aspect 文件存储日志切面】");
 
     @Around("execution(* team.project.module..filestorage.export.service.impl..uploadTextToFile(..))")
     public Object uploadTextToFileLog(ProceedingJoinPoint jp) throws Throwable {

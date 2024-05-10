@@ -8,11 +8,14 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.controller.response.Response;
+import team.project.base.model.request.PagingQueryReq;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.internal.model.request.PublishAnnReq;
+import team.project.module.club.announcement.internal.model.request.AnnPublishReq;
+import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.service.AnnService;
 
@@ -34,11 +37,11 @@ public class AnnController {
         title：公告标题
         content：公告内容（用于详情页）
         summary：内容摘要（用于列表页）
-        draft_id：草稿编号，可选，若不为 null 则发布公告后顺带删除该草稿
+        draft_id：草稿编号，若不为 null 则发布公告后顺带删除该草稿，若为 null 则直接发布公告
     """)
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object publish(@Valid @RequestBody PublishAnnReq req) {
+    Object publish(@Valid @RequestBody AnnPublishReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
         req.getAnnouncement().setAuthorId(authorId);
@@ -55,11 +58,12 @@ public class AnnController {
     }
 
     @Operation(summary="公告列表（分页查询、模糊查询）")
-    @GetMapping("/list")
-    Object list() {
-        if (true) return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
-
-        List<AnnDetailVO> result = announcementService.list();
+    @GetMapping("/search")
+    Object search(
+        @Valid @QueryParam AnnSearchReq searchReq,
+        @Valid @QueryParam PagingQueryReq pageReq
+    ) {
+        List<AnnDetailVO> result = announcementService.search(pageReq, searchReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
