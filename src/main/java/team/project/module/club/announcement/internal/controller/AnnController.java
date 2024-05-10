@@ -79,7 +79,7 @@ public class AnnController {
         String userId = (String) (StpUtil.getLoginId());
 
         announcementService.deleteAnn(userId, announcementId);
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary="移入草稿箱", hidden=true)
