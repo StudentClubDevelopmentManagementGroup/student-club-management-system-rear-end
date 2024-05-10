@@ -33,7 +33,8 @@ public class AnnController {
         title：公告标题
         content：公告内容（用于详情页）
         summary：内容摘要（用于列表页）
-        draft_id：草稿编号，若不为 null 则发布公告后顺带删除该草稿，若为 null 则直接发布公告
+        draft_id：草稿编号，若为 null 则直接发布公告，若不为 null 则发布公告后顺带删除该草稿
+        （草稿内容与公告实际内容无关，公告实际内容来自 content，而不是 draft_id，draft_id 仅仅是顺带删除）
     """)
     @PostMapping("/publish")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
@@ -56,6 +57,8 @@ public class AnnController {
     @Operation(summary="搜索公告（分页查询、模糊查询）", description="""
         club_id：社团编号，查询指定社团发布的公告（传 null 或 "" 表示全匹配）
         title_keyword：标题检索关键字，查询标题中包含该关键字的公告（传 null 或 "" 表示全匹配）
+        from_date：检索发布时间不早于指定日期的公告（传 null 则不限定时间范围）
+        to_date：检索发布时间不晚于指定日期的公告（传 null 则不限定时间范围）
         page_num：分页查询，当前页码
         page_size：分页查询，页大小
     """) // ljh_TODO 增加按时间检索

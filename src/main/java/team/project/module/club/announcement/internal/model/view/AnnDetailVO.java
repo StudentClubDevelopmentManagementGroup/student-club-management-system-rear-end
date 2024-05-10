@@ -13,6 +13,9 @@ public class AnnDetailVO {
     @JsonProperty("announcement_id")
     private Long announcementId;
 
+    @JsonProperty("department_name")
+    private String departmentName;
+
     @JsonProperty("club_name")
     private String clubName;
 

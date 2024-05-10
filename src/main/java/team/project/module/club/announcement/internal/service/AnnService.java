@@ -161,6 +161,8 @@ public class AnnService {
         AnnSearchQO searchQO = new AnnSearchQO();
         searchQO.setClubId(searchReq.getClubId());
         searchQO.setTitleKeyword(titleKeyword == null || titleKeyword.isBlank() ? null : titleKeyword);
+        searchQO.setFromDate(searchReq.getFromDate());
+        searchQO.setToDate(searchReq.getToDate());
 
         List<AnnDetailVO> result = new ArrayList<>();
         for (AnnDO annDO : announcementMapper.searchAnn(page, searchQO)) {

@@ -7,19 +7,27 @@ import team.project.module.club.announcement.internal.model.entity.AnnDO;
 import team.project.module.club.announcement.internal.model.entity.DraftDO;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
+import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
+import team.project.module.club.management.export.servivce.managementIService;
 import team.project.module.user.export.service.UserInfoServiceI;
 
 @Component("club-announcement-util-ModelConverter")
 public class ModelConverter {
 
     @Autowired
+    managementIService ClubInfoService;
+
+    @Autowired
     UserInfoServiceI userInfoService;
 
     public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
 
+        ClubBasicMsgDTO clubInfo = ClubInfoService.selectClubBasicMsg(announcementDO.getClubId());
+
         AnnDetailVO result = new AnnDetailVO();
         result.setAnnouncementId(announcementDO.getAnnouncementId());
-        result.setClubName("【暂无】等待 club 模块提供接口"); /* ljh_TODO */
+        result.setDepartmentName(clubInfo.getDepartmentName());
+        result.setClubName(clubInfo.getName());
         result.setAuthorName(userInfoService.getUserName(announcementDO.getAuthorId()));
         result.setPublishTime(announcementDO.getPublishTime());
         result.setTitle(announcementDO.getTitle());

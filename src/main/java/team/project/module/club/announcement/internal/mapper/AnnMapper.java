@@ -45,6 +45,10 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             wrapper.eq(AnnDO::getClubId, searchQO.getClubId());
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
+        if (null != searchQO.getFromDate())
+            wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
+        if (null != searchQO.getToDate())
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate());
 
         wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
 
