@@ -59,14 +59,14 @@ public class UserInfoService {
 
         Page<UserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
 
-        String searchUserId       = searchReq.getUserId();
-        String searchUserName     = searchReq.getUserName();
-        Long   searchDepartmentId = searchReq.getDepartmentId();
+        String userId       = searchReq.getUserId();
+        String userName     = searchReq.getUserName();
+        Long   departmentId = searchReq.getDepartmentId();
 
         SearchUserInfoQO queryQO = new SearchUserInfoQO();
-        queryQO.setUserId(   "".equals(searchUserId)   ? null : searchUserId   );
-        queryQO.setUserName( "".equals(searchUserName) ? null : searchUserName );
-        queryQO.setDepartmentId(Objects.equals(0L, searchDepartmentId) ? null : searchDepartmentId);
+        queryQO.setUserId(  userId   == null || userId.isBlank()   ? null : userId);
+        queryQO.setUserName(userName == null || userName.isBlank() ? null : userName );
+        queryQO.setDepartmentId(departmentId == null || departmentId.equals(0L) ? null : departmentId);
 
         List<UserDO> userDOList = userMapper.searchUserInfo(page, queryQO);
 

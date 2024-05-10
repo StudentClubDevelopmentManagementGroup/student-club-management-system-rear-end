@@ -68,29 +68,28 @@ public interface UserMapper extends BaseMapper<UserDO> {
     }
 
     /**
-     * 搜索相关用户的账号信息（模糊查询、分页查询）
+     * 搜索相关用户的账号信息（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
      * */
-    default List<UserDO> searchUserInfo(Page<UserDO> page, SearchUserInfoQO qo) {
+    default List<UserDO> searchUserInfo(Page<UserDO> page, SearchUserInfoQO searchQO) {
 
-        Long   departmentId = qo.getDepartmentId();
-        String userId       = qo.getUserId();
-        String userName     = qo.getUserName();
-        String userIdLike   = (userId != null)   ? userId.replace("%", "")   : "";
-        String userNameLike = (userName != null) ? userName.replace("%", "") : "";
-
-        return selectList(page, new LambdaQueryWrapper<UserDO>()
-            .select(
-                UserDO::getUserId,
-                UserDO::getDepartmentId,
-                UserDO::getName,
-                UserDO::getTel,
-                UserDO::getEmail,
-                UserDO::getRole
-            )
-            .eq(departmentId != null, UserDO::getDepartmentId, departmentId)
-            .like(userId != null, UserDO::getUserId, userIdLike)
-            .like(userName != null, UserDO::getName, userNameLike)
+        LambdaQueryWrapper<UserDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(
+            UserDO::getUserId,
+            UserDO::getDepartmentId,
+            UserDO::getName,
+            UserDO::getTel,
+            UserDO::getEmail,
+            UserDO::getRole
         );
+
+        if (null != searchQO.getDepartmentId())
+            wrapper.eq(UserDO::getDepartmentId, searchQO.getDepartmentId());
+        if (null != searchQO.getUserId())
+            wrapper.like(UserDO::getUserId, searchQO.getUserId().replace("%", ""));
+        if (null != searchQO.getUserName())
+            wrapper.like(UserDO::getName, searchQO.getUserName().replace("%", ""));
+
+        return selectList(page, wrapper);
     }
 
     /**
