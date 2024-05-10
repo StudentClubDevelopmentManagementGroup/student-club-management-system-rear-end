@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
@@ -13,9 +14,13 @@ import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
+import team.project.module.filestorage.export.model.query.UploadFileQO;
+import team.project.module.filestorage.export.service.FileStorageServiceI;
 
 import java.sql.Timestamp;
 import java.util.List;
+
+import static team.project.module.filestorage.export.model.enums.FileStorageType.CLOUD;
 
 @Service
 public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> implements DutyService {
@@ -29,6 +34,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Autowired
     TblDutyCirculationMapper tblDutyCirculationMapper;
+
+    @Autowired
+    FileStorageServiceI FileStorageService;
 
     @Override
     public void createDuty(String number, String area, Timestamp duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
@@ -66,5 +74,17 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
+    @Override
+    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, MultipartFile file) {
+        String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
+        String fileName = memberId + dutyTime;
+        UploadFileQO uploadFileQO = new UploadFileQO();
+        uploadFileQO.setOverwrite(true);
+        uploadFileQO.setTargetFilename(fileName);
+        uploadFileQO.setTargetFolder(uploadFile);
+        if (FileStorageService.uploadFile(file, CLOUD, uploadFileQO) == null) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+        }
+    }
 
 }
