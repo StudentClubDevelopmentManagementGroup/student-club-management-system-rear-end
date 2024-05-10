@@ -49,8 +49,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         if (user == null) {
             ucMapper.createManager(userId, clubId);
             uiService.addRoleToUser(userId, CLUB_MANAGER);
-        }
-        else {
+        } else {
             ucMapper.setManager(userId, clubId);
             uiService.addRoleToUser(userId, CLUB_MANAGER);
         }
@@ -62,16 +61,13 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         TblUserClubDO user = ucMapper.selectOne(userId, clubId);
         if (user == null) {
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
-        }
-        else {
-            try
-            {
+        } else {
+            try {
                 ucMapper.quashManager(userId, clubId);
-                if (ucMapper.selectRootROle(userId) == null){
+                if (ucMapper.selectRootROle(userId) == null) {
                     uiService.removeRoleFromUser(userId, CLUB_MANAGER);
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
@@ -85,14 +81,12 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         if (user == null) {
             try {
                 ucMapper.createMember(userId, clubId);
-                uiService.addRoleToUser(userId,CLUB_MEMBER);
-            }
-            catch (Exception a){
+                uiService.addRoleToUser(userId, CLUB_MEMBER);
+            } catch (Exception a) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "创建失败");
             }
-        }
-        else {
+        } else {
             throw new ServiceException(ServiceStatus.SUCCESS, "已经存在");
         }
     }
@@ -103,15 +97,13 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         TblUserClubDO user = ucMapper.selectOne(userId, clubId);
         if (user == null) {
             throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
-        }
-        else {
+        } else {
             try {
                 ucMapper.quashMember(userId, clubId);
                 if (ucMapper.selectMemberRole(userId) == null) {
                     uiService.removeRoleFromUser(userId, CLUB_MEMBER);
                 }
-            }
-            catch (Exception a){
+            } catch (Exception a) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
                 throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
             }
@@ -120,7 +112,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     public PageVO<UserMsgDTO> selectClubMember(ClubQO req) {
         Page<UserMsgDTO> user = ucMapper.selectClubMember(
-            new Page<>(req.getPagenum(), req.getSize()),req.getClubId()
+                new Page<>(req.getPagenum(), req.getSize()), req.getClubId()
         );
         return new PageVO<>(user);
     }
@@ -132,7 +124,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     public PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req) {
         Page<ClubMemberInfoDTO> page = ucMapper.selectClubMemberInfo(
-            new Page<>(req.getPagenum(), req.getSize()), req.getClubId(), req.getName(), req.getDepartmentId()
+                new Page<>(req.getPagenum(), req.getSize()), req.getClubId(), req.getName(), req.getDepartmentId()
         );
         List<ClubMemberInfoVO> result = converter.toClubMemberInfoVOList(page.getRecords());
         return new PageVO<>(result, page);

@@ -59,4 +59,6 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
     Page<ClubMemberInfoDTO> selectClubMemberInfo(@Param("page") Page<ClubMemberInfoDTO> page, Long clubId, String name, Long departmentId);
 
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
+
+    int quashAllMember(Long clubId);
 }
