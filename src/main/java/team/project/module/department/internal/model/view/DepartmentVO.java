@@ -1,4 +1,4 @@
-package team.project.module.department.model.view;
+package team.project.module.department.internal.model.view;
 
 import lombok.Data;
 

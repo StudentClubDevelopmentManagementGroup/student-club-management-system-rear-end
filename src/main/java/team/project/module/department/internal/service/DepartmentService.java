@@ -1,8 +1,8 @@
-package team.project.module.department.service;
+package team.project.module.department.internal.service;
 
-import team.project.module.department.model.request.AddDepartmentReq;
-import team.project.module.department.model.request.AlterDepartmentNameReq;
-import team.project.module.department.model.view.DepartmentVO;
+import team.project.module.department.internal.model.request.AddDepartmentReq;
+import team.project.module.department.internal.model.request.AlterDepartmentNameReq;
+import team.project.module.department.internal.model.view.DepartmentVO;
 
 import java.util.List;
 
@@ -22,4 +22,6 @@ public interface DepartmentService {
 
     //输入id获取院系名称
     String getDepartmentName(Long id);
+
+
 }

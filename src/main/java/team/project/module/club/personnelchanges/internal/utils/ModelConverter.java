@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
-import team.project.module.department.service.DepartmentService;
+import team.project.module.department.internal.service.DepartmentService;
 
 import java.util.ArrayList;
 import java.util.List;

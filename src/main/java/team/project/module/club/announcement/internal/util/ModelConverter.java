@@ -8,14 +8,14 @@ import team.project.module.club.announcement.internal.model.entity.DraftDO;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
-import team.project.module.club.management.export.servivce.managementIService;
+import team.project.module.club.management.export.servivce.ManagementIService;
 import team.project.module.user.export.service.UserInfoServiceI;
 
 @Component("club-announcement-util-ModelConverter")
 public class ModelConverter {
 
     @Autowired
-    managementIService ClubInfoService;
+    ManagementIService ClubInfoService;
 
     @Autowired
     UserInfoServiceI userInfoService;

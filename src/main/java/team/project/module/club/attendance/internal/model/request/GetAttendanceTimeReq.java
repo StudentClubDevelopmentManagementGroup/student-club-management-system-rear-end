@@ -11,12 +11,17 @@ import java.time.LocalDateTime;
 @Data
 public class GetAttendanceTimeReq {
 
-    @JsonProperty("clubId")
-    @NotNull(message = "社团id不能为空")
-    private Long clubId;
+
+    @JsonProperty("clubName")
+    @NotNull(message = "社团名称不能为空")
+    private String clubName;
+
+    @JsonProperty("userName")
+    private String userName;
 
     @JsonProperty("userId")
     private String userId;
+
 
 
     @JsonProperty("startTime")
@@ -25,12 +30,6 @@ public class GetAttendanceTimeReq {
     @JsonProperty("endTime")
     private LocalDateTime endTime;
 
-    @JsonProperty("currentPage")
-//    @NotNull(message = "当前页不能为空")
-    private Long currentPage;
 
-    @JsonProperty("pageSize")
-//    @NotNull(message = "页大小不能为空")
-    private Long pageSize;
 
 }

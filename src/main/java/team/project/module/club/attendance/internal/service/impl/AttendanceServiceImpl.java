@@ -1,13 +1,12 @@
 package team.project.module.club.attendance.internal.service.impl;
 
 
-
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
+import team.project.base.service.exception.ServiceException;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.attendance.internal.mapper.AttendanceMapper;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
@@ -15,8 +14,15 @@ import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import team.project.module.club.attendance.internal.util.ToolMethods;
+import team.project.module.club.management.export.servivce.ManagementIService;
+import team.project.module.club.personnelchanges.export.service.PceIService;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,113 +35,191 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     private AttendanceMapper attendanceMapper;
     @Autowired
     private UserInfoServiceI userInfoIService;
+    @Autowired
+    private ToolMethods toolMethods;
+
+    @Autowired
+    public ManagementIService managementIService;
+
+    @Autowired
+    private PceIService pceIService;
+
+
+
 
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq){
-        return attendanceMapper.userCheckIn(userCheckinReq);
+        LocalDateTime checkInTime = userCheckinReq.getCheckInTime();
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 校验签到时间是否为今天的日期且大于等于当前时间
+        LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
+        if ( checkInTime.toLocalDate().isEqual(now.toLocalDate())
+                && checkInTime.isBefore(now)
+                && checkInTime.isAfter(oneMinuteAgo)) {
+            Long clubId = managementIService.selectClubIdByName(userCheckinReq.getClubName());
+            if(!pceIService.isClubMember(userCheckinReq.getUserId(),clubId)) {
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+            }
+
+            // 查询当天最新的签到记录
+            AttendanceDO latestCheckInRecord = attendanceMapper.getLatestCheckInRecord(
+                            userCheckinReq.getUserId(), clubId);
+
+            //如果当天的最新签到记录存在且未进行签退
+            if( latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null ){
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "签到失败，上一次签到未签退");
+            }
+            //满足签到条件进行签到
+            else {
+
+                AttendanceDO attendanceDO = attendanceMapper.userCheckIn(userCheckinReq,clubId);
+                return toolMethods.convert(attendanceDO);
+            }
+        //签到时间不合理，不符合当前时间
+        } else {
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "签到时间不合理");
+        }
 
     }
 
 
     @Override
-    //签退返回签到信息
-    public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq){
-        AttendanceDO attendanceDO = attendanceMapper.userCheckOutTest(userCheckoutReq);
-        if(attendanceDO !=null){
-            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-            String userName = userInfoIService.selectUserBasicInfo(attendanceDO.getUserId()).getName();
-            attendanceInfoVO.setUserName(userName);
-            BeanUtils.copyProperties(attendanceDO, attendanceInfoVO);
-            return attendanceInfoVO;
+    public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq) {
+        //获取签退时间
+        LocalDateTime checkoutTime = userCheckoutReq.getCheckoutTime();
+        // 获取当前时间
+        LocalDateTime now = LocalDateTime.now();
+        // 校验签到时间是否为今天的日期且大于等于当前时间
+        LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
+        if (checkoutTime.toLocalDate().isEqual(now.toLocalDate())
+                && checkoutTime.isBefore(now)
+                && checkoutTime.isAfter(oneMinuteAgo)) {
+            Long clubId = managementIService.selectClubIdByName(userCheckoutReq.getClubName());
+            if(!pceIService.isClubMember(userCheckoutReq.getUserId(),clubId)) {
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+            }
+
+            AttendanceDO attendanceDO= attendanceMapper.userCheckOut(userCheckoutReq,clubId);
+
+            if(attendanceDO != null){
+                return toolMethods.convert(attendanceDO);
+
+            }else {
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "没有可以签退的记录");
+            }
+
         }else {
-            return null;
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "签退时间不合理");
         }
     }
+
 
     //查询社团成员当天最新的签到记录
     @Override
-    public AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId){
+    public AttendanceInfoVO getLatestCheckInRecord(String userId, String clubName){
+        Long clubId = managementIService.selectClubIdByName(clubName);
         if(attendanceMapper.getLatestCheckInRecord(userId,clubId) != null) {
-            //BeanUtils.copyProperties方法将一个对象的属性复制到另一个对象
-            // 复制空对象会引发异常
-            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
-            BeanUtils.copyProperties(attendanceMapper.getLatestCheckInRecord(userId,clubId), attendanceInfoVO);
-            return attendanceInfoVO;
-        }else{
-            return null;
+            return toolMethods.convert(attendanceMapper.getLatestCheckInRecord(userId,clubId));
+        }else  {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "该学生今天未签到");
         }
     }
 
 
     @Override
-    //查社团一个成员指定时间打卡时长
-    public Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
-        return attendanceMapper.getOneAttendanceDurationTime(getAttendanceTimeReq);
-    }
-    @Override
-    //查询社团每个成员指定时间段打卡时长
+    //查询社团成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
+        Long clubId = managementIService.selectClubIdByName(getAttendanceTimeReq.getClubName());
+        // 根据用户名字查询学号
+        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceTimeReq.getUserName());
+        List<String> userIds = new ArrayList<>();
+        for (UserBasicInfoDTO user : users) {
+            userIds.add(user.getUserId());
+        }
+
+        if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
+
+        if(getAttendanceTimeReq.getUserId() != ""){
+            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+            }
+        }
+//        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
+//                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
+
         List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
-                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq);
+                attendanceMapper.getEachAttendanceDurationTimeTest(getAttendanceTimeReq,clubId,userIds);
+
         for (ClubAttendanceDurationVO clubAttendanceDurationVO : clubAttendanceDurationVOList){
+
             String userName = userInfoIService.selectUserBasicInfo(clubAttendanceDurationVO.getUserId()).getName();
             clubAttendanceDurationVO.setUserName(userName);
+
+
+            clubAttendanceDurationVO.setClubName(getAttendanceTimeReq.getClubName());
         }
         return clubAttendanceDurationVOList;
     }
 
-//    @Override
-//    //查社团成员指定时间打卡记录
-//    public List<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq){
-//        List<AttendanceInfoVO> attendanceInfoVOList = attendanceMapper.getAttendanceRecord(getAttendanceRecordReq);
-//        for(AttendanceInfoVO attendanceInfoVO : attendanceInfoVOList){
-//            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
-//            attendanceInfoVO.setUserName(userName);
-//        }
-//        return attendanceInfoVOList;
-//    }
-//
 
-
+    //查签到记录优化分页
     @Override
-// 查社团所有成员指定时间打卡记录（分页）
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
-        // 构造分页对象
-        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
-        // 构建查询条件
-        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("club_id", getAttendanceRecordReq.getClubId()) // 等于条件
-                .eq(getAttendanceRecordReq.getUserId() != null, "user_id", getAttendanceRecordReq.getUserId()) // 如果 userId 不为 null，则加入等于条件
-                .between(getAttendanceRecordReq.getStartTime() != null
-                                && getAttendanceRecordReq.getEndTime() != null, "checkin_time", getAttendanceRecordReq.getStartTime(),
-                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
-                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
 
 
-        List<AttendanceDO> attendanceRecordList = attendanceMapper.selectList(page, queryWrapper);
-        List<AttendanceInfoVO> result = new ArrayList<>();
-        // 对查询结果进行进一步处理
-        for (AttendanceDO attendanceDO : attendanceRecordList) {
-            AttendanceInfoVO attendanceInfoVO = new AttendanceInfoVO();
+        Long clubId = managementIService.selectClubIdByName(getAttendanceRecordReq.getClubName());
 
-            attendanceInfoVO.setId(attendanceDO.getId());
-            attendanceInfoVO.setClubId(attendanceDO.getClubId());
-            attendanceInfoVO.setUserId(attendanceDO.getUserId());
-            String userName = userInfoIService.selectUserBasicInfo(attendanceInfoVO.getUserId()).getName();
-            attendanceInfoVO.setUserName(userName);
-            attendanceInfoVO.setCheckInTime(attendanceDO.getCheckInTime());
-            attendanceInfoVO.setCheckoutTime(attendanceDO.getCheckoutTime());
-            attendanceInfoVO.setDeleted(attendanceDO.isDeleted());
-
-            result.add(attendanceInfoVO);
+        // 根据用户名字查询学号
+        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceRecordReq.getUserName());
+        List<String> userIds = new ArrayList<>();
+        for (UserBasicInfoDTO user : users) {
+            userIds.add(user.getUserId());
         }
 
-        // 封装分页查询结果并返回
-        return new PageVO<>(result,page);
+        if(userIds.isEmpty()) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
+        }
 
+        if(getAttendanceRecordReq.getUserId() != ""){
+            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
+                System.out.println("字符串为空测试");
+                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+            }
+        }
+
+
+
+
+//        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
+        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPageTest(getAttendanceRecordReq,clubId,userIds);
+        List<AttendanceInfoVO> result = new ArrayList<>();
+        for (AttendanceDO attendanceDO : page.getRecords()) {
+            result.add(toolMethods.convert(attendanceDO));
+        }
+        return new PageVO<>(result, page);
     }
 
+
+    //社团成员申请补签,返回补签记录
+    public AttendanceInfoVO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq){
+        if(!applyAttendanceReq.getCheckInTime().toLocalDate()
+                .equals(applyAttendanceReq.getCheckoutTime().toLocalDate())) {
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "时间不合理，签到时间与签退时间不在同一天");
+        }
+        Long clubId = managementIService.selectClubIdByName(applyAttendanceReq.getClubName());
+        if(!pceIService.isClubMember(applyAttendanceReq.getUserId(),clubId)) {
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+        }
+        AttendanceDO attendanceDO = attendanceMapper.userReplenishAttendance(applyAttendanceReq,clubId);
+        if(attendanceDO ==null ) {
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "该成员当天没有记录未签退");
+        }
+        return toolMethods.convert(attendanceDO);
+
+
+    }
 
 
     //定时逻辑删除签到记录

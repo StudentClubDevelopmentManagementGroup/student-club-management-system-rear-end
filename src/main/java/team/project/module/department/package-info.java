@@ -1,6 +1,6 @@
 /**
- * <h1> 介绍
- * <p>  TODO： 写一下模块介绍
+ * <h3> 院系管理
+ * <p>  增删改查
  * <p>  
  */
 package team.project.module.department;

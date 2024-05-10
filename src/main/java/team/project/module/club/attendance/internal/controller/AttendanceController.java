@@ -18,7 +18,7 @@ import java.util.List;
 
 @Tag(name="签到签退模块")
 @RestController
-@RequestMapping("/clockIn")
+@RequestMapping("/attendance")
 public class AttendanceController {
 
     @Autowired //注入
@@ -28,85 +28,95 @@ public class AttendanceController {
     @GetMapping("/getLatestCheckInRecord")
     public Object getLatestCheckInRecord(
             @RequestParam("userId") String userId,
-            @RequestParam("clubId") Long clubId) {
+            @RequestParam("clubName") String clubName) {
         // 调用服务层方法执行查询当天签到记录的逻辑
-        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubId);
+        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubName);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(attendanceInfoVO);
     }
 
 
-
-    @Operation(summary="社团成员签到,时间格式为(2024-04-15 13:01:33)")
+    @Operation(summary="签到",description = """
+            时间格式为(2024-04-15 13:01:33)
+            """)
     @PostMapping("/checkIn")
     public Object userCheckIn( @Valid @RequestBody  UserCheckInReq userCheckinReq) {
-        // 查询当天最新的签到记录
-        AttendanceInfoVO latestCheckInRecord = attendanceService.getLatestCheckInRecord(userCheckinReq.getUserId(), userCheckinReq.getClubId());
 
-        // 如果最新签到记录存在且签退时间不为空，则表示上一次签到未签退
-        if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
-            return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("签到失败，上一次签到未签退");
-        }else {
-            // 如果最新签到记录不存在或签退时间不为空，则可以进行签到操作
-            AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("签到成功")
-                    .data(attendanceInfoVO);
-        }
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("签到成功")
+                .data(attendanceInfoVO);
     }
 
 
-    @Operation(summary="社团成员签退，时间格式为(2024-04-15 13:01:33)")
+
+    @Operation(summary="签退",
+            description = """
+            时间格式为(2024-04-15 13:01:33)
+            """)
     @PatchMapping ("/checkout")
-    public Object userCheckout(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
+    public Object userCheckoutTest(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
+
         AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckOut(userCheckoutReq);
-        if(attendanceInfoVO != null){
-            return new Response<>(ServiceStatus.SUCCESS)
+        return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("签退成功")
                 .data(attendanceInfoVO);
-        }else {
-            return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("没有可以签退的记录");
-        }
 
     }
 
-    @Operation(summary="查询社团成员指定时间段打卡时长，返回秒，时间格式（2024-04-18 23:59:59）",
+
+    @Operation(summary="查时长，返回秒",
             description = """
-                    -学号为空则查询社团全部成员的打卡时长 \n
-                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡时长
+                    - 时间格式（2024-04-18 23:59:59） \n
+                    - 支持名字 或者 学号查询,支持模糊查询 \n
+                    - userId和userName都为""查询社团全部成员的打卡时长 \n
+                    - 开始结束时间都为 "" 则查询成员进入社团以来的全部打卡时长 \n
+                    - 起止时间要么都为空，要么一起出现
                     """)
-    @PostMapping("/attendance/durationTime")
+    @PostMapping("/durationTime")
     public Object getAttendanceTime(@Valid @RequestBody  GetAttendanceTimeReq getAttendanceTimeReq){
-        if(getAttendanceTimeReq.getUserId() ==null){
-            List<ClubAttendanceDurationVO> eachAttendanceTime =
-                    attendanceService.getEachAttendanceDurationTime(getAttendanceTimeReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(eachAttendanceTime);
-        }else {
-            Long totalAnySeconds = attendanceService.getOneAttendanceDurationTime(getAttendanceTimeReq);
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(totalAnySeconds);
-        }
+        List<ClubAttendanceDurationVO> eachAttendanceTime =
+                attendanceService.getEachAttendanceDurationTime(getAttendanceTimeReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(eachAttendanceTime);
     }
+
+
 
     //查询社团成员指定时间段打卡记录
-    @Operation(summary="查询社团成员指定时间段打卡记录，时间格式（2024-04-18 23:59:59）",
+    @Operation(summary="查打卡记录",
             description = """
-                    -学号为空则查询社团全部成员的打卡记录 \n
-                    -开始结束时间都为为空则查询成员进入社团以来的全部打卡记录
+                    - 时间格式（2024-04-18 23:59:59） \n
+                    - 支持名字 或者 学号查询,支持模糊查询 \n
+                    - userId和userName都为"" 则查询社团全部成员的打卡记录 \n
+                    - 开始结束时间都为 "" 则查询成员进入社团以来的全部打卡记录 \n
+                    - 起止时间要么都为空，要么一起出现
                     """)
-    @PostMapping("/attendance/record")
+    @PostMapping("/record")
     public Object getAttendanceRecord(@Valid @RequestBody  GetAttendanceRecordReq getAttendanceRecordReq){
         PageVO<AttendanceInfoVO> eachAttendanceRecord =
+                //getAttendanceRecordT
                 attendanceService.getAttendanceRecord(getAttendanceRecordReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(eachAttendanceRecord);
+    }
+
+
+
+    @Operation(summary="补签",
+            description = """
+                    社团成员申请补签，超过签到时间七天请求无效
+                    """)
+    @PostMapping("/replenish")
+    public Object replenishAttendanceRecord(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq){
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userReplenishAttendance(applyAttendanceReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("补签成功")
+                .data(attendanceInfoVO);
+
     }
 
 

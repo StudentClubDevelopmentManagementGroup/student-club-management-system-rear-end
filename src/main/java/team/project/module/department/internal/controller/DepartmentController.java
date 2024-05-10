@@ -1,4 +1,4 @@
-package team.project.module.department.controller;
+package team.project.module.department.internal.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,10 +9,10 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.department.model.request.AddDepartmentReq;
-import team.project.module.department.model.request.AlterDepartmentNameReq;
-import team.project.module.department.service.DepartmentService;
-import team.project.module.department.model.view.DepartmentVO;
+import team.project.module.department.internal.model.request.AddDepartmentReq;
+import team.project.module.department.internal.model.request.AlterDepartmentNameReq;
+import team.project.module.department.internal.service.DepartmentService;
+import team.project.module.department.internal.model.view.DepartmentVO;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -41,20 +41,7 @@ public class DepartmentController {
     }
 
 
-    @Operation(summary="根据id查询院系名称")
-    @GetMapping("/name")
-    public Response<Object> getDepartmentName(@RequestParam("departmentId") @NotNull Long id) {
-        String departmentName = departmentService.getDepartmentName(id);
-        if (departmentName != null) {
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data(departmentName);
-        } else {
-            return new Response<>(ServiceStatus.SUCCESS)
-                    .statusText("查询成功")
-                    .data("没有该院系");
-        }
-    }
+
 
     @Operation(summary="逻辑删除院系，只需要传入院系全称")
     @DeleteMapping("/{name}")

@@ -1,6 +1,5 @@
 package team.project.module.user.tmp.service;
 
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -17,7 +16,7 @@ public class DepartmentService {
     private TblDepartmentMapper departmentMapper;
 
     @Autowired
-    team.project.module.department.service.DepartmentService departmentService; /* <- tmp */
+    team.project.module.department.internal.service.DepartmentService departmentService; /* <- tmp */
 
     /* 院系表长期不变动，用缓存避免多次查询数据库
        一旦院系表发生变动，则需要重启 java 后端 */
