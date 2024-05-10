@@ -51,6 +51,9 @@ public class AnnService {
     FileStorageServiceI fileStorageService;
 
     @Autowired
+    DraftService draftService;
+
+    @Autowired
     DraftMapper draftMapper;
 
     @Autowired
@@ -202,5 +205,33 @@ public class AnnService {
         if (1 == announcementMapper.deleteById(announcementId)) {
             fileStorageService.deleteFile(textFileId);
         }
+    }
+
+    public void toDraft(String userId, Long announcementId) {
+
+        AnnDO announcement = announcementMapper.selectById(announcementId);
+        if (null == announcement) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
+        }
+
+        if ( ! Objects.equals(userId, announcement.getAuthorId())) {
+            throw new ServiceException(ServiceStatus.FORBIDDEN, "不是公告作者");
+        }
+        authService.requireClubManager(userId, announcement.getClubId(), "需要社团负责人才能编辑公告");
+
+        String content = fileStorageService.getTextFromFile(announcement.getTextFile());
+        if (content == null) {
+            log.error("将公告转为草稿失败（数据库中存有记录，但是依据 fileId 找不到指定文件）");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "找不到公告");
+        }
+
+        AnnDetail draft = new AnnDetail();
+        draft.setClubId(announcement.getClubId());
+        draft.setAuthorId(announcement.getAuthorId());
+        draft.setTitle(announcement.getTitle());
+        draft.setContent(content);
+        draft.setSummary(announcement.getSummary());
+
+        draftService.createDraft(draft);
     }
 }

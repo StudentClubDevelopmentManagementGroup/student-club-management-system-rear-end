@@ -15,7 +15,6 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
-import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.model.request.AnnPublishReq;
 import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
@@ -25,9 +24,6 @@ import team.project.module.club.announcement.internal.service.AnnService;
 @RestController
 @RequestMapping("/club/announcement")
 public class AnnController {
-
-    @Autowired
-    AuthServiceI authService;
 
     @Autowired
     AnnService announcementService;
@@ -82,10 +78,13 @@ public class AnnController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
-    @Operation(summary="移入草稿箱", hidden=true)
+    @Operation(summary="移入草稿箱")
     @PostMapping("/to_draft")
     @SaCheckLogin
     Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        String userId = (String) (StpUtil.getLoginId());
+
+        announcementService.toDraft(userId, announcementId);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 }

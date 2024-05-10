@@ -15,7 +15,6 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
-import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.announcement.internal.model.request.DraftSaveReq;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.announcement.internal.service.DraftService;
@@ -25,9 +24,6 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 @RestController
 @RequestMapping("/club/announcement/draft")
 public class DraftController {
-
-    @Autowired
-    AuthServiceI authService;
 
     @Autowired
     DraftService draftService;
