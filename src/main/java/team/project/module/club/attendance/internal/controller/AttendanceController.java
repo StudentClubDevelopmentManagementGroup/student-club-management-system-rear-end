@@ -40,7 +40,7 @@ public class AttendanceController {
     @Operation(summary="签到",description = """
             时间格式为(2024-04-15 13:01:33)
             """)
-    @PostMapping("/checkInTest")
+    @PostMapping("/checkIn")
     public Object userCheckIn( @Valid @RequestBody  UserCheckInReq userCheckinReq) {
 
         AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
@@ -112,12 +112,6 @@ public class AttendanceController {
                     """)
     @PostMapping("/replenish")
     public Object replenishAttendanceRecord(@Valid @RequestBody  ApplyAttendanceReq applyAttendanceReq){
-        if(!applyAttendanceReq.getCheckInTime().toLocalDate()
-                .equals(applyAttendanceReq.getCheckoutTime().toLocalDate())) {
-            return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("非法请求，签到时间与签退时间不在同一天");
-        }
-
         AttendanceInfoVO attendanceInfoVO = attendanceService.userReplenishAttendance(applyAttendanceReq);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("补签成功")

@@ -164,6 +164,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         updateWrapper.eq("user_id", applyAttendanceReq.getUserId())
                 .eq("club_id", clubId)
                 .eq("checkin_time",applyAttendanceReq.getCheckInTime())
+                //七天之内未签退的记录才能补签
                 .ge("checkin_time", LocalDateTime.now().minus(7, ChronoUnit.DAYS))
                 .eq("is_deleted", true)
                 .isNull("checkout_time");
