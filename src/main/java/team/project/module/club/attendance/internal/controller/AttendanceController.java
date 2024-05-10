@@ -12,8 +12,6 @@ import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 import team.project.module.club.attendance.internal.service.AttendanceService;
-
-import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -32,82 +30,41 @@ public class AttendanceController {
             @RequestParam("userId") String userId,
             @RequestParam("clubName") String clubName) {
         // 调用服务层方法执行查询当天签到记录的逻辑
-        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecordTest(userId,clubName);
+        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubName);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(attendanceInfoVO);
     }
 
 
-
     @Operation(summary="签到",description = """
             时间格式为(2024-04-15 13:01:33)
             """)
-    @PostMapping("/checkIn")
+    @PostMapping("/checkInTest")
     public Object userCheckIn( @Valid @RequestBody  UserCheckInReq userCheckinReq) {
-        LocalDateTime checkInTime = userCheckinReq.getCheckInTime();
 
-        // 获取当前时间
-        LocalDateTime now = LocalDateTime.now();
-        // 校验签到时间是否为今天的日期且大于等于当前时间
-        if (checkInTime.toLocalDate().isEqual(now.toLocalDate()) && checkInTime.isBefore(now)) {
-            // 查询当天最新的签到记录
-            AttendanceInfoVO latestCheckInRecord =
-                    attendanceService.getLatestCheckInRecordTest(
-                            userCheckinReq.getUserId(),
-                            userCheckinReq.getClubName());
-
-            // 如果最新签到记录存在且签退时间不为空，则表示上一次签到未签退
-            if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
-                return new Response<>(ServiceStatus.BAD_REQUEST)
-                        .statusText("签到失败，上一次签到未签退");
-            }else {
-                // 如果最新签到记录不存在或签退时间不为空，则可以进行签到操作
-                AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
-                return new Response<>(ServiceStatus.SUCCESS)
-                        .statusText("签到成功")
-                        .data(attendanceInfoVO);
-            }
-
-        }else {
-            return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("签到失败")
-                    .data("签到时间无效！");
-        }
-
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckIn(userCheckinReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("签到成功")
+                .data(attendanceInfoVO);
     }
+
 
 
     @Operation(summary="签退",
-    description = """
+            description = """
             时间格式为(2024-04-15 13:01:33)
             """)
     @PatchMapping ("/checkout")
-    public Object userCheckout(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
-        //获取签退时间
-        LocalDateTime checkoutTime = userCheckoutReq.getCheckoutTime();
-        // 获取当前时间
-        LocalDateTime now = LocalDateTime.now();
-        // 校验签到时间是否为今天的日期且大于等于当前时间
-        if (checkoutTime.toLocalDate().isEqual(now.toLocalDate()) && checkoutTime.isBefore(now)) {
-            AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckOut(userCheckoutReq);
-            if(attendanceInfoVO != null){
-                return new Response<>(ServiceStatus.SUCCESS)
-                        .statusText("签退成功")
-                        .data(attendanceInfoVO);
-            }else {
-                return new Response<>(ServiceStatus.BAD_REQUEST)
-                        .statusText("没有可以签退的记录");
-            }
+    public Object userCheckoutTest(@Valid @RequestBody UserCheckoutReq userCheckoutReq) {
 
-        }else {
-            return new Response<>(ServiceStatus.BAD_REQUEST)
-                    .statusText("签退失败")
-                    .data("签退时间无效！");
-        }
-
+        AttendanceInfoVO attendanceInfoVO = attendanceService.userCheckOut(userCheckoutReq);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("签退成功")
+                .data(attendanceInfoVO);
 
     }
+
 
     @Operation(summary="查时长，返回秒",
             description = """

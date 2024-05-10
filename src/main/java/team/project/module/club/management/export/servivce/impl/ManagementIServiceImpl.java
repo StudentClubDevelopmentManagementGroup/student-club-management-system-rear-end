@@ -2,6 +2,8 @@ package team.project.module.club.management.export.servivce.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.project.base.service.exception.ServiceException;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.management.export.servivce.ManagementIService;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
@@ -27,7 +29,11 @@ public class ManagementIServiceImpl implements ManagementIService {
 
     @Override
     public   Long selectClubIdByName(String clubName){
-        return tblClubMapper.selectClubIdByName(clubName);
+        Long clubId = tblClubMapper.selectClubIdByName(clubName);
+        if (clubId == null) {
+            throw new ServiceException(ServiceStatus.BAD_REQUEST, "没有该社团");
+        }
+        return clubId;
     }
 
 }

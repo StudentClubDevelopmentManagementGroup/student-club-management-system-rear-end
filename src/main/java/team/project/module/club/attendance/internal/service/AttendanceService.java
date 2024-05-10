@@ -12,23 +12,23 @@ import java.util.List;
 
 public interface AttendanceService {
 
+
     //签到返回签到信息
     AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq);
 
-    //查询社团成员当天最新的签到记录
-    AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId);
 
     //查询社团成员当天最新的签到记录
-    AttendanceInfoVO getLatestCheckInRecordTest(String userId, String clubName);
+    AttendanceInfoVO getLatestCheckInRecord(String userId, String clubName);
+
 
     //签退返回签到信息
     AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq);
 
 
-
     //查询社团成员指定时间段打卡时长
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
+    //查打卡记录
     PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq);
 
 

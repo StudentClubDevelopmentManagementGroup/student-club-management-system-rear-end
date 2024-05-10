@@ -73,13 +73,14 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
+
     //查询社团成员当天最新的签到记录
     default AttendanceDO getLatestCheckInRecord(String userId, Long clubId) {
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId)
                 .eq("club_id", clubId)
                 .eq("is_deleted", 0)
-                .apply("DATE(checkin_time) = CURDATE()")
+                .apply("DATE(checkin_time) = CURDATE()") //获取今天的日期
                 .orderByDesc("checkin_time")
                 .last("LIMIT 1");
         AttendanceDO attendanceDO = this.selectOne(queryWrapper);
