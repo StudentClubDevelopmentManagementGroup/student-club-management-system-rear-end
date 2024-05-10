@@ -31,6 +31,8 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
 
+        wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
+
         return selectList(page, wrapper);
     }
 }

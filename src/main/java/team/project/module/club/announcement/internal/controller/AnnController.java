@@ -1,5 +1,6 @@
 package team.project.module.club.announcement.internal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.queryparam.QueryParam;
 import team.project.base.controller.response.Response;
 import team.project.base.model.request.PagingQueryReq;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
@@ -18,8 +20,6 @@ import team.project.module.club.announcement.internal.model.request.AnnPublishRe
 import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.service.AnnService;
-
-import java.util.List;
 
 @Tag(name="公告")
 @RestController
@@ -57,21 +57,34 @@ public class AnnController {
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
-    @Operation(summary="公告列表（分页查询、模糊查询）")
+    @Operation(summary="搜索公告（分页查询、模糊查询）", description="""
+        club_id：社团编号，查询指定社团发布的公告（传 null 或 "" 表示全匹配）
+        title_keyword：标题检索关键字，查询标题中包含该关键字的公告（传 null 或 "" 表示全匹配）
+        page_num：分页查询，当前页码
+        page_size：分页查询，页大小
+    """) // ljh_TODO 增加按时间检索
     @GetMapping("/search")
     Object search(
         @Valid @QueryParam AnnSearchReq searchReq,
         @Valid @QueryParam PagingQueryReq pageReq
     ) {
-        List<AnnDetailVO> result = announcementService.search(pageReq, searchReq);
+        PageVO<AnnDetailVO> result = announcementService.search(pageReq, searchReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
-    @Operation(summary="公告列表（全查，测试用）")
-    @GetMapping("/tmp_list")
-    Object tmpList() {
+    @Operation(summary="删除公告")
+    @PostMapping("/del")
+    @SaCheckLogin
+    Object del(@NotNull(message="未指定公告id") Long announcementId) {
 
-        List<AnnDetailVO> result = announcementService.tmpList();
-        return new Response<>(ServiceStatus.SUCCESS).data(result);
+       return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    }
+
+    @Operation(summary="移入草稿箱", hidden=true)
+    @PostMapping("/to_draft")
+    @SaCheckLogin
+    Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
+
+       return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 }

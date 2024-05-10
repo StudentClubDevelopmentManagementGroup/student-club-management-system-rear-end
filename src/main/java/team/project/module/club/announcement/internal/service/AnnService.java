@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import team.project.base.model.request.PagingQueryReq;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
@@ -138,7 +139,7 @@ public class AnnService {
         return modelConverter.toAnnDetailVO(announcementDO, content, null);
     }
 
-    public List<AnnDetailVO> search(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+    public PageVO<AnnDetailVO> search(PagingQueryReq pageReq, AnnSearchReq searchReq) {
         Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
 
         String titleKeyword = searchReq.getTitleKeyword();
@@ -151,14 +152,7 @@ public class AnnService {
         for (AnnDO annDO : announcementMapper.searchAnn(page, searchQO)) {
             result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
         }
-        return result;
-    }
 
-    public List<AnnDetailVO> tmpList() {
-        List<AnnDetailVO> result = new ArrayList<>();
-        for (AnnDO annDO : announcementMapper.selectList(null)) {
-            result.add( modelConverter.toAnnDetailVO(annDO, null, null) );
-        }
-        return result;
+        return new PageVO<>(result, page);
     }
 }
