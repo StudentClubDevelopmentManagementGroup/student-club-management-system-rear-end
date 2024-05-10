@@ -68,7 +68,7 @@ public class AnnController {
         @Valid @QueryParam AnnSearchReq searchReq,
         @Valid @QueryParam PagingQueryReq pageReq
     ) {
-        PageVO<AnnDetailVO> result = announcementService.search(pageReq, searchReq);
+        PageVO<AnnDetailVO> result = announcementService.searchAnn(pageReq, searchReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
@@ -76,15 +76,16 @@ public class AnnController {
     @PostMapping("/del")
     @SaCheckLogin
     Object del(@NotNull(message="未指定公告id") Long announcementId) {
+        String userId = (String) (StpUtil.getLoginId());
 
-       return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        announcementService.deleteAnn(userId, announcementId);
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 
     @Operation(summary="移入草稿箱", hidden=true)
     @PostMapping("/to_draft")
     @SaCheckLogin
     Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
-
-       return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 }

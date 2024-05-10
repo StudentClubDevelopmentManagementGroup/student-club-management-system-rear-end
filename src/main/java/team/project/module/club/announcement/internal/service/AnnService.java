@@ -21,11 +21,15 @@ import team.project.module.club.announcement.internal.model.request.AnnPublishRe
 import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
+import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageServiceI;
 import team.project.module.filestorage.export.util.FileStorageUtil;
+import team.project.module.user.export.model.enums.UserRole;
+import team.project.module.user.export.service.UserInfoServiceI;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +40,12 @@ public class AnnService {
 
     @Autowired
     AuthServiceI authService;
+
+    @Autowired
+    UserInfoServiceI userInfoService;
+
+    @Autowired
+    PceIService clubMemberRoleService;
 
     @Autowired
     FileStorageServiceI fileStorageService;
@@ -68,12 +78,13 @@ public class AnnService {
         if (null != deleteDraft) {
             draftDO = draftMapper.selectDraftBasicInfo(deleteDraft);
 
-            if (draftDO == null)
+            if (draftDO == null) {
                 throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
-            if ( ! Objects.equals( draftDO.getAuthorId(), authorId ))
+            } else if ( ! Objects.equals( draftDO.getAuthorId(), authorId )) {
                 throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者");
-            if ( ! Objects.equals( draftDO.getClubId(), clubId ))
+            } else if ( ! Objects.equals( draftDO.getClubId(), clubId )) {
                 throw new ServiceException(ServiceStatus.FORBIDDEN, "呃"); /* <- 正常业务流不会触发该异常 */
+            }
         }
 
         /* 将公告的内容保存到文件，获取文件的 fileId */
@@ -139,7 +150,7 @@ public class AnnService {
         return modelConverter.toAnnDetailVO(announcementDO, content, null);
     }
 
-    public PageVO<AnnDetailVO> search(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+    public PageVO<AnnDetailVO> searchAnn(PagingQueryReq pageReq, AnnSearchReq searchReq) {
         Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
 
         String titleKeyword = searchReq.getTitleKeyword();
@@ -154,5 +165,42 @@ public class AnnService {
         }
 
         return new PageVO<>(result, page);
+    }
+
+    public void deleteAnn(String userId, Long announcementId) {
+
+        AnnDO announcement = announcementMapper.selectAnnBasicInfo(announcementId);
+        if (null == announcement) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
+        }
+
+        /* 校验权限 */
+
+        String authorId = announcement.getAuthorId();
+        Long clubId = announcement.getClubId();
+        if (Objects.equals(authorId, userId)) {
+            authService.requireClubManager(userId, clubId, "需要社团负责人才能删除公告");
+        } else {
+            if (clubMemberRoleService.isClubManager(authorId, clubId)) {
+                Integer authorRole = userInfoService.selectUserRole(authorId);
+                if (authorRole == null) {
+                    authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
+                } else if (UserRole.hasRole(authorRole, UserRole.TEACHER)) {
+                    authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
+                } else if (UserRole.hasRole(authorRole, UserRole.STUDENT)) {
+                    authService.requireClubTeacherManager(userId, clubId, "需要社团的教师负责人才能删除该公告");
+                }
+            } else {
+                authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
+            }
+        }
+
+        /* 删除数据库的数据，成功后删除对应的文件 */
+
+        String textFileId = announcement.getTextFile();
+
+        if (1 == announcementMapper.deleteById(announcementId)) {
+            fileStorageService.deleteFile(textFileId);
+        }
     }
 }

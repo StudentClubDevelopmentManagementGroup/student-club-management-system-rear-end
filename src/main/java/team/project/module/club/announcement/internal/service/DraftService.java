@@ -50,7 +50,6 @@ public class DraftService {
      * 创建一篇新的草稿
      * */
     public void createDraft(AnnDetail draft) {
-
         authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
 
         /* 将草稿的内容保存到文件，获取 fileId */
@@ -102,12 +101,13 @@ public class DraftService {
 
         DraftDO oldDraftDO = draftMapper.selectDraftBasicInfo(req.getDraftId());
 
-        if (oldDraftDO == null)
+        if (oldDraftDO == null) {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "找不到草稿");
-        if ( ! Objects.equals( oldDraftDO.getAuthorId(), draft.getAuthorId() ))
+        } else if ( ! Objects.equals( oldDraftDO.getAuthorId(), draft.getAuthorId() )) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
-        if ( ! Objects.equals( oldDraftDO.getClubId(), draft.getClubId() ))
+        } else if ( ! Objects.equals( oldDraftDO.getClubId(), draft.getClubId() )) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "呃"); /* <- 正常业务流不会触发该异常 */
+        }
 
         /* 将新草稿的内容保存到新文件，获取新文件的 fileId */
 
@@ -148,10 +148,11 @@ public class DraftService {
 
         DraftDO draft = draftMapper.selectById(draftId);
 
-        if (draft == null)
+        if (draft == null) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到草稿");
-        if ( ! Objects.equals( draft.getAuthorId(), authorId ))
+        } else if ( ! Objects.equals( draft.getAuthorId(), authorId )) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权修改");
+        }
 
         String fileId = draft.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
@@ -167,6 +168,8 @@ public class DraftService {
      * 查看我的草稿箱
      * */
     public PageVO<DraftVO> listMyDraft(PagingQueryReq req, String authorId, Long clubId) {
+        authService.requireClubManager(authorId, clubId, "只有社团负责人能编辑公告");
+
         Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
         List<DraftDO> draftList = draftMapper.listMyDraft(page, authorId, clubId);
 
@@ -185,10 +188,11 @@ public class DraftService {
 
         DraftDO draft = draftMapper.selectDraftBasicInfo(draftId);
 
-        if (draft == null)
+        if (draft == null) {
             return;
-        if ( ! Objects.equals( draft.getAuthorId(), authorId ))
+        } else if ( ! Objects.equals( draft.getAuthorId(), authorId )) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是该草稿作者，无权删除");
+        }
 
         String textFileId = draft.getTextFile();
 
