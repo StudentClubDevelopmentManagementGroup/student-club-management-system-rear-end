@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 @Mapper
 public interface TblDutyMapper extends BaseMapper<TblDuty> {
@@ -13,4 +14,8 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
 
     TblDuty selectOne(String number, String area, Timestamp duty_time,
                       String arranger_id, String cleaner_id, Long club_ide);
+
+    int deleteDuty(Timestamp dutyTime, String cleaner_id, Long club_id);
+
+    List<TblDuty> selectLastWeek(Long club_id);
 }

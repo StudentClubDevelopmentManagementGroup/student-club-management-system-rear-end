@@ -41,17 +41,37 @@ public class DutyController {
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.createDuty(req.getNumber(), req.getArea(), req.getDutyTime()
-                , req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed());
+        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDutyTime()
+                , req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed(),req.getGroupName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
 
-    @Operation(summary = "根据小组名称以及社团id，添加值日信息")
+    @Operation(summary = "根据userid，添加值日信息")
     @PostMapping("/club/duty/create")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
         dutyService.createDuty(req.getNumber(), req.getArea(), req.getDutyTime()
                 , req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
+    }
+
+    @Operation(summary = "根据小组名称以及社团id，删除值日信息")
+    @PostMapping("/club/duty/delete_by_group")
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
+        dutyService.deleteDutyAllByGroup(req.getDutyTime(), req.getGroupName(), req.getClubId());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
+    }
+
+    @Operation(summary = "根据userid，删除值日信息")
+    @PostMapping("/club/duty/delete")
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
+        dutyService.deleteDutyByUser(req.getDutyTime(), req.getCleanerId(), req.getClubId());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
+    }
+
+    @Operation(summary = "上传值日照片")
+    @PostMapping("/club/duty/upload")
+    Object uploadDutyPicture(@Valid @RequestBody DutyInfoReq req) {
+        return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
     }
 }

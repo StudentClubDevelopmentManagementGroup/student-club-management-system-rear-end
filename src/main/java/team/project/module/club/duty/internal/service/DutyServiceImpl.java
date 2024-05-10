@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
@@ -26,9 +27,11 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Autowired
     TblDutyGroupMapper tblDutyGroupMapper;
 
+    @Autowired
+    TblDutyCirculationMapper tblDutyCirculationMapper;
+
     @Override
-    public void createDuty(String number, String area, Timestamp duty_time, String arranger_id
-            , String cleaner_id, Long club_id, Boolean ismixed) {
+    public void createDuty(String number, String area, Timestamp duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
         if (tblDutyMapper.createDuty(number, area, duty_time, arranger_id, cleaner_id, club_id, ismixed) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
         }
@@ -39,9 +42,27 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMember_id(), clubId, isMixed);
+            tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
             if (result == 0) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
             }
+        }
+    }
+
+    @Override
+    public void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id) {
+        List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(club_id, groupName);
+        for (TblDutyGroup tblDutyGroup : dutyGroupList) {
+            if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMember_id(), club_id) != 1) {
+                throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
+            }
+        }
+    }
+
+    @Transactional
+    public void deleteDutyByUser(Timestamp dutyTime, String cleaner_id, Long club_id) {
+        if (tblDutyMapper.deleteDuty(dutyTime, cleaner_id, club_id) != 1) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
         }
     }
 

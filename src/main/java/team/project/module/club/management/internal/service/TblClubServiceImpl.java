@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
 import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
@@ -33,9 +34,16 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     @Autowired
     PceIService pceIService;
 
+    @Autowired
+    TblDutyCirculationMapper tblDutyCirculationMapper;
+
     public void createClub(Long departmentId, String name) {
         if (cMapper.findByNameAndDepartmentId(departmentId, name).isEmpty()) {
             cMapper.createClub(departmentId, name);
+            int i =tblDutyCirculationMapper.createCirculation(cMapper.selectByNameAndDepartmentId(name,departmentId).getId());
+            if (i==0){
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR,"创建基地值日循环表数据失败");
+            }
         } else {
             throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团");
         }
@@ -74,7 +82,6 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         Page<TblClubDO> page = cMapper.selectByDepartmentId(
                 new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId()
         );
-
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         } else {
@@ -84,8 +91,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     public int deleteClub(Long departmentId, String name) {
         int result = cMapper.deleteClub(departmentId, name);
+        int result2 = tblDutyCirculationMapper.deleteCirculation(cMapper.selectByNameAndDepartmentId(name,departmentId).getId());
         if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+        }
+        if (result2 == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "基地值日循环表数据删除失败");
         }
         TblClubDO club = cMapper.selectByNameAndDepartmentId(name, departmentId);
         return pceIService.deleteClubAllMember(club.getId());

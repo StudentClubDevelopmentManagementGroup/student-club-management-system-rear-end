@@ -1,7 +1,6 @@
 package team.project.module.club.duty.internal.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.springframework.stereotype.Service;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 
 import java.sql.Timestamp;
@@ -13,4 +12,8 @@ public interface DutyService extends IService<TblDuty> {
 
     void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId
             , String cleanerId, Long clubId, Boolean isMixed, String groupName);
+
+    void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id);
+
+    void deleteDutyByUser(Timestamp dutyTime, String arrangerId, Long club_id);
 }

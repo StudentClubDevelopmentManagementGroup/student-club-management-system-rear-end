@@ -8,7 +8,18 @@
         insert into tbl_user_club_duty (number,area,duty_time,arranger_id,cleaner_id,club_id,is_mixed)
         values (#{number},#{area},#{duty_time},#{arranger_id},#{cleaner_id},#{club_id},#{is_mixed})
     </insert>
-    <select id="selectOne" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
 
+    <delete id="deleteDuty">
+        update tbl_user_club_duty set is_deleted = 1 from tbl_user_club_duty where  and duty_time = #{duty_time}
+        and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
+    </delete>
+
+    <select id="selectOne" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
     </select>
+
+    <select id="selectLastWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
+            parameterType="java.lang.Long">
+        SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY);
+    </select>
+
 </mapper>
