@@ -18,4 +18,6 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
     int deleteDuty(Timestamp dutyTime, String cleaner_id, Long club_id);
 
     List<TblDuty> selectLastWeek(Long club_id);
+
+    int setDutyPicture(Timestamp dutyTime, String memberId, Long clubId, String fileId);
 }

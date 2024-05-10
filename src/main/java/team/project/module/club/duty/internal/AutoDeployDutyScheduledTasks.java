@@ -49,7 +49,7 @@ public class AutoDeployDutyScheduledTasks {
                 dutyService.createDuty(duty.getNumber(), duty.getArea(), nextWeekTimestamp, duty.getArranger_id(), duty.getCleaner_id(), duty.getClub_id(), duty.getIs_mixed());
             }
         } catch (Exception e) {
-            log.atError().log("自动部署职责任务时发生异常: " + e.getMessage());
+            log.error("自动部署职责任务时发生异常: " + e.getMessage());
         }
     }
 }
