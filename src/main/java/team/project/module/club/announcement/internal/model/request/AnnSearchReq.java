@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
-import static team.project.module.club.announcement.internal.model.entity.AnnDO.TitleMaxLength;
+import static team.project.module.club.announcement.internal.model.entity.AnnDO.TITLE_MAX_LENGTH;
 
 @Getter
 @Setter
@@ -17,6 +17,6 @@ public class AnnSearchReq {
     Long clubId;
 
     @JsonProperty("title_keyword")
-    @Size(max=TitleMaxLength, message="标题检索关键字长度过长")
+    @Size(max=TITLE_MAX_LENGTH, message="标题检索关键字长度过长")
     String titleKeyword;
 }

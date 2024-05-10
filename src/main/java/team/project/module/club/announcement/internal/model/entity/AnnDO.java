@@ -25,6 +25,6 @@ public class AnnDO {
     @TableField(value="summary")       private String    summary;
     @TableField(value="text_file")     private String    textFile;
 
-    public static final int TitleMaxLength = 95;
-    public static final int SummaryMaxLength = 190;
+    public static final int TITLE_MAX_LENGTH = 95;
+    public static final int SUMMARY_MAX_LENGTH = 190;
 }
