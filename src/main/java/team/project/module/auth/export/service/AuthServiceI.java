@@ -27,7 +27,7 @@ public interface AuthServiceI {
     void requireClubTeacherManager(String userId, long clubId, String message);
 
     /**
-     * <p> 验证用户身份，要求用户必须是超级管理员
+     * <p> 验证用户身份，要求用户必须是 超级管理员
      *
      * @param userId 用户的学号/工号
      * @param message 用户身份不符合要求时，所抛出异常携带的提示信息
