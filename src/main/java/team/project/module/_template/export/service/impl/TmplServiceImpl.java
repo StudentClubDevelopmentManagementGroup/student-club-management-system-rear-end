@@ -9,8 +9,8 @@ import team.project.module._template.export.service.TmplServiceI;
 
 /* 注意接口实现类是以 "ServiceImpl" 结尾 */
 @Service
-public class TmplIServiceImpl implements TmplServiceI {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+public class TmplServiceImpl implements TmplServiceI {
+    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     public TmplDTO example(TmplQO queryObject) {
         /* 这里可以使用 internal 的 service */
