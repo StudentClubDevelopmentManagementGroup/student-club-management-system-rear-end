@@ -47,6 +47,9 @@ logging:
   pattern:
     # 控制台中日志的输出格式
     console: "%highlight(%level) %yellow(%d{yyyy-MM-dd HH:mm:ss.SSS}) %green(%logger):%n%msg%n"
+  level:
+    # 日志级别
+    root: info
 
 
 
