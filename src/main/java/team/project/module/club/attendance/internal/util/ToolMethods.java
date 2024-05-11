@@ -5,7 +5,7 @@ import org.springframework.stereotype.Component;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
-import team.project.module.club.management.export.servivce.ManagementIService;
+import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.user.export.service.UserInfoIService;
 
 import java.time.Duration;
