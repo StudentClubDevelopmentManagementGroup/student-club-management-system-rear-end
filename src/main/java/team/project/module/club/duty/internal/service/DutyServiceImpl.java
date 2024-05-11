@@ -74,17 +74,24 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
-    @Override
-    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, MultipartFile file) {
-        String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
-        String fileName = memberId + dutyTime;
-        UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setOverwrite(true);
-        uploadFileQO.setTargetFilename(fileName);
-        uploadFileQO.setTargetFolder(uploadFile);
-        if (FileStorageService.uploadFile(file, CLOUD, uploadFileQO) == null) {
-            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+    @Transactional
+    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
+        StringBuilder fileIdList= null;
+        for(MultipartFile file : filelist) {
+            String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
+            String fileName = memberId + dutyTime;
+            UploadFileQO uploadFileQO = new UploadFileQO();
+            uploadFileQO.setOverwrite(true);
+            uploadFileQO.setTargetFilename(fileName);
+            uploadFileQO.setTargetFolder(uploadFile);
+            String fileId=FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
+            if (fileId == null) {
+                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+            }
+            fileIdList.append(fileId);
+            fileIdList.append(",");
         }
+        tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(fileIdList));
     }
 
 }

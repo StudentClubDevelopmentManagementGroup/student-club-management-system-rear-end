@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 
 public interface DutyService extends IService<TblDuty> {
@@ -18,5 +19,5 @@ public interface DutyService extends IService<TblDuty> {
 
     void deleteDutyByUser(Timestamp dutyTime, String arrangerId, Long club_id);
 
-    void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, MultipartFile file);
+    void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> file);
 }
