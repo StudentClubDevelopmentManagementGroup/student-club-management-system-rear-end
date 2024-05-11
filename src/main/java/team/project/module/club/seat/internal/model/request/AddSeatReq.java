@@ -26,17 +26,17 @@ public class AddSeatReq {
     @Getter
     @Setter
     static public class ToAddSeat {
-        @Max(value=xyMax, message="坐标值x不合约束")
-        @Min(value=xyMin, message="坐标值x不合约束")
+        @Max(value=XY_MAX, message="坐标值x不合约束")
+        @Min(value=XY_MIN, message="坐标值x不合约束")
         @JsonProperty("x")
         private Integer x;
 
-        @Max(value=xyMax, message="坐标值y不合约束")
-        @Min(value=xyMin, message="坐标值y不合约束")
+        @Max(value=XY_MAX, message="坐标值y不合约束")
+        @Min(value=XY_MIN, message="坐标值y不合约束")
         @JsonProperty("y")
         private Integer y;
 
-        @Size(max=descriptionMaxLength, message="座位描述字数过多")
+        @Size(max=DESCRIPTION_MAX_LENGTH, message="座位描述字数过多")
         @JsonProperty("description")
         private String description;
     }

@@ -67,9 +67,9 @@ public class UserInfoController {
     }
 
     @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）", description="""
-        user_id：学号/工号，传 null 或 "" 表示全匹配
-        user_name：姓名，传 null 或 "" 表示全匹配
-        department_id：院系编号，传 null 或 0 表示全匹配
+        user_id：学号/工号检索关键字，查询学号/工号中包含关键字的用户（传 null 或 "" 表示全匹配）
+        user_name：姓名检索关键字，查询名字中包含关键字的用户（传 null 或 "" 表示全匹配）
+        department_id：院系编号，查询指定院系的用户（传 null 或 0 表示全匹配）
         page_num：分页查询，当前页码
         page_size：分页查询，页大小
     """)

@@ -1,4 +1,4 @@
-package team.project.module.department.model.entity;
+package team.project.module.department.internal.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -16,7 +16,7 @@ public class Department {
     private Boolean isDeleted; // 是否逻辑删除
     @TableField("create_time")
     private Timestamp createTime; // 创建时间
-    @TableField("updata_time")
+    @TableField("update_time")
     private Timestamp updateTime; // 更新时间
     private String abbreviation; // 简称
     @TableField("full_name") // 指定数据库列名为 full_name

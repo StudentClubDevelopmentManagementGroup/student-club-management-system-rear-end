@@ -13,8 +13,14 @@ public class AnnDetailVO {
     @JsonProperty("announcement_id")
     private Long announcementId;
 
+    @JsonProperty("department_name")
+    private String departmentName;
+
     @JsonProperty("club_name")
     private String clubName;
+
+    @JsonProperty("author_id")
+    private String authorId;
 
     @JsonProperty("author_name")
     private String authorName;
@@ -22,12 +28,12 @@ public class AnnDetailVO {
     @JsonProperty("publish_time")
     private Timestamp publishTime;
 
-    @JsonProperty("update_time")
-    private Timestamp updateTime;
-
     @JsonProperty("title")
     private String title;
 
     @JsonProperty("content")
     private String content;
+
+    @JsonProperty("summary")
+    private String summary;
 }

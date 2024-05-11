@@ -18,7 +18,7 @@ public class SeatDO {
     @TableField(value="arranger_id") private String    arrangerId;
     @TableField(value="owner_id")    private String    ownerId;
 
-    public static final int xyMax =  32767;
-    public static final int xyMin = -32767;
-    public static final int descriptionMaxLength = 64;
+    public static final int XY_MAX =  32767;
+    public static final int XY_MIN = -32767;
+    public static final int DESCRIPTION_MAX_LENGTH = 64;
 }

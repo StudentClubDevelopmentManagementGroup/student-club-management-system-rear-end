@@ -9,8 +9,8 @@ import lombok.Getter;
 import lombok.Setter;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
-import static team.project.module.club.announcement.internal.model.entity.AnnDO.SummaryMaxLength;
-import static team.project.module.club.announcement.internal.model.entity.AnnDO.TitleMaxLength;
+import static team.project.module.club.announcement.internal.model.entity.AnnDO.SUMMARY_MAX_LENGTH;
+import static team.project.module.club.announcement.internal.model.entity.AnnDO.TITLE_MAX_LENGTH;
 
 /**
  * <p>  公告内容
@@ -20,6 +20,7 @@ import static team.project.module.club.announcement.internal.model.entity.AnnDO.
 @Getter
 @Setter
 public class AnnDetail {
+
     @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
@@ -29,7 +30,7 @@ public class AnnDetail {
     private String authorId;
 
     @NotBlank(message="未指定标题")
-    @Size(max=TitleMaxLength, message="标题过长")
+    @Size(max=TITLE_MAX_LENGTH, message="标题过长")
     @JsonProperty("title")
     private String title;
 
@@ -38,7 +39,7 @@ public class AnnDetail {
     private String content;
 
     @NotBlank(message="未指定摘要")
-    @Size(max=SummaryMaxLength, message="摘要过长")
+    @Size(max=SUMMARY_MAX_LENGTH, message="摘要过长")
     @JsonProperty("summary")
     private String summary;
 }

@@ -12,8 +12,9 @@ public class ApplyAttendanceReq {
     @JsonProperty("userId")
     private String userId;
 
-    @NotNull(message = "社团id不能为空")
-    private Long clubId;
+    @JsonProperty("clubName")
+    @NotNull(message = "社团名称不能为空")
+    private String clubName;
 
     @NotNull(message = "签到时间不能为空")
     @JsonProperty("checkInTime")
@@ -22,5 +23,6 @@ public class ApplyAttendanceReq {
     @NotNull(message = "签退时间不能为空")
     @JsonProperty("checkoutTime")
     private LocalDateTime checkoutTime;
+
 
 }

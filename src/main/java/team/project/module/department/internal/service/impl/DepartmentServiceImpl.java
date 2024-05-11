@@ -1,10 +1,11 @@
-package team.project.module.department.service.impl;
+package team.project.module.department.internal.service.impl;
 
-import team.project.module.department.mapper.DepartmentMapper;
-import team.project.module.department.model.request.AddDepartmentReq;
-import team.project.module.department.model.request.AlterDepartmentNameReq;
-import team.project.module.department.model.view.DepartmentVO;
-import team.project.module.department.service.DepartmentService;
+import team.project.module.department.internal.mapper.DepartmentMapper;
+import team.project.module.department.internal.model.entity.Department;
+import team.project.module.department.internal.model.request.AddDepartmentReq;
+import team.project.module.department.internal.model.request.AlterDepartmentNameReq;
+import team.project.module.department.internal.model.view.DepartmentVO;
+import team.project.module.department.internal.service.DepartmentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import java.util.List;
@@ -51,6 +52,8 @@ public class DepartmentServiceImpl implements DepartmentService {
     public String getDepartmentName(Long id){
         return departmentMapper.getDepartmentName(id);
     }
+
+
 
 
 

@@ -1,6 +1,7 @@
 package team.project.module.club.attendance.internal.model.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import java.sql.Timestamp;
@@ -12,7 +13,7 @@ public class AttendanceDO {
 
     private Long id;
     @TableField("is_deleted") // 指定数据库列名为 is_deleted
-    private boolean isDeleted;
+    private boolean deleted;
     @TableField("create_time")
     private Timestamp createTime;
     @TableField("update_time")

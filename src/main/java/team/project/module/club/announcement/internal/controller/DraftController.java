@@ -15,9 +15,7 @@ import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
-import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.internal.model.request.AnnDetail;
-import team.project.module.club.announcement.internal.model.request.SaveDraftReq;
+import team.project.module.club.announcement.internal.model.request.DraftSaveReq;
 import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.announcement.internal.service.DraftService;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
@@ -26,9 +24,6 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 @RestController
 @RequestMapping("/club/announcement/draft")
 public class DraftController {
-
-    @Autowired
-    AuthServiceI authService;
 
     @Autowired
     DraftService draftService;
@@ -42,19 +37,15 @@ public class DraftController {
     """)
     @PostMapping("/save")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object save(@Valid @RequestBody SaveDraftReq req) {
-        AnnDetail draft = req.getDraft();
+    Object save(@Valid @RequestBody DraftSaveReq req) {
 
         String authorId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(authorId, draft.getClubId(), "只有社团负责人能编辑公告");
-
-        draft.setAuthorId(authorId);
+        req.getDraft().setAuthorId(authorId);
 
         /* draft_id 为空则创建新的草稿，不为空则更新草稿 */
         if (req.getDraftId() == null) {
-            draftService.createDraft(draft);
-        }
-        else {
+            draftService.createDraft(req.getDraft());
+        } else {
             draftService.updateDraft(req);
         }
 
@@ -89,7 +80,6 @@ public class DraftController {
         @Valid @QueryParam PagingQueryReq pageReq
     ) {
         String authorId = (String)( StpUtil.getLoginId() );
-        authService.requireClubManager(authorId, clubId, "只有社团负责人能编辑公告");
 
         PageVO<DraftVO> result = draftService.listMyDraft(pageReq, authorId, clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
