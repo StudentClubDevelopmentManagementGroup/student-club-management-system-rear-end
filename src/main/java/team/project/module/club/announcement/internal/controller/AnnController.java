@@ -73,7 +73,7 @@ public class AnnController {
 
     @Operation(summary="删除公告")
     @PostMapping("/del")
-    @SaCheckLogin
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object del(@NotNull(message="未指定公告id") Long announcementId) {
         String userId = (String) (StpUtil.getLoginId());
 
@@ -83,7 +83,7 @@ public class AnnController {
 
     @Operation(summary="移入草稿箱")
     @PostMapping("/to_draft")
-    @SaCheckLogin
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
         String userId = (String) (StpUtil.getLoginId());
 

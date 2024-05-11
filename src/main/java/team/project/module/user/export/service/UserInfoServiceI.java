@@ -38,7 +38,6 @@ public interface UserInfoServiceI {
      * */
     List<UserBasicInfoDTO> searchUser(String userName);
 
-
     /* -- 查询、更新用户角色 -- */
 
     /**

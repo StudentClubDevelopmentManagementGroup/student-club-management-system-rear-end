@@ -128,10 +128,8 @@ public class AnnService {
         /* 发布成功后删除草稿 */
 
         if (null != deleteDraft) {
-            if (1 == draftMapper.deleteById(deleteDraft)) { /* <- 删除数据库的数据，删除成功后清除文件 */
+            if (1 == draftMapper.deleteById(deleteDraft)) {
                 fileStorageService.deleteFile(draftDO.getTextFile());
-            } else {
-                log.error("发布公告后，顺带删除草稿失败（数据库已查询过，草稿存在）");
             }
         }
     }
@@ -146,7 +144,7 @@ public class AnnService {
         String fileId = announcementDO.getTextFile();
         String content = fileStorageService.getTextFromFile(fileId);
         if (content == null) {
-            log.error("读取公告失败（数据库中存有记录，但是依据 fileId 找不到指定文件）");
+            log.error("读取公告失败（数据库中存有记录，但是依据 fileId 无法读取公告内容）");
             throw new ServiceException(ServiceStatus.NOT_FOUND, "读取公告内容失败");
         }
 
@@ -183,21 +181,19 @@ public class AnnService {
 
         String authorId = announcement.getAuthorId();
         Long clubId = announcement.getClubId();
+        Integer authorRole;
         if (Objects.equals(authorId, userId)) {
             authService.requireClubManager(userId, clubId, "需要社团负责人才能删除公告");
+        } else if ( ! clubMemberRoleService.isClubManager(authorId, clubId)) {
+            authService.requireClubTeacherManager(userId, clubId, "需要社团的教师负责人才能删除该公告");
+        } else if (null == (authorRole = userInfoService.selectUserRole(authorId))) {
+            authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告"); /* <- 正常业务流不应到此 */
+        } else if (UserRole.hasRole(authorRole, UserRole.TEACHER)) {
+            authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
+        } else if (UserRole.hasRole(authorRole, UserRole.STUDENT)) {
+            authService.requireClubTeacherManager(userId, clubId, "需要社团的教师负责人才能删除该公告");
         } else {
-            if (clubMemberRoleService.isClubManager(authorId, clubId)) {
-                Integer authorRole = userInfoService.selectUserRole(authorId);
-                if (authorRole == null) {
-                    authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
-                } else if (UserRole.hasRole(authorRole, UserRole.TEACHER)) {
-                    authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
-                } else if (UserRole.hasRole(authorRole, UserRole.STUDENT)) {
-                    authService.requireClubTeacherManager(userId, clubId, "需要社团的教师负责人才能删除该公告");
-                }
-            } else {
-                authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告");
-            }
+            authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告"); /* <- 正常业务流不应到此 */
         }
 
         /* 删除数据库的数据，成功后删除对应的文件 */
@@ -216,10 +212,11 @@ public class AnnService {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
         }
 
+        authService.requireClubManager(userId, announcement.getClubId(), "需要社团负责人才能编辑公告");
+
         if ( ! Objects.equals(userId, announcement.getAuthorId())) {
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是公告作者");
         }
-        authService.requireClubManager(userId, announcement.getClubId(), "需要社团负责人才能编辑公告");
 
         String content = fileStorageService.getTextFromFile(announcement.getTextFile());
         if (content == null) {
