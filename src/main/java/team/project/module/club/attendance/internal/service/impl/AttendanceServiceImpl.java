@@ -141,11 +141,11 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
         if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
 
-        if(getAttendanceTimeReq.getUserId() != ""){
-            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
-                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-            }
-        }
+//        if(getAttendanceTimeReq.getUserId() != ""){
+//            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
+//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+//            }
+//        }
 //        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
 //                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
 
@@ -182,12 +182,12 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
             throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
         }
 
-        if(getAttendanceRecordReq.getUserId() != ""){
-            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
-                System.out.println("字符串为空测试");
-                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-            }
-        }
+//        if(getAttendanceRecordReq.getUserId() != ""){
+//            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
+//                System.out.println("字符串为空测试");
+//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+//            }
+//        }
 
 
 
