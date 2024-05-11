@@ -15,12 +15,13 @@ import team.project.module.club.attendance.internal.model.view.ClubAttendanceDur
 import team.project.module.club.attendance.internal.service.AttendanceService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import team.project.module.club.attendance.internal.util.ToolMethods;
-import team.project.module.club.management.export.service.ManagementIService;
+import team.project.module.club.management.export.servivce.ManagementIService;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.user.export.service.UserInfoIService;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private AttendanceMapper attendanceMapper;
     @Autowired
-    private UserInfoServiceI userInfoIService;
+    private UserInfoIService userInfoIService;
     @Autowired
     private ToolMethods toolMethods;
 
@@ -132,7 +133,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
         Long clubId = managementIService.selectClubIdByName(getAttendanceTimeReq.getClubName());
         // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceTimeReq.getUserName());
+        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceTimeReq.getUserName());
         List<String> userIds = new ArrayList<>();
         for (UserBasicInfoDTO user : users) {
             userIds.add(user.getUserId());
@@ -140,11 +141,11 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
         if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
 
-        if(getAttendanceTimeReq.getUserId() != ""){
-            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
-                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-            }
-        }
+//        if(getAttendanceTimeReq.getUserId() != ""){
+//            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
+//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+//            }
+//        }
 //        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
 //                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
 
@@ -171,7 +172,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         Long clubId = managementIService.selectClubIdByName(getAttendanceRecordReq.getClubName());
 
         // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceRecordReq.getUserName());
+        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceRecordReq.getUserName());
         List<String> userIds = new ArrayList<>();
         for (UserBasicInfoDTO user : users) {
             userIds.add(user.getUserId());
@@ -181,12 +182,12 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
             throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
         }
 
-        if(getAttendanceRecordReq.getUserId() != ""){
-            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
-                System.out.println("字符串为空测试");
-                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-            }
-        }
+//        if(getAttendanceRecordReq.getUserId() != ""){
+//            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
+//                System.out.println("字符串为空测试");
+//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
+//            }
+//        }
 
 
 

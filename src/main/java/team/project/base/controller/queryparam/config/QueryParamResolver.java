@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Valid;
 import jakarta.validation.Validator;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
@@ -26,7 +25,6 @@ import java.util.Set;
 /**
  * 配置 @QueryParam 注解的参数解析器
  * */
-@Slf4j
 @Configuration
 public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgumentResolver {
 
@@ -39,8 +37,8 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
     }
 
     /**
-     * <p>  如果 controller 的函数中的某个形参由 @QueryParam 注解修饰，
-     * <br> 则这个形参接收 HTTP 请求中的查询参数时，会调用本解析器
+     * <p>如果 controller 的函数中的某个形参由 @QueryParam 注解修饰，<br>
+     * 则这个形参接收 HTTP 请求中的查询参数时，会调用本解析器</p>
      * */
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -51,8 +49,8 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
     private Validator validator;
 
     /**
-     * <p> 解析参数，将结果装填入对象，并做校验
-     * <p> 如果解析失败或校验失败，则抛出异常，交由全局异常捕获器处理，表现上和框架自带的异常处理一致
+     * <p>解析参数，将结果装填入对象，并做校验
+     * <p>如果解析失败或校验失败，则抛出异常，交由全局异常捕获器处理，表现上和框架自带的异常处理一致
      * */
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
@@ -61,8 +59,7 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
         try {
             result = processFiledValue(webRequest, parameter.getParameterType());
         } catch (Exception e) {
-            log.error("@QueryParam 参数解析失败：{}", e.getMessage());
-            throw new InvalidParamException("参数解析失败，请求参数的类型与所需的类型不匹配");
+            throw new InvalidParamException("请求参数的类型与所需的类型不匹配");
         }
 
         if (parameter.hasParameterAnnotation(Valid.class)) {
@@ -115,13 +112,15 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
         return target;
     }
 
-    @Autowired
-    private ObjectMapper objectMapper;
-
     /**
      * 将请求中的参数值（字符串值）解析为 Java 对象（只支持解析为基本的数据类型）
      * */
     private Object parseInputValueToJavaObject(Field declaredField, String value) throws JsonProcessingException {
-        return objectMapper.readValue("\"" + value + "\"", declaredField.getType());
+        if (String.class.equals(declaredField.getType())) {
+            return value;
+        }
+        else {
+            return new ObjectMapper().readValue(value, declaredField.getType());
+        }
     }
 }

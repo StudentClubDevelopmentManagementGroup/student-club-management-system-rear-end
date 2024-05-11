@@ -10,7 +10,7 @@ import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 import java.util.List;
 
-import static team.project.module.club.seat.internal.model.entity.SeatDO.*;
+import static team.project.module.club.seat.internal.model.entity.TblUserClubSeatDO.*;
 
 @Getter
 @Setter
@@ -32,17 +32,17 @@ public class UpdateSeatReq {
         @JsonProperty("seat_id")
         private Long seatId;
 
-        @Max(value=XY_MAX, message="坐标值x不合约束")
-        @Min(value=XY_MIN, message="坐标值x不合约束")
+        @Max(value=xyMax, message="坐标值x不合约束")
+        @Min(value=xyMin, message="坐标值x不合约束")
         @JsonProperty("x")
         private Integer x;
 
-        @Max(value=XY_MAX, message="坐标值y不合约束")
-        @Min(value=XY_MIN, message="坐标值y不合约束")
+        @Max(value=xyMax, message="坐标值y不合约束")
+        @Min(value=xyMin, message="坐标值y不合约束")
         @JsonProperty("y")
         private Integer y;
 
-        @Size(max=DESCRIPTION_MAX_LENGTH, message="座位描述字数过多")
+        @Size(max=descriptionMaxLength, message="座位描述字数过多")
         @JsonProperty("description")
         private String description;
 

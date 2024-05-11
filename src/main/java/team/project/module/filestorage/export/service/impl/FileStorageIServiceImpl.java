@@ -5,12 +5,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.filestorage.export.model.enums.FileStorageType;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
-import team.project.module.filestorage.export.service.FileStorageServiceI;
+import team.project.module.filestorage.export.service.FileStorageIService;
 import team.project.module.filestorage.internal.service.impl.AliyunObjectStorageService;
 import team.project.module.filestorage.internal.service.impl.LocalFileStorageService;
 
 @Service
-public class FileStorageIServiceImpl implements FileStorageServiceI {
+public class FileStorageIServiceImpl implements FileStorageIService {
 
     @Autowired
     LocalFileStorageService localStorageService;
@@ -21,7 +21,7 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
     /* -- 基本操作（上传、获取 url、删除） -- */
 
     /**
-     * 详见：{@link FileStorageServiceI#uploadFile}
+     * 详见：{@link FileStorageIService#uploadFile}
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO) {
@@ -32,7 +32,7 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
     }
 
     /**
-     * 详见：{@link FileStorageServiceI#getFileUrl}
+     * 详见：{@link FileStorageIService#getFileUrl}
      * */
     @Override
     public String getFileUrl(String fileId) {
@@ -46,7 +46,7 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
     }
 
     /**
-     * 详见：{@link FileStorageServiceI#deleteFile}
+     * 详见：{@link FileStorageIService#deleteFile}
      * */
     @Override
     public boolean deleteFile(String fileId) {
@@ -62,7 +62,7 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
     /* -- 读写纯文本文件 -- */
 
     /**
-     * 详见：{@link FileStorageServiceI#uploadTextToFile}
+     * 详见：{@link FileStorageIService#uploadTextToFile}
      */
     @Override
     public String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
@@ -73,7 +73,7 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
     }
 
     /**
-     * 详见：{@link FileStorageServiceI#getTextFromFile}
+     * 详见：{@link FileStorageIService#getTextFromFile}
      */
     @Override
     public String getTextFromFile(String fileId) {

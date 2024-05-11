@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
@@ -22,14 +21,13 @@ import java.util.Map;
 
 @Tag(name="登录")
 @RestController
-@RequestMapping("/user")
 public class LoginController {
 
     @Autowired
     LoginService loginService;
 
     @Operation(summary="使用密码登录")
-    @PostMapping("/login/password")
+    @PostMapping("/user/login/password")
     Object loginWithPassword(@Valid @RequestBody UserIdAndPasswordReq req) {
 
         String userId = req.getUserId();
@@ -52,16 +50,16 @@ public class LoginController {
     }
 
     @Operation(summary="使用邮箱登录", hidden=true)
-    @PostMapping("/login/email")
+    @PostMapping("/user/login/email")
     Object loginWithEmail() {
         return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
     }
 
     @Operation(summary="登出")
-    @PostMapping("/logout")
+    @PostMapping("/user/logout")
     @SaCheckLogin
     Object logout() {
-        String userId = (String)( StpUtil.getLoginId() );
+        String userId = (String)StpUtil.getSession().getLoginId();
         StpUtil.logout(userId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("登出成功");
     }

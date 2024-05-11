@@ -3,6 +3,7 @@ package team.project.debug;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -15,15 +16,18 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-// @Component /* <- 开启命名风格检测 */
+@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
-    Logger log = LoggerFactory.getLogger("【命名风格检测】");
+    Logger log = LoggerFactory.getLogger("[命名风格检测]");
 
-    private static final String rootPackage = "team.project";
+    @Value("team.project")
+    private String rootPackage;
 
-    private static final String templatePackageName = "team.project.module._template";
+    @Value("team.project.module._template")
+    private String templatePackageName;
 
-    private static final String tmplPrefix = "Tmpl";
+    @Value("Tmpl")
+    private String tmplPrefix;
 
     private final Pattern packageNamePattern  = Pattern.compile("^[a-z.]*$");
     private final Pattern classNamePattern    = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
@@ -39,32 +43,20 @@ final class NamingStyleChecker {
     private ArrayList<String[]> invalidParamName;
 
     @PostConstruct
-    private void postConstruct() {
-        try {
-            check();
-        } catch (ClassNotFoundException e) {
-            log.error("无法检查命名风格", e);
-        }
-    }
-
-    private void prepare() {
+    private void checkAndReport() {
         invalidPackageNames = new HashSet<>();
         invalidClassName    = new ArrayList<>();
         invalidTmplPrefix   = new ArrayList<>();
         invalidFieldName    = new ArrayList<>();
         invalidMethodName   = new ArrayList<>();
         invalidParamName    = new ArrayList<>();
-    }
 
-    private void check() throws ClassNotFoundException {
-        prepare();
         for (String className : getAllClassesInThisProject(rootPackage)) {
-            checkClass(Class.forName(className));
+            try {
+                checkClass(Class.forName(className));
+            } catch (ClassNotFoundException ignored) {}
         }
-        report();
-    }
 
-    private void report() {
         if ( ! invalidPackageNames.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String packageName : invalidPackageNames) {
@@ -125,41 +117,16 @@ final class NamingStyleChecker {
         }
     }
 
-    private List<String> getAllClassesInThisProject(String packageName) {
-        List<String> classList = new ArrayList<>();
-
-        URL basePathURL = Thread.currentThread().getContextClassLoader().getResource(packageName.replace('.', '/'));
-        if ( basePathURL == null)
-            return classList;
-
-        File baseDirectory = new File(basePathURL.getPath());
-        if ( ! baseDirectory.exists() || ! baseDirectory.isDirectory())
-            return classList;
-
-        File[] files = baseDirectory.listFiles();
-        if (files == null)
-            return classList;
-
-        for (File file : files) {
-            String fileName = file.getName();
-            if (fileName.endsWith(".class")) {
-                classList.add( packageName + '.' + fileName.substring(0, fileName.length() - 6) );
-            }
-            else if (file.isDirectory()) {
-                classList.addAll( getAllClassesInThisProject(packageName + "." + fileName) );
-            }
+    private void checkClass(Class<?> clazz) {
+        String packageName = clazz.getPackage().getName();
+        if ( ! packageName.startsWith(rootPackage) || packageName.startsWith(templatePackageName)) {
+            return;
         }
 
-        return classList;
-    }
-
-    private void checkPageName(String packageName) {
         if ( ! packageNamePattern.matcher(packageName).matches()) {
             invalidPackageNames.add(packageName);
         }
-    }
 
-    private void checkClassName(Class<?> clazz) {
         String className = clazz.getName();
         String classSimpleName = clazz.getSimpleName();
         if (   ! className.contains("$")
@@ -171,27 +138,24 @@ final class NamingStyleChecker {
         else if (classSimpleName.startsWith(tmplPrefix)) {
             invalidTmplPrefix.add(new String[]{classSimpleName, className});
         }
-    }
 
-    private void checkFieldName(Class<?> clazz) {
-        for (Field field : clazz.getDeclaredFields()) {
+        Field[] fields = clazz.getDeclaredFields();
+        for (Field field : fields) {
             String fieldName = field.getName();
             if (   ! fieldName.contains("$")
                 && ! variableNamePattern.matcher(fieldName).matches()
-                && ! constantNamePattern.matcher(fieldName).matches()
-            ) {
-                invalidFieldName.add(new String[]{fieldName, clazz.getName()});
+                && ! constantNamePattern.matcher(fieldName).matches())
+            {
+                invalidFieldName.add(new String[]{fieldName, className});
             }
         }
-    }
 
-    private void checkMethodName(Class<?> clazz) {
-        String className = clazz.getName();
-        for (Method method : clazz.getDeclaredMethods()) {
+        Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods) {
             String methodName = method.getName();
             if (   ! methodName.contains("$")
-                && ! methodNamePattern.matcher(methodName).matches()
-            ) {
+                && ! methodNamePattern.matcher(methodName).matches())
+            {
                 invalidMethodName.add(new String[]{methodName + "()", className});
             }
 
@@ -205,16 +169,28 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkClass(Class<?> clazz) {
-        String packageName = clazz.getPackage().getName();
-
-        if ( ! packageName.startsWith(rootPackage)
-            || packageName.startsWith(templatePackageName))
-            return;
-
-        checkPageName(packageName);
-        checkClassName(clazz);
-        checkFieldName(clazz);
-        checkMethodName(clazz);
+    private List<String> getAllClassesInThisProject(String packageName) {
+        List<String> classNames = new ArrayList<>();
+        URL basePathURL = Thread.currentThread().getContextClassLoader().getResource(packageName.replace('.', '/'));
+        if (basePathURL != null) {
+            File baseDirectory = new File(basePathURL.getPath());
+            if (baseDirectory.exists() && baseDirectory.isDirectory()) {
+                File[] files = baseDirectory.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isDirectory()) {
+                            classNames.addAll(
+                                getAllClassesInThisProject(packageName + "." + file.getName())
+                            );
+                        } else if (file.getName().endsWith(".class")) {
+                            classNames.add(
+                                packageName + '.' + file.getName().substring(0, file.getName().length() - 6)
+                            );
+                        }
+                    }
+                }
+            }
+        }
+        return classNames;
     }
 }

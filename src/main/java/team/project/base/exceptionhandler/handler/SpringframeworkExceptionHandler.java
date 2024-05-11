@@ -65,10 +65,10 @@ public class SpringframeworkExceptionHandler {
         }
     }
 
-    /* 参数解析失败 */
+    /* 参数转换失败 */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public Object handle(MethodArgumentTypeMismatchException exception) {
-        return new Response<>(ServiceStatus.BAD_REQUEST).data("参数解析失败，请求参数的类型与所需的类型不匹配");
+        return new Response<>(ServiceStatus.BAD_REQUEST).data("请求参数的类型与所需的类型不匹配");
     }
 
     /* 无法解析 http 请求 */

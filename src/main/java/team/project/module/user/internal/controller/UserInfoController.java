@@ -9,7 +9,6 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.queryparam.QueryParam;
@@ -24,17 +23,16 @@ import team.project.module.user.internal.service.UserInfoService;
 
 @Tag(name="用户信息管理")
 @RestController
-@RequestMapping("/user_info")
 public class UserInfoController {
 
     @Autowired
     UserInfoService userInfoService;
 
     @Operation(summary="查询自己的账号信息")
-    @GetMapping("/select_self")
+    @GetMapping({"/user_info/select_self"})
     @SaCheckLogin
     Object selectSelf() {
-        String userId = (String)( StpUtil.getLoginId() );
+        String userId = (String)( StpUtil.getSession().getLoginId() );
 
         UserInfoVO userInfo = userInfoService.selectUserInfo(userId);
 
@@ -46,7 +44,7 @@ public class UserInfoController {
     }
 
     @Operation(summary="查询指定用户账号信息")
-    @GetMapping("/select_one")
+    @GetMapping("/user_info/select_one")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectOne(@NotNull @UserIdConstraint @RequestParam("user_id") String userId) {
 
@@ -60,25 +58,23 @@ public class UserInfoController {
     }
 
     @Operation(summary="查询所有用户账号信息（分页查询）")
-    @GetMapping("/select_all")
+    @GetMapping("/user_info/select_all")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     Object selectAll(@QueryParam PagingQueryReq pageReq) {
         return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.selectUserInfo(pageReq));
     }
 
     @Operation(summary="搜索用户，返回账号信息（分页查询、模糊查询）", description="""
-        user_id：学号/工号检索关键字，查询学号/工号中包含关键字的用户（传 null 或 "" 表示全匹配）
-        user_name：姓名检索关键字，查询名字中包含关键字的用户（传 null 或 "" 表示全匹配）
-        department_id：院系编号，查询指定院系的用户（传 null 或 0 表示全匹配）
-        page_num：分页查询，当前页码
-        page_size：分页查询，页大小
+     - 学号/工号传 null 或 "" 表示全匹配
+     - 姓名传 null 或 "" 表示全匹配
+     - 院系 id 传 null 或 0 表示全匹配
     """)
-    @GetMapping("/search")
+    @GetMapping("/user_info/search")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
-    Object search(
+    Object selectAll(
         @Valid @QueryParam SearchUserReq  searchReq,
         @Valid @QueryParam PagingQueryReq pageReq
     ) {
-        return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.searchUserInfo(pageReq, searchReq));
+        return new Response<>(ServiceStatus.SUCCESS).data(userInfoService.searchUsers(pageReq, searchReq));
     }
 }

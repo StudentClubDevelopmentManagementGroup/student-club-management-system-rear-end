@@ -1,0 +1,14 @@
+
+# 在这里配置数据库，然后将文件改名为 database-config.yml
+# 在 application.yml 中会引入 database-config.yml
+
+# 为了防止暴露数据库地址和密码
+# 已将 database-config.yml 添加至 .gitignore
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://121.37.9.218:3306/clubs_manage?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: root
+    password: Abcdefg@123
+

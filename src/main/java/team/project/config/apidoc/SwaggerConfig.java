@@ -17,10 +17,18 @@ public class SwaggerConfig {
     }
 
     @Bean
-    GroupedOpenApi clubAnnouncement() {
+    GroupedOpenApi department() {
         return GroupedOpenApi.builder()
-            .group("社团-公告")
-            .packagesToScan("team.project.module.club.announcement")
+            .group("院系管理")
+            .packagesToScan("team.project.module.department")
+            .build();
+    }
+
+    @Bean
+    GroupedOpenApi user() {
+        return GroupedOpenApi.builder()
+            .group("用户（注册、登录、信息管理）")
+            .packagesToScan("team.project.module.user")
             .build();
     }
 
@@ -29,14 +37,6 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
             .group("社团-签到签退")
             .packagesToScan("team.project.module.club.attendance")
-            .build();
-    }
-
-    @Bean
-    GroupedOpenApi duty() {
-        return GroupedOpenApi.builder()
-            .group("社团-值日")
-            .packagesToScan("team.project.module.club.duty")
             .build();
     }
 
@@ -59,16 +59,16 @@ public class SwaggerConfig {
     @Bean
     GroupedOpenApi clubSeat() {
         return GroupedOpenApi.builder()
-            .group("社团-座位")
+            .group("社团-座位安排")
             .packagesToScan("team.project.module.club.seat")
             .build();
     }
 
     @Bean
-    GroupedOpenApi department() {
+    GroupedOpenApi clubAnnouncement() {
         return GroupedOpenApi.builder()
-            .group("院系管理")
-            .packagesToScan("team.project.module.department")
+            .group("社团-公告")
+            .packagesToScan("team.project.module.club.announcement")
             .build();
     }
 
@@ -77,14 +77,6 @@ public class SwaggerConfig {
         return GroupedOpenApi.builder()
             .group("文件存储")
             .packagesToScan("team.project.module.filestorage")
-            .build();
-    }
-
-    @Bean
-    GroupedOpenApi user() {
-        return GroupedOpenApi.builder()
-            .group("用户（注册、登录、信息管理）")
-            .packagesToScan("team.project.module.user")
             .build();
     }
 }

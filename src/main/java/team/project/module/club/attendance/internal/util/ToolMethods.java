@@ -5,8 +5,8 @@ import org.springframework.stereotype.Component;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
-import team.project.module.club.management.export.service.ManagementIService;
-import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.club.management.export.servivce.ManagementIService;
+import team.project.module.user.export.service.UserInfoIService;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Component
 public class ToolMethods {
     @Autowired
-    private UserInfoServiceI userInfoIService;
+    private UserInfoIService userInfoIService;
     @Autowired
     public ManagementIService managementIService;
     public AttendanceInfoVO convert(AttendanceDO attendanceDO) {

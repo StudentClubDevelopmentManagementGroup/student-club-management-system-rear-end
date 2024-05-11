@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.mapper.UserMapper;
-import team.project.module.user.internal.model.entity.UserDO;
+import team.project.module.user.internal.mapper.TblUserMapper;
+import team.project.module.user.internal.model.entity.TblUserDO;
 import team.project.module.user.internal.model.request.RegisterReq;
 
 @Service
@@ -18,10 +18,10 @@ public class RegisterService {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
-    UserMapper userMapper;
+    TblUserMapper userMapper;
 
     public void register(RegisterReq req) {
-        UserDO user = new UserDO();
+        TblUserDO user = new TblUserDO();
 
         user.setUserId(req.getUserId());
 
@@ -65,7 +65,6 @@ public class RegisterService {
             }
             else {
                 logger.error("用户注册失败：", e);
-                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "注册失败");
             }
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "注册失败");
         }

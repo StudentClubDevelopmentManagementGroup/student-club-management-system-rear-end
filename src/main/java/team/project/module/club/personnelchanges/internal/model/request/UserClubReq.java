@@ -14,7 +14,6 @@ public class UserClubReq {
     @JsonProperty("user_id")
     String   userId;
 
-    @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     Long     clubId;

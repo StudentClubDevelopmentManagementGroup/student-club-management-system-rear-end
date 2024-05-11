@@ -5,9 +5,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * 自定义注解，以支持使用对象来接收查询参数
- * */
+/* 自定义注解，以支持使用对象来接收查询参数 */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface QueryParam {
@@ -15,14 +13,14 @@ public @interface QueryParam {
 
 
 
-/* 2024-05-11 ljh
+/* 2024-04-24 ljh
 
 下文将介绍：
 
     1. 为什么要定义这个注解？
-    2. 如何使用此注解？       <- ! important
+    2. 如何使用此注解？
     3. 这个注解是如何工作的？
-    4. 这个注解有什么缺陷？    <- ! important
+    4. 这个注解有什么缺陷？
 
 ==========================
 
@@ -130,7 +128,7 @@ controller 中使用此注解修饰形参：
         ...
     }
 
-注意，使用 @Valid 开启校验
+注意，如果要开启校验，还要多使用 @Valid 来修饰形参
 
 
 
@@ -146,19 +144,18 @@ controller 中使用此注解修饰形参：
 4. 这个注解有什么缺陷？
 -------------------
 
-不支持数据结构、不支持类嵌套！
+只支持基本数据类型，不支持数据结构、不支持类嵌套：
     class ClassA {
         @JsonProperty("l") long    l;   // <- 支持基本的数据类型
         @JsonProperty("i") Integer i;   // <- 支持基本的数据类型（包装类）
     }
 
     class ClassB {
-        @JsonProperty("lst") List<Integer> lst; // <- 不支持数据结构
         @JsonProperty("a")   ClassA a;          // <- 不支持类嵌套
+        @JsonProperty("lst") List<Integer> lst; // <- 不支持数据结构
     }
 
 如果你希望这个注解支持类嵌套、支持数据结构，那请你去建设它
-详见 QueryParamResolver.java 的 parseInputValueToJavaObject() 方法
 
 
 

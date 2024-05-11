@@ -174,7 +174,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         try {
             String filePath = parseFileIdToFilePath(fileId);
             return localFileStorageDAO.readTextFromFile(filePath);
-        } catch (Exception e) {
+        } catch (IOException e) {
             log.error("从本地文件系统中读取文件时出现异常", e);
             return null;
         }

@@ -36,19 +36,19 @@ public class SaTokenExceptionHandler {
     @ExceptionHandler(NotRoleException.class)
     Object handle(NotRoleException exception) {
         String roleName = switch (exception.getRole()) {
-        //  case AuthRole.STUDENT      -> AuthRole.ROLE_NAME_STUDENT;
-        //  case AuthRole.TEACHER      -> AuthRole.ROLE_NAME_TEACHER;
-            case AuthRole.CLUB_MEMBER  -> "社团成员";
-            case AuthRole.CLUB_MANAGER -> "社团负责人";
-            case AuthRole.SUPER_ADMIN  -> "超级管理员";
+            case AuthRole.STUDENT      -> AuthRole.ROLE_NAME_STUDENT;
+            case AuthRole.TEACHER      -> AuthRole.ROLE_NAME_TEACHER;
+            case AuthRole.CLUB_MEMBER  -> AuthRole.ROLE_NAME_CLUB_MEMBER;
+            case AuthRole.CLUB_MANAGER -> AuthRole.ROLE_NAME_CLUB_MANAGER;
+            case AuthRole.SUPER_ADMIN  -> AuthRole.ROLE_NAME_SUPER_ADMIN;
             default -> "？"; /* <- 不应该匹配到这个 case */
         };
-        return new Response<>(ServiceStatus.FORBIDDEN).data("未拥有[" + roleName + "]角色，无权执行请求");
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有[ " + roleName + " ]角色，无权执行请求");
     }
 
     /* 权限验证失败 */
     @ExceptionHandler(NotPermissionException.class)
     Object handle(NotPermissionException exception) {
-        return new Response<>(ServiceStatus.FORBIDDEN).data("未拥有指定权限，无权执行请求");
+        return new Response<>(ServiceStatus.UNAUTHORIZED).data("用户未拥有指定权限，无权执行请求");
     }
 }
