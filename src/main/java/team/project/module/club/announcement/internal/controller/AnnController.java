@@ -55,13 +55,14 @@ public class AnnController {
     }
 
     @Operation(summary="搜索公告（分页查询、模糊查询）", description="""
-        club_id：社团编号，查询指定社团发布的公告（传 null 或 "" 表示全匹配）
+        club_id：社团编号，查询指定社团发布的公告（传 null 或 "" 表示全匹配），用于查询“社团内公告”
+        author_id：学号/工号，查询指定作者发布的公告（传 null 或 "" 表示全匹配），用于查询“我发的公告”
         title_keyword：标题检索关键字，查询标题中包含该关键字的公告（传 null 或 "" 表示全匹配）
         from_date：检索发布时间不早于指定日期的公告（传 null 则不限定时间范围）
         to_date：检索发布时间不晚于指定日期的公告（传 null 则不限定时间范围）
         page_num：分页查询，当前页码
         page_size：分页查询，页大小
-    """) // ljh_TODO 增加按时间检索
+    """)
     @GetMapping("/search")
     Object search(
         @Valid @QueryParam AnnSearchReq searchReq,

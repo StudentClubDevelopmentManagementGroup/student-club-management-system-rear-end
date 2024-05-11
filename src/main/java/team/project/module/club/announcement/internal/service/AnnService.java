@@ -158,6 +158,7 @@ public class AnnService {
 
         AnnSearchQO searchQO = new AnnSearchQO();
         searchQO.setClubId(searchReq.getClubId());
+        searchQO.setAuthorId(searchReq.getAuthorId());
         searchQO.setTitleKeyword(titleKeyword == null || titleKeyword.isBlank() ? null : titleKeyword);
         searchQO.setFromDate(searchReq.getFromDate());
         searchQO.setToDate(searchReq.getToDate());

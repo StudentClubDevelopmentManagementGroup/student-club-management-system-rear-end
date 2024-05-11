@@ -9,6 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class AnnSearchQO {
     private Long      clubId;
+    private String    authorId;
     private String    titleKeyword;
     private LocalDate fromDate;
     private LocalDate toDate;

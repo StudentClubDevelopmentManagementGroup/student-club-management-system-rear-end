@@ -28,6 +28,7 @@ public class ModelConverter {
         result.setAnnouncementId(announcementDO.getAnnouncementId());
         result.setDepartmentName(clubInfo.getDepartmentName());
         result.setClubName(clubInfo.getName());
+        result.setAuthorId(announcementDO.getAuthorId());
         result.setAuthorName(userInfoService.getUserName(announcementDO.getAuthorId()));
         result.setPublishTime(announcementDO.getPublishTime());
         result.setTitle(announcementDO.getTitle());

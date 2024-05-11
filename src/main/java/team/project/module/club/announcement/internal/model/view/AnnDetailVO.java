@@ -19,6 +19,9 @@ public class AnnDetailVO {
     @JsonProperty("club_name")
     private String clubName;
 
+    @JsonProperty("author_id")
+    private String authorId;
+
     @JsonProperty("author_name")
     private String authorName;
 

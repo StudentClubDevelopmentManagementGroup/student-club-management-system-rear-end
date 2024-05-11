@@ -43,6 +43,8 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
 
         if (null != searchQO.getClubId())
             wrapper.eq(AnnDO::getClubId, searchQO.getClubId());
+        if (null != searchQO.getAuthorId())
+            wrapper.eq(AnnDO::getAuthorId, searchQO.getAuthorId());
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())
