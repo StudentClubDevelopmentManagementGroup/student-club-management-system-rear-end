@@ -6,15 +6,12 @@ server:
 
 
 spring:
-  datasource:
-    hikari:
-      keepalive-time:
-
   config:
-    # 引入各类配置文件（database-config.yml）
+    # 引入各类配置文件
     import:
-      - classpath:database-config.yml  # 数据库配置（database-config.yml）
-      - classpath:file-storage-config.yml  # 文件存储配置（file-storage-config.yml）
+      - classpath:config/database-config.yml      # 数据库
+      - classpath:config/file-storage-config.yml  # 文件存储
+      - classpath:config/email-config.yml         # 邮件
   # autoconfigure:
   #   # 禁用 spring-boot 的 security 自动配置，不再生成任何安全密码
   #   exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
