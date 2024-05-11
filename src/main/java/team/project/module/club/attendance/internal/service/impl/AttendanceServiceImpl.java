@@ -20,6 +20,8 @@ import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoIService;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,8 +54,10 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
         // 校验签到时间是否为今天的日期且大于等于当前时间
-
-        if (checkInTime.toLocalDate().isEqual(now.toLocalDate()) && checkInTime.isBefore(now)) {
+        LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
+        if ( checkInTime.toLocalDate().isEqual(now.toLocalDate())
+                && checkInTime.isBefore(now)
+                && checkInTime.isAfter(oneMinuteAgo)) {
             Long clubId = managementIService.selectClubIdByName(userCheckinReq.getClubName());
             if(!pceIService.isClubMember(userCheckinReq.getUserId(),clubId)) {
                 throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
@@ -88,7 +92,10 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 获取当前时间
         LocalDateTime now = LocalDateTime.now();
         // 校验签到时间是否为今天的日期且大于等于当前时间
-        if (checkoutTime.toLocalDate().isEqual(now.toLocalDate()) && checkoutTime.isBefore(now)) {
+        LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
+        if (checkoutTime.toLocalDate().isEqual(now.toLocalDate())
+                && checkoutTime.isBefore(now)
+                && checkoutTime.isAfter(oneMinuteAgo)) {
             Long clubId = managementIService.selectClubIdByName(userCheckoutReq.getClubName());
             if(!pceIService.isClubMember(userCheckoutReq.getUserId(),clubId)) {
                 throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
