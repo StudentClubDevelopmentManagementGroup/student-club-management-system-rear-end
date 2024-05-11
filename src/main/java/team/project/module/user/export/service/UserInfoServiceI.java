@@ -6,7 +6,7 @@ import team.project.module.user.export.model.enums.UserRole;
 
 import java.util.List;
 
-public interface UserInfoIService {
+public interface UserInfoServiceI {
 
     /* -- 查询用户信息 -- */
 

@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +36,7 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     }
 
     @Autowired
-    UserInfoIService userService;
+    UserInfoServiceI userService;
 
     private final List<String> allRoles = new ArrayList<>();
 
