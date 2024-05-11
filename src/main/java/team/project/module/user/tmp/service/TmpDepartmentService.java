@@ -4,6 +4,7 @@ import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
+import team.project.module.department.export.service.DepartmentExportService;
 import team.project.module.user.tmp.mapper.TblDepartmentMapper;
 import team.project.module.user.tmp.model.entity.TblDepartmentDO;
 
@@ -15,6 +16,9 @@ public class TmpDepartmentService {
 
     @Autowired
     private TblDepartmentMapper departmentMapper;
+
+    @Autowired
+    private DepartmentExportService departmentService;
 
     /* 院系表长期不变动，用缓存避免多次查询数据库
        一旦院系表发生变动，则需要重启 java 后端 */
@@ -35,7 +39,8 @@ public class TmpDepartmentService {
     }
 
     public String getNameById(Long departmentId) {
-        TblDepartmentDO tblDepartmentDO = cache.get(departmentId);
-        return tblDepartmentDO.getFullName();
+        //TblDepartmentDO tblDepartmentDO = cache.get(departmentId);
+        //return tblDepartmentDO.getFullName();
+        return departmentService.getDepartmentName(departmentId);
     }
 }
