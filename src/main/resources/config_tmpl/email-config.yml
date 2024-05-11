@@ -1,0 +1,15 @@
+
+# 在这里配置邮箱
+# 为防止暴露邮箱和授权码，请将此配置文件移动至 /config 目录
+
+# /config 已添加至 .gitignore
+# application.yml 中会引入 /config 下的配置文件
+
+spring:
+  mail:
+    # 寄件人的邮箱
+    username:  x
+    # 授权码
+    password:  x
+    # 邮箱服务器
+    host:      x

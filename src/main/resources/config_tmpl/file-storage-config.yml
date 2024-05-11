@@ -1,9 +1,9 @@
 
-# 在这里配置文件存储，然后将文件改名为 file-storage-config.yml
-# 在 application.yml 中会引入 file-storage-config.yml
+# 在这里配置文件存储
+# 为防止暴露阿里云 OSS 的存储空间的 id 和 secret，请将此配置文件移动至 /config 目录
 
-# 为了防止暴露访问阿里云 OSS 的存储空间的 id 和 secret
-# 已将 file-storage-config.yml 添加至 .gitignore
+# /config 已添加至 .gitignore
+# application.yml 中会引入 /config 下的配置文件
 
 # 路径规则，见 file storage 模块的 package-info.java
 
