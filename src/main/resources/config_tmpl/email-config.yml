@@ -8,8 +8,8 @@
 spring:
   mail:
     # 寄件人的邮箱
-    username:  x
+    username:  x  # <- 请勿泄露
     # 授权码
-    password:  x
+    password:  x  # <- 请勿泄露
     # 邮箱服务器
-    host:      x
+    host:      x  # <- 请勿泄露
