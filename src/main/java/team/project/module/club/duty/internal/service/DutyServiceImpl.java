@@ -1,5 +1,6 @@
 package team.project.module.club.duty.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     public PageVO<TblDuty> selectDuty(DutyInfoQO qo) {
-        return null;
+        Page<TblDuty> page = tblDutyMapper.selectDuty(
+                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id()
+        );
+        if (page.getTotal() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+        } else {
+            return new PageVO<>(page);
+        }
     }
 
     @Override

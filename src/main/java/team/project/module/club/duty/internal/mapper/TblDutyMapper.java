@@ -1,6 +1,7 @@
 package team.project.module.club.duty.internal.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 
@@ -20,4 +21,6 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
     List<TblDuty> selectLastWeek(Long club_id);
 
     int setDutyPicture(Timestamp dutyTime, String memberId, Long clubId, String fileId);
+
+    Page<TblDuty> selectDuty(Page<TblDuty> page, Long clubId);
 }
