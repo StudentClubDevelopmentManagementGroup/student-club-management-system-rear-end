@@ -9,8 +9,8 @@ public class GroupMemberReq {
     String name;
 
     @NotBlank
-    String memberId;
+    String member_id;
 
     @NotBlank
-    Long clubId;
+    Long   club_id;
 }

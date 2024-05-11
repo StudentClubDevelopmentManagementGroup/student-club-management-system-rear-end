@@ -2,8 +2,10 @@ package team.project.module.user.internal.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
+import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.internal.model.entity.TblUserDO;
+import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.tmp.service.DepartmentService;
 
@@ -13,7 +15,7 @@ public class ModelConverter {
     @Autowired
     DepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
-    public UserInfoVO toUserInfoVO(TblUserDO userDO) {
+    public UserInfoVO toUserInfoVO(UserDO userDO) {
 
         UserInfoVO.UserRoleInfo role = new UserInfoVO.UserRoleInfo();
         role.setStudent(userDO.hasRole(UserRole.STUDENT));
@@ -26,14 +28,37 @@ public class ModelConverter {
         department.setDepartmentId(userDO.getDepartmentId());
         department.setDepartmentName(departmentService.getNameById(userDO.getDepartmentId()));
 
-        UserInfoVO userInfo = new UserInfoVO();
-        userInfo.setUserId(userDO.getUserId());
-        userInfo.setDepartment(department);
-        userInfo.setName(userDO.getName());
-        userInfo.setTel(userDO.getTel());
-        userInfo.setEmail(userDO.getEmail());
-        userInfo.setRole(role);
+        UserInfoVO result = new UserInfoVO();
+        result.setUserId(userDO.getUserId());
+        result.setDepartment(department);
+        result.setName(userDO.getName());
+        result.setTel(userDO.getTel());
+        result.setEmail(userDO.getEmail());
+        result.setRole(role);
 
-        return userInfo;
+        return result;
+    }
+
+    public UserInfoDTO toUserInfoDTO(UserDO userDO) {
+
+        UserInfoDTO result = new UserInfoDTO();
+        result.setUserId(userDO.getUserId());
+        result.setDepartmentId(userDO.getDepartmentId());
+        result.setName(userDO.getName());
+        result.setTel(userDO.getTel());
+        result.setEmail(userDO.getEmail());
+        result.setRole(userDO.getRole());
+
+        return result;
+    }
+
+    public UserBasicInfoDTO toUserBasicInfoDTO(UserDO userDO) {
+
+        UserBasicInfoDTO result = new UserBasicInfoDTO();
+        result.setUserId(userDO.getUserId());
+        result.setName(userDO.getName());
+        result.setRole(userDO.getRole());
+
+        return result;
     }
 }

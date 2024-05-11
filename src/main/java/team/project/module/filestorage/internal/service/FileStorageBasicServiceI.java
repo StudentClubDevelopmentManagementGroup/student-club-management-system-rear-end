@@ -1,6 +1,7 @@
 package team.project.module.filestorage.internal.service;
 
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.filestorage.export.exception.FileStorageException;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 
 public interface FileStorageBasicServiceI {
@@ -10,6 +11,7 @@ public interface FileStorageBasicServiceI {
      * @param toUploadFile 要上传的文件
      * @param uploadFileQO 详见：{@link UploadFileQO}
      * @return fileId
+     * @throws FileStorageException 如果上传失败则抛出此异常
      * */
     String uploadFile(MultipartFile toUploadFile, UploadFileQO uploadFileQO);
 

@@ -163,6 +163,12 @@
             <version>2.3.3</version> <!-- 不能超过 2.3.3  -->
         </dependency>
         <!-- aliyun OSS Java SDK [end] -->
+
+        <!-- email -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

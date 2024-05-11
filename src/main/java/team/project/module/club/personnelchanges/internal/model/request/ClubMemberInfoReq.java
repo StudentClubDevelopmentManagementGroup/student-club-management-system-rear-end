@@ -2,12 +2,14 @@ package team.project.module.club.personnelchanges.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 @Data
 public class ClubMemberInfoReq {
 
+    @NotNull(message="未指定社团id")
     @ClubIdConstraint
     @JsonProperty("club_id")
     Long     clubId;

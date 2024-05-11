@@ -10,9 +10,6 @@
 *.iml
 *.ipr
 
-# 数据库配置
-/src/main/resources/database-config.yml
-
-# 文件存储配置
-/src/main/resources/file-storage-config.yml
-
+# 各配置
+/src/main/resources/config/*
+!/src/main/resources/config/readme.txt
