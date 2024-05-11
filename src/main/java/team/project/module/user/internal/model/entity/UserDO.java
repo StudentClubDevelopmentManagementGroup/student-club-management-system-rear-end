@@ -11,10 +11,10 @@ import team.project.module.user.export.model.enums.UserRole;
 @Getter
 @Setter
 @TableName("tbl_user")
-public class TblUserDO {
+public class UserDO {
+    @TableId(value="id")               private Long      id;
     @TableLogic(value="0", delval="1")
     @TableField(value="is_deleted")    private Boolean   deleted;
-    @TableId(value="id")               private Long      id;
     @TableField(value="user_id")       private String    userId;
     @TableField(value="department_id") private Long      departmentId;
     @TableField(value="pwd")           private String    password;

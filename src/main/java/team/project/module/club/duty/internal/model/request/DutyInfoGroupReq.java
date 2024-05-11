@@ -15,21 +15,21 @@ public class DutyInfoGroupReq {
     String    area;
 
     @NotNull
-    Timestamp dutyTime;
+    Timestamp duty_time;
 
     @UserIdConstraint
-    String    arrangerId;
+    String    arranger_id;
 
     @UserIdConstraint
-    String    cleanerId;
+    String    cleaner_id;
 
     @ClubIdConstraint
     @NotNull
-    Long      clubId;
+    Long      club_id;
 
     @NotNull
-    Boolean   isMixed;
+    Boolean   is_mixed;
 
     @NotBlank
-    String    groupName;
+    String    group_name;
 }

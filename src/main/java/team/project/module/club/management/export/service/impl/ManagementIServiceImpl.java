@@ -35,5 +35,4 @@ public class ManagementIServiceImpl implements ManagementIService {
         }
         return clubId;
     }
-
 }

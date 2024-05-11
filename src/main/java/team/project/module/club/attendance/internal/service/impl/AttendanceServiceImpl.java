@@ -18,8 +18,7 @@ import team.project.module.club.attendance.internal.util.ToolMethods;
 import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
-import team.project.module.user.export.service.UserInfoIService;
-
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -34,7 +33,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private AttendanceMapper attendanceMapper;
     @Autowired
-    private UserInfoIService userInfoIService;
+    private UserInfoServiceI userInfoIService;
     @Autowired
     private ToolMethods toolMethods;
 
@@ -133,7 +132,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
         Long clubId = managementIService.selectClubIdByName(getAttendanceTimeReq.getClubName());
         // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceTimeReq.getUserName());
+        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceTimeReq.getUserName());
         List<String> userIds = new ArrayList<>();
         for (UserBasicInfoDTO user : users) {
             userIds.add(user.getUserId());
@@ -172,7 +171,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         Long clubId = managementIService.selectClubIdByName(getAttendanceRecordReq.getClubName());
 
         // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUsers(getAttendanceRecordReq.getUserName());
+        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceRecordReq.getUserName());
         List<String> userIds = new ArrayList<>();
         for (UserBasicInfoDTO user : users) {
             userIds.add(user.getUserId());

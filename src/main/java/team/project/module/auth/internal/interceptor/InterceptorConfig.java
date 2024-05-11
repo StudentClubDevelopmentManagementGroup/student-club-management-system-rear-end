@@ -9,7 +9,7 @@ import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoIService;
+import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,14 +36,12 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     }
 
     @Autowired
-    UserInfoIService userService;
+    UserInfoServiceI userService;
 
     private final List<String> allRoles = new ArrayList<>();
 
     @PostConstruct
     void initAllRoles() {
-        allRoles.add(AuthRole.STUDENT);
-        allRoles.add(AuthRole.TEACHER);
         allRoles.add(AuthRole.CLUB_MEMBER);
         allRoles.add(AuthRole.CLUB_MANAGER);
         allRoles.add(AuthRole.SUPER_ADMIN);
@@ -64,8 +62,6 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
         if (userRole == null) return list;
 
         if (UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))  return allRoles;
-        if (UserRole.hasRole(userRole, UserRole.STUDENT))      list.add(AuthRole.STUDENT);
-        if (UserRole.hasRole(userRole, UserRole.TEACHER))      list.add(AuthRole.TEACHER);
         if (UserRole.hasRole(userRole, UserRole.CLUB_MEMBER))  list.add(AuthRole.CLUB_MEMBER);
         if (UserRole.hasRole(userRole, UserRole.CLUB_MANAGER)) list.add(AuthRole.CLUB_MANAGER);
 

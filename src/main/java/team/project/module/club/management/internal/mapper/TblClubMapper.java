@@ -6,8 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
-import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
+import team.project.module.club.management.internal.model.entity.TblClubDO;
 
 import java.util.List;
 
