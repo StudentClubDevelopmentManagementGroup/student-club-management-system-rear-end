@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
@@ -14,6 +15,7 @@ import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
+import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageServiceI;
 
@@ -86,12 +88,29 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setTargetFolder(uploadFile);
             String fileId=FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
             if (fileId == null) {
-                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+                throw new ServiceException(ServiceStatus.CONFLICT, "文件上传OSS服务器失败");
             }
             fileIdList.append(fileId);
             fileIdList.append(",");
         }
-        tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(fileIdList));
+        if(tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(fileIdList))!=1){
+            throw new ServiceException(ServiceStatus.CONFLICT, "文件url上传mysql失败");
+        }
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDuty(DutyInfoQO qo) {
+        return null;
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo) {
+        return null;
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDutyByName(DutyInfoQO qo) {
+        return null;
     }
 
 }

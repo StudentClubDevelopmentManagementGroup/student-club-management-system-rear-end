@@ -8,13 +8,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.duty.internal.model.request.DutyFileUpload;
-import team.project.module.club.duty.internal.model.request.DutyInfoGroupReq;
-import team.project.module.club.duty.internal.model.request.DutyInfoReq;
-import team.project.module.club.duty.internal.model.request.GroupMemberReq;
+import team.project.module.club.duty.internal.model.entity.TblDuty;
+import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.request.*;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
+
+import java.util.Objects;
 
 @Tag(name = "值日")
 @RestController
@@ -75,5 +77,22 @@ public class DutyController {
     Object uploadDutyPicture(@Valid @RequestBody DutyFileUpload req) {
         dutyService.uploadDutyPicture(req.getDuty_time(),req.getMember_id(),req.getClub_id(),req.getFile());
         return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
+    }
+
+    @Operation(summary = "查询社团值日情况")
+    @PostMapping("/club/duty/select")
+    Object selectDuty(@Valid @RequestBody DutySelectReq req) {
+
+        DutyInfoQO newQO = new DutyInfoQO(req.getClub_id(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
+        PageVO<TblDuty> result;
+
+        if (Objects.equals(req.getName(), "")) {
+            result = dutyService.selectDutyByNumber(newQO);
+        } else if (req.getNumber() == null) {
+            result = dutyService.selectDutyByName(newQO);
+        } else {
+            result = dutyService.selectDuty(newQO);
+        }
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }
