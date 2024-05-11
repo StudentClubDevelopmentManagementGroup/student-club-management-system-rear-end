@@ -7,13 +7,13 @@ import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.view.UserInfoVO;
-import team.project.module.user.tmp.service.DepartmentService;
+import team.project.module.user.tmp.service.TmpDepartmentService;
 
 @Component("user-util-ModelConverter")
 public class ModelConverter {
 
     @Autowired
-    DepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
+    TmpDepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
     public UserInfoVO toUserInfoVO(UserDO userDO) {
 
