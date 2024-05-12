@@ -11,7 +11,7 @@ import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 @Service
-public class DutuGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDutyGroup> implements DutyGroupService {
+public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDutyGroup> implements DutyGroupService {
     private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired

@@ -33,7 +33,7 @@
 
     </select>
     <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
-        
+
     </select>
     <select id="selectDutyByNumberAndName"
             resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
