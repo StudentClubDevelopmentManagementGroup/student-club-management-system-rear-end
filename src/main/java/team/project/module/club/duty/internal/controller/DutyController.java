@@ -8,11 +8,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.duty.internal.model.request.DutyFileUpload;
-import team.project.module.club.duty.internal.model.request.DutyInfoGroupReq;
-import team.project.module.club.duty.internal.model.request.DutyInfoReq;
-import team.project.module.club.duty.internal.model.request.GroupMemberReq;
+import team.project.module.club.duty.internal.model.entity.TblDuty;
+import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.request.*;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
 
@@ -42,8 +42,7 @@ public class DutyController {
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDuty_time()
-                , req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed(),req.getGroup_name());
+        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDuty_time(), req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed(), req.getGroup_name());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
@@ -51,8 +50,7 @@ public class DutyController {
     @Operation(summary = "根据userid，添加值日信息")
     @PostMapping("/club/duty/create")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
-        dutyService.createDuty(req.getNumber(), req.getArea(), req.getDuty_time()
-                , req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed());
+        dutyService.createDuty(req.getNumber(), req.getArea(), req.getDuty_time(), req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
@@ -73,7 +71,23 @@ public class DutyController {
     @Operation(summary = "上传值日照片")
     @PostMapping("/club/duty/report_result")
     Object uploadDutyPicture(@Valid @RequestBody DutyFileUpload req) {
-        dutyService.uploadDutyPicture(req.getDuty_time(),req.getMember_id(),req.getClub_id(),req.getFile());
+        dutyService.uploadDutyPicture(req.getDuty_time(), req.getMember_id(), req.getClub_id(), req.getFile());
         return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
+    }
+
+    @Operation(summary = "查询社团值日情况")
+    @PostMapping("/club/duty/select")
+    Object selectDuty(@Valid @RequestBody DutySelectReq req) {
+
+        DutyInfoQO newQO = new DutyInfoQO(req.getClub_id(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
+        PageVO<TblDuty> result = req.getName().isEmpty() ?
+                (req.getNumber() == null || req.getNumber().isEmpty() ?
+                        dutyService.selectDuty(newQO) :
+                        dutyService.selectDutyByName(newQO)) :
+                (req.getNumber() == null || req.getNumber().isEmpty() ?
+                        dutyService.selectDutyByNumber(newQO) :
+                        dutyService.selectDutyByNumberAndName(newQO));
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }

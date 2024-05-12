@@ -1,5 +1,6 @@
 package team.project.module.club.duty.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
@@ -14,6 +16,7 @@ import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
+import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
@@ -74,17 +77,53 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
-    @Override
-    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, MultipartFile file) {
-        String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
-        String fileName = memberId + dutyTime;
-        UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setOverwrite(true);
-        uploadFileQO.setTargetFilename(fileName);
-        uploadFileQO.setTargetFolder(uploadFile);
-        if (FileStorageService.uploadFile(file, CLOUD, uploadFileQO) == null) {
-            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+    @Transactional
+    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
+        StringBuilder fileIdList= null;
+        for(MultipartFile file : filelist) {
+            String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
+            String fileName = memberId + dutyTime;
+            UploadFileQO uploadFileQO = new UploadFileQO();
+            uploadFileQO.setOverwrite(true);
+            uploadFileQO.setTargetFilename(fileName);
+            uploadFileQO.setTargetFolder(uploadFile);
+            String fileId=FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
+            if (fileId == null) {
+                throw new ServiceException(ServiceStatus.CONFLICT, "文件上传OSS服务器失败");
+            }
+            fileIdList.append(fileId);
+            fileIdList.append(",");
         }
+        if(tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(fileIdList))!=1){
+            throw new ServiceException(ServiceStatus.CONFLICT, "文件url上传mysql失败");
+        }
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDuty(DutyInfoQO qo) {
+        Page<TblDuty> page = tblDutyMapper.selectDuty(
+                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id()
+        );
+        if (page.getTotal() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+        } else {
+            return new PageVO<>(page);
+        }
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo) {
+        return null;
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDutyByName(DutyInfoQO qo) {
+        return null;
+    }
+
+    @Override
+    public PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo) {
+        return null;
     }
 
 }
