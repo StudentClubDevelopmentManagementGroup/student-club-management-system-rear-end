@@ -24,7 +24,7 @@ public class TmpDepartmentService {
        一旦院系表发生变动，则需要重启 java 后端 */
     private HashMap<Long, TblDepartmentDO> cache;
 
-    @PostConstruct
+    // @PostConstruct
     private void selectAllDepartment() {
         List<TblDepartmentDO> departmentList = departmentMapper.selectList(null);
         cache = new HashMap<>();
