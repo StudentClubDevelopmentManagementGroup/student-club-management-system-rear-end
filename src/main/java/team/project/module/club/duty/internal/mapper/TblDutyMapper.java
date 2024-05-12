@@ -23,4 +23,10 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
     int setDutyPicture(Timestamp dutyTime, String memberId, Long clubId, String fileId);
 
     Page<TblDuty> selectDuty(Page<TblDuty> page, Long clubId);
+
+    Page<TblDuty> selectDutyByNumber(Page<TblDuty> page, Long clubId, String number);
+
+    Page<TblDuty> selectDutyByName(Page<TblDuty> page, Long clubId, String name);
+
+    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String number, String name);
 }

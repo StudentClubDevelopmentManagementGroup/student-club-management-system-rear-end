@@ -121,4 +121,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         return null;
     }
 
+    @Override
+    public PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo) {
+        return null;
+    }
+
 }

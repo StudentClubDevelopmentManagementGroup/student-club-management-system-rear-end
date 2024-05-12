@@ -28,4 +28,6 @@ public interface DutyService extends IService<TblDuty> {
     PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo);
 
     PageVO<TblDuty> selectDutyByName(DutyInfoQO qo);
+
+    PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo);
 }

@@ -29,5 +29,15 @@
             parameterType="java.lang.Long">
         SELECT * FROM tbl_user_club_duty WHERE club_id = #{club_id} and is_deleted = 0;
     </select>
+    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+
+    </select>
+    <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+        
+    </select>
+    <select id="selectDutyByNumberAndName"
+            resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+
+    </select>
 
 </mapper>
