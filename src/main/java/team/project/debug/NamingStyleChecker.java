@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-// @Component /* <- 开启命名风格检测 */
+@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     Logger log = LoggerFactory.getLogger("【命名风格检测】");
 
@@ -58,7 +58,7 @@ final class NamingStyleChecker {
 
     private void check() throws ClassNotFoundException {
         prepare();
-        for (String className : getAllClassesInThisProject(rootPackage)) {
+        for (String className : getAllClass(rootPackage)) {
             checkClass(Class.forName(className));
         }
         report();
@@ -125,7 +125,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private List<String> getAllClassesInThisProject(String packageName) {
+    private List<String> getAllClass(String packageName) {
         List<String> classList = new ArrayList<>();
 
         URL basePathURL = Thread.currentThread().getContextClassLoader().getResource(packageName.replace('.', '/'));
@@ -146,7 +146,7 @@ final class NamingStyleChecker {
                 classList.add( packageName + '.' + fileName.substring(0, fileName.length() - 6) );
             }
             else if (file.isDirectory()) {
-                classList.addAll( getAllClassesInThisProject(packageName + "." + fileName) );
+                classList.addAll( getAllClass(packageName + "." + fileName) );
             }
         }
 

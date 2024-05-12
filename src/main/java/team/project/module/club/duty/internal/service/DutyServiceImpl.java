@@ -17,13 +17,16 @@ import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.util.filestorage.export.model.query.UploadFileQO;
+import team.project.module.util.filestorage.export.service.FileStorageServiceI;
+import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.filestorage.export.model.query.UploadFileQO;
 import team.project.module.filestorage.export.service.FileStorageServiceI;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import static team.project.module.filestorage.export.model.enums.FileStorageType.CLOUD;
+import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
 
 @Service
 public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> implements DutyService {
