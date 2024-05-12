@@ -75,20 +75,4 @@ public class AuthServiceImpl implements AuthServiceI {
 
         throw new AuthenticationFailureException(message);
     }
-
-    /** 0 个用法，但暂时保留 */
-    private void requireClubMember(String userId, long clubId, String message) {
-
-        if (null == userId)
-            throw new AuthenticationFailureException(message);
-
-        if (clubMemberRoleService.isClubMember(userId, clubId))
-            return;
-
-        Integer userRole = userInfoService.selectUserRole(userId);
-        if (null != userRole && UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))  /* ? */
-            return;
-
-        throw new AuthenticationFailureException(message);
-    }
 }

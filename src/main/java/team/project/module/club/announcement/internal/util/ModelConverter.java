@@ -15,14 +15,14 @@ import team.project.module.user.export.service.UserInfoServiceI;
 public class ModelConverter {
 
     @Autowired
-    ManagementIService ClubInfoService;
+    ManagementIService clubInfoService;
 
     @Autowired
     UserInfoServiceI userInfoService;
 
     public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
 
-        ClubBasicMsgDTO clubInfo = ClubInfoService.selectClubBasicMsg(announcementDO.getClubId());
+        ClubBasicMsgDTO clubInfo = clubInfoService.selectClubBasicMsg(announcementDO.getClubId());
 
         AnnDetailVO result = new AnnDetailVO();
         result.setAnnouncementId(announcementDO.getAnnouncementId());
