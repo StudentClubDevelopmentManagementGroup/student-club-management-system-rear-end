@@ -6,7 +6,7 @@ import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
-import team.project.module.user.internal.mapper.UserMapper;
+import team.project.module.user.internal.dao.UserDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.util.ModelConverter;
 
@@ -17,7 +17,7 @@ import java.util.List;
 public class UserInfoIServiceImpl implements UserInfoServiceI {
 
     @Autowired
-    UserMapper userMapper;
+    UserDAO userDAO;
 
     @Autowired
     ModelConverter modelConverter;
@@ -27,7 +27,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public UserInfoDTO selectUserInfo(String userId) {
-        UserDO userDO = userMapper.selectUserInfo(userId);
+        UserDO userDO = userDAO.selectUserInfo(userId);
         if (userDO == null) {
             return null;
         } else {
@@ -40,7 +40,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public UserBasicInfoDTO selectUserBasicInfo(String userId) {
-        UserDO userDO = userMapper.selectBasicInfo(userId);
+        UserDO userDO = userDAO.selectUserBasicInfo(userId);
         if (userDO == null) {
             return null;
         } else {
@@ -53,7 +53,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      */
     @Override
     public String getUserName(String userId) {
-        UserDO userBasicInfo = userMapper.selectBasicInfo(userId);
+        UserDO userBasicInfo = userDAO.selectUserBasicInfo(userId);
         return userBasicInfo == null ? null : userBasicInfo.getName();
     }
 
@@ -63,7 +63,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
     @Override
     public List<UserBasicInfoDTO> searchUser(String userName) {
         List<UserBasicInfoDTO> result = new ArrayList<>();
-        for (UserDO userDO : userMapper.searchUserBasicInfo(userName)) {
+        for (UserDO userDO : userDAO.searchUserBasicInfo(userName)) {
             result.add(modelConverter.toUserBasicInfoDTO(userDO) );
         }
         return result;
@@ -74,7 +74,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public Integer selectUserRole(String userId) {
-        return userMapper.selectRoleCode(userId);
+        return userDAO.selectRoleCode(userId);
     }
 
     /**
@@ -82,7 +82,7 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public int addRoleToUser(String userId, UserRole roleToAdd) {
-        return userMapper.addRoleToUser(userId, roleToAdd);
+        return userDAO.addRoleToUser(userId, roleToAdd);
     }
 
     /**
@@ -90,6 +90,6 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {
-        return userMapper.removeRoleFromUser(userId, roleToRemove);
+        return userDAO.removeRoleFromUser(userId, roleToRemove);
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
-import team.project.module.user.internal.mapper.UserMapper;
+import team.project.module.user.internal.dao.UserDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.query.SearchUserInfoQO;
 import team.project.module.user.internal.model.request.SearchUserReq;
@@ -14,13 +14,12 @@ import team.project.module.user.internal.util.ModelConverter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class UserInfoService {
 
     @Autowired
-    UserMapper userMapper;
+    UserDAO userDAO;
 
     @Autowired
     ModelConverter modelConverter;
@@ -30,7 +29,7 @@ public class UserInfoService {
      * @return 如果查询到成功则账号信息，否则返回 null
      * */
     public UserInfoVO selectUserInfo(String userId) {
-        UserDO userDO = userMapper.selectUserInfo(userId);
+        UserDO userDO = userDAO.selectUserInfo(userId);
         if (userDO == null) {
             return null;
         }
@@ -42,7 +41,7 @@ public class UserInfoService {
      * */
     public PageVO<UserInfoVO> selectUserInfo(PagingQueryReq pageReq) {
         Page<UserDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
-        List<UserDO> userDOList = userMapper.selectList(page, null);
+        List<UserDO> userDOList = userDAO.selectList(page);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
         for (UserDO userDO : userDOList) {
@@ -68,7 +67,7 @@ public class UserInfoService {
         queryQO.setUserName(userName == null || userName.isBlank() ? null : userName );
         queryQO.setDepartmentId(departmentId == null || departmentId.equals(0L) ? null : departmentId);
 
-        List<UserDO> userDOList = userMapper.searchUserInfo(page, queryQO);
+        List<UserDO> userDOList = userDAO.searchUserInfo(page, queryQO);
 
         List<UserInfoVO> userInfoList = new ArrayList<>();
         for (UserDO userDO : userDOList) {
