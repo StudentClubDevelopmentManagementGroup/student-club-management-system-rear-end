@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.Data;
-
-import java.sql.Timestamp;
+import lombok.Getter;
+import lombok.Setter;
 
 /* DO (Domain Object) 领域对象
    与数据库表结构一一对应 */
-@Data
+@Getter
+@Setter
 @TableName("tbl_tmp_test")
 public class TmplDO { /* <- DO 的类名不需要起得和表名相同（如果表名实在太长） */
 

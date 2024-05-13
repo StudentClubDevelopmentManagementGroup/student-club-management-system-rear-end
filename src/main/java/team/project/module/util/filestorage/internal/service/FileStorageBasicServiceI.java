@@ -16,10 +16,10 @@ public interface FileStorageBasicServiceI {
     String uploadFile(MultipartFile toUploadFile, UploadFileQO uploadFileQO);
 
     /**
-     * <p>  通过 fileId 判断文件是否可能在此存储空间中</p>
+     * <p>  通过 fileId 判断文件是否可能在此存储空间中
      * <p>  如果文件在此存储空间中，则 fileId 一定符合规则
      * <br> 操作文件前，先判断 fileId 是否符合这个规则
-     * <br> 若不符合，则认为文件不存在，不必再进行后续操作</p>
+     * <br> 若不符合，则认为文件不存在，不必再进行后续操作
      * @return 如果文件可能在此存储空间中返回 true，否则返回 false
      * */
     boolean mayBeStored(String fileId);
