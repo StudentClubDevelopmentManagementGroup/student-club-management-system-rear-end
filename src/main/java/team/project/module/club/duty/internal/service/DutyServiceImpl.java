@@ -21,6 +21,7 @@ import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
@@ -79,23 +80,32 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Transactional
     public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
-        StringBuilder fileIdList= null;
+        List<String> fileIdList= new ArrayList<>();
         for(MultipartFile file : filelist) {
+
             String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
             String fileName = memberId + dutyTime;
+
             UploadFileQO uploadFileQO = new UploadFileQO();
             uploadFileQO.setOverwrite(true);
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
+
             String fileId=FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
-            if (fileId == null) {
-                throw new ServiceException(ServiceStatus.CONFLICT, "文件上传OSS服务器失败");
-            }
-            fileIdList.append(fileId);
-            fileIdList.append(",");
+
+            fileIdList.add(fileId);
         }
-        if(tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(fileIdList))!=1){
-            throw new ServiceException(ServiceStatus.CONFLICT, "文件url上传mysql失败");
+        StringBuilder files = new StringBuilder();
+        for(String fileId : fileIdList){
+            files.append(fileId).append(",");
+        }
+
+        if(1!=tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))){
+            log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
+            for(String fileId : fileIdList){
+                FileStorageService.deleteFile(fileId);
+            }
+            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
         }
     }
 
