@@ -19,7 +19,7 @@ public class UserDAO {
     private UserMapper userMapper;
 
     /**
-     * 缓存，只缓存用户的基本信息，包括：学号/工号、姓名、角色
+     * 缓存，只缓存用户的基本信息
      * */
     private final LoadingCache<String, UserDO> userBasicInfoCache = Caffeine.newBuilder().build(
         userId -> userMapper.selectUserBasicInfo(userId)
@@ -58,7 +58,7 @@ public class UserDAO {
     }
 
     /**
-     * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
+     * 查询指定用户的基本信息，只需从缓存中拿取
      * */
     public UserDO selectUserBasicInfo(String userId) {
         return userBasicInfoCache.get(userId);
@@ -147,10 +147,9 @@ public class UserDAO {
             return 0;
         }
 
-        int newRole = UserRole.addRole(role, roleToAdd);
-
         userBasicInfoCache.invalidate(userId);
-        return userMapper.setRole(userId, newRole);
+
+        return userMapper.setRole(userId, UserRole.addRole(role, roleToAdd));
     }
 
     /**
@@ -164,10 +163,9 @@ public class UserDAO {
             return 0;
         }
 
-        int newRole = UserRole.removeRole(role, roleToRemove);
-
         userBasicInfoCache.invalidate(userId);
-        return userMapper.setRole(userId, newRole);
+
+        return userMapper.setRole(userId, UserRole.removeRole(role, roleToRemove));
     }
 
     /* -- 封装 mybatis-plus BaseMapper 的 CRUD 方法 -- */

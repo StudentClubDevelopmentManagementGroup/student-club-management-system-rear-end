@@ -45,7 +45,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
     }
 
      /**
-     * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
+     * 查询指定用户的基本信息：学号/工号、姓名、角色码，其他属性为 null
      * */
     default UserDO selectUserBasicInfo(String userId) {
         return selectOne(new LambdaQueryWrapper<UserDO>()
@@ -86,7 +86,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
     }
 
     /**
-     * 详见 {@link UserDAO#searchUserInfo}
+     * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
      * */
     default List<UserDO> searchUserBasicInfo(String userName) {
         String userNameLike = (userName != null) ? userName.replace("%", "") : "";
