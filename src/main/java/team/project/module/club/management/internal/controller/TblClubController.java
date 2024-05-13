@@ -34,12 +34,12 @@ public class TblClubController {
     @Operation(summary = "查询基地基础信息")
     @GetMapping("/club/select")
     Object selectClub(@Valid ListClubInfoReq req) {
-        ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
+        ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
 
         PageVO<TblClubDO> result;
         if (Objects.equals(req.getName(), "")) {
             result = service.selectByDepartmentId(newQO);
-        } else if (req.getDepartmentId() == 0) {
+        } else if (req.getDepartment_id() == 0) {
             result = service.selectByName(newQO);
         } else {
             result = service.selectByNameAndDepartmentId(newQO);
@@ -85,10 +85,10 @@ public class TblClubController {
     @GetMapping("/club/select_all")
     Object selectAll(@Valid ListClubInfoReq req) {
 
-        ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
+        ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<ClubMsgDTO> result;
 
-        if (req.getDepartmentId() == 0) {
+        if (req.getDepartment_id() == 0) {
             if (req.getName() == null || "".equals(req.getName())) {
                 result = service.findAll(newQO);
             } else {
