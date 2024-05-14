@@ -17,6 +17,8 @@ import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
+import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
@@ -41,6 +43,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Autowired
     FileStorageServiceI FileStorageService;
+
+    @Autowired
+    UserInfoServiceI UserInfoService;
 
     @Override
     public void createDuty(String number, String area, Timestamp duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
@@ -80,8 +85,8 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Transactional
     public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
-        List<String> fileIdList= new ArrayList<>();
-        for(MultipartFile file : filelist) {
+        List<String> fileIdList = new ArrayList<>();
+        for (MultipartFile file : filelist) {
 
             String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
             String fileName = memberId + dutyTime;
@@ -91,18 +96,18 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
 
-            String fileId=FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
+            String fileId = FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
 
             fileIdList.add(fileId);
         }
         StringBuilder files = new StringBuilder();
-        for(String fileId : fileIdList){
+        for (String fileId : fileIdList) {
             files.append(fileId).append(",");
         }
 
-        if(1!=tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))){
+        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
             log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
-            for(String fileId : fileIdList){
+            for (String fileId : fileIdList) {
                 FileStorageService.deleteFile(fileId);
             }
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
@@ -123,17 +128,52 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     public PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo) {
-        return null;
+        Page<TblDuty> page = tblDutyMapper.selectDutyByNumber(
+                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), qo.getNumber()
+        );
+        if (page.getTotal() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+        } else {
+            return new PageVO<>(page);
+        }
     }
 
     @Override
     public PageVO<TblDuty> selectDutyByName(DutyInfoQO qo) {
-        return null;
+        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+        if (nameList.size() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+        }
+        List<TblDuty> dutyList = new ArrayList<>();
+        for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
+            Page<TblDuty> page = tblDutyMapper.selectDutyByName(
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId()
+            );
+            dutyList.addAll(page.getRecords());
+        }
+        if (dutyList.size() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+        }
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }
 
     @Override
     public PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo) {
-        return null;
+        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+        if (nameList.size() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+        }
+        List<TblDuty> dutyList = new ArrayList<>();
+        for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
+            Page<TblDuty> page = tblDutyMapper.selectDutyByNumberAndName(
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId(), qo.getNumber()
+            );
+            dutyList.addAll(page.getRecords());
+        }
+        if (dutyList.size() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+        }
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }
 
 }
