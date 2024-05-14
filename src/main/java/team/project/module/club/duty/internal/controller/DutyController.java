@@ -3,6 +3,7 @@ package team.project.module.club.duty.internal.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,8 +12,12 @@ import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
+import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
+import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
+import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.request.*;
+import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
 
@@ -24,6 +29,9 @@ public class DutyController {
 
     @Autowired
     DutyService dutyService;
+
+    @Autowired
+    DutyCirculationService dutyCirculationService;
 
     @Operation(summary = "添加小组成员")
     @PostMapping("/club/duty/group/add")
@@ -88,6 +96,28 @@ public class DutyController {
                         dutyService.selectDutyByNumber(newQO) :
                         dutyService.selectDutyByNumberAndName(newQO));
 
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
+    }
+
+    @Operation(summary = "查询社团值日小组")
+    @PostMapping("/club/duty/group/select")
+    Object selectDutyGroup(@Valid @RequestBody DutyGroupSelectReq req) {
+        DutyGroupQO newQO = new DutyGroupQO(req.getClub_id(), req.getGroup_name(), req.getName(), req.getPagenum(), req.getSize());
+        PageVO<TblDutyGroup> result = req.getName().isEmpty() ?
+                (req.getGroup_name() == null || req.getGroup_name().isEmpty() ?
+                        dutyGroupService.selectDutyGroup(newQO) :
+                        dutyGroupService.selectDutyGroupByName(newQO)) :
+                (req.getGroup_name() == null || req.getGroup_name().isEmpty() ?
+                        dutyGroupService.selectDutyGroupByGroupName(newQO) :
+                        dutyGroupService.selectDutyGroupByGroupNameAndName(newQO));
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
+    }
+
+    @Operation(summary = "查询自动值日")
+    @PostMapping("/club/duty/auto_duty")
+    Object selectAutoDuty(@Valid @NotNull @RequestBody Long club_id) {
+        TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(club_id);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }

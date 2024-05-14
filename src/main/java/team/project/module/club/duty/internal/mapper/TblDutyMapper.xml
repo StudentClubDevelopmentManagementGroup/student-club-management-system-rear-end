@@ -8,13 +8,14 @@
         insert into tbl_user_club_duty (number,area,duty_time,arranger_id,cleaner_id,club_id,is_mixed)
         values (#{number},#{area},#{duty_time},#{arranger_id},#{cleaner_id},#{club_id},#{is_mixed})
     </insert>
+
     <update id="setDutyPicture">
         update tbl_user_club_duty set image_file = #{fileId} from tbl_user_club_duty where duty_time = #{duty_time}
         and cleaner_id = #{memberId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
     <delete id="deleteDuty">
-        update tbl_user_club_duty set is_deleted = 1 from tbl_user_club_duty where  and duty_time = #{duty_time}
+        update tbl_user_club_duty set is_deleted = 1 from tbl_user_club_duty where and duty_time = #{duty_time}
         and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
     </delete>
 
@@ -25,19 +26,23 @@
             parameterType="java.lang.Long">
         SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY);
     </select>
+
     <select id="selectDuty" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
             parameterType="java.lang.Long">
         SELECT * FROM tbl_user_club_duty WHERE club_id = #{club_id} and is_deleted = 0;
     </select>
-    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
 
+    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and is_deleted = 0;
     </select>
+
     <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
-        
+        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
+
     <select id="selectDutyByNumberAndName"
             resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
-
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
 </mapper>

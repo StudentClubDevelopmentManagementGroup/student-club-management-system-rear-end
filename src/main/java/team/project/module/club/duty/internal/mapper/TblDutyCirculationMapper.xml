@@ -13,7 +13,7 @@
     </delete>
 
 
-    <select id="selectCirculationByClubId" resultType="java.lang.Integer" parameterType="java.lang.Long">
+    <select id="selectCirculationByClubId" resultType="team.project.module.club.duty.internal.model.entity.TblDutyCirculation" parameterType="java.lang.Long">
         SELECT is_circulation FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
     </select>
     <select id="selectAutoDutyClubid"
