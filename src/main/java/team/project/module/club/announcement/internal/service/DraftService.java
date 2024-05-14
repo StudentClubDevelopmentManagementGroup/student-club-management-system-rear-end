@@ -158,7 +158,7 @@ public class DraftService {
         String content = fileStorageService.getTextFromFile(fileId);
         if (content == null) {
             log.error("读取草稿失败（数据库中存有记录，但是依据 fileId 找不到指定文件）");
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "读取草稿失败");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到草稿");
         }
 
         return modelConverter.toDraftVO(draft, content, null);

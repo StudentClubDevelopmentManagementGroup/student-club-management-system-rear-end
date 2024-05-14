@@ -21,9 +21,6 @@ public class RegisterService {
     UserDAO userDAO;
 
     public void register(RegisterReq req) {
-        UserDO user = new UserDO();
-
-        user.setUserId(req.getUserId());
 
         /* 2024-03-29 ljh
            注册账号时要指明所属院系，可以在这里判断院系是否存在。即使这里不判断，在下方执行插入 sql 时也会判断
@@ -33,23 +30,24 @@ public class RegisterService {
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "注册失败");
         } */
 
-        user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- ljh_TODO: 待加密 */
-        user.setName(req.getName());
-        user.setEmail(req.getEmail());
-        user.setTel(req.getTel());
-
-        user.setRole(UserRole.getEmptyRoleCode());
+        int role = UserRole.getEmptyRoleCode();
         if ("student".equals(req.getRole())) {
-            user.addRole(UserRole.STUDENT);
-        }
-        else if ("teacher".equals(req.getRole())) {
-            user.addRole(UserRole.TEACHER);
-        }
-        else {
+            role = UserRole.addRole(role, UserRole.STUDENT);
+        } else if ("teacher".equals(req.getRole())) {
+            role = UserRole.addRole(role, UserRole.TEACHER);
+        } else {
             /* controller 的入参校验保证程序不会执行到此处 */
             throw new ServiceException(ServiceStatus.UNPROCESSABLE_ENTITY, "不支持用户创建这个角色的账户");
         }
+
+        UserDO user = new UserDO();
+        user.setUserId(req.getUserId());
+        user.setDepartmentId(req.getDepartmentId());
+        user.setPassword(req.getPassword()); /* <- ljh_TODO: 待加密 */
+        user.setName(req.getName());
+        user.setTel(req.getTel());
+        user.setEmail(req.getEmail());
+        user.setRole(role);
 
         try {
             userDAO.insert(user);

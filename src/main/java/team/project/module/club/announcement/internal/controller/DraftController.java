@@ -42,7 +42,6 @@ public class DraftController {
         String authorId = (String)( StpUtil.getLoginId() );
         req.getDraft().setAuthorId(authorId);
 
-        /* draft_id 为空则创建新的草稿，不为空则更新草稿 */
         if (req.getDraftId() == null) {
             draftService.createDraft(req.getDraft());
         } else {
@@ -60,12 +59,7 @@ public class DraftController {
         String authorId = (String)( StpUtil.getLoginId() );
 
         DraftVO result = draftService.readDraft(authorId, draftId);
-
-        if (result != null) {
-            return new Response<>(ServiceStatus.SUCCESS).data(result);
-        } else {
-            return new Response<>(ServiceStatus.NOT_FOUND);
-        }
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
     @Operation(summary="查看我的草稿箱（分页查询）", description="""

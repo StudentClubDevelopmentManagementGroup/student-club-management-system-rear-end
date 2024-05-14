@@ -13,7 +13,7 @@ import java.net.UnknownHostException;
 
 @SpringBootApplication
 @EnableAspectJAutoProxy
-@EnableScheduling // 启用定时任务调度功能
+@EnableScheduling
 public class Application {
 
     static ConfigurableApplicationContext ctx;
