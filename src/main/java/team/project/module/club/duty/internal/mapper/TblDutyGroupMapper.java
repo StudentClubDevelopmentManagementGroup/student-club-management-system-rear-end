@@ -2,6 +2,7 @@ package team.project.module.club.duty.internal.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 
@@ -25,4 +26,11 @@ public interface TblDutyGroupMapper extends BaseMapper<TblDutyGroup> {
     }
 
 
+    Page<TblDutyGroup> selectGroup(Page<TblDutyGroup> page, Long clubId);
+
+    Page<TblDutyGroup> selectGroupByName(Page<TblDutyGroup> page, Long clubId, String member_id);
+
+    Page<TblDutyGroup> selectGroupByGroupName(Page<TblDutyGroup> page, Long clubId, String GroupName);
+
+    Page<TblDutyGroup> selectGroupByNameAndGroupName(Page<TblDutyGroup> page, Long clubId, String member_id, String GroupName);
 }

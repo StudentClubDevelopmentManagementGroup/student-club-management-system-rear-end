@@ -37,12 +37,12 @@
     </select>
 
     <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
-        SELECT * FROM tbl_user_club_duty WHERE arranger_id = #{arranger_id} and is_deleted = 0;
+        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
     <select id="selectDutyByNumberAndName"
             resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
-        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and arranger_id = #{arranger_id} and is_deleted = 0;
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
 </mapper>

@@ -54,6 +54,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
+    @Override
     @Transactional
     public void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
@@ -76,6 +77,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
+    @Override
     @Transactional
     public void deleteDutyByUser(Timestamp dutyTime, String cleaner_id, Long club_id) {
         if (tblDutyMapper.deleteDuty(dutyTime, cleaner_id, club_id) != 1) {
@@ -83,6 +85,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         }
     }
 
+    @Override
     @Transactional
     public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
         List<String> fileIdList = new ArrayList<>();
