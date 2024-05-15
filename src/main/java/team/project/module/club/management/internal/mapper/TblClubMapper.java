@@ -32,13 +32,7 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId);
 
-    Page<ClubMsgDTO> findAll(Page<ClubMsgDTO> page);
-
-    Page<ClubMsgDTO> findAllByDepartmentId(Page<ClubMsgDTO> page, Long departmentId);
-
-    Page<ClubMsgDTO> findAllByName(Page<ClubMsgDTO> page, String name);
-
-    Page<ClubMsgDTO> findAllByDepartmentIdAndName(Page<ClubMsgDTO> page, Long departmentId, String name);
+    Page<ClubMsgDTO> findAll(Page<ClubMsgDTO> page, Long departmentId, String name);
 
     @Select("SELECT id FROM tbl_club WHERE name = #{name}")
     Long selectClubIdByName(@Param("name") String name);

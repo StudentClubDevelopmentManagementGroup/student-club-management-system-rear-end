@@ -87,21 +87,7 @@ public class TblClubController {
 
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<ClubMsgDTO> result;
-
-        if (req.getDepartment_id() == 0) {
-            if (req.getName() == null || "".equals(req.getName())) {
-                result = service.findAll(newQO);
-            } else {
-                result = service.findAllByName(newQO);
-            }
-        } else {
-            if (req.getName() == null || "".equals(req.getName())) {
-                result = service.findAllByDepartmentId(newQO);
-            } else {
-                result = service.findAllByDepartmentIdAndName(newQO);
-            }
-        }
-
+        result = service.findAll(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }

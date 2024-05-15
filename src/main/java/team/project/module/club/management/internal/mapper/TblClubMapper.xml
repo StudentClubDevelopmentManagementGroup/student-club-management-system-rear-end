@@ -49,7 +49,7 @@
 
     <update id="createClub">
         insert into tbl_club (name, state, department_id)
-        values (#{name}, 0, #{departmentId})
+        values (#{name}, 1, #{departmentId})
     </update>
 
     <update id="deleteClub">
@@ -87,29 +87,19 @@
 
     <select id="findAll" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
+        <where>
+            <if test="name != null and name != '' ">
+                and c.name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="departmentId != null and departmentId != 0 ">
+                and c.department_id = #{departmentId}
+            </if>
+        </where>
         GROUP BY c.id
     </select>
 
-    <select id="findAllByDepartmentId" resultMap="clubmasVO">
-        <include refid="clubSummaryQuery"/>
-        where c.department_id = #{departmentId}
-        GROUP BY c.id
-    </select>
-
-    <select id="findAllByName" resultMap="clubmasVO">
-        <include refid="clubSummaryQuery"/>
-        where c.name LIKE CONCAT('%', #{name}, '%')
-        GROUP BY c.id
-    </select>
-
-    <select id="findAllByDepartmentIdAndName" resultMap="clubmasVO">
-        <include refid="clubSummaryQuery"/>
-        WHERE c.department_id = #{departmentId} and c.name LIKE CONCAT('%', #{name}, '%')
-        GROUP BY c.id
-    </select>
 
     <select id="selectById" resultMap="tbl_club_DO">
         select * from tbl_club where id = #{id} and is_deleted = 0
     </select>
-    <!--     TODO xml文件加上逻辑删除-->
 </mapper>
