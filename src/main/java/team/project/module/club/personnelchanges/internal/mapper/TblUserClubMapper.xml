@@ -41,7 +41,7 @@
     <select id="selectManagerRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
         select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2 and is_deleted = 0
     </select>
-<!--    TODO Club删除时候要进行级联删除-->
+
     <select id="isManagerRole" resultType="java.lang.Boolean">
         select 1 from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2 limit 1
     </select>
@@ -78,9 +78,6 @@
             AND u.department_id = #{departmentId}
         </if>
     </select>
-
-    <!--     TODO xml文件加上逻辑删除
-    思路：删除社员用使用逻辑删除，所有社员的查询均带上排除逻辑删除条件-->
 
     <insert id="createMember">
         insert into tbl_user_club (role, user_id, club_id)
