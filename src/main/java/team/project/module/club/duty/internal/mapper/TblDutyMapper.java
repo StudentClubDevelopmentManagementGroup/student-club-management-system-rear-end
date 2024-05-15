@@ -20,6 +20,8 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
 
     List<TblDuty> selectLastWeek(Long club_id);
 
+    List<TblDuty> selectNextWeek(Long club_id);
+
     int setDutyPicture(Timestamp dutyTime, String memberId, Long clubId, String fileId);
 
     Page<TblDuty> selectDuty(Page<TblDuty> page, Long clubId);

@@ -45,4 +45,9 @@
         SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
+    <select id="selectNextWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
+            parameterType="java.lang.Long">
+        SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);
+    </select>
+
 </mapper>

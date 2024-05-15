@@ -17,4 +17,6 @@ public interface TblDutyCirculationMapper extends BaseMapper<TblDutyCirculation>
     int deleteCirculation(Long clubId);
 
     List<TblDutyCirculation> selectAutoDutyClubid();
+
+
 }

@@ -37,6 +37,9 @@ public class AutoDeployDutyScheduledTasks {
             // 使用List<TblDuty> tblDuties = new ArrayList<>();来收集所有需要创建的职责信息，以减少数据库访问
             List<TblDuty> tblDuties = new ArrayList<>();
             for (TblDutyCirculation tblDutyCirculation : tblDutyCirculations) {
+                if(dutyMapper.selectNextWeek(tblDutyCirculation.getClub_id())!=null){
+                    continue;
+                }
                 List<TblDuty> duties = dutyMapper.selectLastWeek(tblDutyCirculation.getClub_id());
                 tblDuties.addAll(duties);
             }
