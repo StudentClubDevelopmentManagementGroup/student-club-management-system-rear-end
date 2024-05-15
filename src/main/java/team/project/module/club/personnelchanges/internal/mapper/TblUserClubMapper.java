@@ -39,7 +39,7 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
-    default TblUserClubDO selectRootROle(String userId) { /* review by ljh TODO 改名字 Role 字母 O 小写 */
+    default TblUserClubDO selectRootRole(String userId) {
         List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
                 .eq(TblUserClubDO::getUserId, userId)
                 .in(TblUserClubDO::getRole, 2, 3)

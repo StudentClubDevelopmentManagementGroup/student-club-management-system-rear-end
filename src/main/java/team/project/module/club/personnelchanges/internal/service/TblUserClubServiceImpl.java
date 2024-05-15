@@ -64,7 +64,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         } else {
             try {
                 ucMapper.quashManager(userId, clubId);
-                if (ucMapper.selectRootROle(userId) == null) {
+                if (ucMapper.selectRootRole(userId) == null) {
                     uiService.removeRoleFromUser(userId, CLUB_MANAGER);
                 }
             } catch (Exception e) {

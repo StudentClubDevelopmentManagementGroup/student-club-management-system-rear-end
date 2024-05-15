@@ -54,7 +54,7 @@
             resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
     </select>
 
-    <select id="selectRootROle" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
+    <select id="selectRootRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
             parameterType="java.lang.String">
     </select>
 

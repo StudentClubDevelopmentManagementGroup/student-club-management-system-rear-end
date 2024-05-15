@@ -19,12 +19,4 @@ public class TblUserClubDO {
     @TableField(value="user_id")       String    userId;
     @TableField(value="club_id")       Long      clubId;
     @TableField(value="role")          Integer   role;
-
-    public boolean isMember() {
-        return (this.role & 1) != 0; /* review TODO 删除 0 个用法的函数 */
-    }
-
-    public boolean isManager() {
-        return (this.role & 2) != 0;
-    }
 }
