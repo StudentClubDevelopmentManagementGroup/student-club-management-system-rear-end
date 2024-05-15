@@ -53,12 +53,10 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
 
-        /* ljh_TODO: 缓存 */
-
         List<String> list = new ArrayList<>();
 
         String userId = (String)loginId;
-        Integer userRole = userService.selectUserRole(userId);
+        Integer userRole = userService.selectUserRole(userId); /* <- user 模块对此查询已有缓存优化 */
         if (userRole == null) return list;
 
         if (UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))  return allRoles;

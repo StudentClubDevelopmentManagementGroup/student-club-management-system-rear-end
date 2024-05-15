@@ -50,12 +50,6 @@
             <artifactId>spring-boot-starter-validation</artifactId>
         </dependency>
 
-        <!-- security -->
-        <!--<dependency>    暂时关闭集成 Spring Security
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>-->
-
         <!-- Sa-Token [begin] -->
         <dependency>
             <groupId>cn.dev33</groupId>
@@ -111,6 +105,13 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>-->
         <!-- redis [end] -->
+
+        <!-- caffeine -->
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>3.1.8</version>
+        </dependency>
 
         <!-- aop -->
         <dependency>
@@ -169,6 +170,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -193,7 +195,7 @@
             <resource>
                 <directory>src/main/java</directory>
                 <includes>
-                    <!-- 将保留 xml 文件（使得允许 mapper.xml 文件和 mapper.java 文件在同一个目录） -->
+                    <!-- 将保留 xml 文件（使得 mapper.xml 和 mapper.java 能在同一个目录） -->
                     <include>**/*.xml</include>
                 </includes>
             </resource>

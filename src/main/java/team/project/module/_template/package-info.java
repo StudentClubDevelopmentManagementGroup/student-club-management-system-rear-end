@@ -8,7 +8,7 @@
  * <p>
  * <h1> export
  * <p>  export 包下的所有内容，是本模块对外公布的接口
- * <p>  模块间交流，只能在出现在 service层
+ * <p>  模块间交流，只能在出现在 service 层
  * <p>  export 包只提供 service 层的接口，用 model 封装 service 的入参和出参
  * <p>  export 不提供 dao、mapper 等其他层的接口
  * <p>

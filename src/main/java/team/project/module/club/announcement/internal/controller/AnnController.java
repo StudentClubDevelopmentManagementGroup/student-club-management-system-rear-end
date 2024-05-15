@@ -32,7 +32,7 @@ public class AnnController {
         title：公告标题
         content：公告内容（用于详情页）
         summary：内容摘要（用于列表页）
-        draft_id：草稿编号，若为 null 则直接发布公告，若不为 null 则发布公告后顺带删除该草稿
+        draft_id：草稿编号，若为 null 则只发布公告，若不为 null 则发布公告后顺带删除该草稿
         （草稿内容与公告实际内容无关，公告实际内容来自 content，而不是 draft_id，draft_id 仅仅是顺带删除）
     """)
     @PostMapping("/publish")

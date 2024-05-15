@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * <p>自定义的服务端响应状态码</p>
- * <p>虽然和 http 的状态码一致，但注意：这个是 ServiceStatus，而不是 HttpStatus</p>
+ * <p> 自定义的服务端响应状态码
+ * <p> 虽然和 http 的状态码一致，但注意：这个是 ServiceStatus，而不是 HttpStatus
  * */
 @AllArgsConstructor
 @Getter

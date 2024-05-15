@@ -27,14 +27,4 @@ public class UserDO {
     public boolean hasRole(UserRole role) {
         return UserRole.hasRole(this.role, role);
     }
-
-    /* 更新用户的身份，使其拥有指定角色 */
-    public void addRole(UserRole role) {
-        this.role = UserRole.addRole(this.role, role);
-    }
-
-    /* 移除指定角色 */
-    public void removeRole(UserRole role) {
-        this.role = UserRole.removeRole(this.role, role);
-    }
 }

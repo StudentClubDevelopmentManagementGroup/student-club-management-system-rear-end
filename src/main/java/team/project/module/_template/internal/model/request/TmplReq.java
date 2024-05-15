@@ -2,10 +2,12 @@ package team.project.module._template.internal.model.request;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /* 封装请求参数，用作接收前端传来的数据 */
-@Data
+@Getter
+@Setter
 public class TmplReq {
 
     /* 示例 */

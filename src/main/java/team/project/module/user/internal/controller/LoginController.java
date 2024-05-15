@@ -51,6 +51,12 @@ public class LoginController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }
 
+    @Operation(summary="发送登录验证码到邮箱", hidden=true)
+    @PostMapping("/login/send_code/email")
+    Object sendCode() {
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    }
+
     @Operation(summary="使用邮箱登录", hidden=true)
     @PostMapping("/login/email")
     Object loginWithEmail() {
