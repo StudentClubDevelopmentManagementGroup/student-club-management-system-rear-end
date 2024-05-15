@@ -11,15 +11,7 @@ public interface TblClubService extends IService<TblClubDO> {
 
     void createClub(Long departmentId, String name);
 
-    /* review by ljh 2024-04-29 TODO
-        下述三个 select 函数可以合为一个，因为它们的入参出参都是一样的
-        落实到 SQL 时可以使用 if 标签动态增加 where 查询的条件
-    */
-    PageVO<TblClubDO> selectByNameAndDepartmentId(ClubInfoQO page);
-
-    PageVO<TblClubDO> selectByName(ClubInfoQO page);
-
-    PageVO<TblClubDO> selectByDepartmentId(ClubInfoQO page);
+    PageVO<TblClubDO> selectByCriteria(ClubInfoQO page);
 
     int deleteClub(Long departmentId, String name);
 

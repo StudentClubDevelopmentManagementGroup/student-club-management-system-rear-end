@@ -4,7 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
@@ -14,8 +17,6 @@ import team.project.module.club.management.internal.model.query.ClubInfoQO;
 import team.project.module.club.management.internal.model.request.ListClubInfoReq;
 import team.project.module.club.management.internal.model.request.OneClubInfoReq;
 import team.project.module.club.management.internal.service.TblClubService;
-
-import java.util.Objects;
 
 @Tag(name = "社团管理")
 @RestController
@@ -35,16 +36,8 @@ public class TblClubController {
     @GetMapping("/club/select")
     Object selectClub(@Valid ListClubInfoReq req) {
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
-
         PageVO<TblClubDO> result;
-        if (Objects.equals(req.getName(), "")) {
-            result = service.selectByDepartmentId(newQO);
-        } else if (req.getDepartment_id() == 0) {
-            result = service.selectByName(newQO);
-        } else {
-            result = service.selectByNameAndDepartmentId(newQO);
-        }
-
+        result = service.selectByCriteria(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 

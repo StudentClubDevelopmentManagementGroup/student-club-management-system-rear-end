@@ -50,38 +50,12 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     @Override
-    public PageVO<TblClubDO> selectByNameAndDepartmentId(ClubInfoQO req) {
+    public PageVO<TblClubDO> selectByCriteria(ClubInfoQO req) {
 
-        Page<TblClubDO> page = cMapper.selectByNameAndDepartmentId(
+        Page<TblClubDO> page = cMapper.selectByCriteria(
                 new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName()
         );
 
-        if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        } else {
-            return new PageVO<>(page);
-        }
-    }
-
-    @Override
-    public PageVO<TblClubDO> selectByName(ClubInfoQO req) {
-
-        Page<TblClubDO> page = cMapper.selectByName(
-                new Page<>(req.getPageNum(), req.getSize()), req.getName()
-        );
-
-        if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
-        } else {
-            return new PageVO<>(page);
-        }
-    }
-
-    public PageVO<TblClubDO> selectByDepartmentId(ClubInfoQO req) {
-
-        Page<TblClubDO> page = cMapper.selectByDepartmentId(
-                new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId()
-        );
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
         } else {

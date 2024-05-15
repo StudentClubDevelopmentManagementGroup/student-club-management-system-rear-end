@@ -35,16 +35,17 @@
         where name LIKE CONCAT('%', #{name}, '%') and department_id = #{departmentId}
     </select>
 
-    <select id="selectByName"
-            resultMap="tbl_club_DO">
-        select * from tbl_club
-        where name LIKE CONCAT('%', #{name}, '%')
-    </select>
-
-    <select id="selectByDepartmentId"
-            resultMap="tbl_club_DO">
-        select * from tbl_club
-        where department_id = #{departmentId}
+    <select id="selectByCriteria" resultMap="tbl_club_DO">
+        SELECT *
+        FROM tbl_club
+        <where>
+            <if test="name != null and name != '' ">
+                AND name LIKE CONCAT('%', #{name}, '%')
+            </if>
+            <if test="departmentId != null and departmentId != 0 ">
+                AND department_id = #{departmentId}
+            </if>
+        </where>
     </select>
 
     <update id="createClub">
@@ -82,7 +83,6 @@
         LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
         LEFT JOIN tbl_user u ON uc.user_id = u.user_id
         LEFT JOIN tbl_department d ON c.department_id = d.id
-
     </sql>
 
     <select id="findAll" resultMap="clubmasVO">
@@ -97,7 +97,6 @@
         </where>
         GROUP BY c.id
     </select>
-
 
     <select id="selectById" resultMap="tbl_club_DO">
         select * from tbl_club where id = #{id} and is_deleted = 0

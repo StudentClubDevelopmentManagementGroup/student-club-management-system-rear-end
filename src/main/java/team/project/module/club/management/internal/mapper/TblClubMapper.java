@@ -16,9 +16,7 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     List<TblClubDO> findByNameAndDepartmentId(Long departmentId, String name);
 
-    Page<TblClubDO> selectByNameAndDepartmentId(@Param("page") Page<TblClubDO> page, Long departmentId, String name);
-
-    Page<TblClubDO> selectByName(@Param("page") Page<TblClubDO> page, String name);
+    Page<TblClubDO> selectByCriteria(@Param("page") Page<TblClubDO> page, Long departmentId, String name);
 
     int createClub(Long departmentId, String name);
 
@@ -29,8 +27,6 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
     int deactivateClub(Long departmentId, String name);
 
     int recoverClub(Long departmentId, String name);
-
-    Page<TblClubDO> selectByDepartmentId(Page<TblClubDO> page, Long departmentId);
 
     Page<ClubMsgDTO> findAll(Page<ClubMsgDTO> page, Long departmentId, String name);
 
