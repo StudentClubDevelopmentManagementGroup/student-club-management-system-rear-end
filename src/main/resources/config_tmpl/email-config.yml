@@ -7,6 +7,9 @@
 
 spring:
   mail:
-    username: szdxdxdx@126 . com
-    password: VHMISFFGQQCBXOTB
-    host: smtp .126. com
+    # 寄件人的邮箱
+    username:  x  # <- 请勿泄露
+    # 授权码
+    password:  x  # <- 请勿泄露
+    # 邮箱服务器
+    host:      x  # <- 请勿泄露
