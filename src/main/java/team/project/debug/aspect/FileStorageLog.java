@@ -13,18 +13,23 @@ public class FileStorageLog {
 
     Logger log = LoggerFactory.getLogger("【file storage log aspect 文件存储日志切面】");
 
+    private String subStr30(String str) {
+        if (str.length() > 30) {
+            return str.substring(0, 30);
+        }
+        return str;
+    }
+
     @Around("execution(* team.project.module..filestorage.export.service.impl..uploadTextToFile(..))")
     public Object uploadTextToFileLog(ProceedingJoinPoint jp) throws Throwable {
         Object[] args = jp.getArgs();
-        String text = ((String) args[1]).substring(0, 30);
-
         try {
             Object result = jp.proceed();
             log.info("""
                  uploadTextToFile
                  text[0, 30] = {}
                  return file_id = {}"""
-            , ((String) args[1]).substring(0, 30), result);
+            , subStr30((String) args[1]), result);
             return result;
 
         } catch (Exception e) {
@@ -32,7 +37,7 @@ public class FileStorageLog {
                  uploadTextToFile
                  text[0, 30] = {}
                  throw exception = {}"""
-            , text, e.getMessage(), e);
+            , subStr30((String) args[1]), e.getMessage(), e);
             throw e;
         }
     }
@@ -48,7 +53,7 @@ public class FileStorageLog {
                  getTextFromFile
                  file_id = {}
                  return text[0, 30] = {}"""
-            , fileId, result.substring(0, 30));
+            , fileId, subStr30(result));
         }
         else {
             log.info("""

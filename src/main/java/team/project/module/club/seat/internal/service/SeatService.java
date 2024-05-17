@@ -18,7 +18,6 @@ import team.project.module.club.seat.internal.model.view.ClubMemberInfoVO;
 import team.project.module.club.seat.internal.model.view.SeatVO;
 import team.project.module.club.seat.internal.util.ModelConverter;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
-import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;

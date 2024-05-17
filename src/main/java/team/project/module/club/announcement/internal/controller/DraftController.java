@@ -89,4 +89,17 @@ public class DraftController {
         draftService.deleteDraft(authorId, draftId);
         return new Response<>(ServiceStatus.SUCCESS);
     }
+
+    @Operation(summary="清空我的草稿箱")
+    @PostMapping("/clear")
+    @SaCheckLogin
+    Object del_all(
+        @NotNull(message="未指定社团id") @ClubIdConstraint
+        @RequestParam("club_id") Long clubId
+    ) {
+        String userId = (String)( StpUtil.getLoginId() );
+
+        draftService.delAllMyDraft(userId, clubId);
+        return new Response<>(ServiceStatus.SUCCESS);
+    }
 }

@@ -50,7 +50,7 @@ public class DraftService {
      * 创建一篇新的草稿
      * */
     public void createDraft(AnnDetail draft) {
-        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
+        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "不是社团负责人");
 
         /* 将草稿的内容保存到文件，获取 fileId */
 
@@ -97,7 +97,7 @@ public class DraftService {
 
         /* 查询数据库获取旧草稿，并校验权限 */
 
-        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "只有社团负责人能编辑公告");
+        authService.requireClubManager(draft.getAuthorId(), draft.getClubId(), "不是社团负责人");
 
         DraftDO oldDraftDO = draftMapper.selectDraftBasicInfo(req.getDraftId());
 
@@ -168,7 +168,7 @@ public class DraftService {
      * 查看我的草稿箱
      * */
     public PageVO<DraftVO> listMyDraft(PagingQueryReq req, String authorId, Long clubId) {
-        authService.requireClubManager(authorId, clubId, "只有社团负责人能编辑公告");
+        authService.requireClubManager(authorId, clubId, "不是社团负责人");
 
         Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
         List<DraftDO> draftList = draftMapper.listMyDraft(page, authorId, clubId);
@@ -198,6 +198,23 @@ public class DraftService {
 
         if (1 == draftMapper.deleteById(draft)) { /* <- 删除数据库的数据，删除成功后清除文件 */
             fileStorageService.deleteFile(textFileId);
+        }
+    }
+
+    /**
+     * 清空我的草稿箱
+     * */
+    public void delAllMyDraft(String userId, Long clubId) {
+        authService.requireClubManager(userId, clubId, "不是社团负责人");
+
+        List<DraftDO> draftList = draftMapper.selectAllMyDraft(userId, clubId);
+        for (DraftDO draft : draftList) {
+
+            String textFileId = draft.getTextFile();
+
+            if (1 == draftMapper.deleteById(draft)) {
+                fileStorageService.deleteFile(textFileId);
+            }
         }
     }
 }

@@ -36,4 +36,14 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
             .orderByDesc(true, DraftDO::getUpdateTime) /* 按修改时间排序，新修改的在前面 */
         );
     }
+
+    /**
+     * 查询我的所有草稿
+     * */
+    default List<DraftDO> selectAllMyDraft(String userId, Long clubId) {
+        return selectList(new LambdaQueryWrapper<DraftDO>()
+            .eq(DraftDO::getClubId, clubId)
+            .eq(DraftDO::getAuthorId, userId)
+        );
+    }
 }
