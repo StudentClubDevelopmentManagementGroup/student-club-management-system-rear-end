@@ -62,11 +62,5 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
 
     int quashAllMember(Long clubId);
 
-    default List<TblUserClubDO> selectOneAllClubInfo(String userId) {
-        List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
-                .eq(TblUserClubDO::getUserId, userId)
-                .ne(TblUserClubDO::getRole,0)
-        );
-        return userList.size() == 1 ? userList : null;
-    }
+    List<TblUserClubDO> selectOneAllClubInfo(String userId) ;
 }

@@ -8,10 +8,12 @@ import org.springframework.transaction.annotation.Transactional;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
+import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
+import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubMemberInfoQO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
@@ -44,6 +46,9 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
 
     @Autowired
     ModelConverter converter;
+
+    @Autowired
+    ManagementIService managementIService;
 
     @Transactional
     public void setClubManager(String userId, Long clubId) {
@@ -113,9 +118,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     }
 
     public PageVO<UserMsgDTO> selectClubMember(ClubQO req) {
-        Page<UserMsgDTO> user = ucMapper.selectClubMember(
-                new Page<>(req.getPagenum(), req.getSize()), req.getClubId()
-        );
+        Page<UserMsgDTO> user = ucMapper.selectClubMember(new Page<>(req.getPagenum(), req.getSize()), req.getClubId());
         return new PageVO<>(user);
     }
 
@@ -125,9 +128,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     }
 
     public PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req) {
-        Page<ClubMemberInfoDTO> page = ucMapper.selectClubMemberInfo(
-                new Page<>(req.getPagenum(), req.getSize()), req.getClubId(), req.getName(), req.getDepartmentId()
-        );
+        Page<ClubMemberInfoDTO> page = ucMapper.selectClubMemberInfo(new Page<>(req.getPagenum(), req.getSize()), req.getClubId(), req.getName(), req.getDepartmentId());
         List<ClubMemberInfoVO> result = converter.toClubMemberInfoVOList(page.getRecords());
         return new PageVO<>(result, page);
     }
@@ -135,18 +136,24 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     @Override
     public List<UserClubInfoVO> selectMemberAllClubInfo(String userId) {
         List<TblUserClubDO> list = ucMapper.selectOneAllClubInfo(userId);
+        if (list.isEmpty()) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "查无对象");
+        }
         List<UserClubInfoVO> result = new ArrayList<>();
         for (TblUserClubDO tblUserClubDO : list) {
-            UserClubInfoVO userClubInfoVO = new UserClubInfoVO();
-            userClubInfoVO.setClubId(tblUserClubDO.getClubId());
-            switch (tblUserClubDO.getRole()) {
-                case 1 -> userClubInfoVO.setRole("成员");
-                case 2 -> userClubInfoVO.setRole("负责人");
-                default -> {
+            if (tblUserClubDO != null) {
+                ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(tblUserClubDO.getClubId());
+                UserClubInfoVO userClubInfoVO = new UserClubInfoVO( null,null,null,null);
+                userClubInfoVO.setClubId(tblUserClubDO.getClubId());
+                switch (tblUserClubDO.getRole()) {
+                    case 1 -> userClubInfoVO.setRole("成员");
+                    case 2, 3 -> userClubInfoVO.setRole("管理员");
+                    default -> userClubInfoVO.setRole("未知");
                 }
+                userClubInfoVO.setClubName(clubBasicMsgDTO.getName());
+                userClubInfoVO.setDepartmentName(clubBasicMsgDTO.getDepartmentName());
+                result.add(userClubInfoVO);
             }
-            userClubInfoVO.setName(uiService.getUserName(userId));
-            result.add(userClubInfoVO);
         }
         return result;
     }
