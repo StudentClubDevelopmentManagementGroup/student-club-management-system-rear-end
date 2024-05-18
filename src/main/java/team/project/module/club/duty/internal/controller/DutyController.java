@@ -95,7 +95,7 @@ public class DutyController {
                 (req.getNumber() == null || req.getNumber().isEmpty() ?
                         dutyService.selectDutyByNumber(newQO) :
                         dutyService.selectDutyByNumberAndName(newQO));
-
+        //todo 合并
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 
@@ -110,7 +110,7 @@ public class DutyController {
                 (req.getGroup_name() == null || req.getGroup_name().isEmpty() ?
                         dutyGroupService.selectDutyGroupByGroupName(newQO) :
                         dutyGroupService.selectDutyGroupByGroupNameAndName(newQO));
-
+        //todo 合并
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 

@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper
 public interface TblDutyMapper extends BaseMapper<TblDuty> {
     int createDuty(String number, String area, Timestamp duty_time,
-                   String arranger_id, String cleaner_id, Long club_id, Boolean ismixed);
+                   String arranger_id, String cleaner_id, Long club_id, Boolean is_mixed);
 
     TblDuty selectOne(String number, String area, Timestamp duty_time,
                       String arranger_id, String cleaner_id, Long club_ide);
