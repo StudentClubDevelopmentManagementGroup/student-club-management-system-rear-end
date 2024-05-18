@@ -2,7 +2,14 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="team.project.module.club.duty.internal.mapper.TblDutyMapper">
-
+    <resultMap id="tbl_club_Duty" type="team.project.module.club.duty.internal.model.entity.TblDuty">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="id"                 property="id" />
+        <result column="is_deleted"         property="deleted" />
+        <result column="create_time"        property="createTime" />
+        <result column="update_time"        property="updateTime" />
+        <result column="department_id"      property="duty_time" />
+    </resultMap>
 
     <insert id="createDuty">
         insert into tbl_user_club_duty (number,area,duty_time,arranger_id,cleaner_id,club_id,is_mixed)
@@ -28,25 +35,27 @@
     </select>
 
     <select id="selectDuty" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
-            parameterType="java.lang.Long">
-        SELECT * FROM tbl_user_club_duty WHERE club_id = #{club_id} and is_deleted = 0;
+            resultMap ="tbl_club_Duty">
+        SELECT * FROM tbl_user_club_duty
+        WHERE club_id = #{club_id} AND is_deleted = 0
     </select>
 
-    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
+            resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE number = #{number} and is_deleted = 0;
     </select>
 
-    <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+    <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
+            resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
     <select id="selectDutyByNumberAndName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+            resultMap ="tbl_club_Duty">>
         SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
-    <select id="selectNextWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
-            parameterType="java.lang.Long">
+    <select id="selectNextWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
         SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{club_id};
     </select>
 
