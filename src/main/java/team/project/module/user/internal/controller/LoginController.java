@@ -6,13 +6,13 @@ import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.LoginService;
@@ -51,16 +51,35 @@ public class LoginController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }
 
-    @Operation(summary="发送登录验证码到邮箱", hidden=true)
+    @Operation(summary="使用邮箱登录（发送验证码）")
     @PostMapping("/login/send_code/email")
-    Object sendCode() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    Object sendCode(
+        @NotBlank(message="学号/工号不能为空") @UserIdConstraint
+        @RequestParam("user_id") String userId
+    ) {
+        loginService.sendCodeByEmail(userId);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 
-    @Operation(summary="使用邮箱登录", hidden=true)
+    @Operation(summary="使用邮箱登录")
     @PostMapping("/login/email")
-    Object loginWithEmail() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    Object loginWithEmail(@Valid @RequestBody UserIdAndCodeReq req) {
+
+        UserInfoVO userInfo = loginService.login(req);
+
+        if (userInfo == null) {
+            /* 依前端要求，登录失败返回 400 状态码 */
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("验证码不正确");
+        }
+
+        StpUtil.login(req.getUserId());
+        SaTokenInfo token = StpUtil.getTokenInfo();
+
+        Map<String, Object> loginResult = new HashMap<>();
+        loginResult.put("user_info", userInfo);
+        loginResult.put("token", token.getTokenValue());
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }
 
     @Operation(summary="登出")

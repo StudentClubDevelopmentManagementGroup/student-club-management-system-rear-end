@@ -37,7 +37,6 @@ public class RegisterReq {
 
     @Email(message="邮箱格式不正确")
     @NotBlank(message="邮箱不能为空")
-    @Size(min=1, max=100, message="邮箱的长度不合约束")
     @JsonProperty("mail")
     private String email;
 

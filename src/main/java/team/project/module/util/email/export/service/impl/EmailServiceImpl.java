@@ -43,7 +43,7 @@ public class EmailServiceImpl implements EmailServiceI {
             return true;
         }
         catch (Exception e) {
-            log.error("发送邮件失败", e);
+            log.error("邮件发送失败", e);
             return false;
         }
     }
@@ -61,7 +61,7 @@ public class EmailServiceImpl implements EmailServiceI {
             return true;
         }
         catch (Exception e) {
-            log.error("发送邮件失败", e);
+            log.error("邮件发送失败", e);
             return false;
         }
     }
