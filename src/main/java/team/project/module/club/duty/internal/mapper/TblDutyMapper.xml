@@ -26,11 +26,10 @@
         and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
     </delete>
 
-    <select id="selectOne" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+    <select id="selectOne" resultMap ="tbl_club_Duty">
     </select>
 
-    <select id="selectLastWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
-            parameterType="java.lang.Long">
+    <select id="selectLastWeek" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) and club_id = #{club_id};
     </select>
 
@@ -39,22 +38,19 @@
         WHERE club_id = #{club_id} AND is_deleted = 0
     </select>
 
-    <select id="selectDutyByNumber" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
-            resultMap ="tbl_club_Duty">
+    <select id="selectDutyByNumber" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE number = #{number} and is_deleted = 0;
     </select>
 
-    <select id="selectDutyByName" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
-        resultMap ="tbl_club_Duty">
+    <select id="selectDutyByName" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
-    <select id="selectDutyByNumberAndName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDuty" resultMap ="tbl_club_Duty">
+    <select id="selectDutyByNumberAndName" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
     </select>
 
-    <select id="selectNextWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty">
+    <select id="selectNextWeek" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{club_id};
     </select>
 
