@@ -79,6 +79,12 @@
         </if>
     </select>
 
+    <select id="selectOneAllClubInfo"
+            resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
+            parameterType="java.lang.String">
+
+    </select>
+
     <insert id="createMember">
         insert into tbl_user_club (role, user_id, club_id)
         values (1, #{userId}, #{clubId})

@@ -5,10 +5,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 import team.project.base.mapper.CrossModuleSQL;
-import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
+import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
+import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
 
 import java.util.List;
 
@@ -61,4 +61,12 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
     Page<UserMsgDTO> selectClubMember(@Param("page") Page<UserMsgDTO> page, Long clubId);
 
     int quashAllMember(Long clubId);
+
+    default List<TblUserClubDO> selectOneAllClubInfo(String userId) {
+        List<TblUserClubDO> userList = this.selectList(new LambdaQueryWrapper<TblUserClubDO>()
+                .eq(TblUserClubDO::getUserId, userId)
+                .ne(TblUserClubDO::getRole,0)
+        );
+        return userList.size() == 1 ? userList : null;
+    }
 }

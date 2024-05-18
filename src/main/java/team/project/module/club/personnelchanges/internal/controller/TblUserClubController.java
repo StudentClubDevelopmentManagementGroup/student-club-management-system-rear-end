@@ -1,8 +1,10 @@
 package team.project.module.club.personnelchanges.internal.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +15,7 @@ import team.project.module.club.personnelchanges.internal.model.query.ClubMember
 import team.project.module.club.personnelchanges.internal.model.request.ClubMemberInfoReq;
 import team.project.module.club.personnelchanges.internal.model.request.UserClubReq;
 import team.project.module.club.personnelchanges.internal.service.TblUserClubService;
+import team.project.module.user.export.model.annotation.UserIdConstraint;
 
 @Tag(name = "社团人员管理")
 @RestController
@@ -68,4 +71,14 @@ public class TblUserClubController {
 //        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
 //                .data(ucService.selectTheMember(req.getUserId(), req.getClubId()));
 //    }
+
+    @Operation(summary = "查询该用户在所有社团的身份")
+    @PostMapping("/club/member/select_member_all_club_info")
+    Object selectMemberAllClubInfo(@Valid
+                                   @NotNull(message = "学号工号不能为空")
+                                   @UserIdConstraint
+                                   @JsonProperty("user_id") String userId) {
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
+                .data(ucService.selectMemberAllClubInfo(userId));
+    }
 }

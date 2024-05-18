@@ -15,9 +15,11 @@ import team.project.module.club.personnelchanges.internal.model.datatransfer.Use
 import team.project.module.club.personnelchanges.internal.model.query.ClubMemberInfoQO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
+import team.project.module.club.personnelchanges.internal.model.view.UserClubInfoVO;
 import team.project.module.club.personnelchanges.internal.utils.ModelConverter;
 import team.project.module.user.export.service.UserInfoServiceI;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static team.project.module.user.export.model.enums.UserRole.CLUB_MANAGER;
@@ -128,5 +130,24 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         );
         List<ClubMemberInfoVO> result = converter.toClubMemberInfoVOList(page.getRecords());
         return new PageVO<>(result, page);
+    }
+
+    @Override
+    public List<UserClubInfoVO> selectMemberAllClubInfo(String userId) {
+        List<TblUserClubDO> list = ucMapper.selectOneAllClubInfo(userId);
+        List<UserClubInfoVO> result = new ArrayList<>();
+        for (TblUserClubDO tblUserClubDO : list) {
+            UserClubInfoVO userClubInfoVO = new UserClubInfoVO();
+            userClubInfoVO.setClubId(tblUserClubDO.getClubId());
+            switch (tblUserClubDO.getRole()) {
+                case 1 -> userClubInfoVO.setRole("成员");
+                case 2 -> userClubInfoVO.setRole("负责人");
+                default -> {
+                }
+            }
+            userClubInfoVO.setName(uiService.getUserName(userId));
+            result.add(userClubInfoVO);
+        }
+        return result;
     }
 }

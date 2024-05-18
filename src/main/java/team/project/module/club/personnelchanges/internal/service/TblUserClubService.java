@@ -7,6 +7,9 @@ import team.project.module.club.personnelchanges.internal.model.entity.TblUserCl
 import team.project.module.club.personnelchanges.internal.model.query.ClubMemberInfoQO;
 import team.project.module.club.personnelchanges.internal.model.query.ClubQO;
 import team.project.module.club.personnelchanges.internal.model.view.ClubMemberInfoVO;
+import team.project.module.club.personnelchanges.internal.model.view.UserClubInfoVO;
+
+import java.util.List;
 
 public interface TblUserClubService extends IService<TblUserClubDO> {
 
@@ -23,4 +26,6 @@ public interface TblUserClubService extends IService<TblUserClubDO> {
     Boolean selectTheMember(String userId, Long clubId);
 
     PageVO<ClubMemberInfoVO> selectClubMemberInfo(ClubMemberInfoQO req);
+
+    List<UserClubInfoVO> selectMemberAllClubInfo(String userId);
 }
