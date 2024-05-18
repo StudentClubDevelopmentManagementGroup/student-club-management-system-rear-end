@@ -11,7 +11,7 @@
 
     <update id="setDutyPicture">
         update tbl_user_club_duty set image_file = #{fileId} from tbl_user_club_duty where duty_time = #{duty_time}
-        and cleaner_id = #{memberId} and club_id = #{clubId} and is_deleted = 0
+        and cleaner_id = #{member_id} and club_id = #{club_id} and is_deleted = 0
     </update>
 
     <delete id="deleteDuty">
@@ -24,7 +24,7 @@
 
     <select id="selectLastWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
             parameterType="java.lang.Long">
-        SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY);
+        SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) and club_id = #{club_id};
     </select>
 
     <select id="selectDuty" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
@@ -47,7 +47,7 @@
 
     <select id="selectNextWeek" resultType="team.project.module.club.duty.internal.model.entity.TblDuty"
             parameterType="java.lang.Long">
-        SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY);
+        SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{club_id};
     </select>
 
 </mapper>
