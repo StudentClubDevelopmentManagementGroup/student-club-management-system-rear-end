@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * <p> 带有自动过期功能的键值对容器
- * <p> 每个键值对在放入容器时，都会被赋予一个有效时间，过了有效时间的值视为无效
+ * <p> 每个键值对在放入容器时都会被赋予一个有效时间，过了有效时间的值视为无效
  * */
 public class ExpiringMap<K, V> {
 

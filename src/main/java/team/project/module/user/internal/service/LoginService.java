@@ -11,12 +11,11 @@ import team.project.module.user.internal.dao.VerificationDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
-import team.project.module.util.email.export.contentbuilder.EmailContentBuilder;
+import team.project.module.user.internal.util.EmailContentBuilder;
 import team.project.module.user.internal.util.ModelConverter;
+import team.project.module.user.internal.util.VerificationCodeUtil;
 import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
-
-import java.util.UUID;
 
 @Service
 public class LoginService {
@@ -33,9 +32,6 @@ public class LoginService {
 
     @Autowired
     ModelConverter modelConverter;
-
-    @Autowired
-    EmailContentBuilder emailContentBuilder;
 
     /**
      * 通过用户名和密码登录
@@ -60,15 +56,15 @@ public class LoginService {
             return; /* 将“查询不到用户”视为发送成功 */
         }
 
-        String code = UUID.randomUUID().toString().substring(0, 6);
+        String code = VerificationCodeUtil.randomCode(7);
 
         verificationDAO.put(userId, code);
 
-        String htmlContent = emailContentBuilder.SendLoginCode(code);
+        String emailContent = EmailContentBuilder.SendLoginCode(code);
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
         sendEmailQO.setSubject("GUET 社团管理系统");
-        sendEmailQO.setContent(htmlContent);
+        sendEmailQO.setContent(emailContent);
         sendEmailQO.setHtml(true);
 
         if ( ! emailService.SendEmail(sendEmailQO)) {
