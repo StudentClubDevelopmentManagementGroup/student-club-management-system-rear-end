@@ -65,13 +65,14 @@ public class TblUserClubController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
                 .data(ucService.selectClubMemberInfo(QO));
     }
-//    @Operation(summary = "查询该用户是否是该社团成员")
-//    @PostMapping("/club/member/select_member")
-//    Object selectMember(@Valid @RequestBody UserClubReq req) {
-//        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
-//                .data(ucService.selectTheMember(req.getUserId(), req.getClubId()));
-//    }
 
+    @Operation(summary = "查询该用户是否是该社团成员")
+    @PostMapping("/club/member/select_member")
+    Object selectMember(@Valid @RequestBody UserClubReq req) {
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
+                .data(ucService.selectTheMember(req.getUserId(), req.getClubId()));
+    }
+    
     @Operation(summary = "查询该用户在所有社团的身份")
     @PostMapping("/club/member/select_member_all_club_info")
     Object selectMemberAllClubInfo(@Valid
