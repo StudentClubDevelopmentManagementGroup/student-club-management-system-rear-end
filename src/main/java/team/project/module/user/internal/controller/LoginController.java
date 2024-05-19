@@ -1,7 +1,6 @@
 package team.project.module.user.internal.controller;
 
 import cn.dev33.satoken.annotation.SaCheckLogin;
-import cn.dev33.satoken.stp.SaTokenInfo;
 import cn.dev33.satoken.stp.StpUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -42,11 +41,10 @@ public class LoginController {
         }
 
         StpUtil.login(userId);
-        SaTokenInfo token = StpUtil.getTokenInfo();
 
         Map<String, Object> loginResult = new HashMap<>();
         loginResult.put("user_info", userInfo);
-        loginResult.put("token", token.getTokenValue());
+        loginResult.put("token", StpUtil.getTokenInfo().getTokenValue());
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }
@@ -73,11 +71,10 @@ public class LoginController {
         }
 
         StpUtil.login(req.getUserId());
-        SaTokenInfo token = StpUtil.getTokenInfo();
 
         Map<String, Object> loginResult = new HashMap<>();
         loginResult.put("user_info", userInfo);
-        loginResult.put("token", token.getTokenValue());
+        loginResult.put("token", StpUtil.getTokenInfo().getTokenValue());
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }

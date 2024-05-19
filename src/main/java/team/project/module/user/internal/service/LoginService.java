@@ -11,6 +11,7 @@ import team.project.module.user.internal.dao.VerificationDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
+import team.project.module.util.email.export.contentbuilder.EmailContentBuilder;
 import team.project.module.user.internal.util.ModelConverter;
 import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
@@ -33,6 +34,9 @@ public class LoginService {
     @Autowired
     ModelConverter modelConverter;
 
+    @Autowired
+    EmailContentBuilder emailContentBuilder;
+
     /**
      * 通过用户名和密码登录
      * @return 登录成功返回用户信息，登录失败返回 null
@@ -47,8 +51,12 @@ public class LoginService {
      * */
     public void sendCodeByEmail(String userId) {
 
-        UserDO userInfo = userDAO.selectUserInfo(userId);
-        if (userInfo == null) {
+        if ( ! verificationDAO.canSendCodeAgain(userId)) {
+            throw new ServiceException(ServiceStatus.TOO_MANY_REQUESTS, "发送验证码过于频繁");
+        }
+
+        String userEmail = userDAO.selectEmail(userId);
+        if (userEmail == null) {
             return; /* 将“查询不到用户”视为发送成功 */
         }
 
@@ -56,10 +64,12 @@ public class LoginService {
 
         verificationDAO.put(userId, code);
 
+        String htmlContent = emailContentBuilder.SendLoginCode(code);
         SendEmailQO sendEmailQO = new SendEmailQO();
-        sendEmailQO.setSendTo(userInfo.getEmail());
+        sendEmailQO.setSendTo(userEmail);
         sendEmailQO.setSubject("GUET 社团管理系统");
-        sendEmailQO.setContent("登录验证码：" + code);
+        sendEmailQO.setContent(htmlContent);
+        sendEmailQO.setHtml(true);
 
         if ( ! emailService.SendEmail(sendEmailQO)) {
             log.error("邮件发送失败");

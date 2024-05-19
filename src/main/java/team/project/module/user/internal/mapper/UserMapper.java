@@ -44,7 +44,7 @@ public interface UserMapper extends BaseMapper<UserDO> {
         );
     }
 
-     /**
+    /**
      * 查询指定用户的基本信息：学号/工号、姓名、角色码，其他属性为 null
      * */
     default UserDO selectUserBasicInfo(String userId) {
@@ -56,6 +56,17 @@ public interface UserMapper extends BaseMapper<UserDO> {
             )
             .eq(UserDO::getUserId, userId)
         );
+    }
+
+    /**
+     * 查询指定用户的邮箱
+     * */
+    default String selectEmail(String userId) {
+        UserDO userDO = selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(UserDO::getEmail)
+            .eq(UserDO::getUserId, userId)
+        );
+        return userDO == null ? null : userDO.getEmail();
     }
 
     /* -- 查多个 -- */

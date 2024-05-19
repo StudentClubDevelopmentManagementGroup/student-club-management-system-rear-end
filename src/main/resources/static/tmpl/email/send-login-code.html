@@ -1,0 +1,40 @@
+<div class="guet-email">
+  <style>
+    .guet-email '{'
+      --color-primary: #226efc;
+      --color-primary-light: #9bb9f2;
+
+      width: fit-content;
+      margin: auto;
+      padding: 0.5em 1em;
+      border: 1px solid var(--color-primary);
+      font-size: 16px;
+    '}'
+    .guet-email h1 '{'
+      margin: 0;
+      padding-bottom: 0.5em;
+      text-align: center;
+      border-bottom: 1px solid var(--color-primary);
+      font-size: 1em;
+      font-weight: bold;
+    '}'
+    .guet-email p '{'
+      margin: 0.2em 0;
+      padding: 0;
+    '}'
+    .guet-email em '{'
+      font-style: normal;
+      color: var(--color-primary);
+      cursor: pointer;
+    '}'
+    .guet-email em:hover '{'
+      font-style: normal;
+      color: var(--color-primary-light);
+      border-bottom: 1.5px solid  var(--color-primary-light);
+    '}'
+  </style>
+
+  <h1>GUET 社团管理系统</h1>
+  <p>您正在进行邮箱登录，验证码 <em id="verification-code">{0}</em></p>
+  <p>切勿将验证码泄露于他人，本条验证码有效期 {1} 分钟</p>
+</div>

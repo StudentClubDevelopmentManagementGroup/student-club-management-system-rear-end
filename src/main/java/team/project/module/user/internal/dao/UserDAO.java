@@ -71,6 +71,13 @@ public class UserDAO {
         return selectUserBasicInfo(userId).getRole();
     }
 
+    /**
+     * 查询指定用户的邮箱
+     * */
+    public String selectEmail(String userId) {
+        return userMapper.selectEmail(userId);
+    }
+
     /* -- 查多个 -- */
 
     /**
