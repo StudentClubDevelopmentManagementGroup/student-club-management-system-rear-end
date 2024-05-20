@@ -131,27 +131,29 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     //查询社团成员指定时间段打卡时长
     public List<ClubAttendanceDurationVO> getEachAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq){
+
         Long clubId = getAttendanceTimeReq.getClubId();
+        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList;
         // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceTimeReq.getUserName());
-        List<String> userIds = new ArrayList<>();
-        for (UserBasicInfoDTO user : users) {
-            userIds.add(user.getUserId());
+        //如果名字非空
+        if(!getAttendanceTimeReq.getUserName().isBlank()) {
+            List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceTimeReq.getUserName());
+            List<String> userIds = new ArrayList<>();
+            for (UserBasicInfoDTO user : users) {
+                userIds.add(user.getUserId());
+                System.out.println("打卡时长用户信息" + user);
+            }
+
+            if (userIds.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
+            }
+
+            clubAttendanceDurationVOList = attendanceMapper.getEachAttendanceDurationTimeByName(getAttendanceTimeReq, clubId, userIds);
         }
-
-        if(userIds.isEmpty()) {throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");}
-
-//        if(getAttendanceTimeReq.getUserId() != ""){
-//            if(!pceIService.isClubMember(getAttendanceTimeReq.getUserId(),clubId)) {
-//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-//            }
-//        }
-//        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
-//                attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
-
-        List<ClubAttendanceDurationVO> clubAttendanceDurationVOList =
-                attendanceMapper.getEachAttendanceDurationTimeTest(getAttendanceTimeReq,clubId,userIds);
-
+        //名字为空
+        else {
+            clubAttendanceDurationVOList = attendanceMapper.getEachAttendanceDurationTime(getAttendanceTimeReq,clubId);
+        }
 
         ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(getAttendanceTimeReq.getClubId());
         for (ClubAttendanceDurationVO clubAttendanceDurationVO : clubAttendanceDurationVOList){
@@ -170,32 +172,29 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Override
     public PageVO<AttendanceInfoVO> getAttendanceRecord(GetAttendanceRecordReq getAttendanceRecordReq) {
 
-
         Long clubId = getAttendanceRecordReq.getClubId();
+        Page<AttendanceDO> page;
+        //如果名字非空
+        if(!getAttendanceRecordReq.getUserName().isBlank()) {
 
-        // 根据用户名字查询学号
-        List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceRecordReq.getUserName());
-        List<String> userIds = new ArrayList<>();
-        for (UserBasicInfoDTO user : users) {
-            userIds.add(user.getUserId());
+            // 根据用户名字查询学号
+            List<UserBasicInfoDTO> users = userInfoIService.searchUser(getAttendanceRecordReq.getUserName());
+            List<String> userIds = new ArrayList<>();
+            for (UserBasicInfoDTO user : users) {
+                userIds.add(user.getUserId());
+                System.out.println("打卡记录用户信息" + user);
+            }
+            if (userIds.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
+            }
+
+            page = attendanceMapper.findAttendanceInfoVOPageTest(getAttendanceRecordReq, clubId, userIds);
+        }
+        //名字参数为空
+        else {
+            page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
         }
 
-        if(userIds.isEmpty()) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该学生签到信息");
-        }
-
-//        if(getAttendanceRecordReq.getUserId() != ""){
-//            if(!pceIService.isClubMember(getAttendanceRecordReq.getUserId(),clubId)) {
-//                System.out.println("字符串为空测试");
-//                throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
-//            }
-//        }
-
-
-
-
-//        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPage(getAttendanceRecordReq,clubId);
-        Page<AttendanceDO> page = attendanceMapper.findAttendanceInfoVOPageTest(getAttendanceRecordReq,clubId,userIds);
         List<AttendanceInfoVO> result = new ArrayList<>();
         for (AttendanceDO attendanceDO : page.getRecords()) {
             result.add(toolMethods.convert(attendanceDO));

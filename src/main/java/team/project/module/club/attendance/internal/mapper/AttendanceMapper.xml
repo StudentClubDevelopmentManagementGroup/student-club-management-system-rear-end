@@ -25,7 +25,7 @@
         is_deleted = 0
         AND club_id = #{clubId}
         <if test="getAttendanceTimeReq.userId != null and getAttendanceTimeReq.userId != ''">
-            AND user_id = #{getAttendanceTimeReq.userId}
+            AND user_id LIKE CONCAT('%', #{getAttendanceTimeReq.userId}, '%')
         </if>
         <if test="getAttendanceTimeReq.startTime != null and getAttendanceTimeReq.endTime != null">
             AND checkin_time BETWEEN #{getAttendanceTimeReq.startTime} AND #{getAttendanceTimeReq.endTime}
@@ -35,8 +35,8 @@
         user_id;
     </select>
 
-
-    <select id="getEachAttendanceDurationTimeTest"
+    <!--    通过名字模糊查询的学号参数-->
+    <select id="getEachAttendanceDurationTimeByName"
             parameterType="map"
             resultMap="ClubAttendanceDurationVO">
         SELECT
