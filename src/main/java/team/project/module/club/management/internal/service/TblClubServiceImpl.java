@@ -26,7 +26,6 @@ import team.project.module.club.personnelchanges.export.service.PceIService;
  */
 @Service
 public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> implements TblClubService {
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TblClubMapper cMapper;

@@ -1,8 +1,7 @@
 package team.project.module.util.email.export.service.impl;
 
 import jakarta.mail.internet.MimeMessage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,8 +12,8 @@ import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
 
 @Service
+@Slf4j
 public class EmailServiceImpl implements EmailServiceI {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Value("${spring.mail.username}")
     String username;

@@ -1,8 +1,7 @@
 package team.project.module.club.announcement.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -27,8 +26,8 @@ import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class DraftService {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     AuthServiceI authService;

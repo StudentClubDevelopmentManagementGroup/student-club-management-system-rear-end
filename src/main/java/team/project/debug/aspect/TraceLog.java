@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 // @Aspect
 public class TraceLog {
 
-    Logger logC = LoggerFactory.getLogger("【controller 层】");
-    Logger logS = LoggerFactory.getLogger("【service 层】");
-    Logger logD = LoggerFactory.getLogger("【dao 层】");
-    Logger logM = LoggerFactory.getLogger("【mapper 层】");
+    private static final Logger logC = LoggerFactory.getLogger("【controller 层】");
+    private static final Logger logS = LoggerFactory.getLogger("【service 层】");
+    private static final Logger logD = LoggerFactory.getLogger("【dao 层】");
+    private static final Logger logM = LoggerFactory.getLogger("【mapper 层】");
 
     @Around("execution(* team.project.module..controller..*(..))")
     public Object controllerLog(ProceedingJoinPoint jp) throws Throwable {

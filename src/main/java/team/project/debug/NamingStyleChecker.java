@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 
 // @Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
-    Logger log = LoggerFactory.getLogger("【命名风格检测】");
+    private static final Logger log = LoggerFactory.getLogger("【命名风格检测】");
 
     private static final String rootPackage = "team.project";
 

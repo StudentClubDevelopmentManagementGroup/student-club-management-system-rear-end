@@ -1,9 +1,5 @@
 package team.project.module.util.filestorage.internal.util;
 
-import org.apache.commons.io.FilenameUtils;
-
-import java.util.UUID;
-
 public class Util {
 
     /**
@@ -55,21 +51,5 @@ public class Util {
      * */
     public static boolean hasRelativePathPart(String filePath) {
         return filePath.contains("/.");
-    }
-
-    /**
-     * 重命名文件，保留原扩展名
-     * */
-    public static String rename(String originalFilename, String newFilename) {
-        String extension = FilenameUtils.getExtension(originalFilename);
-        return newFilename + ("".equals(extension) ? "" : "." + extension);
-    }
-
-    /**
-     * 生成随机的文件名（保留文件扩展名）
-     * */
-    public static String generateRandomFileName(String originalFilename) {
-        String extension = FilenameUtils.getExtension(originalFilename);
-        return UUID.randomUUID().toString().replace("-", "") + ("".equals(extension) ? "" : "." + extension);
     }
 }

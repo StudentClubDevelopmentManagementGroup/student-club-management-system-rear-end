@@ -1,8 +1,7 @@
 package team.project.module.club.announcement.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -22,20 +21,20 @@ import team.project.module.club.announcement.internal.model.request.AnnSearchReq
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.personnelchanges.export.service.PceIService;
+import team.project.module.user.export.model.enums.UserRole;
+import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 import team.project.module.util.filestorage.export.util.FileStorageUtil;
-import team.project.module.user.export.model.enums.UserRole;
-import team.project.module.user.export.service.UserInfoServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class AnnService {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     AuthServiceI authService;

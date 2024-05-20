@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Aspect
 public class FileStorageLog {
 
-    Logger log = LoggerFactory.getLogger("【file storage log aspect 文件存储日志切面】");
+    private static final Logger log = LoggerFactory.getLogger("【file storage log aspect 文件存储日志切面】");
 
     private String subStr30(String str) {
         if (str.length() > 30) {

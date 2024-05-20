@@ -1,7 +1,6 @@
 package team.project.module.user.internal.service;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
@@ -13,14 +12,13 @@ import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.util.EmailContentBuilder;
 import team.project.module.user.internal.util.ModelConverter;
-import team.project.module.user.internal.util.VerificationCodeUtil;
+import team.project.module.user.internal.util.Util;
 import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
 
+@Slf4j
 @Service
 public class LoginService {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
-
     @Autowired
     EmailServiceI emailService;
 
@@ -56,7 +54,7 @@ public class LoginService {
             return; /* 将“查询不到用户”视为发送成功 */
         }
 
-        String code = VerificationCodeUtil.randomCode(7);
+        String code = Util.randomVerificationCode(7);
 
         verificationDAO.put(userId, code);
 

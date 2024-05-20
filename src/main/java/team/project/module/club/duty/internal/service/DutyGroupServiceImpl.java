@@ -2,8 +2,7 @@ package team.project.module.club.duty.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
@@ -20,8 +19,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
+@Slf4j
 public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDutyGroup> implements DutyGroupService {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Autowired
     TblDutyGroupMapper tblDutyGroupMapper;

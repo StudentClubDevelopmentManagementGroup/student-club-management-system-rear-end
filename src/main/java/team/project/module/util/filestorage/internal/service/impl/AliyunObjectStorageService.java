@@ -1,8 +1,7 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +16,8 @@ import team.project.module.util.filestorage.internal.util.Util;
 import static team.project.module.util.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
+@Slf4j
 public class AliyunObjectStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
-    private final Logger log = LoggerFactory.getLogger(this.getClass());
 
     private final String uploadedFilesFolder;
     private final String uploadedFileIdPrefix;

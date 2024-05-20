@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class ExceptionHandlerLog {
-    Logger log = LoggerFactory.getLogger("【全局异常捕获】");
+    private static final Logger log = LoggerFactory.getLogger("【全局异常捕获】");
 
     @Before("""
         (   execution(* team.project.base..SaTokenExceptionHandler.*(..))         ||
