@@ -15,6 +15,18 @@
         <result column="mail"              property="email" />
     </resultMap>
 
+    <resultMap id="userClub" type="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
+        <!-- 数据库字段 -->                  <!-- java 类属性 -->
+        <result column="user_id"           property="userId" />
+        <result column="is_deleted"        property="isDeleted" />
+        <result column="create_time"       property="createTime" />
+        <result column="update_time"       property="updateTime" />
+        <result column="user_id"           property="userId" />
+        <result column="club_id"           property="clubId" />
+        <result column="role"              property="role" />
+    </resultMap>
+
+
     <update id="createManager">
         insert into tbl_user_club (role, user_id, club_id)
         values (2, #{userId}, #{clubId})
@@ -77,6 +89,10 @@
         <if test="departmentId != null and  departmentId != 0">
             AND u.department_id = #{departmentId}
         </if>
+    </select>
+
+    <select id="selectOneAllClubInfo" resultMap="userClub">
+        select * from tbl_user_club where user_id = #{userId} and is_deleted = 0
     </select>
 
     <insert id="createMember">

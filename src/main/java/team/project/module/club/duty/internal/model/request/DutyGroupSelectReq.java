@@ -1,12 +1,14 @@
 package team.project.module.club.duty.internal.model.request;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 @Data
 public class DutyGroupSelectReq {
-    @NotBlank
+    @NotNull
+    @ClubIdConstraint
     Long      club_id;
 
     String    group_name;

@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-// @Component /* <- 开启命名风格检测 */
+@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     private static final Logger log = LoggerFactory.getLogger("【命名风格检测】");
 
