@@ -65,63 +65,77 @@ final class NamingStyleChecker {
     }
 
     private void report() {
+
+        final String color = "\033[31m";
+
+        StringBuilder report = new StringBuilder();
+
         if ( ! invalidPackageNames.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String packageName : invalidPackageNames) {
-                sb.append(" - ").append(packageName).append("\n");
+                sb.append("\t").append(String.format("%-20s", packageName)).append("\n");
             }
-            log.error("""
-                包名使用全小写形式，不使用下划线分隔单词
+            report.append("""
+                包名使用全小写形式，不使用下划线分隔单词，
                 请修改如下包名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidClassName.isEmpty() || ! invalidTmplPrefix.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] className : invalidClassName) {
-                sb.append(" - ").append(className[0]).append(" （").append(className[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", className[0]))
+                    .append("\t").append(className[1]).append("\n");
             }
             for (String[] className : invalidTmplPrefix) {
-                sb.append(" - ").append(className[0]).append(" （").append(className[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", className[0]))
+                    .append("\t").append(className[1]).append("\n");
             }
-            log.error("""
-                类名使用大驼峰形式，每个单词的首字母都大写，不使用下划线分隔单词。不要使用模板包的 Tmpl 前缀
+            report.append("""
+                类名使用大驼峰形式，每个单词的首字母都大写，不使用下划线分隔单词。不要使用模板包的 Tmpl 前缀，
                 请修改如下类名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidMethodName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] methodAndClass : invalidMethodName) {
-                sb.append(" - ").append(methodAndClass[0]).append(" （位于：").append(methodAndClass[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", methodAndClass[0]))
+                    .append("\t").append(methodAndClass[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 函数名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下函数名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidParamName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] paramAndMethod : invalidParamName) {
-                sb.append(" - ").append(paramAndMethod[0]).append(" （位于：").append(paramAndMethod[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", paramAndMethod[0]))
+                    .append("\t").append(paramAndMethod[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 函数入参采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下入参名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidFieldName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] fieldAndClass : invalidFieldName) {
-                sb.append(" - ").append(fieldAndClass[0]).append(" （位于：").append(fieldAndClass[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", fieldAndClass[0]))
+                    .append("\t").append(fieldAndClass[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 字段名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 常量可以采用所有单词的字母全大写，使用下划线分隔单词
                 请修改如下字段名：
-                {}""", sb);
+                """).append(sb);
+        }
+
+        if (report.length() > 0) {
+            log.error(color + report);
         }
     }
 

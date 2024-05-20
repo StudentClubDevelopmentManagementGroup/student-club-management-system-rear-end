@@ -69,7 +69,7 @@ public class LoginService {
         );
         sendEmailQO.setHtml(true);
 
-        if ( ! emailService.SendEmail(sendEmailQO)) {
+        if ( ! emailService.sendEmail(sendEmailQO)) {
             log.error("邮件发送失败");
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "邮件发送失败");
         }
