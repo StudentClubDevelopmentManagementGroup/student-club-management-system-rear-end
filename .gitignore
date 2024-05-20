@@ -11,5 +11,4 @@
 *.ipr
 
 # 各配置
-/src/main/resources/config/*
-!/src/main/resources/config/readme.txt
+/src/main/resources/config/
