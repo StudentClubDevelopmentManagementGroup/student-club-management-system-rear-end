@@ -28,9 +28,9 @@ public class AttendanceController {
     @GetMapping("/getLatestCheckInRecord")
     public Object getLatestCheckInRecord(
             @RequestParam("userId") String userId,
-            @RequestParam("clubName") String clubName) {
+            @RequestParam("clubId") Long clubId) {
         // 调用服务层方法执行查询当天签到记录的逻辑
-        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubName);
+        AttendanceInfoVO attendanceInfoVO = attendanceService.getLatestCheckInRecord(userId,clubId);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(attendanceInfoVO);

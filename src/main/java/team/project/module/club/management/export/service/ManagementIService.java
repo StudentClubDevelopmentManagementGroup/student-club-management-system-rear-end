@@ -7,3 +7,7 @@ public interface ManagementIService {
 
     Long selectClubIdByName(String clubName);
 }
+
+
+
+

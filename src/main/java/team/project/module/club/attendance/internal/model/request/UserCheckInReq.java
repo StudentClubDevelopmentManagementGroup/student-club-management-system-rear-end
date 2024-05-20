@@ -13,10 +13,9 @@ import java.time.LocalDateTime;
 public class UserCheckInReq {
 
 
-
-    @JsonProperty("clubName")
-    @NotNull(message = "社团名称不能为空")
-    private String clubName;
+    @JsonProperty("clubId")
+    @NotNull(message = "社团id不能为空")
+    private Long clubId;
 
     @NotNull(message = "用户id不能为空")
     @JsonProperty("userId")
