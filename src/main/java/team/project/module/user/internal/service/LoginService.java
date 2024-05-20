@@ -10,11 +10,11 @@ import team.project.module.user.internal.dao.VerificationDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
-import team.project.module.user.internal.util.EmailContentBuilder;
 import team.project.module.user.internal.util.ModelConverter;
 import team.project.module.user.internal.util.Util;
 import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
+import team.project.module.util.email.export.util.EmailUtil;
 
 @Slf4j
 @Service
@@ -58,11 +58,15 @@ public class LoginService {
 
         verificationDAO.put(userId, code);
 
-        String emailContent = EmailContentBuilder.SendLoginCode(code);
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
-        sendEmailQO.setSubject("GUET 社团管理系统");
-        sendEmailQO.setContent(emailContent);
+        sendEmailQO.setSubject("【GUET 社团管理系统】登录验证");
+        sendEmailQO.setContent(EmailUtil.formatWithCSS("""
+            <h1>GUET 社团管理系统 登录验证</h1>
+            <p>您正在进行邮箱登录，验证码<em> %s </em></p>
+            <p>该验证码 5 分钟内有效，请勿泄漏于他人</p>
+            """, code)
+        );
         sendEmailQO.setHtml(true);
 
         if ( ! emailService.SendEmail(sendEmailQO)) {

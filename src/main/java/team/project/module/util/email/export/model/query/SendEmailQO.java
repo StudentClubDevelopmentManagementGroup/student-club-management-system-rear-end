@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class SendEmailQO {
+
     /**
      * 收件人的邮箱
      * */
@@ -23,7 +24,7 @@ public class SendEmailQO {
 
     /**
      * <p> 是否渲染 html 内容
-     * <p> 如果是纯文本则设为 false，如果含有 html 元素则设为 true
+     * <p> 如果要渲染 html 元素则设为 true，如果只需以纯文本形式展示则设为 false
      * */
     boolean isHtml = false;
 }

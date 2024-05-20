@@ -1,8 +1,14 @@
 /**
  * <h1> 介绍
  * <p>  本模块负责处理文件存储，提供“本地存储”和“云存储”两类接口
- * <p>  本模块绑定 file-storage-config.yml 配置文件
- * <p>
+ * <p>  本模块绑定如下文件
+ * <ul>
+ * <li> /config/file-storage-config.yml
+ * <br> 配置文件
+ * <li> /static/html/test/file-storage.html
+ * <br> 用于开发阶段的文件存取测试
+ * </ul>
+ * <h1> 存储方式
  * <h2> 本地存储
  * <p>  在哪里运行这个后端，哪里就是“本地”
  * <p>  开发阶段，后端运行在各编码人员的 Windows 电脑上，那么本地文件系统就是本地硬盘

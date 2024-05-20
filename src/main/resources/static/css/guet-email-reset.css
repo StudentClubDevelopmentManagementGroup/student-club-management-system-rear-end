@@ -1,0 +1,63 @@
+
+/* 此 css 属于 email 模块，用于给 html 格式的邮件赋予简单的样式 */
+
+/* 程序实际使用的不是本文件，而是同名的 .min.css */
+
+/* basic */
+
+.e {
+  --blue: #226efc;
+  --light-blue: #9bb9f2;
+  width: fit-content;
+  padding: 0.3em 1em;
+  border: 1px solid var(--blue);
+  font-size: 16px;
+}
+
+.e * {
+  margin: 0;
+  padding: 0;
+}
+
+/* h1 - h6 */
+
+.e h1,
+.e h2,
+.e h3,
+.e h4,
+.e h5,
+.e h6 {
+  padding: 0.3em 0;
+  border-bottom: 1px solid var(--blue);
+  font-weight: bold;
+}
+
+.e h1 {
+  font-size: 1.3em;
+}
+.e h2 {
+  font-size: 1.1em;
+}
+.e h3,
+.e h4,
+.e h5,
+.e h6 {
+  font-size: 1em;
+}
+
+/* p */
+
+.e p {
+  padding: 0.1em 0;
+}
+
+/* em */
+
+.e em {
+  font-style: normal;
+  color: var(--blue);
+  border-bottom: 1px solid var(--blue);
+}
+.e em:hover {
+  color: var(--light-blue);
+}
