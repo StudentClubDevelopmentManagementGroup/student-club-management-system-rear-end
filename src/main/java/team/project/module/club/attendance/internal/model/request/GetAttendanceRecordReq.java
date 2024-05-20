@@ -13,9 +13,12 @@ import java.time.LocalDateTime;
 public class GetAttendanceRecordReq {
 
 
-    @JsonProperty("clubName")
-    @NotNull(message = "社团名称不能为空")
-    private String clubName;
+
+
+    @JsonProperty("clubId")
+    @NotNull(message = "社团id不能为空")
+    private Long clubId;
+
 
     @JsonProperty("userName")
     private String userName;

@@ -12,9 +12,10 @@ public class ApplyAttendanceReq {
     @JsonProperty("userId")
     private String userId;
 
-    @JsonProperty("clubName")
-    @NotNull(message = "社团名称不能为空")
-    private String clubName;
+
+    @JsonProperty("clubId")
+    @NotNull(message = "社团id不能为空")
+    private Long clubId;
 
     @NotNull(message = "签到时间不能为空")
     @JsonProperty("checkInTime")
