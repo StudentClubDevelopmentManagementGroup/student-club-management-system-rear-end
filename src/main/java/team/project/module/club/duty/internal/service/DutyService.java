@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.model.view.PageVO;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
 import java.sql.Timestamp;
 import java.util.List;
@@ -23,11 +24,11 @@ public interface DutyService extends IService<TblDuty> {
 
     void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> file);
 
-    PageVO<TblDuty> selectDuty(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByName(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo);
 }

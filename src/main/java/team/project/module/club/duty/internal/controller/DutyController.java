@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.request.*;
+import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
@@ -88,7 +88,7 @@ public class DutyController {
     Object selectDuty(@Valid @RequestBody DutySelectReq req) {
 
         DutyInfoQO newQO = new DutyInfoQO(req.getClub_id(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
-        PageVO<TblDuty> result = req.getName().isEmpty() ?
+        PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
                 (req.getNumber() == null || req.getNumber().isEmpty() ?
                         dutyService.selectDuty(newQO) :
                         dutyService.selectDutyByName(newQO)) :
