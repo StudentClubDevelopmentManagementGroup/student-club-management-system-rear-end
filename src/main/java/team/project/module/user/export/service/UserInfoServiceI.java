@@ -32,7 +32,7 @@ public interface UserInfoServiceI {
     String getUserName(String userId);
 
     /**
-     * 从 tbl_user 表中搜索相关用户的基本信息
+     * 从 tbl_user 表中搜索相关用户的基本信息（模糊查询）
      * @param userName 用户的姓名
      * @return 搜索到的用户基本信息（如果搜索不出结果则返回空列表，不会返回 null）
      * */

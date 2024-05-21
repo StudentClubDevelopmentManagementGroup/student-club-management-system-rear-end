@@ -24,6 +24,10 @@ public class AnnSearchReq {
     @JsonProperty("author_id")
     private String authorId;
 
+    @UserIdConstraint
+    @JsonProperty("author_name")
+    private String authorName;
+
     @Size(max=TITLE_MAX_LENGTH, message="标题检索关键字长度过长")
     @JsonProperty("title_keyword")
     private String titleKeyword;

@@ -13,7 +13,7 @@ import java.util.List;
 public interface AnnMapper extends BaseMapper<AnnDO> {
 
     /**
-     *查询公告作者、所属社团，和文本文件的 fileId
+     * 查询公告作者、所属社团，和文本文件的 fileId
      * */
     default AnnDO selectAnnBasicInfo(Long announcementId) {
         return selectOne(new LambdaQueryWrapper<AnnDO>()
@@ -28,7 +28,7 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
     }
 
     /**
-     *  搜索公告（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
+     * 搜索公告（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
      * */
     default List<AnnDO> searchAnn(Page<AnnDO> page, AnnSearchQO searchQO) {
         LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
@@ -43,14 +43,19 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
 
         if (null != searchQO.getClubId())
             wrapper.eq(AnnDO::getClubId, searchQO.getClubId());
-        if (null != searchQO.getAuthorId())
-            wrapper.eq(AnnDO::getAuthorId, searchQO.getAuthorId());
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())
             wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
         if (null != searchQO.getToDate())
             wrapper.le(AnnDO::getPublishTime, searchQO.getToDate());
+
+        int authorIdNum; /* 如果只有一个 authorId，则使用 eq 语句；如果有多个，则使用 in 语句 */
+
+        if (1 == (authorIdNum = searchQO.getAuthorIdList().size()))
+            wrapper.eq(AnnDO::getAuthorId, searchQO.getAuthorIdList().get(0));
+        else if (1 < authorIdNum)
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdList());
 
         wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
 

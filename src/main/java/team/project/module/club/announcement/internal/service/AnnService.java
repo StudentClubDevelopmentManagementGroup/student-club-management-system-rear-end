@@ -21,6 +21,8 @@ import team.project.module.club.announcement.internal.model.request.AnnSearchReq
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.personnelchanges.export.service.PceIService;
+import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
+import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
@@ -154,15 +156,27 @@ public class AnnService {
 
         String titleKeyword = searchReq.getTitleKeyword();
 
+        List<String> authorIdList = new ArrayList<>();
+        if (null != searchReq.getAuthorName()) {
+            List<UserBasicInfoDTO> authors = userInfoService.searchUser(searchReq.getAuthorName());
+            for (UserBasicInfoDTO author : authors) {
+                authorIdList.add(author.getUserId());
+            }
+        }
+        if (null != searchReq.getAuthorId()) {
+            authorIdList.add(searchReq.getAuthorId());
+        }
+
         AnnSearchQO searchQO = new AnnSearchQO();
         searchQO.setClubId(searchReq.getClubId());
-        searchQO.setAuthorId(searchReq.getAuthorId());
+        searchQO.setAuthorIdList(authorIdList);
         searchQO.setTitleKeyword(titleKeyword == null || titleKeyword.isBlank() ? null : titleKeyword);
         searchQO.setFromDate(searchReq.getFromDate());
         searchQO.setToDate(searchReq.getToDate());
+        List<AnnDO> announcementList = announcementMapper.searchAnn(page, searchQO);
 
         List<AnnDetailVO> result = new ArrayList<>();
-        for (AnnDO annDO : announcementMapper.searchAnn(page, searchQO)) {
+        for (AnnDO annDO : announcementList) {
             result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
         }
 
