@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * <p> 带有自动过期功能的键值对容器
  * <p> 每个键值对在放入容器时都会被赋予一个有效时间，过了有效时间的值视为无效
+ * <p> 底层使用 ConcurrentHashMap 容器，保证线程安全
  * */
 public class ExpiringMap<K, V> {
 
@@ -31,13 +32,12 @@ public class ExpiringMap<K, V> {
      */
 
     /* ConcurrentHashMap 确保线程安全 */
-    private final Map<K, Item<V>> map;
+    private final Map<K, Item<V>> map = new ConcurrentHashMap<>();
 
     public ExpiringMap(long liveTimeMillis) {
         this.liveTimeMillis        = liveTimeMillis;
         this.cleanupIntervalMillis = liveTimeMillis + liveTimeMillis / 2;
         this.cleanupTime = System.currentTimeMillis() + cleanupIntervalMillis;
-        this.map         = new ConcurrentHashMap<>();
     }
 
     /**

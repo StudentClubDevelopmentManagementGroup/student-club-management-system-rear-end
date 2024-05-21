@@ -134,4 +134,14 @@ public interface UserMapper extends BaseMapper<UserDO> {
             .set(UserDO::getRole, newRole)
         );
     }
+
+    /**
+     * 给指定用户设置新密码
+     * */
+    default int setPassword(String userId, String password) {
+        return update(new LambdaUpdateWrapper<UserDO>()
+            .eq(UserDO::getUserId, userId)
+            .set(UserDO::getPassword, password)
+        );
+    }
 }
