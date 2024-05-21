@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="team.project.module.club.duty.internal.mapper.TblDutyMapper">
     <resultMap id="tbl_club_Duty" type="team.project.module.club.duty.internal.model.entity.TblDuty">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
@@ -8,7 +7,12 @@
         <result column="is_deleted"         property="deleted" />
         <result column="create_time"        property="createTime" />
         <result column="update_time"        property="updateTime" />
-        <result column="duty_time"      property="duty_time" />
+        <result column="duty_time"          property="dutyTime" />
+        <result column="arranger_id"        property="arrangerId" />
+        <result column="cleaner_id"         property="cleanerId" />
+        <result column="club_id"            property="clubId" />
+        <result column="image_file"         property="imageFile" />
+        <result column="is_mixed"           property="isMixed" />
     </resultMap>
 
     <insert id="createDuty">
@@ -17,12 +21,12 @@
     </insert>
 
     <update id="setDutyPicture">
-        update tbl_user_club_duty set image_file = #{fileId} from tbl_user_club_duty where duty_time = #{duty_time}
+        update tbl_user_club_duty set image_file = #{fileId} where duty_time = #{duty_time}
         and cleaner_id = #{member_id} and club_id = #{club_id} and is_deleted = 0
     </update>
 
     <delete id="deleteDuty">
-        update tbl_user_club_duty set is_deleted = 1 from tbl_user_club_duty where and duty_time = #{duty_time}
+        update tbl_user_club_duty set is_deleted = 1 where duty_time = #{duty_time}
         and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
     </delete>
 

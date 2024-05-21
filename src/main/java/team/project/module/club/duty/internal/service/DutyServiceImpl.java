@@ -16,12 +16,13 @@ import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,24 +42,24 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     TblDutyCirculationMapper tblDutyCirculationMapper;
 
     @Autowired
-    FileStorageServiceI FileStorageService;
+    FileStorageServiceI fileStorageServiceI;
 
     @Autowired
-    UserInfoServiceI UserInfoService;
+    UserInfoServiceI userInfoServiceI;
 
     @Override
-    public void createDuty(String number, String area, Timestamp duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
-        if (tblDutyMapper.createDuty(number, area, duty_time, arranger_id, cleaner_id, club_id, ismixed) != 1) {
+    public void createDuty(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed) {
+        if (tblDutyMapper.createDuty(number, area, dateTime, arrangerId, cleanerId, clubId, isMixed) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
         }
     }
 
     @Override
     @Transactional
-    public void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
+    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
-            int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMember_id(), clubId, isMixed);
+            int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
             tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
             if (result == 0) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
@@ -67,10 +68,10 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     }
 
     @Override
-    public void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id) {
-        List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(club_id, groupName);
+    public void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId) {
+        List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
-            if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMember_id(), club_id) != 1) {
+            if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMemberId(), clubId) != 1) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
             }
         }
@@ -78,15 +79,15 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void deleteDutyByUser(Timestamp dutyTime, String cleaner_id, Long club_id) {
-        if (tblDutyMapper.deleteDuty(dutyTime, cleaner_id, club_id) != 1) {
+    public void deleteDutyByUser(LocalDateTime dutyTime, String cleanerId, Long clubId) {
+        if (tblDutyMapper.deleteDuty(dutyTime, cleanerId, clubId) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
         }
     }
 
     @Override
     @Transactional
-    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
+    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
         List<String> fileIdList = new ArrayList<>();
         for (MultipartFile file : filelist) {
 
@@ -98,7 +99,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
 
-            String fileId = FileStorageService.uploadFile(file, CLOUD, uploadFileQO);
+            String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
 
             fileIdList.add(fileId);
         }
@@ -110,48 +111,53 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
             log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
             for (String fileId : fileIdList) {
-                FileStorageService.deleteFile(fileId);
+                fileStorageServiceI.deleteFile(fileId);
             }
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
         }
     }
 
     @Override
-    public PageVO<TblDuty> selectDuty(DutyInfoQO qo) {
+    public PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo) {
+
         Page<TblDuty> page = tblDutyMapper.selectDuty(
-                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id()
+                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId()
         );
+        List<DutyInfoVO> dutyList = new ArrayList<>();
+        selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
         } else {
-            return new PageVO<>(page);
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
         }
     }
 
     @Override
-    public PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo) {
+    public PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo) {
         Page<TblDuty> page = tblDutyMapper.selectDutyByNumber(
-                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), qo.getNumber()
+                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), qo.getNumber()
         );
+        List<DutyInfoVO> dutyList = new ArrayList<>();
+        selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
         } else {
-            return new PageVO<>(page);
+            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize()));
         }
     }
 
     @Override
-    public PageVO<TblDuty> selectDutyByName(DutyInfoQO qo) {
-        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+    public PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo) {
+        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
-        List<TblDuty> dutyList = new ArrayList<>();
+        List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
             Page<TblDuty> page = tblDutyMapper.selectDutyByName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId()
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId()
             );
-            dutyList.addAll(page.getRecords());
+            selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
@@ -160,17 +166,17 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     }
 
     @Override
-    public PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo) {
-        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+    public PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo) {
+        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
-        List<TblDuty> dutyList = new ArrayList<>();
+        List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
             Page<TblDuty> page = tblDutyMapper.selectDutyByNumberAndName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId(), qo.getNumber()
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getNumber()
             );
-            dutyList.addAll(page.getRecords());
+            selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
@@ -178,4 +184,20 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }
 
+    private void selectUserName(List<DutyInfoVO> dutyList, Page<TblDuty> page) {
+        for(TblDuty tblDuty : page.getRecords()){
+            DutyInfoVO dutyInfoVO = new DutyInfoVO();
+            dutyInfoVO.setId(tblDuty.getId());
+            dutyInfoVO.setNumber(tblDuty.getNumber());
+            dutyInfoVO.setArea(tblDuty.getArea());
+            dutyInfoVO.setDateTime(tblDuty.getDutyTime());
+            dutyInfoVO.setCleanerId(tblDuty.getCleanerId());
+            dutyInfoVO.setCleanerName(userInfoServiceI.getUserName(tblDuty.getCleanerId()));
+            dutyInfoVO.setArrangerId(tblDuty.getArrangerId());
+            dutyInfoVO.setArrangerName(userInfoServiceI.getUserName(tblDuty.getArrangerId()));
+            dutyInfoVO.setImageFile(tblDuty.getImageFile());
+            dutyInfoVO.setIsMixed(tblDuty.getIsMixed());
+            dutyList.add(dutyInfoVO);
+        }
+    }
 }

@@ -11,12 +11,12 @@ import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.request.*;
+import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
@@ -36,21 +36,21 @@ public class DutyController {
     @Operation(summary = "添加小组成员")
     @PostMapping("/club/duty/group/add")
     Object addDutyGroup(@Valid @RequestBody GroupMemberReq req) {
-        dutyGroupService.createDutyGroup(req.getClub_id(), req.getMember_id(), req.getName());
+        dutyGroupService.createDutyGroup(req.getClubId(), req.getMemberId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
     @Operation(summary = "删除小组成员")
     @PostMapping("/club/duty/group/delete")
     Object deleteDutyGroup(@Valid @RequestBody GroupMemberReq req) {
-        dutyGroupService.deleteDutyGroup(req.getClub_id(), req.getMember_id(), req.getName());
+        dutyGroupService.deleteDutyGroup(req.getClubId(), req.getMemberId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDuty_time(), req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed(), req.getGroup_name());
+        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
@@ -58,28 +58,28 @@ public class DutyController {
     @Operation(summary = "根据userid，添加值日信息")
     @PostMapping("/club/duty/create")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
-        dutyService.createDuty(req.getNumber(), req.getArea(), req.getDuty_time(), req.getArranger_id(), req.getCleaner_id(), req.getClub_id(), req.getIs_mixed());
+        dutyService.createDuty(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
     @Operation(summary = "根据小组名称以及社团id，删除值日信息")
     @PostMapping("/club/duty/delete_by_group")
-    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.deleteDutyAllByGroup(req.getDuty_time(), req.getGroup_name(), req.getClub_id());
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteGroupReq req) {
+        dutyService.deleteDutyAllByGroup(req.getDateTime(), req.getGroupName(), req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "根据userid，删除值日信息")
     @PostMapping("/club/duty/delete")
-    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
-        dutyService.deleteDutyByUser(req.getDuty_time(), req.getCleaner_id(), req.getClub_id());
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteReq req) {
+        dutyService.deleteDutyByUser(req.getDateTime(), req.getCleanerId(), req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "上传值日照片")
     @PostMapping("/club/duty/report_result")
     Object uploadDutyPicture(@Valid @RequestBody DutyFileUpload req) {
-        dutyService.uploadDutyPicture(req.getDuty_time(), req.getMember_id(), req.getClub_id(), req.getFile());
+        dutyService.uploadDutyPicture(req.getDateTime(), req.getMemberId(), req.getClubId(), req.getFile());
         return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
     }
 
@@ -87,8 +87,8 @@ public class DutyController {
     @PostMapping("/club/duty/select")
     Object selectDuty(@Valid @RequestBody DutySelectReq req) {
 
-        DutyInfoQO newQO = new DutyInfoQO(req.getClub_id(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
-        PageVO<TblDuty> result = req.getName().isEmpty() ?
+        DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
+        PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
                 (req.getNumber() == null || req.getNumber().isEmpty() ?
                         dutyService.selectDuty(newQO) :
                         dutyService.selectDutyByName(newQO)) :
@@ -102,12 +102,12 @@ public class DutyController {
     @Operation(summary = "查询社团值日小组")
     @PostMapping("/club/duty/group/select")
     Object selectDutyGroup(@Valid @RequestBody DutyGroupSelectReq req) {
-        DutyGroupQO newQO = new DutyGroupQO(req.getClub_id(), req.getGroup_name(), req.getName(), req.getPagenum(), req.getSize());
+        DutyGroupQO newQO = new DutyGroupQO(req.getClubId(), req.getGroupName(), req.getName(), req.getPagenum(), req.getSize());
         PageVO<TblDutyGroup> result = req.getName().isEmpty() ?
-                (req.getGroup_name() == null || req.getGroup_name().isEmpty() ?
+                (req.getGroupName() == null || req.getGroupName().isEmpty() ?
                         dutyGroupService.selectDutyGroup(newQO) :
                         dutyGroupService.selectDutyGroupByName(newQO)) :
-                (req.getGroup_name() == null || req.getGroup_name().isEmpty() ?
+                (req.getGroupName() == null || req.getGroupName().isEmpty() ?
                         dutyGroupService.selectDutyGroupByGroupName(newQO) :
                         dutyGroupService.selectDutyGroupByGroupNameAndName(newQO));
         //todo 合并
@@ -116,8 +116,8 @@ public class DutyController {
 
     @Operation(summary = "查询自动值日")
     @PostMapping("/club/duty/auto_duty")
-    Object selectAutoDuty(@Valid @NotNull @RequestBody Long club_id) {
-        TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(club_id);
+    Object selectAutoDuty(@Valid @NotNull @RequestBody Long clubId) {
+        TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(clubId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }

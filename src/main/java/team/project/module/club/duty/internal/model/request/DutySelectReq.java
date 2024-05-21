@@ -9,15 +9,15 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 public class DutySelectReq {
     @NotNull
     @ClubIdConstraint
-    Long      club_id;
+    Long      clubId;
 
     String    number;
 
     String    name;
 
     @Min(value = 1, message="页码不合法")
-    Integer pagenum = 1;
+    Integer   pagenum = 1;
 
     @Min(value = 1, message="每页大小不合法")
-    Integer size = 20;
+    Integer   size = 20;
 }

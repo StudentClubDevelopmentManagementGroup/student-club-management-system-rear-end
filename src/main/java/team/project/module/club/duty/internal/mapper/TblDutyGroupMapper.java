@@ -16,21 +16,21 @@ public interface TblDutyGroupMapper extends BaseMapper<TblDutyGroup> {
     int deleteDutyGroup(Long clubId, String memberId, String name);
 
     default TblDutyGroup selectByClubIdAndMemberIdAndName(Long clubId, String memberId, String name) {
-        List<TblDutyGroup> userList = this.selectList(new LambdaQueryWrapper<TblDutyGroup>().eq(TblDutyGroup::getMember_id, memberId).eq(TblDutyGroup::getClub_id, clubId).eq(TblDutyGroup::getName, name));
+        List<TblDutyGroup> userList = this.selectList(new LambdaQueryWrapper<TblDutyGroup>().eq(TblDutyGroup::getMemberId, memberId).eq(TblDutyGroup::getClubId, clubId).eq(TblDutyGroup::getName, name));
         return userList.size() == 1 ? userList.get(0) : null;
     }
 
     default List<TblDutyGroup> selectUserIdByGroupName(Long clubId, String name) {
-        List<TblDutyGroup> userList = this.selectList(new LambdaQueryWrapper<TblDutyGroup>().eq(TblDutyGroup::getClub_id, clubId).eq(TblDutyGroup::getName, name));
+        List<TblDutyGroup> userList = this.selectList(new LambdaQueryWrapper<TblDutyGroup>().eq(TblDutyGroup::getClubId, clubId).eq(TblDutyGroup::getName, name));
         return userList.size() == 1 ? userList : null;
     }
 
 
     Page<TblDutyGroup> selectGroup(Page<TblDutyGroup> page, Long clubId);
 
-    Page<TblDutyGroup> selectGroupByName(Page<TblDutyGroup> page, Long clubId, String member_id);
+    Page<TblDutyGroup> selectGroupByName(Page<TblDutyGroup> page, Long clubId, String memberId);
 
-    Page<TblDutyGroup> selectGroupByGroupName(Page<TblDutyGroup> page, Long clubId, String GroupName);
+    Page<TblDutyGroup> selectGroupByGroupName(Page<TblDutyGroup> page, Long clubId, String groupName);
 
-    Page<TblDutyGroup> selectGroupByNameAndGroupName(Page<TblDutyGroup> page, Long clubId, String member_id, String GroupName);
+    Page<TblDutyGroup> selectGroupByNameAndGroupName(Page<TblDutyGroup> page, Long clubId, String memberId, String groupName);
 }

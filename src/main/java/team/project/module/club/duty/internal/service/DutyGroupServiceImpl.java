@@ -29,7 +29,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     TblDutyCirculationMapper tblDutyCirculationMapper;
 
     @Autowired
-    UserInfoServiceI UserInfoService;
+    UserInfoServiceI userInfoServiceI;
 
     @Override
     public void createDutyGroup(Long clubId, String memberId, String name) {
@@ -53,7 +53,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
 
     @Override
     public PageVO<TblDutyGroup> selectDutyGroup(DutyGroupQO qo) {
-        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroup(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id());
+        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroup(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId());
         if (page.getRecords().size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此社团");
         }
@@ -62,13 +62,13 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
 
     @Override
     public PageVO<TblDutyGroup> selectDutyGroupByName(DutyGroupQO qo) {
-        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
         List<TblDutyGroup> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId());
+            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId());
             dutyList.addAll(page.getRecords());
         }
         if (dutyList.size() == 0) {
@@ -79,7 +79,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
 
     @Override
     public PageVO<TblDutyGroup> selectDutyGroupByGroupName(DutyGroupQO qo) {
-        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), qo.getName());
+        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), qo.getName());
         if (page.getRecords().size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此社团");
         }
@@ -88,13 +88,13 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
 
     @Override
     public PageVO<TblDutyGroup> selectDutyGroupByGroupNameAndName(DutyGroupQO qo) {
-        List<UserBasicInfoDTO> nameList = UserInfoService.searchUser(qo.getName());
+        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
         List<TblDutyGroup> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByNameAndGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClub_id(), userBasicInfoDTO.getUserId(), qo.getName());
+            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByNameAndGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName());
             dutyList.addAll(page.getRecords());
         }
         if (dutyList.size() == 0) {

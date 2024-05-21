@@ -10,7 +10,7 @@ import lombok.Data;
 @TableName("tbl_duty_circulation")
 public class TblDutyCirculation {
     @TableId(value="id")                   Long       id;
-    @TableField(value="club_id")           Long       club_id;
+    @TableField(value="club_id")           Long       clubId;
     @TableLogic(value="0", delval="1")
-    @TableField(value="is_circulation")    Boolean    is_circulation;
+    @TableField(value="is_circulation")    Boolean    isCirculation;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @AllArgsConstructor
 @Data
 public class UserClubInfoVO {
-    String ClubName;
+    String clubName;
     Long   clubId;
     String departmentName;
     String role;

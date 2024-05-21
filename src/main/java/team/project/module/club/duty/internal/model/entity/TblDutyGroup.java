@@ -8,7 +8,7 @@ import lombok.Data;
 @TableName("tbl_user_club_duty_group")
 public class TblDutyGroup {
     @TableId(value="id")             Long      id;
-    @TableField(value="club_id")     Long      club_id;
-    @TableField(value="member_id")   String    member_id;
+    @TableField(value="club_id")     Long      clubId;
+    @TableField(value="member_id")   String    memberId;
     @TableField(value="name")        String    name;
 }

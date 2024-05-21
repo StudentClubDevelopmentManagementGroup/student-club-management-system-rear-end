@@ -2,8 +2,6 @@ package team.project.module.club.management.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.model.view.PageVO;
@@ -39,9 +37,9 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void createClub(Long departmentId, String name) {
         if (cMapper.findByNameAndDepartmentId(departmentId, name).isEmpty()) {
             cMapper.createClub(departmentId, name);
-            int i =tblDutyCirculationMapper.createCirculation(cMapper.selectByNameAndDepartmentId(name,departmentId).getId());
-            if (i==0){
-                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR,"创建基地值日循环表数据失败");
+            int i = tblDutyCirculationMapper.createCirculation(cMapper.selectByNameAndDepartmentId(name, departmentId).getId());
+            if (i == 0) {
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "创建基地值日循环表数据失败");
             }
         } else {
             throw new ServiceException(ServiceStatus.CONFLICT, "已存在同院同名社团");
@@ -51,9 +49,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     @Override
     public PageVO<TblClubDO> selectByCriteria(ClubInfoQO req) {
 
-        Page<TblClubDO> page = cMapper.selectByCriteria(
-                new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName()
-        );
+        Page<TblClubDO> page = cMapper.selectByCriteria(new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName());
 
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
@@ -64,7 +60,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     public int deleteClub(Long departmentId, String name) {
         int result = cMapper.deleteClub(departmentId, name);
-        int result2 = tblDutyCirculationMapper.deleteCirculation(cMapper.selectByNameAndDepartmentId(name,departmentId).getId());
+        int result2 = tblDutyCirculationMapper.deleteCirculation(cMapper.selectByNameAndDepartmentId(name, departmentId).getId());
         if (result == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
         }

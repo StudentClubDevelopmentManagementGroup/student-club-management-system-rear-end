@@ -55,31 +55,19 @@ public class TblUserClubController {
     @Operation(summary = "查询基地所有成员信息")
     @PostMapping("/club/member/select_all")
     Object selectMember(@Valid @RequestBody ClubMemberInfoReq req) {
-        ClubMemberInfoQO QO = new ClubMemberInfoQO(
-                req.getDepartmentId(),
-                req.getName(),
-                req.getClubId(),
-                req.getPagenum(),
-                req.getSize()
-        );
-        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
-                .data(ucService.selectClubMemberInfo(QO));
+        ClubMemberInfoQO QO = new ClubMemberInfoQO(req.getDepartmentId(), req.getName(), req.getClubId(), req.getPagenum(), req.getSize());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectClubMemberInfo(QO));
     }
 
     @Operation(summary = "查询该用户是否是该社团成员")
     @PostMapping("/club/member/select_member")
     Object selectMember(@Valid @RequestBody UserClubReq req) {
-        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
-                .data(ucService.selectTheMember(req.getUserId(), req.getClubId()));
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectTheMember(req.getUserId(), req.getClubId()));
     }
-    
+
     @Operation(summary = "查询该用户在所有社团的身份")
     @PostMapping("/club/member/select_member_all_club_info")
-    Object selectMemberAllClubInfo(@Valid
-                                   @NotNull(message = "学号工号不能为空")
-                                   @UserIdConstraint
-                                   @JsonProperty("user_id") String userId) {
-        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功")
-                .data(ucService.selectMemberAllClubInfo(userId));
+    Object selectMemberAllClubInfo(@NotNull(message = "学号工号不能为空") @UserIdConstraint @JsonProperty("user_id") String userId) {
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectMemberAllClubInfo(userId));
     }
 }

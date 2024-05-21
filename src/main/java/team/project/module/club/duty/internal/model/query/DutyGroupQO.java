@@ -6,9 +6,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class DutyGroupQO {
-    Long      club_id;
+    Long      clubId;
 
-    String    group_name;
+    String    groupName;
 
     String    name;
 

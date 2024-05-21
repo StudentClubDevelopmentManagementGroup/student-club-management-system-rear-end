@@ -5,29 +5,30 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.model.view.PageVO;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 public interface DutyService extends IService<TblDuty> {
-    void createDuty(String number, String area, Timestamp dutyTime, String arrangerId
-            , String cleanerId, Long club_id, Boolean isMixed);
+    void createDuty(String number, String area, LocalDateTime dutyTime, String arrangerId
+            , String cleanerId, Long clubId, Boolean isMixed);
 
-    void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId
+    void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId
             , String cleanerId, Long clubId, Boolean isMixed, String groupName);
 
-    void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id);
+    void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId);
 
-    void deleteDutyByUser(Timestamp dutyTime, String arrangerId, Long club_id);
+    void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long clubId);
 
-    void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> file);
+    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> file);
 
-    PageVO<TblDuty> selectDuty(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByNumber(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByName(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo);
 
-    PageVO<TblDuty> selectDutyByNumberAndName(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo);
 }

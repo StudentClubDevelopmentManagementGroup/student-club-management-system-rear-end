@@ -143,7 +143,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
         for (TblUserClubDO tblUserClubDO : list) {
             if (tblUserClubDO != null) {
                 ClubBasicMsgDTO clubBasicMsgDTO = managementIService.selectClubBasicMsg(tblUserClubDO.getClubId());
-                UserClubInfoVO userClubInfoVO = new UserClubInfoVO( null,null,null,null);
+                UserClubInfoVO userClubInfoVO = new UserClubInfoVO(null, null, null, null);
                 userClubInfoVO.setClubId(tblUserClubDO.getClubId());
                 switch (tblUserClubDO.getRole()) {
                     case 1 -> userClubInfoVO.setRole("成员");
