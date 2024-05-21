@@ -7,6 +7,7 @@ import java.util.Map;
 public class DemoTextTemplate {
 
     public static void main(String[] args) {
+
         /* 模板文本 */
         String tmplText = """
             <div>
@@ -26,7 +27,7 @@ public class DemoTextTemplate {
 
         System.out.println("---------");
 
-        /* 以键值对形式提供参数 */
+        /* 以键值对的形式提供参数 */
         Map<String, Object> params = Map.of(
             "date", "2024-05-21",
             /* "time", "00:00", */
@@ -38,8 +39,8 @@ public class DemoTextTemplate {
 
         System.out.println("---------");
 
-        /* 以列表形式向模板传递参数 */
-        String renderedText2 = tmpl.render("2024-05-21", "00:00", "阵雨" /*, "14C" */);
+        /* 以变长参数列表的形式向模板传递参数 */
+        String renderedText2 = tmpl.render("2024-05-21", "00:00", "阵雨" /*, "14°C" */);
         System.out.println(renderedText2);
     }
 }

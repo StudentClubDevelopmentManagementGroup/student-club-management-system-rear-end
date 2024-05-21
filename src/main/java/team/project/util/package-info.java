@@ -7,8 +7,8 @@
  * <li> 简单的文本模板工具
  *      {@link team.project.util.texttmpl.TextTemplate TextTemplate}
  * </ul>
- * <p>  配备了简单的示例代码来介绍如何使用这些工具类，
- * <br> {@link team.example.util}
+ * <p>  示例代码：
+ * <p>  详见 {@link team.example.util}
  * <p>
  */
 package team.project.util;

@@ -3,7 +3,9 @@ package team.example.util;
 import team.project.util.expiringmap.ExpiringMap;
 
 public class DemoExpiringMap {
+
     public static void main(String[] args) throws InterruptedException {
+
         /* 创建容器，设定键值对的有效时间是 5000 毫秒 */
         ExpiringMap<String, String> map = new ExpiringMap<>(5 * 1000);
 
