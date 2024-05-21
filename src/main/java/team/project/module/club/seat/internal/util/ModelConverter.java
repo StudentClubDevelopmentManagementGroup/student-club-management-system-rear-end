@@ -16,8 +16,7 @@ public class ModelConverter {
     UserInfoServiceI userInfoService;
 
     public SeatVO toSeatVO(SeatDO seat) {
-        if (null == seat)
-            return null;
+        assert seat != null;
 
         ClubMemberInfoVO arrangerVO = toClubMemberInfoVO( userInfoService.selectUserBasicInfo(seat.getArrangerId()) );
 

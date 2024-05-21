@@ -25,21 +25,21 @@ final class NamingStyleChecker {
 
     private static final String tmplPrefix = "Tmpl";
 
-    private final Pattern packageNamePattern  = Pattern.compile("^[a-z.]*$");
-    private final Pattern classNamePattern    = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
-    private final Pattern variableNamePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
-    private final Pattern constantNamePattern = Pattern.compile("^[A-Z][_A-Z0-9]*$");
-    private final Pattern methodNamePattern   = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
+    private static final Pattern packageNamePattern  = Pattern.compile("^[a-z.]*$");
+    private static final Pattern classNamePattern    = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
+    private static final Pattern variableNamePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
+    private static final Pattern constantNamePattern = Pattern.compile("^[A-Z][_A-Z0-9]*$");
+    private static final Pattern methodNamePattern   = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
 
-    private HashSet<String>     invalidPackageNames;
-    private ArrayList<String[]> invalidClassName;
-    private ArrayList<String[]> invalidTmplPrefix;
-    private ArrayList<String[]> invalidFieldName;
-    private ArrayList<String[]> invalidMethodName;
-    private ArrayList<String[]> invalidParamName;
+    private static HashSet<String>     invalidPackageNames;
+    private static ArrayList<String[]> invalidClassName;
+    private static ArrayList<String[]> invalidTmplPrefix;
+    private static ArrayList<String[]> invalidFieldName;
+    private static ArrayList<String[]> invalidMethodName;
+    private static ArrayList<String[]> invalidParamName;
 
     @PostConstruct
-    private void postConstruct() {
+    private static void postConstruct() {
         try {
             check();
         } catch (ClassNotFoundException e) {
@@ -47,7 +47,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void prepare() {
+    private static void prepare() {
         invalidPackageNames = new HashSet<>();
         invalidClassName    = new ArrayList<>();
         invalidTmplPrefix   = new ArrayList<>();
@@ -56,7 +56,7 @@ final class NamingStyleChecker {
         invalidParamName    = new ArrayList<>();
     }
 
-    private void check() throws ClassNotFoundException {
+    private static void check() throws ClassNotFoundException {
         prepare();
         for (String className : getAllClass(rootPackage)) {
             checkClass(Class.forName(className));
@@ -64,11 +64,9 @@ final class NamingStyleChecker {
         report();
     }
 
-    private void report() {
-
+    public static void report() {
         final String color = "\033[31m";
-
-        StringBuilder report = new StringBuilder();
+        StringBuilder report = new StringBuilder(color);
 
         if ( ! invalidPackageNames.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -135,11 +133,11 @@ final class NamingStyleChecker {
         }
 
         if (report.length() > 0) {
-            log.error(color + report);
+            log.warn(report.toString());
         }
     }
 
-    private List<String> getAllClass(String packageName) {
+    private static List<String> getAllClass(String packageName) {
         List<String> classList = new ArrayList<>();
 
         URL basePathURL = Thread.currentThread().getContextClassLoader().getResource(packageName.replace('.', '/'));
@@ -167,13 +165,13 @@ final class NamingStyleChecker {
         return classList;
     }
 
-    private void checkPageName(String packageName) {
+    private static void checkPageName(String packageName) {
         if ( ! packageNamePattern.matcher(packageName).matches()) {
             invalidPackageNames.add(packageName);
         }
     }
 
-    private void checkClassName(Class<?> clazz) {
+    private static void checkClassName(Class<?> clazz) {
         String className = clazz.getName();
         String classSimpleName = clazz.getSimpleName();
         if (   ! className.contains("$")
@@ -187,7 +185,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkFieldName(Class<?> clazz) {
+    private static void checkFieldName(Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
             String fieldName = field.getName();
             if (   ! fieldName.contains("$")
@@ -199,7 +197,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkMethodName(Class<?> clazz) {
+    private static void checkMethodName(Class<?> clazz) {
         String className = clazz.getName();
         for (Method method : clazz.getDeclaredMethods()) {
             String methodName = method.getName();
@@ -219,7 +217,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkClass(Class<?> clazz) {
+    private static void checkClass(Class<?> clazz) {
         String packageName = clazz.getPackage().getName();
 
         if ( ! packageName.startsWith(rootPackage)
