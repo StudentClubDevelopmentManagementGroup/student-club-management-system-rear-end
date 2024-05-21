@@ -10,12 +10,12 @@ import java.time.LocalDateTime;
 @Data
 public class DutyDeleteGroupReq {
     @NotNull
-    LocalDateTime duty_time;
+    LocalDateTime dateTime;
 
     @ClubIdConstraint
     @NotNull
-    Long      club_id;
+    Long          clubId;
 
     @NotBlank
-    String    group_name;
+    String        groupName;
 }

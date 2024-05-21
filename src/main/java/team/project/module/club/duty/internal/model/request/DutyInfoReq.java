@@ -16,20 +16,20 @@ public class DutyInfoReq {
    String        area;
 
    @NotNull
-   LocalDateTime duty_time;
+   LocalDateTime dateTime;
 
    @UserIdConstraint
    @NotNull
-   String        arranger_id;
+   String        arrangerId;
 
    @UserIdConstraint
    @NotNull
-   String        cleaner_id;
+   String        cleanerId;
 
    @ClubIdConstraint
    @NotNull
-   Long          club_id;
+   Long          clubId;
 
    @NotNull
-   Boolean       is_mixed;
+   Boolean       isMixed;
 }

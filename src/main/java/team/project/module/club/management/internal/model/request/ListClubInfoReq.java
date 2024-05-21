@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 public class ListClubInfoReq {
-    Long department_id;
+    Long departmentId;
 
     @Size(max=16, message="社团名字的长度不合约束")
     String  name;

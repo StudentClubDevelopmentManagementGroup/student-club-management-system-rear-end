@@ -10,13 +10,13 @@ import java.time.LocalDateTime;
 @Data
 public class DutyDeleteReq {
     @NotNull
-    LocalDateTime duty_time;
+    LocalDateTime dateTime;
 
     @UserIdConstraint
     @NotNull
-    String    cleaner_id;
+    String        cleanerId;
 
     @ClubIdConstraint
     @NotNull
-    Long      club_id;
+    Long          clubId;
 }

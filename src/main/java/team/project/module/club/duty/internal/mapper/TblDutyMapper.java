@@ -10,25 +10,23 @@ import java.util.List;
 
 @Mapper
 public interface TblDutyMapper extends BaseMapper<TblDuty> {
-    int createDuty(String number, String area, LocalDateTime duty_time,
-                   String arranger_id, String cleaner_id, Long club_id, Boolean is_mixed);
+    int createDuty(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed);
 
-    TblDuty selectOne(String number, String area, LocalDateTime duty_time,
-                      String arranger_id, String cleaner_id, Long club_ide);
+    TblDuty selectOne(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubIde);
 
-    int deleteDuty(LocalDateTime duty_time, String cleaner_id, Long club_id);
+    int deleteDuty(LocalDateTime dateTime, String cleanerId, Long clubId);
 
-    List<TblDuty> selectLastWeek(Long club_id);
+    List<TblDuty> selectLastWeek(Long clubId);
 
-    List<TblDuty> selectNextWeek(Long club_id);
+    List<TblDuty> selectNextWeek(Long clubId);
 
-    int setDutyPicture(LocalDateTime duty_time, String member_id, Long clubId, String file_id);
+    int setDutyPicture(LocalDateTime dateTime, String memberId, Long clubId, String fileId);
 
-    Page<TblDuty> selectDuty(Page<TblDuty> page, Long club_id);
+    Page<TblDuty> selectDuty(Page<TblDuty> page, Long clubId);
 
-    Page<TblDuty> selectDutyByNumber(Page<TblDuty> page, Long club_id, String number);
+    Page<TblDuty> selectDutyByNumber(Page<TblDuty> page, Long clubId, String number);
 
-    Page<TblDuty> selectDutyByName(Page<TblDuty> page, Long club_id, String cleaner_id);
+    Page<TblDuty> selectDutyByName(Page<TblDuty> page, Long clubId, String cleanerId);
 
-    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long club_id, String cleaner_id, String name);
+    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String cleanerId, String name);
 }

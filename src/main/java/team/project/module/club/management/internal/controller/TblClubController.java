@@ -35,7 +35,7 @@ public class TblClubController {
     @Operation(summary = "查询基地基础信息")
     @GetMapping("/club/select")
     Object selectClub(@Valid ListClubInfoReq req) {
-        ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
+        ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<TblClubDO> result;
         result = service.selectByCriteria(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
@@ -78,7 +78,7 @@ public class TblClubController {
     @GetMapping("/club/select_all")
     Object selectAll(@Valid ListClubInfoReq req) {
 
-        ClubInfoQO newQO = new ClubInfoQO(req.getDepartment_id(), req.getName(), req.getPageNum(), req.getSize());
+        ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<ClubMsgDTO> result;
         result = service.findAll(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);

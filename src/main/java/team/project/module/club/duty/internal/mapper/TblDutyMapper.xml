@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="team.project.module.club.duty.internal.mapper.TblDutyMapper">
     <resultMap id="tbl_club_Duty" type="team.project.module.club.duty.internal.model.entity.TblDuty">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
@@ -8,7 +7,12 @@
         <result column="is_deleted"         property="deleted" />
         <result column="create_time"        property="createTime" />
         <result column="update_time"        property="updateTime" />
-        <result column="duty_time"      property="duty_time" />
+        <result column="duty_time"          property="dutyTime" />
+        <result column="arranger_id"        property="arrangerId" />
+        <result column="cleaner_id"         property="cleanerId" />
+        <result column="club_id"            property="clubId" />
+        <result column="image_file"         property="imageFile" />
+        <result column="is_mixed"           property="isMixed" />
     </resultMap>
 
     <insert id="createDuty">

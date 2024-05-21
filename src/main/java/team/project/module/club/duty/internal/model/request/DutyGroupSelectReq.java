@@ -9,9 +9,9 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 public class DutyGroupSelectReq {
     @NotNull
     @ClubIdConstraint
-    Long      club_id;
+    Long      clubId;
 
-    String    group_name;
+    String    groupName;
 
     String    name;
 

@@ -12,13 +12,13 @@ import java.util.List;
 public class DutyFileUpload {
 
     @NotNull
-    LocalDateTime         duty_time;
+    LocalDateTime         dateTime;
 
     @NotBlank
-    String                member_id;
+    String                memberId;
 
     @NotBlank
-    Long                  club_id;
+    Long                  clubId;
 
     @NotNull
     List<MultipartFile>   file;

@@ -30,22 +30,22 @@ public class AutoDeployDutyScheduledTasks {
     @Scheduled(cron = "0 0 23 ? * 7")
     public void autoDeployDuty() {
         try {
-            List<TblDutyCirculation> tblDutyCirculations = tblDutyCirculationMapper.selectAutoDutyClubid();
+            List<TblDutyCirculation> tblDutyCirculations = tblDutyCirculationMapper.selectAutoDutyClubId();
             // 使用List<TblDuty> tblDuties = new ArrayList<>();来收集所有需要创建的职责信息，以减少数据库访问
             List<TblDuty> tblDuties = new ArrayList<>();
             for (TblDutyCirculation tblDutyCirculation : tblDutyCirculations) {
-                if(dutyMapper.selectNextWeek(tblDutyCirculation.getClub_id())!=null){
+                if(dutyMapper.selectNextWeek(tblDutyCirculation.getClubId())!=null){
                     continue;
                 }
-                List<TblDuty> duties = dutyMapper.selectLastWeek(tblDutyCirculation.getClub_id());
+                List<TblDuty> duties = dutyMapper.selectLastWeek(tblDutyCirculation.getClubId());
                 tblDuties.addAll(duties);
             }
             // 执行批量创建职责操作
             for (TblDuty duty : tblDuties) {
-                LocalDateTime timestamp0 = duty.getDuty_time();
+                LocalDateTime timestamp0 = duty.getDutyTime();
                 // 使用java.time进行日期操作
                 LocalDateTime nextWeekDateTime = timestamp0.plusWeeks(1);
-                dutyService.createDuty(duty.getNumber(), duty.getArea(), nextWeekDateTime, duty.getArranger_id(), duty.getCleaner_id(), duty.getClub_id(), duty.getIs_mixed());
+                dutyService.createDuty(duty.getNumber(), duty.getArea(), nextWeekDateTime, duty.getArrangerId(), duty.getCleanerId(), duty.getClubId(), duty.getIsMixed());
             }
         } catch (Exception e) {
             log.error("自动部署职责任务时发生异常: " + e.getMessage());

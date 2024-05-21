@@ -13,14 +13,14 @@ import java.util.List;
 
 public interface DutyService extends IService<TblDuty> {
     void createDuty(String number, String area, LocalDateTime dutyTime, String arrangerId
-            , String cleanerId, Long club_id, Boolean isMixed);
+            , String cleanerId, Long clubId, Boolean isMixed);
 
     void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId
             , String cleanerId, Long clubId, Boolean isMixed, String groupName);
 
-    void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long club_id);
+    void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId);
 
-    void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long club_id);
+    void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long clubId);
 
     void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> file);
 

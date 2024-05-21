@@ -9,7 +9,7 @@ import team.project.module.club.management.export.model.annotation.ClubIdConstra
 public class DutySelectReq {
     @NotNull
     @ClubIdConstraint
-    Long      club_id;
+    Long      clubId;
 
     String    number;
 
