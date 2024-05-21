@@ -61,7 +61,7 @@ public class LoginService {
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
         sendEmailQO.setSubject("【GUET 社团管理系统】登录验证");
-        sendEmailQO.setContent(EmailUtil.formatWithCSS("""
+        sendEmailQO.setContent(EmailUtil.formatAndWrapCSS("""
             <h1>GUET 社团管理系统 登录验证</h1>
             <p>您正在进行邮箱登录，验证码<em> %s </em></p>
             <p>该验证码 5 分钟内有效，请勿泄漏于他人</p>
