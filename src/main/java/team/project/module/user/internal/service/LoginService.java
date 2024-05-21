@@ -16,8 +16,8 @@ import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
 import team.project.module.util.email.export.util.EmailUtil;
 
-@Slf4j
 @Service
+@Slf4j
 public class LoginService {
     @Autowired
     EmailServiceI emailService;
@@ -36,8 +36,8 @@ public class LoginService {
      * @return 登录成功返回用户信息，登录失败返回 null
      * */
     public UserInfoVO login(String userId, String password) {
-        UserDO user = userDAO.selectUserInfo(userId, password);
-        return user == null ? null : modelConverter.toUserInfoVO(user);
+        UserDO userInfo = userDAO.selectUserInfo(userId, password);
+        return modelConverter.toUserInfoVO(userInfo);
     }
 
     /**
@@ -84,7 +84,7 @@ public class LoginService {
             return null;
         }
 
-        UserDO user = userDAO.selectUserInfo(req.getUserId());
-        return user == null ? null : modelConverter.toUserInfoVO(user);
+        UserDO userInfo = userDAO.selectUserInfo(req.getUserId());
+        return modelConverter.toUserInfoVO(userInfo);
     }
 }

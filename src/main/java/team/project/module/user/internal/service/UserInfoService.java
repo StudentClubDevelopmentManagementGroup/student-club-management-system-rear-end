@@ -34,11 +34,8 @@ public class UserInfoService {
      * @return 如果查询到成功则账号信息，否则返回 null
      * */
     public UserInfoVO selectUserInfo(String userId) {
-        UserDO userDO = userDAO.selectUserInfo(userId);
-        if (userDO == null) {
-            return null;
-        }
-        return modelConverter.toUserInfoVO(userDO);
+        UserDO userInfo = userDAO.selectUserInfo(userId);
+        return modelConverter.toUserInfoVO(userInfo);
     }
 
     /**
@@ -88,9 +85,7 @@ public class UserInfoService {
      * 设置指定用户的密码
      * */
     public void setPassword(UserIdAndPasswordReq req) {
-        int result = userDAO.setPassword(req.getUserId(), req.getPassword()); /* ljh_TODO 密码待加密 */
-
-        if (result != 1) {
+        if (1 != userDAO.setPassword(req.getUserId(), req.getPassword())) { /* ljh_TODO 密码待加密 */
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "修改失败");
         }
     }

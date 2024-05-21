@@ -27,6 +27,8 @@ import java.util.Map;
  * */
 public class TextTemplate {
 
+    int Sss_s;
+
     /**
      * <p>  创建模板
      * <p>  一旦创建模板，它就会解析模板字符串中的文本部分和参数部分
