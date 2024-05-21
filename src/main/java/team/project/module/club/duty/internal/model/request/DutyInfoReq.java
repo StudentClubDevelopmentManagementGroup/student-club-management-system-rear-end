@@ -6,29 +6,30 @@ import lombok.Data;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 @Data
 public class DutyInfoReq {
    @NotBlank
-   String    number;
+   String        number;
 
-   String    area;
+   String        area;
 
    @NotNull
-   Timestamp duty_time;
+   LocalDateTime duty_time;
 
    @UserIdConstraint
    @NotNull
-   String    arranger_id;
+   String        arranger_id;
 
    @UserIdConstraint
    @NotNull
-   String    cleaner_id;
+   String        cleaner_id;
 
    @ClubIdConstraint
    @NotNull
-   Long      club_id;
+   Long          club_id;
 
    @NotNull
-   Boolean   is_mixed;
+   Boolean       is_mixed;
 }

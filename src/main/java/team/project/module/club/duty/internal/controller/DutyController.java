@@ -64,14 +64,14 @@ public class DutyController {
 
     @Operation(summary = "根据小组名称以及社团id，删除值日信息")
     @PostMapping("/club/duty/delete_by_group")
-    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteGroupReq req) {
         dutyService.deleteDutyAllByGroup(req.getDuty_time(), req.getGroup_name(), req.getClub_id());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "根据userid，删除值日信息")
     @PostMapping("/club/duty/delete")
-    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
+    Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteReq req) {
         dutyService.deleteDutyByUser(req.getDuty_time(), req.getCleaner_id(), req.getClub_id());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }

@@ -16,8 +16,8 @@ public class DutyGroupSelectReq {
     String    name;
 
     @Min(value = 1, message="页码不合法")
-    Integer pagenum = 1;
+    Integer   pagenum = 1;
 
     @Min(value = 1, message="每页大小不合法")
-    Integer size = 20;
+    Integer   size = 20;
 }

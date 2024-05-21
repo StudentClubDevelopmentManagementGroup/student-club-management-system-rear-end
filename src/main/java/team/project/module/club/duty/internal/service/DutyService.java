@@ -7,22 +7,22 @@ import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
 public interface DutyService extends IService<TblDuty> {
-    void createDuty(String number, String area, Timestamp dutyTime, String arrangerId
+    void createDuty(String number, String area, LocalDateTime dutyTime, String arrangerId
             , String cleanerId, Long club_id, Boolean isMixed);
 
-    void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId
+    void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId
             , String cleanerId, Long clubId, Boolean isMixed, String groupName);
 
-    void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id);
+    void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long club_id);
 
-    void deleteDutyByUser(Timestamp dutyTime, String arrangerId, Long club_id);
+    void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long club_id);
 
-    void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> file);
+    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> file);
 
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 

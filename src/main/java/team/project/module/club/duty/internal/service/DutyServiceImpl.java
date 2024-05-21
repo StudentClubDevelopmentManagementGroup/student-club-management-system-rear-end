@@ -22,7 +22,7 @@ import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +48,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     UserInfoServiceI UserInfoService;
 
     @Override
-    public void createDuty(String number, String area, Timestamp duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
+    public void createDuty(String number, String area, LocalDateTime duty_time, String arranger_id, String cleaner_id, Long club_id, Boolean ismixed) {
         if (tblDutyMapper.createDuty(number, area, duty_time, arranger_id, cleaner_id, club_id, ismixed) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
         }
@@ -56,7 +56,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void createDutyByGroup(String number, String area, Timestamp dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
+    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMember_id(), clubId, isMixed);
@@ -68,7 +68,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     }
 
     @Override
-    public void deleteDutyAllByGroup(Timestamp dutyTime, String groupName, Long club_id) {
+    public void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long club_id) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(club_id, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMember_id(), club_id) != 1) {
@@ -79,7 +79,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void deleteDutyByUser(Timestamp dutyTime, String cleaner_id, Long club_id) {
+    public void deleteDutyByUser(LocalDateTime dutyTime, String cleaner_id, Long club_id) {
         if (tblDutyMapper.deleteDuty(dutyTime, cleaner_id, club_id) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
         }
@@ -87,7 +87,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPicture(Timestamp dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
+    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
         List<String> fileIdList = new ArrayList<>();
         for (MultipartFile file : filelist) {
 

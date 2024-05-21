@@ -17,12 +17,12 @@
     </insert>
 
     <update id="setDutyPicture">
-        update tbl_user_club_duty set image_file = #{fileId} from tbl_user_club_duty where duty_time = #{duty_time}
+        update tbl_user_club_duty set image_file = #{fileId} where duty_time = #{duty_time}
         and cleaner_id = #{member_id} and club_id = #{club_id} and is_deleted = 0
     </update>
 
     <delete id="deleteDuty">
-        update tbl_user_club_duty set is_deleted = 1 from tbl_user_club_duty where and duty_time = #{duty_time}
+        update tbl_user_club_duty set is_deleted = 1 where duty_time = #{duty_time}
         and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
     </delete>
 

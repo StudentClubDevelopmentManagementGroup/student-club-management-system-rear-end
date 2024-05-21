@@ -5,14 +5,14 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
 public class DutyFileUpload {
 
     @NotNull
-    Timestamp             duty_time;
+    LocalDateTime         duty_time;
 
     @NotBlank
     String                member_id;
