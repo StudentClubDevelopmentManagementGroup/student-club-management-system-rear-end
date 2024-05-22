@@ -27,6 +27,8 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public UserInfoDTO selectUserInfo(String userId) {
+        assert userId != null;
+
         UserDO userInfo = userDAO.selectUserInfo(userId);
         return modelConverter.toUserInfoDTO(userInfo);
     }
@@ -36,6 +38,8 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public UserBasicInfoDTO selectUserBasicInfo(String userId) {
+        assert userId != null;
+
         UserDO userBasicInfo = userDAO.selectUserBasicInfo(userId);
         return modelConverter.toUserBasicInfoDTO(userBasicInfo);
     }
@@ -45,6 +49,8 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      */
     @Override
     public String getUserName(String userId) {
+        assert userId != null;
+
         UserDO userBasicInfo = userDAO.selectUserBasicInfo(userId);
         return userBasicInfo == null ? null : userBasicInfo.getName();
     }
@@ -54,6 +60,8 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      */
     @Override
     public List<UserBasicInfoDTO> searchUser(String userName) {
+        assert userName != null;
+
         List<UserBasicInfoDTO> result = new ArrayList<>();
         for (UserDO userBasicInfo : userDAO.searchUserBasicInfo(userName)) {
             result.add( modelConverter.toUserBasicInfoDTO(userBasicInfo) );
@@ -66,6 +74,8 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public Integer selectUserRole(String userId) {
+        assert userId != null;
+
         return userDAO.selectRoleCode(userId);
     }
 
@@ -74,6 +84,9 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public int addRoleToUser(String userId, UserRole roleToAdd) {
+        assert userId    != null;
+        assert roleToAdd != null;
+
         return userDAO.addRoleToUser(userId, roleToAdd);
     }
 
@@ -82,6 +95,9 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      * */
     @Override
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {
+        assert userId       != null;
+        assert roleToRemove != null;
+
         return userDAO.removeRoleFromUser(userId, roleToRemove);
     }
 }

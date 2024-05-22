@@ -25,6 +25,10 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
      * */
     @Override
     public String uploadFile(MultipartFile toUploadFile, FileStorageType storageType, UploadFileQO uploadFileQO) {
+        assert toUploadFile != null;
+        assert storageType  != null;
+        assert uploadFileQO != null;
+
         return switch (storageType) {
             case LOCAL -> localStorageService.uploadFile(toUploadFile, uploadFileQO);
             case CLOUD -> cloudStorageService.uploadFile(toUploadFile, uploadFileQO);
@@ -36,6 +40,8 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
      * */
     @Override
     public String getFileUrl(String fileId) {
+        assert fileId != null;
+
         if (localStorageService.mayBeStored(fileId))
             return localStorageService.getFileUrl(fileId);
 
@@ -50,6 +56,8 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
      * */
     @Override
     public boolean deleteFile(String fileId) {
+        assert fileId != null;
+
         if (localStorageService.mayBeStored(fileId))
             return localStorageService.deleteFile(fileId);
 
@@ -66,6 +74,10 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
      */
     @Override
     public String uploadTextToFile(FileStorageType storageType, String text, UploadFileQO uploadFileQO) {
+        assert storageType  != null;
+        assert text         != null;
+        assert uploadFileQO != null;
+
         return switch (storageType) {
             case LOCAL -> localStorageService.uploadTextToFile(text, uploadFileQO);
             case CLOUD -> cloudStorageService.uploadTextToFile(text, uploadFileQO);
@@ -77,6 +89,8 @@ public class FileStorageIServiceImpl implements FileStorageServiceI {
      */
     @Override
     public String getTextFromFile(String fileId) {
+        assert fileId != null;
+
         if (localStorageService.mayBeStored(fileId))
             return localStorageService.getTextFromFile(fileId);
 
