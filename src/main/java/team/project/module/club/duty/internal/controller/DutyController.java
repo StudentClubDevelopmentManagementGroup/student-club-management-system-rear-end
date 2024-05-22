@@ -87,7 +87,7 @@ public class DutyController {
     @PostMapping("/club/duty/select")
     Object selectDuty(@Valid @RequestBody DutySelectReq req) {
 
-        DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPagenum(), req.getSize());
+        DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
                 (req.getNumber() == null || req.getNumber().isEmpty() ?
                         dutyService.selectDuty(newQO) :
@@ -102,7 +102,7 @@ public class DutyController {
     @Operation(summary = "查询社团值日小组")
     @PostMapping("/club/duty/group/select")
     Object selectDutyGroup(@Valid @RequestBody DutyGroupSelectReq req) {
-        DutyGroupQO newQO = new DutyGroupQO(req.getClubId(), req.getGroupName(), req.getName(), req.getPagenum(), req.getSize());
+        DutyGroupQO newQO = new DutyGroupQO(req.getClubId(), req.getGroupName(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<TblDutyGroup> result = req.getName().isEmpty() ?
                 (req.getGroupName() == null || req.getGroupName().isEmpty() ?
                         dutyGroupService.selectDutyGroup(newQO) :
