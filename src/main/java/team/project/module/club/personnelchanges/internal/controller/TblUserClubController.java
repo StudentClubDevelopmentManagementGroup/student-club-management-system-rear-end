@@ -55,7 +55,7 @@ public class TblUserClubController {
     @Operation(summary = "查询基地所有成员信息")
     @PostMapping("/club/member/select_all")
     Object selectMember(@Valid @RequestBody ClubMemberInfoReq req) {
-        ClubMemberInfoQO QO = new ClubMemberInfoQO(req.getDepartmentId(), req.getName(), req.getClubId(), req.getPagenum(), req.getSize());
+        ClubMemberInfoQO QO = new ClubMemberInfoQO(req.getDepartmentId(), req.getName(), req.getClubId(), req.getPageNum(), req.getSize());
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectClubMemberInfo(QO));
     }
 
