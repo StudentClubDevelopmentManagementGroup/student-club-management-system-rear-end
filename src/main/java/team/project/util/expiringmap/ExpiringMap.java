@@ -10,30 +10,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * */
 public class ExpiringMap<K, V> {
 
-    private static class Item<V> {
-        public V    value;
-        public long expireTime;
-
-        public boolean isExpired() { return expireTime < System.currentTimeMillis(); }
-    }
-
-    /* 每个键值对的有效时间 */
-    private final long liveTimeMillis;
-
-    /* 清理过期键值对的时间间隔 */
-    private final long cleanupIntervalMillis;
-
-    /* 清理时间 */
-    private volatile long cleanupTime;
-
-    /* 2024-05-19 ljh
-       ---------
-       懒清理策略：只有某个方法被调用时（如 put、get 等），且距离上次清理已经过去了一段时间，才执行清理操作
-     */
-
-    /* ConcurrentHashMap 确保线程安全 */
-    private final Map<K, Item<V>> map = new ConcurrentHashMap<>();
-
+    /**
+     * 创建一个空的带有自动过期功能的键值对容器
+     * @param liveTimeMillis 将键值对放入容器时赋予的有效时间，单位毫秒
+     * */
     public ExpiringMap(long liveTimeMillis) {
         this.liveTimeMillis        = liveTimeMillis;
         this.cleanupIntervalMillis = liveTimeMillis + liveTimeMillis / 2;
@@ -99,6 +79,32 @@ public class ExpiringMap<K, V> {
         lazyCleanUpExpired();
         map.remove(key);
     }
+
+    /* --------- */
+
+    private static class Item<V> {
+        public V    value;
+        public long expireTime;
+
+        public boolean isExpired() { return expireTime < System.currentTimeMillis(); }
+    }
+
+    /* 每个键值对的有效时间 */
+    private final long liveTimeMillis;
+
+    /* 清理过期键值对的时间间隔 */
+    private final long cleanupIntervalMillis;
+
+    /* 清理时间 */
+    private volatile long cleanupTime;
+
+    /* 2024-05-19 ljh
+       ---------
+       懒清理策略：只有某个方法被调用时（如 put、get 等），且距离上次清理已经过去了一段时间，才执行清理操作
+     */
+
+    /* ConcurrentHashMap 确保线程安全 */
+    private final Map<K, Item<V>> map = new ConcurrentHashMap<>();
 
     /**
      * 清理所有已过期的键值对（懒清理策略）

@@ -3,6 +3,7 @@ package team.project.module.user.internal.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
@@ -84,6 +85,7 @@ public class UserInfoService {
     /**
      * 设置指定用户的密码
      * */
+    @Transactional
     public void setPassword(UserIdAndPasswordReq req) {
         if (1 != userDAO.setPassword(req.getUserId(), req.getPassword())) { /* ljh_TODO 密码待加密 */
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "修改失败");
