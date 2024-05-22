@@ -21,8 +21,10 @@ public class ClubMemberInfoReq {
     String   name; /* <- 成员名字，而非社团 */
 
     @Min(value = 1, message="页码不合法")
-    Integer  pagenum=1;
+    @JsonProperty("page_num")
+    Integer  pageNum=1;
 
     @Min(value = 1, message="每页大小不合法")
+    @JsonProperty("page_size")
     Integer  size=20;
 }
