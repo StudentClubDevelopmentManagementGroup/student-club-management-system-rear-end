@@ -67,7 +67,7 @@ public class AliyunOssDAO {
      * */
     public String getFileUrl(String key) {
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
-        request.setExpiration(new Date(new Date().getTime() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
+        request.setExpiration(new Date(System.currentTimeMillis() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
 
         URL url = ossClient.generatePresignedUrl(request);
         return url.toString();
@@ -92,8 +92,8 @@ public class AliyunOssDAO {
     }
 
     /**
-     * 以 UTF8 编码规则来读取文件
-     * <br>（如果文件不是纯文本文件，或者编码不匹配，则结果可能呈现乱码）
+     * <p>  以 UTF8 编码规则来读取文件
+     * <br> 如果文件不是纯文本文件，或者编码不匹配，则结果可能呈现乱码
      * */
     public String readTextFromFile(String key) throws IOException {
 

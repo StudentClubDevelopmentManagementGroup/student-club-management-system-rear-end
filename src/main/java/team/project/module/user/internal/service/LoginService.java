@@ -32,6 +32,8 @@ public class LoginService {
     @Autowired
     ModelConverter modelConverter;
 
+    /* -- 密码登录 -- */
+
     /**
      * 通过用户名和密码登录
      * @return 登录成功返回用户信息，登录失败返回 null
@@ -40,6 +42,8 @@ public class LoginService {
         UserDO userInfo = userDAO.selectUserInfo(userId, password);
         return modelConverter.toUserInfoVO(userInfo);
     }
+
+    /* -- 邮箱登录 -- */
 
     private final TextTemplate sendCodeTmpl = new TextTemplate(
         EmailUtil.formatAndWrapCSS("""
@@ -52,7 +56,7 @@ public class LoginService {
     /**
      * 通过用户名和邮箱验证码登录（发送验证码）
      * */
-    public void sendCodeByEmail(String userId) {
+    public void sendCodeEmail(String userId) {
 
         if ( ! verificationDAO.canSendCodeAgain(userId)) {
             throw new ServiceException(ServiceStatus.TOO_MANY_REQUESTS, "发送验证码过于频繁");

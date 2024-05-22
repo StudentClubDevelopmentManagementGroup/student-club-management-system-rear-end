@@ -24,26 +24,31 @@ public class Application {
     }
 
     private static void tmp() {
-        Logger logger = LoggerFactory.getLogger("【临时测试用】");
-
-        boolean assertionsEnabled = false;
-        assert assertionsEnabled = true;
-        if ( ! assertionsEnabled)
-            logger.warn("\033[31m【未开启断言！】在开发阶段，为确保代码的正确性和稳定性，请在 JVM 中启用断言");
+        Logger log = LoggerFactory.getLogger("【临时测试用】");
+        StringBuilder sb = new StringBuilder();
 
         String host;
         try {
-            host = InetAddress.getLocalHost().getHostAddress();
-        } catch (UnknownHostException e) {
-            host = "127.0.0.1";
+            host = InetAddress.getLocalHost().getHostName();
+        } catch (UnknownHostException ignored) {
+            host = "localhost";
         }
         String port = ctx.getEnvironment().getProperty("server.port");
 
-        logger.info("""
+        sb.append("""
             api 说明文档：{}/swagger-ui/index.html
             api 说明文档：{}/html/test/swagger-with-login.html（ <- 快速登录 ）
             文件存储测试：{}/html/test/file-storage.html
             """.replace("{}", "http://" + host + ":" + port)
         );
+
+        boolean assertionsEnabled = false;
+        assert assertionsEnabled = true;
+        if ( ! assertionsEnabled)
+            sb.append("\033[31m开发阶段请启用 JVM 断言，开启方式见：/doc/IntelliJ IDEA 如何开启 JVM 断言.jpg\033[0m");
+        else
+            sb.append("\033[32m已启用JVM 断言\033[0m");
+
+        log.info(sb.toString());
     }
 }

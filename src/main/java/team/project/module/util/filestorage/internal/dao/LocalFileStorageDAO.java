@@ -59,8 +59,7 @@ public class LocalFileStorageDAO {
     }
 
     /**
-     * <p> 删除文件
-     * <p> 如果文件删除成功后文件夹为空，则一路删除空的文件夹，直到根文件夹
+     * 删除文件
      * */
     public boolean deleteFile(String filePath) {
 
@@ -72,17 +71,15 @@ public class LocalFileStorageDAO {
         boolean result = file.delete();
 
         if (result) {
-
+            /* 如果文件删除成功后文件夹为空，则一路删除空的文件夹，直到根文件夹 */
             File parent = file.getParentFile();
             while ( ! rootFolder.equals(parent)) {
 
                 String[] files = parent.list();
-                if (files == null || files.length != 0) {
+                if (files == null || files.length != 0)
                     break;
-                }
-                if ( ! parent.delete()) {
+                if ( ! parent.delete())
                     break;
-                }
 
                 parent = parent.getParentFile();
             }
@@ -104,8 +101,8 @@ public class LocalFileStorageDAO {
     }
 
     /**
-     * 以 UTF8 编码规则来读取文件
-     * <br>（如果文件不是纯文本文件，或者编码不匹配，则读取失败，抛出异常）
+     * <p>  以 UTF8 编码规则来读取文件
+     * <br> 如果文件不是纯文本文件，或者编码不匹配，则读取失败，抛出异常
      * */
     public String readTextFromFile(String filePath) throws IOException {
         File file = new File(rootFolder, filePath);

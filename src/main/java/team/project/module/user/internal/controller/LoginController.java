@@ -49,13 +49,13 @@ public class LoginController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
     }
 
-    @Operation(summary="使用邮箱登录（发送验证码）")
-    @PostMapping("/login/send_code/email")
-    Object sendCode(
+    @Operation(summary="使用邮箱登录（发送验证码到邮箱）")
+    @PostMapping("/login/email/send_code")
+    Object sendCodeEmail(
         @NotBlank(message="学号/工号不能为空") @UserIdConstraint
         @RequestParam("user_id") String userId
     ) {
-        loginService.sendCodeByEmail(userId);
+        loginService.sendCodeEmail(userId);
         return new Response<>(ServiceStatus.SUCCESS);
     }
 

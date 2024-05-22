@@ -30,6 +30,12 @@ public class RegisterController {
         return new Response<>(ServiceStatus.CREATED).statusText("注册成功");
     }
 
+    @Operation(summary="注册账号（发送验证码到邮箱，确保邮箱可用）")
+    @PostMapping("/register/email/send_code")
+    Object sendCodeEmail() {
+        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    }
+
     @Operation(summary="注销账号")
     @PostMapping("/unregister")
     @SaCheckLogin
