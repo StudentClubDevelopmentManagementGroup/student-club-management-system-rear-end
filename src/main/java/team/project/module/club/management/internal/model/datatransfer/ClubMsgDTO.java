@@ -15,7 +15,7 @@ import team.project.module.club.management.internal.model.request.ListClubInfoRe
  * */
 @Data
 public class ClubMsgDTO {
-    @JsonProperty("name")            String   name;
+    @JsonProperty("club_name")       String   clubName;
     @JsonProperty("department_name") String   departmentName;
     @JsonProperty("department_id")   Long     departmentId;
     @JsonProperty("club_id")         Long     clubId;

@@ -1,6 +1,5 @@
 package team.project.module.club.personnelchanges.internal.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -8,6 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
@@ -67,7 +67,7 @@ public class TblUserClubController {
 
     @Operation(summary = "查询该用户在所有社团的身份")
     @PostMapping("/club/member/select_member_all_club_info")
-    Object selectMemberAllClubInfo(@NotNull(message = "学号工号不能为空") @UserIdConstraint @JsonProperty("user_id") String userId) {
+    Object selectMemberAllClubInfo(@NotNull(message = "学号工号不能为空")  @UserIdConstraint @RequestParam("user_id") String userId) {
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectMemberAllClubInfo(userId));
     }
 }

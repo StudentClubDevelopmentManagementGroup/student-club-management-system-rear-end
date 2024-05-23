@@ -19,7 +19,7 @@
         <result column="department_id"      property="departmentId" />
         <result column="club_id"            property="clubId" />
         <result column="department_name"    property="departmentName" />
-        <result column="name"               property="name" />
+        <result column="name"               property="clubName" />
         <result column="state"              property="state" />
     </resultMap>
 
