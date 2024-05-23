@@ -22,7 +22,9 @@ public class EmailServiceImpl implements EmailServiceI {
     JavaMailSender mailSender;
 
     @Override
-    public boolean SendEmail(SendEmailQO sendEmailQO) {
+    public boolean sendEmail(SendEmailQO sendEmailQO) {
+        assert sendEmailQO != null;
+
         if (sendEmailQO.isHtml()) {
             return sendHtmlEmail(sendEmailQO);
         } else {

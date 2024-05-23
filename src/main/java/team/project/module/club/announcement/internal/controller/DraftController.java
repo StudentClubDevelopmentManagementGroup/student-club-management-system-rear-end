@@ -93,7 +93,7 @@ public class DraftController {
     @Operation(summary="清空我的草稿箱")
     @PostMapping("/clear")
     @SaCheckLogin
-    Object del_all(
+    Object clear(
         @NotNull(message="未指定社团id") @ClubIdConstraint
         @RequestParam("club_id") Long clubId
     ) {

@@ -16,6 +16,8 @@ public class ModelConverter {
     TmpDepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
 
     public UserInfoVO toUserInfoVO(UserDO userDO) {
+        if (null == userDO)
+            return null;
 
         UserInfoVO.UserRoleInfo role = new UserInfoVO.UserRoleInfo();
         role.setStudent(userDO.hasRole(UserRole.STUDENT));
@@ -40,6 +42,8 @@ public class ModelConverter {
     }
 
     public UserInfoDTO toUserInfoDTO(UserDO userDO) {
+        if (null == userDO)
+            return null;
 
         UserInfoDTO result = new UserInfoDTO();
         result.setUserId(userDO.getUserId());
@@ -53,6 +57,8 @@ public class ModelConverter {
     }
 
     public UserBasicInfoDTO toUserBasicInfoDTO(UserDO userDO) {
+        if (null == userDO)
+            return null;
 
         UserBasicInfoDTO result = new UserBasicInfoDTO();
         result.setUserId(userDO.getUserId());

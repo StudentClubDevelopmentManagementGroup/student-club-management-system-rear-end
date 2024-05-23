@@ -12,6 +12,8 @@ import team.project.module._template.export.service.TmplServiceI;
 public class TmplServiceImpl implements TmplServiceI {
 
     public TmplDTO example(TmplQO queryObject) {
+        assert queryObject != null; /* <- export 包下提供的方法最好加上简单的断言 */
+
         /* 这里可以使用 internal 的 service */
         return null;
     }

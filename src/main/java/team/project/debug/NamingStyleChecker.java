@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-@Component /* <- 开启命名风格检测 */
+// @Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     private static final Logger log = LoggerFactory.getLogger("【命名风格检测】");
 
@@ -25,21 +25,21 @@ final class NamingStyleChecker {
 
     private static final String tmplPrefix = "Tmpl";
 
-    private final Pattern packageNamePattern  = Pattern.compile("^[a-z.]*$");
-    private final Pattern classNamePattern    = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
-    private final Pattern variableNamePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
-    private final Pattern constantNamePattern = Pattern.compile("^[A-Z][_A-Z0-9]*$");
-    private final Pattern methodNamePattern   = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
+    private static final Pattern packageNamePattern  = Pattern.compile("^[a-z.]*$");
+    private static final Pattern classNamePattern    = Pattern.compile("^[A-Z][a-zA-Z0-9]*$");
+    private static final Pattern variableNamePattern = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
+    private static final Pattern constantNamePattern = Pattern.compile("^[A-Z][_A-Z0-9]*$");
+    private static final Pattern methodNamePattern   = Pattern.compile("^[a-z][a-zA-Z0-9]*$");
 
-    private HashSet<String>     invalidPackageNames;
-    private ArrayList<String[]> invalidClassName;
-    private ArrayList<String[]> invalidTmplPrefix;
-    private ArrayList<String[]> invalidFieldName;
-    private ArrayList<String[]> invalidMethodName;
-    private ArrayList<String[]> invalidParamName;
+    private static HashSet<String>     invalidPackageNames;
+    private static ArrayList<String[]> invalidClassName;
+    private static ArrayList<String[]> invalidTmplPrefix;
+    private static ArrayList<String[]> invalidFieldName;
+    private static ArrayList<String[]> invalidMethodName;
+    private static ArrayList<String[]> invalidParamName;
 
     @PostConstruct
-    private void postConstruct() {
+    private static void postConstruct() {
         try {
             check();
         } catch (ClassNotFoundException e) {
@@ -47,7 +47,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void prepare() {
+    private static void prepare() {
         invalidPackageNames = new HashSet<>();
         invalidClassName    = new ArrayList<>();
         invalidTmplPrefix   = new ArrayList<>();
@@ -56,7 +56,7 @@ final class NamingStyleChecker {
         invalidParamName    = new ArrayList<>();
     }
 
-    private void check() throws ClassNotFoundException {
+    private static void check() throws ClassNotFoundException {
         prepare();
         for (String className : getAllClass(rootPackage)) {
             checkClass(Class.forName(className));
@@ -64,68 +64,80 @@ final class NamingStyleChecker {
         report();
     }
 
-    private void report() {
+    public static void report() {
+        final String color = "\033[31m";
+        StringBuilder report = new StringBuilder(color);
+
         if ( ! invalidPackageNames.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String packageName : invalidPackageNames) {
-                sb.append(" - ").append(packageName).append("\n");
+                sb.append("\t").append(String.format("%-20s", packageName)).append("\n");
             }
-            log.error("""
-                包名使用全小写形式，不使用下划线分隔单词
+            report.append("""
+                包名使用全小写形式，不使用下划线分隔单词，
                 请修改如下包名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidClassName.isEmpty() || ! invalidTmplPrefix.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] className : invalidClassName) {
-                sb.append(" - ").append(className[0]).append(" （").append(className[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", className[0]))
+                    .append("\t").append(className[1]).append("\n");
             }
             for (String[] className : invalidTmplPrefix) {
-                sb.append(" - ").append(className[0]).append(" （").append(className[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", className[0]))
+                    .append("\t").append(className[1]).append("\n");
             }
-            log.error("""
-                类名使用大驼峰形式，每个单词的首字母都大写，不使用下划线分隔单词。不要使用模板包的 Tmpl 前缀
+            report.append("""
+                类名使用大驼峰形式，每个单词的首字母都大写，不使用下划线分隔单词。不要使用模板包的 Tmpl 前缀，
                 请修改如下类名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidMethodName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] methodAndClass : invalidMethodName) {
-                sb.append(" - ").append(methodAndClass[0]).append(" （位于：").append(methodAndClass[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", methodAndClass[0]))
+                    .append("\t").append(methodAndClass[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 函数名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下函数名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidParamName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] paramAndMethod : invalidParamName) {
-                sb.append(" - ").append(paramAndMethod[0]).append(" （位于：").append(paramAndMethod[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", paramAndMethod[0]))
+                    .append("\t").append(paramAndMethod[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 函数入参采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 请修改如下入参名：
-                {}""", sb);
+                """).append(sb);
         }
 
         if ( ! invalidFieldName.isEmpty()) {
             StringBuilder sb = new StringBuilder();
             for (String[] fieldAndClass : invalidFieldName) {
-                sb.append(" - ").append(fieldAndClass[0]).append(" （位于：").append(fieldAndClass[1]).append("）\n");
+                sb.append("\t").append(String.format("%-20s", fieldAndClass[0]))
+                    .append("\t").append(fieldAndClass[1]).append("\n");
             }
-            log.error("""
+            report.append("""
                 字段名采用小驼峰形式，第一个单词的首字母小写，其他单词的首字母都大写，不使用下划线分隔单词
                 常量可以采用所有单词的字母全大写，使用下划线分隔单词
                 请修改如下字段名：
-                {}""", sb);
+                """).append(sb);
+        }
+
+        if (report.length() > 0) {
+            log.warn(report.toString());
         }
     }
 
-    private List<String> getAllClass(String packageName) {
+    private static List<String> getAllClass(String packageName) {
         List<String> classList = new ArrayList<>();
 
         URL basePathURL = Thread.currentThread().getContextClassLoader().getResource(packageName.replace('.', '/'));
@@ -153,13 +165,13 @@ final class NamingStyleChecker {
         return classList;
     }
 
-    private void checkPageName(String packageName) {
+    private static void checkPageName(String packageName) {
         if ( ! packageNamePattern.matcher(packageName).matches()) {
             invalidPackageNames.add(packageName);
         }
     }
 
-    private void checkClassName(Class<?> clazz) {
+    private static void checkClassName(Class<?> clazz) {
         String className = clazz.getName();
         String classSimpleName = clazz.getSimpleName();
         if (   ! className.contains("$")
@@ -173,7 +185,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkFieldName(Class<?> clazz) {
+    private static void checkFieldName(Class<?> clazz) {
         for (Field field : clazz.getDeclaredFields()) {
             String fieldName = field.getName();
             if (   ! fieldName.contains("$")
@@ -185,7 +197,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkMethodName(Class<?> clazz) {
+    private static void checkMethodName(Class<?> clazz) {
         String className = clazz.getName();
         for (Method method : clazz.getDeclaredMethods()) {
             String methodName = method.getName();
@@ -205,7 +217,7 @@ final class NamingStyleChecker {
         }
     }
 
-    private void checkClass(Class<?> clazz) {
+    private static void checkClass(Class<?> clazz) {
         String packageName = clazz.getPackage().getName();
 
         if ( ! packageName.startsWith(rootPackage)

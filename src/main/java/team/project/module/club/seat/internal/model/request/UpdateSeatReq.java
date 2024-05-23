@@ -54,7 +54,7 @@ public class UpdateSeatReq {
         private Boolean unsetOwner = false; /* <- 是否将座位置空 */
     }
 
-    /* 校验：如果要将座位置空，则不该指明所属者的学号/工号 */
+    /* 额外校验 */
     public static void validate(UpdateSeatReq req) {
         if (req.seatList.stream().anyMatch(seat -> seat.unsetOwner && seat.ownerId != null)) {
             throw new InvalidParamException("如果要将座位置空，则不该指明所属者的学号/工号");

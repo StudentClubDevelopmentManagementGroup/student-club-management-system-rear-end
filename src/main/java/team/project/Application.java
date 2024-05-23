@@ -26,11 +26,15 @@ public class Application {
     private static void tmp() {
         Logger logger = LoggerFactory.getLogger("【临时测试用】");
 
+        boolean assertionsEnabled = false;
+        assert assertionsEnabled = true;
+        if ( ! assertionsEnabled)
+            logger.warn("\033[31m【未开启断言！】在开发阶段，为确保代码的正确性和稳定性，请在 JVM 中启用断言");
+
         String host;
         try {
             host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException e) {
-            logger.error("获取本机地址失败", e);
             host = "127.0.0.1";
         }
         String port = ctx.getEnvironment().getProperty("server.port");

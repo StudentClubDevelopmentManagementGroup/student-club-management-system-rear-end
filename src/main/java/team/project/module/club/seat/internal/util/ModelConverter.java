@@ -16,9 +16,9 @@ public class ModelConverter {
     UserInfoServiceI userInfoService;
 
     public SeatVO toSeatVO(SeatDO seat) {
+        assert seat != null;
 
-        UserBasicInfoDTO arrangerDTO = userInfoService.selectUserBasicInfo(seat.getArrangerId());
-        ClubMemberInfoVO arrangerVO = toClubMemberInfoVO(arrangerDTO);
+        ClubMemberInfoVO arrangerVO = toClubMemberInfoVO( userInfoService.selectUserBasicInfo(seat.getArrangerId()) );
 
         ClubMemberInfoVO ownerVO = null;
         if (seat.getOwnerId() != null) {
@@ -38,6 +38,8 @@ public class ModelConverter {
     }
 
     public ClubMemberInfoVO toClubMemberInfoVO(UserBasicInfoDTO userInfo) {
+        if (null == userInfo)
+            return null;
 
         ClubMemberInfoVO result = new ClubMemberInfoVO();
         result.setUserId(userInfo.getUserId());

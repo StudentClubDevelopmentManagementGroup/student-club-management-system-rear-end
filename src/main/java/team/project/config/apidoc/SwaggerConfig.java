@@ -83,8 +83,18 @@ public class SwaggerConfig {
     @Bean
     GroupedOpenApi user() {
         return GroupedOpenApi.builder()
-            .group("用户（注册、登录、信息管理）")
+            .group("用户（注册、登录、个人账户信息管理）")
             .packagesToScan("team.project.module.user")
+            .pathsToExclude("/user/management/**")
+            .build();
+    }
+
+    @Bean
+    GroupedOpenApi userManagement() {
+        return GroupedOpenApi.builder()
+            .group("用户管理（管理员对所有账号的管理）")
+            .packagesToScan("team.project.module.user")
+            .pathsToMatch("/user/management/**")
             .build();
     }
 }

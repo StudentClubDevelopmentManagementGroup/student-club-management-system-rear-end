@@ -1,6 +1,5 @@
 package team.project.module.club.announcement.internal.util;
 
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
@@ -10,6 +9,7 @@ import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
 import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
 @Component("club-announcement-util-ModelConverter")
 public class ModelConverter {
@@ -21,6 +21,7 @@ public class ModelConverter {
     UserInfoServiceI userInfoService;
 
     public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
+        assert announcementDO != null;
 
         ClubBasicMsgDTO clubInfo = clubInfoService.selectClubBasicMsg(announcementDO.getClubId());
 
@@ -39,6 +40,7 @@ public class ModelConverter {
     }
 
     public DraftVO toDraftVO(DraftDO draftDO, String content, String summary) {
+        assert draftDO != null;
 
         DraftVO result = new DraftVO();
         result.setDraftId(draftDO.getDraftId());

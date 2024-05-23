@@ -16,8 +16,8 @@ import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
 import team.project.module.util.email.export.util.EmailUtil;
 
-@Slf4j
 @Service
+@Slf4j
 public class LoginService {
     @Autowired
     EmailServiceI emailService;
@@ -36,8 +36,8 @@ public class LoginService {
      * @return 登录成功返回用户信息，登录失败返回 null
      * */
     public UserInfoVO login(String userId, String password) {
-        UserDO user = userDAO.selectUserInfo(userId, password);
-        return user == null ? null : modelConverter.toUserInfoVO(user);
+        UserDO userInfo = userDAO.selectUserInfo(userId, password);
+        return modelConverter.toUserInfoVO(userInfo);
     }
 
     /**
@@ -61,7 +61,7 @@ public class LoginService {
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
         sendEmailQO.setSubject("【GUET 社团管理系统】登录验证");
-        sendEmailQO.setContent(EmailUtil.formatWithCSS("""
+        sendEmailQO.setContent(EmailUtil.formatAndWrapCSS("""
             <h1>GUET 社团管理系统 登录验证</h1>
             <p>您正在进行邮箱登录，验证码<em> %s </em></p>
             <p>该验证码 5 分钟内有效，请勿泄漏于他人</p>
@@ -69,7 +69,7 @@ public class LoginService {
         );
         sendEmailQO.setHtml(true);
 
-        if ( ! emailService.SendEmail(sendEmailQO)) {
+        if ( ! emailService.sendEmail(sendEmailQO)) {
             log.error("邮件发送失败");
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "邮件发送失败");
         }
@@ -84,7 +84,7 @@ public class LoginService {
             return null;
         }
 
-        UserDO user = userDAO.selectUserInfo(req.getUserId());
-        return user == null ? null : modelConverter.toUserInfoVO(user);
+        UserDO userInfo = userDAO.selectUserInfo(req.getUserId());
+        return modelConverter.toUserInfoVO(userInfo);
     }
 }

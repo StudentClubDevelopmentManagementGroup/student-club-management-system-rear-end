@@ -33,12 +33,10 @@ public class UserDAO {
      * 查询指定用户的账号信息
      * */
     public UserDO selectUserInfo(String userId) {
-
         UserDO result = userMapper.selectUserInfo(userId);
 
-        if (result != null) {
+        if (result != null)
             userBasicInfoCache.put(userId, result);
-        }
 
         return result;
     }
@@ -47,12 +45,10 @@ public class UserDAO {
      * 查询指定用户的账号信息
      * */
     public UserDO selectUserInfo(String userId, String password) {
-
         UserDO result = userMapper.selectUserInfo(userId, password);
 
-        if (result != null) {
+        if (result != null)
             userBasicInfoCache.put(userId, result);
-        }
 
         return result;
     }
@@ -150,12 +146,10 @@ public class UserDAO {
 
         Integer role = selectRoleCode(userId);
 
-        if (role == null || UserRole.hasRole(role, roleToAdd)) {
+        if (role == null || UserRole.hasRole(role, roleToAdd))
             return 0;
-        }
 
         userBasicInfoCache.invalidate(userId);
-
         return userMapper.setRole(userId, UserRole.addRole(role, roleToAdd));
     }
 
@@ -163,16 +157,20 @@ public class UserDAO {
      * 给指定用户移除角色
      * */
     public int removeRoleFromUser(String userId, UserRole roleToRemove) {
-
         Integer role = selectRoleCode(userId);
 
-        if (role == null || ! UserRole.hasRole(role, roleToRemove)) {
+        if (role == null || ! UserRole.hasRole(role, roleToRemove))
             return 0;
-        }
 
         userBasicInfoCache.invalidate(userId);
-
         return userMapper.setRole(userId, UserRole.removeRole(role, roleToRemove));
+    }
+
+    /**
+     * 设置用户密码
+     * */
+    public int setPassword(String userId, String password) {
+        return userMapper.setPassword(userId, password);
     }
 
     /* -- 封装 mybatis-plus BaseMapper 的 CRUD 方法 -- */

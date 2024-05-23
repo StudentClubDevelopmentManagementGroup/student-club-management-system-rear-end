@@ -9,5 +9,5 @@ public interface EmailServiceI {
      * @param sendEmailQO 详见 {@link SendEmailQO}
      * @return 如果发送成功返回 true，如果发送失败（发送时出现异常）则返回 false
      * */
-    boolean SendEmail(SendEmailQO sendEmailQO);
+    boolean sendEmail(SendEmailQO sendEmailQO);
 }
