@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,8 +32,8 @@ public class TblClubController {
     }
 
     @Operation(summary = "查询基地基础信息")
-    @GetMapping("/club/select")
-    Object selectClub(@Valid ListClubInfoReq req) {
+    @PostMapping("/club/select")
+    Object selectClub(@Valid @RequestBody ListClubInfoReq req) {
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<TblClubDO> result;
         result = service.selectByCriteria(newQO);
@@ -75,9 +74,8 @@ public class TblClubController {
             654654
             4654654
             """)  // TODO 补充详细的api介绍
-    @GetMapping("/club/select_all")
-    Object selectAll(@Valid ListClubInfoReq req) {
-
+    @PostMapping("/club/select_all")
+    Object selectAll(@Valid @RequestBody ListClubInfoReq req) {
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<ClubMsgDTO> result;
         result = service.findAll(newQO);

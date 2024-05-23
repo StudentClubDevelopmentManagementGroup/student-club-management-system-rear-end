@@ -10,7 +10,7 @@ import lombok.Data;
 public class OneClubInfoReq {
     @NotBlank(message="社团名字不能为空")
     @Size(min=1, max=20, message="社团名字的长度不合约束")
-    @JsonProperty("name")
+    @JsonProperty("club_name")
     String   name;
 
     @NotNull(message="学院id不能为空")

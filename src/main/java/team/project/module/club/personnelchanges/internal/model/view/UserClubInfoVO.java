@@ -11,7 +11,7 @@ public class UserClubInfoVO {
     String clubName;
     @JsonProperty("club_id")
     Long   clubId;
-    @JsonProperty("department_id")
+    @JsonProperty("department_name")
     String departmentName;
     @JsonProperty("role")
     String role;
