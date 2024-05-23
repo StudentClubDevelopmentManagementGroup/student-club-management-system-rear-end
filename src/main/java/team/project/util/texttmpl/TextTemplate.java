@@ -6,18 +6,28 @@ import java.util.Map;
 
 /**
  * <p>  简单的文本模板工具
- * <p>  根据提供参数来替换模板中的占位模板，从而生成最终的文本
+ * <p>  在模板文本中定义占位参数，运行时将这些占位参数替换为实际的值，动态地生成文本内容
  * <p>
- * <b>  占位参数识别规则： </b>
+ * <b>  占位参数的命名规则： </b>
  * <ol>
- * <li> 如果以 #{ } 来作占位参数的分界符，则 #{ } 所包裹的字符串截取前后空格后就是参数的名称
+ * <li> 可以自定义占位参数的分界符，例如： #{  }、{{  }}、<-!-  -->、甚至是 % 和空格
+ * <br> 接下来的介绍中，使用 #{ } 来作占位参数的分界符
+ * <br>
+ * <li> #{ } 所包裹的字符串截取前后空格后就是参数的名称
  * <p>  模板："Hello, #{ name }! Today is #{ day }."
  * <br> 参数：[ "name", "day" ]
- * <li> 参数名要求起始和结束不含空白字符，但不必遵守标识符的起名规则，可以包含特殊字符
- * <p>  模板："4-2 = #{ @ }, 1+1 = #{ ## }, 9+5 = #{ the answer }"
- * <br> 参数：[ "@", "##", "the answer" ]
- * <li> 如果 #{ } 内部还有 #{ }，则将内部的 #{ } 识别为参数，外部的识别为文本
+ * <br>
+ * <li> 占位参数命名只要求前后不含空白字符，不必遵守标识符的起名规则，可以包含特殊字符
+ * <p>  模板："#{ @ }, #{ ## }, #{ the answer }, #{ 1 } "
+ * <br> 参数：[ "@", "##", "the answer", "1" ]
+ * </ol>
+ * <b>  占位参数的识别规则： </b>
+ * <ol>
  * <br> 如果 #{ } 内部为空，则忽略这个占位符
+ * <br> 模板："#{} #{a}"
+ * <br> 参数：["a"]
+ * <br>
+ * <li> 如果 #{ } 内部还有 #{ }，则将内部的 #{ } 识别为参数，外部的识别为文本
  * <br> 模板："#{ #{} 1! 5!  }"
  * <br> 参数：[]
  * <br> 解释："#{ #{} 1! 5!  }" 内部还有 #{ }，所以外部的 #{ } 识别为文本，
@@ -97,7 +107,7 @@ public class TextTemplate {
 
     /* 2024-05-21 ljh
        ---------
-        在构建模板对象时，就解析模板文本成一个 Part 列表，
+        构建模板对象时将文本模板解析成一个 Part 列表，
 
         每个 Part 表示一个文本片段，或者一个占位参数
 
@@ -112,7 +122,7 @@ public class TextTemplate {
                 (TEXT,  ".")
             ];
 
-        可见 TEXT 和 PARAM 总是交替出现，所以解析只需交替提取 TEXT 和 PARAM 部分即可
+        可见，TEXT 和 PARAM 总是交替出现，所以只需交替提取模板文本中的 TEXT 和 PARAM 部分即可
      */
 
     private enum Type { TEXT, PARAM }
@@ -124,15 +134,13 @@ public class TextTemplate {
 
     private record Analyzer(String template) {
 
-        /* 分析模板文本内容，返回分析后的模板结构（本函数较长，但是整体上逻辑比较简单，所以不拆分了） */
         List<Part> analyze(String paramBegin, String paramEnd) {
 
-            if (template   == null || template  .isEmpty() ||
-                paramBegin == null || paramBegin.isEmpty() ||
-                paramEnd   == null || paramEnd  .isEmpty()
-            ) {
+            if (template == null || template.isEmpty())
+                return List.of(new Part(Type.TEXT, ""));
+
+            if (paramBegin == null || paramBegin.isEmpty() || paramEnd == null || paramEnd.isEmpty())
                 return List.of(new Part(Type.TEXT, template));
-            }
 
             List<Part> result = new ArrayList<>();
 

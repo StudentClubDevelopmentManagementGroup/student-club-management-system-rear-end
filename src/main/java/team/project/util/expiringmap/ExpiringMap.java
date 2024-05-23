@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
 public class ExpiringMap<K, V> {
 
     /**
-     * 创建一个空的带有自动过期功能的键值对容器
+     * 创建一个空的键值对容器，并设定键值对的有效时间
      * @param liveTimeMillis 将键值对放入容器时赋予的有效时间，单位毫秒
      * */
     public ExpiringMap(long liveTimeMillis) {
@@ -21,7 +21,7 @@ public class ExpiringMap<K, V> {
     }
 
     /**
-     * 添加一个新的键值对，如果键已存在则更新值和并延长有效时间
+     * 添加一个新的键值对（如果键已存在则更新值，并延长有效时间）
      * */
     public void put(K key, V value) {
         lazyCleanUpExpired();
@@ -73,7 +73,7 @@ public class ExpiringMap<K, V> {
     }
 
     /**
-     * 移除指定键对应的键值对
+     * 移除指定键对应的键值对（不需要提前判断键存在）
      * */
     public void remove(K key) {
         lazyCleanUpExpired();
