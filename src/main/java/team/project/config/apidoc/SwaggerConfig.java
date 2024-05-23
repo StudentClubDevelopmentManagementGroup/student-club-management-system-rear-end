@@ -76,7 +76,7 @@ public class SwaggerConfig {
     GroupedOpenApi fileStorage() {
         return GroupedOpenApi.builder()
             .group("文件存储")
-            .packagesToScan("team.project.module.filestorage")
+            .packagesToScan("team.project.module.util.filestorage")
             .build();
     }
 
