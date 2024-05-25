@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-// @Component /* <- 开启命名风格检测 */
+@Component /* <- 开启命名风格检测 */
 final class NamingStyleChecker {
     private static final Logger log = LoggerFactory.getLogger("【命名风格检测】");
 
@@ -40,11 +40,14 @@ final class NamingStyleChecker {
 
     @PostConstruct
     private static void postConstruct() {
-        try {
-            check();
-        } catch (ClassNotFoundException e) {
-            log.error("无法检查命名风格", e);
-        }
+        Thread thread = new Thread(() -> {
+            try {
+                check();
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        thread.start();
     }
 
     private static void prepare() {
@@ -66,7 +69,7 @@ final class NamingStyleChecker {
 
     public static void report() {
         final String color = "\033[31m";
-        StringBuilder report = new StringBuilder(color);
+        StringBuilder report = new StringBuilder();
 
         if ( ! invalidPackageNames.isEmpty()) {
             StringBuilder sb = new StringBuilder();
@@ -133,7 +136,7 @@ final class NamingStyleChecker {
         }
 
         if (report.length() > 0) {
-            log.warn(report.toString());
+            log.warn(color + report);
         }
     }
 
