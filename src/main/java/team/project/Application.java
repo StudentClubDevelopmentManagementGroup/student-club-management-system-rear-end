@@ -29,7 +29,7 @@ public class Application {
 
         String host;
         try {
-            host = InetAddress.getLocalHost().getHostName();
+            host = InetAddress.getLocalHost().getHostAddress();
         } catch (UnknownHostException ignored) {
             host = "localhost";
         }
