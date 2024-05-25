@@ -3,6 +3,11 @@ package team.project.debug;
 import jakarta.annotation.PostConstruct;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ExitCodeGenerator;
+import org.springframework.boot.SpringApplication;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.io.File;
@@ -68,7 +73,6 @@ final class NamingStyleChecker {
     }
 
     public static void report() {
-        final String color = "\033[31m";
         StringBuilder report = new StringBuilder();
 
         if ( ! invalidPackageNames.isEmpty()) {
@@ -136,7 +140,12 @@ final class NamingStyleChecker {
         }
 
         if (report.length() > 0) {
-            log.warn(color + report);
+            report.insert(0, "\033[31;40m");
+            report.append("\033[0m\033[33m" + """
+                上述命名不符合规范，请 右键点击变量名 -> 重构 -> 重命名
+                提示：重构 Java 代码的变量名后，可能还要同步修改配置文件（如 xml 等）中的变量名
+                """ + "\033[0m");
+            log.warn(report.toString());
         }
     }
 
