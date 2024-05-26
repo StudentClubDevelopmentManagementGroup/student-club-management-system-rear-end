@@ -1,8 +1,8 @@
-package team.example.util;
+package team.example.util.expiringmap;
 
 import team.project.util.expiringmap.ExpiringMap;
 
-public class DemoExpiringMap {
+public class Demo {
 
     public static void main(String[] args) throws InterruptedException {
 

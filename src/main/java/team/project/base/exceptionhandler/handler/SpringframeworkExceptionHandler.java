@@ -81,7 +81,7 @@ public class SpringframeworkExceptionHandler {
         return new Response<>(ServiceStatus.BAD_REQUEST).data("请求的内容不符合预期的格式或结构，或是数据类型不匹配，无法进行解析");
     }
 
-    /* 访问不存在的资源（例如一个错误URL地址） */
+    /* 访问不存在的资源（例如一个错误 URL 地址） */
     @ExceptionHandler(NoResourceFoundException.class)
     public Object handle(NoResourceFoundException exception) {
         return new Response<>(ServiceStatus.NOT_FOUND).data("错误的 URL 地址，访问了不存在的资源");

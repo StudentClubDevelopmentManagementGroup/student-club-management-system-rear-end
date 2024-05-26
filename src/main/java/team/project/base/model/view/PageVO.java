@@ -21,14 +21,15 @@ public class PageVO<VO> {
 
     /* 如果分页查询得出的结果还需要进一步转换（例如，查出的是 DO，需要转换成 VO），则用这个构造器 */
     public PageVO(List<VO> records, Page<?> page) {
-        this.records     = records;
+
+        this.records = records;
 
         this.currentPage = (int)( Math.min(page.getCurrent(), Integer.MAX_VALUE) );
         this.pageSize    = (int)( Math.min(page.getSize(),    Integer.MAX_VALUE) );
 
         if (page.searchCount()) {
-            this.totalPages  = (int)( Math.min(page.getPages(), Integer.MAX_VALUE) );
-            this.totalItem   = (int)( Math.min(page.getTotal(), Integer.MAX_VALUE) );
+            this.totalPages = (int)( Math.min(page.getPages(), Integer.MAX_VALUE) );
+            this.totalItem  = (int)( Math.min(page.getTotal(), Integer.MAX_VALUE) );
         }
     }
 

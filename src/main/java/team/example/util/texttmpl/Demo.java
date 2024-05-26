@@ -1,10 +1,10 @@
-package team.example.util;
+package team.example.util.texttmpl;
 
 import team.project.util.texttmpl.TextTemplate;
 
 import java.util.Map;
 
-public class DemoTextTemplate {
+public class Demo {
 
     public static void main(String[] args) {
 
