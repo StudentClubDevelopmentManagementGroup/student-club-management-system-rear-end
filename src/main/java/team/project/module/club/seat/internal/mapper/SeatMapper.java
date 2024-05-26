@@ -21,14 +21,14 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
         if (null == seat.getDescription()) {
             seat.setDescription("");
         }
-        this.insert(seat);
+        insert(seat);
     }
 
     /**
      * 设置座位所属
      * */
     default int setSeatOwner(SeatDO seat) {
-        return this.update(null, new LambdaUpdateWrapper<SeatDO>()
+        return update(null, new LambdaUpdateWrapper<SeatDO>()
             .eq(SeatDO::getSeatId, seat.getSeatId())
             .eq(SeatDO::getClubId, seat.getClubId())
             .set(SeatDO::getArrangerId, seat.getArrangerId())
@@ -40,7 +40,7 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
      * 更新座位信息（字段传 null 则不更新，且不更新座位所属）
      * */
     default int updateSeatInfo(SeatDO seat) {
-        return this.update(null, new LambdaUpdateWrapper<SeatDO>()
+        return update(null, new LambdaUpdateWrapper<SeatDO>()
             .eq(SeatDO::getClubId, seat.getClubId())
             .eq(SeatDO::getSeatId, seat.getSeatId())
             .set(seat.getX() != null, SeatDO::getX, seat.getX())
@@ -53,7 +53,7 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
      * 查询社团的所有座位
      * */
     default List<SeatDO> selectAllSeat(Long clubId) {
-        return this.selectList(null, new LambdaQueryWrapper<SeatDO>()
+        return selectList(null, new LambdaQueryWrapper<SeatDO>()
             .eq(SeatDO::getClubId, clubId)
         );
     }
@@ -62,7 +62,7 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
      * 删除座位（真的删除，不是逻辑删除）
      * */
     default int deleteSeat(Long clubId, Long seatId) {
-        return this.delete(new LambdaQueryWrapper<SeatDO>()
+        return delete(new LambdaQueryWrapper<SeatDO>()
             .eq(SeatDO::getClubId, clubId)
             .eq(SeatDO::getSeatId, seatId)
         );
