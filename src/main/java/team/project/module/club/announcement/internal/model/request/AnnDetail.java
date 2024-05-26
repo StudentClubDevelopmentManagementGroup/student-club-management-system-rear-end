@@ -15,7 +15,7 @@ import static team.project.module.club.announcement.internal.model.entity.AnnDO.
 /**
  * <p>  公告内容
  * <p>  不要单独使用本类来接收 controller 入参，
- * <br> 而应与其他 Req 类组合使用
+ *      而应与其他 Req 类组合使用
  * */
 @Getter
 @Setter

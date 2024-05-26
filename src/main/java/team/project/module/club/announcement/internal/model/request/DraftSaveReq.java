@@ -15,5 +15,5 @@ public class DraftSaveReq {
     private AnnDetail draft;
 
     @JsonProperty("draft_id")
-    private Long draftId; /* <- nullable，若为 null 则上传新草稿，否则是更新草稿 */
+    private Long draftId; /* <- nullable，若为 null 则上传新草稿，否则更新草稿 */
 }

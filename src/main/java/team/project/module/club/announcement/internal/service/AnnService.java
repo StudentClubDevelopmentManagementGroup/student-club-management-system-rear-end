@@ -214,7 +214,7 @@ public class AnnService {
         String textFileId = announcement.getTextFile();
 
         if (1 == announcementMapper.deleteById(announcementId)) {
-            fileStorageService.deleteFile(textFileId);
+            fileStorageService.deleteFile(textFileId); /* <- 成功删除数据库的记录后再清除文件 */
         }
     }
 

@@ -170,7 +170,7 @@ public class DraftService {
         authService.requireClubManager(authorId, clubId, "不是社团负责人");
 
         Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
-        List<DraftDO> draftList = draftMapper.listMyDraft(page, authorId, clubId);
+        List<DraftDO> draftList = draftMapper.selectListMyDraft(page, authorId, clubId);
 
         List<DraftVO> result = new ArrayList<>();
         for (DraftDO draftDO : draftList) {
@@ -206,7 +206,7 @@ public class DraftService {
     public void delAllMyDraft(String userId, Long clubId) {
         authService.requireClubManager(userId, clubId, "不是社团负责人");
 
-        List<DraftDO> draftList = draftMapper.selectAllMyDraft(userId, clubId);
+        List<DraftDO> draftList = draftMapper.selectAllMyDraftFile(userId, clubId);
         for (DraftDO draft : draftList) {
 
             String textFileId = draft.getTextFile();

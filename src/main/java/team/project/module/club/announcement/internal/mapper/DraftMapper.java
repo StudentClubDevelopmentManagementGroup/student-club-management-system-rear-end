@@ -12,7 +12,7 @@ import java.util.List;
 public interface DraftMapper extends BaseMapper<DraftDO> {
 
     /**
-     * 查询草稿作者、所属社团，和文本文件的 fileId
+     * 查询单篇草稿的基本信息，即只查询草稿作者、所属社团、和对应文本文件的 fileId
      * */
     default DraftDO selectDraftBasicInfo(Long draftId) {
         return selectOne(new LambdaQueryWrapper<DraftDO>()
@@ -27,9 +27,9 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
     }
 
     /**
-     * 分页查询我的草稿
+     * 分页查询我的草稿（查询所有字段）
      * */
-    default List<DraftDO> listMyDraft(Page<DraftDO> page, String authorId, Long clubId) {
+    default List<DraftDO> selectListMyDraft(Page<DraftDO> page, String authorId, Long clubId) {
         return selectList(page, new LambdaQueryWrapper<DraftDO>()
             .eq(DraftDO::getClubId, clubId)
             .eq(DraftDO::getAuthorId, authorId)
@@ -38,10 +38,14 @@ public interface DraftMapper extends BaseMapper<DraftDO> {
     }
 
     /**
-     * 查询我的所有草稿
+     * 查询我的所有草稿，但只查询草稿 id 和对应文本文件的 fileId
      * */
-    default List<DraftDO> selectAllMyDraft(String userId, Long clubId) {
+    default List<DraftDO> selectAllMyDraftFile(String userId, Long clubId) {
         return selectList(new LambdaQueryWrapper<DraftDO>()
+            .select(
+                DraftDO::getDraftId,
+                DraftDO::getTextFile
+            )
             .eq(DraftDO::getClubId, clubId)
             .eq(DraftDO::getAuthorId, userId)
         );
