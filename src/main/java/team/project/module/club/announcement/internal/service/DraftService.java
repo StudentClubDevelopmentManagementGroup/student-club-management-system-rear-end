@@ -195,8 +195,8 @@ public class DraftService {
 
         String textFileId = draft.getTextFile();
 
-        if (1 == draftMapper.deleteById(draft)) { /* <- 删除数据库的数据，删除成功后清除文件 */
-            fileStorageService.deleteFile(textFileId);
+        if (1 == draftMapper.deleteById(draftId)) {
+            fileStorageService.deleteFile(textFileId); /* <- 成功删除数据库的记录后再清除文件 */
         }
     }
 
@@ -211,8 +211,8 @@ public class DraftService {
 
             String textFileId = draft.getTextFile();
 
-            if (1 == draftMapper.deleteById(draft)) {
-                fileStorageService.deleteFile(textFileId);
+            if (1 == draftMapper.deleteById(draft.getDraftId())) {
+                fileStorageService.deleteFile(textFileId); /* <- 成功删除数据库的记录后再清除文件 */
             }
         }
     }
