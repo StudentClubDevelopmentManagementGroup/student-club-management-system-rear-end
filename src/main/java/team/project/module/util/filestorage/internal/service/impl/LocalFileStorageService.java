@@ -13,8 +13,6 @@ import team.project.module.util.filestorage.internal.service.FileStorageBasicSer
 import team.project.module.util.filestorage.internal.service.TextFileStorageServiceI;
 import team.project.module.util.filestorage.internal.util.Util;
 
-import static team.project.module.util.filestorage.export.exception.FileStorageException.Status.*;
-
 @Service
 @Slf4j
 public class LocalFileStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
@@ -68,12 +66,12 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
 
         String fileId = generateFileId(targetFolder, targetFilename);
         if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+            throw new FileStorageException("目标目录路径或目标文件名不合约束");
         }
 
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
-            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+            throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
         try {
@@ -82,7 +80,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         }
         catch (Exception e) {
             log.error("上传文件到本地文件系统时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+            throw new FileStorageException("上传文件失败");
         }
     }
 
@@ -134,7 +132,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
     public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
-            throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
+            throw new FileStorageException("未指定文件名");
         }
 
         String targetFolder   = StringUtils.isBlank(uploadFileQO.getTargetFolder()) ? "/" : uploadFileQO.getTargetFolder();
@@ -142,12 +140,12 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
 
         String fileId = generateFileId(targetFolder, targetFilename);
         if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+            throw new FileStorageException("目标目录路径或目标文件名不合约束");
         }
 
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
-            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+            throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
         try {
@@ -156,7 +154,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         }
         catch (Exception e) {
             log.error("上传文件到本地文件系统时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+            throw new FileStorageException("上传文件失败");
         }
     }
 

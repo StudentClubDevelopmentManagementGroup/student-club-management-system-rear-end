@@ -18,12 +18,16 @@ import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.impl.FileStorageIServiceImpl;
 
-@Tag(name="文件存储")
+@Tag(name="文件存储（下述 api 仅作测试用，请勿在业务代码中使用这些 api）")
 @Controller
 public class FileStorageController {
 
     @Autowired
     FileStorageIServiceImpl fileStorageService;
+
+    static final String DESC = """
+        此 api 仅作测试用，请勿在业务代码中使用此 api
+    """;
 
     private FileStorageType toEnum(String storageType) {
         FileStorageType storageTypeEnum;
@@ -35,7 +39,7 @@ public class FileStorageController {
         return storageTypeEnum;
     }
 
-    @Operation(summary="上传文件")
+    @Operation(summary="上传文件", description=DESC)
     @PostMapping("/upload_file")
     @ResponseBody
     Object uploadFile(
@@ -65,7 +69,7 @@ public class FileStorageController {
         }
     }
 
-    @Operation(summary="获取访问已上传的文件的URL")
+    @Operation(summary="获取访问已上传的文件的URL", description=DESC)
     @GetMapping("/get_file_url")
     @ResponseBody
     Object getUploadedFileUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
@@ -78,14 +82,14 @@ public class FileStorageController {
         }
     }
 
-    @Operation(summary="获取访问已上传的文件")
+    @Operation(summary="获取访问已上传的文件", description=DESC)
     @GetMapping("/get_file")
     Object getUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         String url = fileStorageService.getFileUrl(fileId);
         return url == null ? "" : ("redirect:" + url);
     }
 
-    @Operation(summary="删除已上传的文件")
+    @Operation(summary="删除已上传的文件", description=DESC)
     @PostMapping("/delete_file")
     @ResponseBody
     Object deleteUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
@@ -98,7 +102,7 @@ public class FileStorageController {
 
     /* --------- */
 
-    @Operation(summary="上传一段文本，将其保存为文本文件")
+    @Operation(summary="上传一段文本，将其保存为文本文件", description=DESC)
     @PostMapping("/upload_text")
     @ResponseBody
     Object uploadTextToFile(
@@ -125,7 +129,7 @@ public class FileStorageController {
         }
     }
 
-    @Operation(summary="读取文本文件里的文本")
+    @Operation(summary="读取文本文件里的文本", description=DESC)
     @GetMapping("/get_text")
     @ResponseBody
     Object readTextFormFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {

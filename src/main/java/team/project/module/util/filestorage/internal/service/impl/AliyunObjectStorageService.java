@@ -1,6 +1,5 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
-import com.baomidou.mybatisplus.core.toolkit.Assert;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +12,6 @@ import team.project.module.util.filestorage.internal.dao.AliyunOssDAO;
 import team.project.module.util.filestorage.internal.service.FileStorageBasicServiceI;
 import team.project.module.util.filestorage.internal.service.TextFileStorageServiceI;
 import team.project.module.util.filestorage.internal.util.Util;
-
-import static team.project.module.util.filestorage.export.exception.FileStorageException.Status.*;
 
 @Service
 @Slf4j
@@ -69,12 +66,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
 
         String fileId = generateFileId(targetFolder, targetFilename);
         if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+            throw new FileStorageException("目标目录路径或目标文件名不合约束");
         }
 
         String fileKey = parseFileIdToFileKey(fileId);
         if ( ! uploadFileQO.isOverwrite() && aliyunOssDAO.isFileExist(fileKey)) {
-            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+            throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
         try {
@@ -83,7 +80,7 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
         }
         catch (Exception e) {
             log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+            throw new FileStorageException("上传文件失败");
         }
     }
 
@@ -141,7 +138,7 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
     public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
         if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
-            throw new FileStorageException(INVALID_FILE_PATH, "未指定文件名");
+            throw new FileStorageException("未指定文件名");
         }
 
         String targetFolder   = StringUtils.isBlank(uploadFileQO.getTargetFolder()) ? "/" : uploadFileQO.getTargetFolder();
@@ -149,12 +146,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
 
         String fileId = generateFileId(targetFolder, targetFilename);
         if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException(INVALID_FILE_PATH, "目标目录路径或目标文件名不合约束");
+            throw new FileStorageException("目标目录路径或目标文件名不合约束");
         }
 
         String fileKey = parseFileIdToFileKey(fileId);
         if ( ! uploadFileQO.isOverwrite() && aliyunOssDAO.isFileExist(fileKey)) {
-            throw new FileStorageException(FILE_EXIST, "文件已存在，且无法覆盖");
+            throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
         try {
@@ -163,7 +160,7 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
         }
         catch (Exception e) {
             log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
-            throw new FileStorageException(UNSOLVABLE, "上传文件失败");
+            throw new FileStorageException("上传文件失败");
         }
     }
 
