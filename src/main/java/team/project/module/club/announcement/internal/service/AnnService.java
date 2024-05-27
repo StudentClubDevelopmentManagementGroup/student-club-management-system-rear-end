@@ -217,10 +217,9 @@ public class AnnService {
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
         }
 
-        /* 不需要删除文件，因为数据库的记录是逻辑删除，而不是真的删除
-
-        String textFileId = announcement.getTextFile(); <- 开头执行的 SQL 没有查询该字段，此处 textFileId 为 null
-        fileStorageService.deleteFile(textFileId);
+        /* 不删除文件，因为数据库的记录是逻辑删除，而不是真的删除
+            String textFileId = announcement.getTextFile(); <- 此处 textFileId 可能为 null，可能 SQL 没查
+            fileStorageService.deleteFile(textFileId);
         */
     }
 

@@ -54,14 +54,11 @@ public class FileUploadController {
         }
     }
 
-    @Operation(summary="获取访问已上传的文件的 url")
-    @GetMapping("/get_url")
+    @Operation(summary="获取已上传的文件")
+    @GetMapping("/get")
     @ResponseBody
-    Object getUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
+    Object get(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         String url = fileStorageService.getFileUrl(fileId);
-        if (url != null)
-            return new Response<>(ServiceStatus.SUCCESS).data(url);
-        else
-            return new Response<>(ServiceStatus.NOT_FOUND).statusText("无效的 file_id");
+        return url == null ? "" : ("redirect:" + url);
     }
 }
