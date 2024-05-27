@@ -45,7 +45,7 @@ public class Application {
         boolean assertionsEnabled = false;
         assert assertionsEnabled = true;
         if ( ! assertionsEnabled)
-            sb.append("\033[31m开发阶段请启用 JVM 断言，开启方式见：/doc/IntelliJ IDEA 如何开启 JVM 断言.jpg\033[0m");
+            sb.append("\033[31m开发阶段请启用 JVM 断言\n开启方式见：\033[40m/doc/IntelliJ IDEA 如何开启 JVM 断言.jpg\033[0m");
         else
             sb.append("\033[32m已启用JVM 断言\033[0m");
 
