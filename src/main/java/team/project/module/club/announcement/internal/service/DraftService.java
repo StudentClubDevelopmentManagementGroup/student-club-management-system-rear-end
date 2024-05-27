@@ -41,7 +41,7 @@ public class DraftService {
     @Autowired
     ModelConverter modelConverter;
 
-    private static final String DRAFT_FOLDER = "/club/announcement/draft/";
+    private static final String DRAFT_FOLDER = "/club/announcement/draft";
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 

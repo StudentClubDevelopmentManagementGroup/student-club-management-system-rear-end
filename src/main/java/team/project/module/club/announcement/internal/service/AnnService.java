@@ -22,7 +22,6 @@ import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
-import team.project.module.user.export.model.datatransfer.UserInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
@@ -62,7 +61,7 @@ public class AnnService {
     @Autowired
     ModelConverter modelConverter;
 
-    private static final String DRAFT_FOLDER = "/club/announcement/announcement/";
+    private static final String ANNOUNCEMENT_FOLDER = "/club/announcement/announcement";
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 
@@ -93,7 +92,7 @@ public class AnnService {
         /* 将公告的内容保存到文件，获取文件的 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setTargetFolder(DRAFT_FOLDER);
+        uploadFileQO.setTargetFolder(ANNOUNCEMENT_FOLDER);
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
