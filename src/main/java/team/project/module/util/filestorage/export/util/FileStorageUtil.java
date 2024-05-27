@@ -1,5 +1,8 @@
 package team.project.module.util.filestorage.export.util;
 
+import org.apache.commons.io.FilenameUtils;
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.UUID;
 
 public class FileStorageUtil {
@@ -10,5 +13,13 @@ public class FileStorageUtil {
      * */
     public static String randomFilename(String extension) {
         return UUID.randomUUID().toString().replace("-", "") + extension;
+    }
+
+    /**
+     * 生成随机的文件名，文件后缀与给定文件后缀名相同
+     * */
+    public static String randomFilename(MultipartFile file) {
+        String ex = FilenameUtils.getExtension(file.getOriginalFilename());
+        return randomFilename((ex == null || ex.isEmpty()) ? "" : "." + ex);
     }
 }

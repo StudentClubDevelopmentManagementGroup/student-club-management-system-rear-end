@@ -120,6 +120,13 @@
       scroll-behavior: smooth;
     }
 
+    /* 段落 */
+    form.green_form > p {
+      margin: 0;
+      padding: 0 0.6em;
+      font-size: 0.8em;
+      font-style: italic;
+    }
 
     /* 按钮 */
     form.green_form > label > button {
@@ -253,6 +260,27 @@
       </label>
       <label for="">
         <button type="submit" formaction="/html/test/swagger-with-login.html" style="margin-left: 0;">跳转 swagger（快速登录）</button>
+      </label>
+    </form>
+
+    <form action="/club/announcement/file/upload" method="post" enctype="multipart/form-data" target="output" class="green_form" style="--color-primary: #49cc90">
+      <h1>公告模块，上传文件</h1>
+      <p>先使用上方快速链接，跳转 swagger 快速登录</p>
+      <label for=""><span class="required">选择文件</span>
+        <input type="file" name="file">
+      </label>
+      <label for="">
+        <button type="submit">上传文件</button>
+      </label>
+    </form>
+
+    <form action="" method="get" target="output" class="green_form" style="--color-primary: #49cc90">
+      <h1>公告模块，读取文件</h1>
+      <label><span class="required">file_id</span>
+        <input type="text" name="file_id">
+      </label>
+      <label for="">
+        <button type="submit" formaction="/club/announcement/file/get" style="margin-left: 1em;">获取文件</button>
       </label>
     </form>
 

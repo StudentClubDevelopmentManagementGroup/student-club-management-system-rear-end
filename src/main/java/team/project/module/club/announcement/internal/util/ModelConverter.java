@@ -9,7 +9,6 @@ import team.project.module.club.announcement.internal.model.view.DraftVO;
 import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
 import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.user.export.service.UserInfoServiceI;
-import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
 @Component("club-announcement-util-ModelConverter")
 public class ModelConverter {
