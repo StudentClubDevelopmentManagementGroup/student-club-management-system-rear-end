@@ -52,6 +52,7 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
      * */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
+        assert loginId != null;
 
         List<String> list = new ArrayList<>();
 

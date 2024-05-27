@@ -32,6 +32,8 @@ public class EmailServiceImpl implements EmailServiceI {
         }
     }
 
+    /* --------- */
+
     private boolean sendSimpleEmail(SendEmailQO sendEmailQO) {
         try {
             SimpleMailMessage mail = new SimpleMailMessage();
