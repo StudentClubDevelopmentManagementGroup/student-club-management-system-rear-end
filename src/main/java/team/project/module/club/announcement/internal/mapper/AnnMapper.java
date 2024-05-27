@@ -46,8 +46,10 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())
             wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
-        if (null != searchQO.getToDate())
-            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate());
+        if (null != searchQO.getToDate()) {
+            /* 按日期查询 [from_date, to_date] 限定的区间为左闭右闭，故 to_date 多增加一天，以包含 to_date 当天 */
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1));
+        }
 
         int authorIdNum; /* 如果只有一个 authorId，则使用 eq 语句；如果有多个，则使用 in 语句 */
 

@@ -43,7 +43,7 @@ public class JacksonConfig implements Jackson2ObjectMapperBuilderCustomizer {
         builder.serializerByType(Long.TYPE, ToStringSerializer.instance);
 
         /* 对 日期、时间 的序列化和反序列化 */
-        builder.timeZone(TimeZone.getTimeZone("GMT+8")); /* 设置时区 */
+        builder.timeZone(TimeZone.getTimeZone("UTC")); /* 设置时区 */
         builder.featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS); /* 不要将时间序列化为数字时间戳 */
         builder.dateFormat(new SimpleDateFormat(DEFAULT_DATETIME_PATTERN));
         builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATETIME_PATTERN)));
