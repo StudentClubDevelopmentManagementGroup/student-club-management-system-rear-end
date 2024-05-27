@@ -119,9 +119,9 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * */
     default int logicalDelete(String userId, String password) {
         return update(new LambdaUpdateWrapper<UserDO>()
+            .set(UserDO::getDeleted, true)
             .eq(UserDO::getUserId, userId)
             .eq(UserDO::getPassword, password)
-            .set(UserDO::getDeleted, true)
         );
     }
 
@@ -130,8 +130,8 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * */
     default int setRole(String userId, int newRole) {
         return update(new LambdaUpdateWrapper<UserDO>()
-            .eq(UserDO::getUserId, userId)
             .set(UserDO::getRole, newRole)
+            .eq(UserDO::getUserId, userId)
         );
     }
 
@@ -140,8 +140,8 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * */
     default int setPassword(String userId, String password) {
         return update(new LambdaUpdateWrapper<UserDO>()
-            .eq(UserDO::getUserId, userId)
             .set(UserDO::getPassword, password)
+            .eq(UserDO::getUserId, userId)
         );
     }
 }
