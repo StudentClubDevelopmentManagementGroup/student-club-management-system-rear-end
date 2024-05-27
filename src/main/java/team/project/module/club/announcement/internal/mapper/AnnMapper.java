@@ -13,14 +13,13 @@ import java.util.List;
 public interface AnnMapper extends BaseMapper<AnnDO> {
 
     /**
-     * 查询单篇公告的基本信息，即只查询公告作者、所属社团、对应文本文件的 fileId
+     * 查询单篇公告的基本信息，即只查询公告作者、所属社团
      * */
     default AnnDO selectAnnBasicInfo(Long announcementId) {
         return selectOne(new LambdaQueryWrapper<AnnDO>()
             .select(
                 AnnDO::getAuthorId,
-                AnnDO::getClubId,
-                AnnDO::getTextFile
+                AnnDO::getClubId
             )
             .eq(AnnDO::getAnnouncementId, announcementId)
         );

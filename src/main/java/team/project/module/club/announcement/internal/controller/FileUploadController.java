@@ -33,7 +33,7 @@ public class FileUploadController {
     @PostMapping("/upload")
     @ResponseBody
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object uploadImage(@RequestParam("file") MultipartFile file) {
+    Object upload(@RequestParam("file") MultipartFile file) {
 
         if (file == null || file.isEmpty()) {
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
@@ -54,10 +54,14 @@ public class FileUploadController {
         }
     }
 
-    @Operation(summary="获取访问已上传的文件")
-    @GetMapping("/get")
-    Object getUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
+    @Operation(summary="获取访问已上传的文件的 url")
+    @GetMapping("/get_url")
+    @ResponseBody
+    Object getUrl(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         String url = fileStorageService.getFileUrl(fileId);
-        return url == null ? "" : ("redirect:" + url);
+        if (url != null)
+            return new Response<>(ServiceStatus.SUCCESS).data(url);
+        else
+            return new Response<>(ServiceStatus.NOT_FOUND).statusText("无效的 file_id");
     }
 }

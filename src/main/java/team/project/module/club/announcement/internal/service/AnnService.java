@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import team.project.base.model.request.PagingQueryReq;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
@@ -182,17 +183,18 @@ public class AnnService {
         return new PageVO<>(result, page);
     }
 
+    @Transactional
     public void deleteAnn(String userId, Long announcementId) {
 
         AnnDO announcement = announcementMapper.selectAnnBasicInfo(announcementId);
         if (null == announcement) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
         }
+        String authorId = announcement.getAuthorId();
+        Long   clubId   = announcement.getClubId();
 
         /* 校验权限 */
 
-        String authorId = announcement.getAuthorId();
-        Long clubId = announcement.getClubId();
         Integer authorRole;
         if (Objects.equals(authorId, userId)) {
             authService.requireClubManager(userId, clubId, "需要社团负责人才能删除公告");
@@ -208,13 +210,18 @@ public class AnnService {
             authService.requireSuperAdmin(userId, "需要超级管理员能删除该公告"); /* <- 正常业务流不应到此 */
         }
 
-        /* 删除数据库的数据，成功后删除对应的文件 */
+        /* 删除数据库的记录 */
 
-        String textFileId = announcement.getTextFile();
-
-        if (1 == announcementMapper.deleteById(announcementId)) {
-            fileStorageService.deleteFile(textFileId); /* <- 成功删除数据库的记录后再清除文件 */
+        if (1 != announcementMapper.deleteById(announcementId)) {
+            log.error("删除公告失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
         }
+
+        /* 不需要删除文件，因为数据库的记录是逻辑删除，而不是真的删除
+
+        String textFileId = announcement.getTextFile(); <- 开头执行的 SQL 没有查询该字段，此处 textFileId 为 null
+        fileStorageService.deleteFile(textFileId);
+        */
     }
 
     public void toDraft(String userId, Long announcementId) {
