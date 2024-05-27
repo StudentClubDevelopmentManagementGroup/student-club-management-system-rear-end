@@ -56,8 +56,7 @@ public class FileUploadController {
 
     @Operation(summary="获取已上传的文件")
     @GetMapping("/get")
-    @ResponseBody
-    Object get(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
+    Object getFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
         String url = fileStorageService.getFileUrl(fileId);
         return url == null ? "" : ("redirect:" + url);
     }
