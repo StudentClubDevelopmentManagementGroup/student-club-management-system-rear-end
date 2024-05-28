@@ -6,10 +6,6 @@ file-storage:
   local-file-system:
     # 存储所有文件和文件夹的根目录，配绝对路径
     root-folder: D:/student-club-management-system
-    # 存储“上传的文件”的目录，以 root-folder 目录为基
-    uploaded-files-folder: /upload
-    # 标记“上传的文件来自本地服务器”的文件 id 前缀
-    uploaded-file-id-prefix: /f
   # 阿里云 OSS（对象存储服务）
   aliyun-oss:
     # 外网访问的地域节点
@@ -20,7 +16,3 @@ file-storage:
     access-key-secret:  x  # <- 请勿泄露
     # 存储空间名称
     bucket-name:        x  # <- 请勿泄露
-    # 存储“上传的文件”的目录
-    uploaded-files-folder: /upload
-    # 标记“上传的文件来自阿里云”的文件 id 前缀
-    uploaded-file-id-prefix: /a

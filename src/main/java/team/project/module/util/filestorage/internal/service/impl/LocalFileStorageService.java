@@ -17,29 +17,37 @@ import team.project.module.util.filestorage.internal.util.Util;
 @Slf4j
 public class LocalFileStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
 
-    private final String uploadedFilesFolder;
-    private final String uploadedFileIdPrefix;
+    private static final String uploadedFilesFolder  = LocalFileStorageConfig.uploadedFilesFolder;
+    private static final String uploadedFileIdPrefix = LocalFileStorageConfig.fileIdPrefix;
 
     @Autowired
     private LocalFileStorageDAO localFileStorageDAO;
 
-    public LocalFileStorageService(LocalFileStorageConfig cfg) {
-        this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
-        this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
+    /**
+     * 详见：{@link FileStorageBasicServiceI#mayBeStored}
+     * */
+    @Override
+    public boolean mayBeStored(String fileId) {
+        return fileId.startsWith(uploadedFileIdPrefix + "/");
+    }
+
+    /**
+     * 判断 fileId 格式是否错误（若格式错误，则认为文件不存在，不必再进行后续操作）
+     * */
+    private boolean isIncorrectFormat(String fileId) {
+        return ! mayBeStored(fileId) || Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId);
     }
 
     /**
      * 依据文件路径生成 fileId
      * */
     private String generateFileId(String folderPath, String filename) {
-        return Util.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
-    }
+        String fileId = Util.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
 
-    /**
-     * 判断 fileId 是否一定无效
-     * */
-    private boolean isFileIdNotValid(String fileId) {
-        return Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId);
+        if (Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId))
+            throw new FileStorageException("目标目录路径或目标文件名不合约束");
+
+        return fileId;
     }
 
     /**
@@ -65,10 +73,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
                                   : uploadFileQO.getTargetFilename();
 
         String fileId = generateFileId(targetFolder, targetFilename);
-        if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException("目标目录路径或目标文件名不合约束");
-        }
-
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
             throw new FileStorageException("文件已存在，且无法覆盖");
@@ -85,19 +89,11 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
     }
 
     /**
-     * 详见：{@link FileStorageBasicServiceI#mayBeStored}
-     * */
-    @Override
-    public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/") && ! isFileIdNotValid(fileId);
-    }
-
-    /**
      * 详见：{@link FileStorageBasicServiceI#getFileUrl}
      * */
     @Override
     public String getFileUrl(String fileId) {
-        if ( ! mayBeStored(fileId)) {
+        if (isIncorrectFormat(fileId)) {
             return null;
         }
         String filePath = parseFileIdToFilePath(fileId);
@@ -109,7 +105,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public boolean deleteFile(String fileId) {
-        if ( ! mayBeStored(fileId)) {
+        if (isIncorrectFormat(fileId)) {
             return true;
         }
         try {
@@ -139,10 +135,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String targetFilename = uploadFileQO.getTargetFilename();
 
         String fileId = generateFileId(targetFolder, targetFilename);
-        if (isFileIdNotValid(fileId)) {
-            throw new FileStorageException("目标目录路径或目标文件名不合约束");
-        }
-
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
             throw new FileStorageException("文件已存在，且无法覆盖");
@@ -163,7 +155,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public String getTextFromFile(String fileId) {
-        if ( ! mayBeStored(fileId)) {
+        if (isIncorrectFormat(fileId)) {
             return null;
         }
         try {
