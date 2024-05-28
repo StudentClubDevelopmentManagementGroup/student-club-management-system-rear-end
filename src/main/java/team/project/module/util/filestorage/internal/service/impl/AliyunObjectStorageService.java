@@ -23,7 +23,7 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
     @Autowired
     private AliyunOssDAO aliyunOssDAO;
 
-    AliyunObjectStorageService(AliyunOssConfig cfg) {
+    public AliyunObjectStorageService(AliyunOssConfig cfg) {
         this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }

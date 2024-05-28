@@ -23,7 +23,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
     @Autowired
     private LocalFileStorageDAO localFileStorageDAO;
 
-    private LocalFileStorageService(LocalFileStorageConfig cfg) {
+    public LocalFileStorageService(LocalFileStorageConfig cfg) {
         this.uploadedFilesFolder  = cfg.uploadedFilesFolder;
         this.uploadedFileIdPrefix = cfg.uploadedFileIdPrefix;
     }
