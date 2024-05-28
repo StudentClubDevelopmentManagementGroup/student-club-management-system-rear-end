@@ -218,19 +218,18 @@
     
     <form action="/upload_text" method="post" target="output" class="green_form">
       <h1>上传一段文本，将其存为文本文件</h1>
-      <label><span>指定目录</span>
-        <input type="text" name="folder" placeholder="/">
-      </label>
-
-      <label><span class="required">文件名</span>
-        <input type="text" name="filename" placeholder="含扩展名">
-      </label>
       <label><span class="required">存储类型</span>
         <select name="storage_type">
           <option value=""></option>
           <option value="LOCAL">本地文件系统</option>
           <option value="CLOUD">云存储空间</option>
         </select>
+      </label>
+      <label><span>指定目录</span>
+        <input type="text" name="folder" placeholder="/">
+      </label>
+      <label><span class="required">文件名</span>
+        <input type="text" name="filename" placeholder="含扩展名">
       </label>
       <label for=""><span>覆盖上传</span>
         <label><input type="checkbox" name="overwrite"><span></span></label>
