@@ -1,9 +1,5 @@
 
-# 在这里配置数据库
-# 为防止暴露数据库地址和密码，请将此配置文件移动至 /config 目录
-
-# /config 已添加至 .gitignore
-# application.yml 中会引入 /config 下的配置文件
+# 修改此模板，并将修改后的文件 [剪切] 到 /config 目录
 
 spring:
   datasource:
@@ -12,9 +8,9 @@ spring:
     # 数据库连接地址
     url: jdbc:mysql://   ip:port   /   database-name   ?useSSL=false&useUnicode=true&characterEncoding=utf8&serverTimezone=UTCallowPublicKeyRetrieval=true
     # 用户名
-    username: username
+    username:      x  # <- 请勿泄露
     # 密码
-    password: password
+    password:      x  # <- 请勿泄露
     hikari:
       # 连接池最大生存时间（单位：毫秒）
       max-lifetime: 1800000

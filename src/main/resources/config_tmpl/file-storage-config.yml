@@ -1,11 +1,5 @@
 
-# 在这里配置文件存储
-# 为防止暴露阿里云 OSS 的存储空间的 id 和 secret，请将此配置文件移动至 /config 目录
-
-# /config 已添加至 .gitignore
-# application.yml 中会引入 /config 下的配置文件
-
-# 路径规则，见 file storage 模块的 package-info.java
+# 修改此模板，并将修改后的文件 [剪切] 到 /config 目录
 
 file-storage:
   # 本地文件系统（在哪里运行这个后端，哪里就是“本地”）
