@@ -10,7 +10,7 @@ import team.project.module.util.filestorage.internal.service.impl.AliyunObjectSt
 import team.project.module.util.filestorage.internal.service.impl.LocalFileStorageService;
 
 @Service
-public class FileStorageIServiceImpl implements FileStorageServiceI {
+public class FileStorageServiceImpl implements FileStorageServiceI {
 
     @Autowired
     LocalFileStorageService localStorageService;

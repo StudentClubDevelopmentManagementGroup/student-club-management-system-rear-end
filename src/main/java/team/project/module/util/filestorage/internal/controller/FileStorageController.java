@@ -16,14 +16,14 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.util.filestorage.export.exception.FileStorageException;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
-import team.project.module.util.filestorage.export.service.impl.FileStorageIServiceImpl;
+import team.project.module.util.filestorage.export.service.impl.FileStorageServiceImpl;
 
 @Tag(name="文件存储（下述 api 仅作测试用，请勿在业务代码中使用这些 api）")
 @Controller
 public class FileStorageController {
 
     @Autowired
-    FileStorageIServiceImpl fileStorageService;
+    FileStorageServiceImpl fileStorageService;
 
     static final String DESC = """
         此 api 仅作测试用，请勿在业务代码中使用此 api
