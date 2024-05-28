@@ -24,8 +24,9 @@
         <appender-ref ref="console_log"/>
     </root>
 
+<!-- 暂时不把日志输出到文件
     <logger name="team.project" level="warn">
         <appender-ref ref="file_log"/>
-    </logger>
+    </logger> -->
 
 </configuration>
