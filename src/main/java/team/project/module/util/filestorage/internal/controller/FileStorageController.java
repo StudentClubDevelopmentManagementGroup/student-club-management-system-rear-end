@@ -13,7 +13,6 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.exception.InvalidParamException;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
-import team.project.module.util.filestorage.export.exception.FileStorageException;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.impl.FileStorageServiceImpl;
@@ -26,6 +25,8 @@ public class FileStorageController {
     FileStorageServiceImpl fileStorageService;
 
     static final String DESC = """
+        此 api 仅作测试用，请勿在业务代码中使用此 api
+        此 api 仅作测试用，请勿在业务代码中使用此 api
         此 api 仅作测试用，请勿在业务代码中使用此 api
     """;
 
@@ -49,24 +50,17 @@ public class FileStorageController {
         @RequestParam("filename")     String        filename,
         @RequestParam(value="overwrite", defaultValue="false") Boolean overwrite
     ) {
-        if (file == null || file.isEmpty()) {
+        if (file == null || file.isEmpty())
             return new Response<>(ServiceStatus.BAD_REQUEST).data("上传的文件为空");
-        }
-        FileStorageType storageTypeEnum = toEnum(storageType);
 
-        try {
-            UploadFileQO uploadFileQO = new UploadFileQO();
-            uploadFileQO.setTargetFolder(folder);
-            uploadFileQO.setTargetFilename(filename);
-            uploadFileQO.setOverwrite(overwrite);
+        UploadFileQO uploadFileQO = new UploadFileQO();
+        uploadFileQO.setTargetFolder(folder);
+        uploadFileQO.setTargetFilename(filename);
+        uploadFileQO.setOverwrite(overwrite);
 
-            String fileId = fileStorageService.uploadFile(file, storageTypeEnum, uploadFileQO);
+        String fileId = fileStorageService.uploadFile(file, toEnum(storageType), uploadFileQO);
 
-            return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
-        }
-        catch (FileStorageException e) {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("上传失败").data(e.getMessage());
-        }
+        return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
     }
 
     @Operation(summary="获取访问已上传的文件的URL", description=DESC)
@@ -76,8 +70,7 @@ public class FileStorageController {
         String url = fileStorageService.getFileUrl(fileId);
         if (url != null) {
             return new Response<>(ServiceStatus.SUCCESS).data(url);
-        }
-        else {
+        } else {
             return new Response<>(ServiceStatus.NOT_FOUND).statusText("无效的 file_id");
         }
     }
@@ -93,11 +86,8 @@ public class FileStorageController {
     @PostMapping("/delete_file")
     @ResponseBody
     Object deleteUploadedFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        if (fileStorageService.deleteFile(fileId)) {
-            return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
-        } else {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("删除失败");
-        }
+        fileStorageService.deleteFile(fileId);
+        return new Response<>(ServiceStatus.NO_CONTENT).statusText("删除成功");
     }
 
     /* --------- */
@@ -112,39 +102,26 @@ public class FileStorageController {
         @RequestParam("filename")                              String  filename,
         @RequestParam(value="overwrite", defaultValue="false") Boolean overwrite
     ) {
-        FileStorageType storageTypeEnum = toEnum(storageType);
-
         UploadFileQO uploadFileQO = new UploadFileQO();
         uploadFileQO.setTargetFolder(folder);
         uploadFileQO.setTargetFilename(filename);
         uploadFileQO.setOverwrite(overwrite);
 
-        try {
-            String fileId = fileStorageService.uploadTextToFile(storageTypeEnum, text, uploadFileQO);
+        String fileId = fileStorageService.uploadTextToFile(toEnum(storageType), text, uploadFileQO);
 
-            return new Response<>(ServiceStatus.SUCCESS).data(fileId);
-        }
-        catch (FileStorageException e) {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("上传失败").data(e.getMessage());
-        }
+        return new Response<>(ServiceStatus.SUCCESS).data(fileId);
     }
 
     @Operation(summary="读取文本文件里的文本", description=DESC)
     @GetMapping("/get_text")
     @ResponseBody
     Object readTextFormFile(@NotBlank(message="未输入文件id") @RequestParam("file_id") String fileId) {
-        String text;
-        try {
-            text = fileStorageService.getTextFromFile(fileId);
-        }
-        catch (FileStorageException e) {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("读取失败");
-        }
-        if (text == null) {
-            return new Response<>(ServiceStatus.UNPROCESSABLE_ENTITY).statusText("读取失败");
-        }
-        else {
+        String text = fileStorageService.getTextFromFile(fileId);
+
+        if (text != null) {
             return new Response<>(ServiceStatus.SUCCESS).data(text);
+        } else {
+            return new Response<>(ServiceStatus.NOT_FOUND).statusText("读取失败");
         }
     }
 }
