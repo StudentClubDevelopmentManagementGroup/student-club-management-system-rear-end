@@ -12,39 +12,17 @@ spring:
       - classpath:config/database-config.yml      # 数据库
       - classpath:config/file-storage-config.yml  # 文件存储
       - classpath:config/email-config.yml         # 邮件
-  # autoconfigure:
-  #   # 禁用 spring-boot 的 security 自动配置，不再生成任何安全密码
-  #   exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
   servlet:
     multipart:
       # 限制单个上传文件的大小
       max-file-size: 10MB
       # 限制整个请求的大小
       max-request-size: 20MB
-  # data:
-  #   redis:
-  #     # redis 数据库索引（默认为0）
-  #     database: 1
-  #     # redis 服务器地址
-  #     host: 127.0.0.1
-  #     # redis 服务器连接端口
-  #     port: 6379
-  #     # 连接超时时间
-  #     timeout: 10s
-  #     lettuce:
-  #       pool:
-  #         # 连接池最大连接数
-  #         max-active: 200
-  #         # 连接池最大阻塞等待时间（使用负值表示没有限制）
-  #         max-wait: -1ms
-  #         # 连接池中的最大空闲连接
-  #         max-idle: 10
-  #         # 连接池中的最小空闲连接
-  #         min-idle: 0
 
 
 
 logging:
+  # 引入日志配置文件
   config: classpath:config/logback.xml
 
 

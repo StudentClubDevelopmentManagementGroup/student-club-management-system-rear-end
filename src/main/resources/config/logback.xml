@@ -8,10 +8,10 @@
         </encoder>
     </appender>
 
-    <property name="file_log_pattern" value="%level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger: %msg%n"/>
+    <property name="file_log_pattern" value="%level %d{yyyy-MM-dd HH:mm:ss.SSS} %logger: \t%msg%n"/>
     <appender name="file_log"  class="ch.qos.logback.core.rolling.RollingFileAppender">
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <FileNamePattern>logs/%d{yyyy-MM-dd}--%i.log</FileNamePattern>
+            <FileNamePattern>logs/%d{yyyy-MM-dd}.%i.log</FileNamePattern>
             <maxFileSize>5MB</maxFileSize>
             <MaxHistory>3</MaxHistory>
         </rollingPolicy>
