@@ -22,6 +22,6 @@ public class AliyunOssConfig {
        依 package.info 给出的路径规则，此路径应以 / 开头，但 aliyunOSS 要求路径不以 / 开头，故此处特别处理 */
     public static final String uploadedFilesFolder = "upload";
 
-    /* 标记“上传的文件来自阿里云”的文件 id 前缀 */
+    /* 文件 id 前缀，标记文件存储在阿里云 */
     public static final String fileIdPrefix = "/a";
 }

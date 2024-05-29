@@ -18,7 +18,7 @@ public class LocalFileStorageConfig implements WebMvcConfigurer {
     /* 存储“上传的文件”的目录，以 rootFolder 目录为基 */
     public static final String uploadedFilesFolder = "/upload";
 
-    /* 标记“上传的文件来自本地服务器”的文件 id 前缀 */
+    /* 文件 id 前缀，标记文件存储在本地服务器 */
     public static final String fileIdPrefix = "/f";
 
     public String baseUrl;
