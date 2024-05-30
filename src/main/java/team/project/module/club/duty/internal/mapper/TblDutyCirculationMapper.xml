@@ -6,7 +6,7 @@
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="id"                 property="id" />
         <result column="club_id"            property="clubId" />
-        <result column="is_circulation"    property="isCirculation" />
+        <result column="is_circulation"     property="isCirculation" />
     </resultMap>
 
     <insert id="createCirculation" parameterType="java.lang.Long">
@@ -22,7 +22,7 @@
     </delete>
 
     <select id="selectCirculationByClubId" resultMap="tbl_club_duty_circulation" parameterType="java.lang.Long">
-        SELECT is_circulation FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
     </select>
 
     <select id="selectAutoDutyClubId"
