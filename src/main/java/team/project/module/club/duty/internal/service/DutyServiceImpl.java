@@ -128,7 +128,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
         } else {
-            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
     }
 
@@ -142,7 +142,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
         } else {
-            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize()));
+            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
     }
 
@@ -162,7 +162,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
 
     private void selectUserName(List<DutyInfoVO> dutyList, Page<TblDuty> page) {
