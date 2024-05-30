@@ -52,7 +52,7 @@ public class DutyController {
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
+        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 

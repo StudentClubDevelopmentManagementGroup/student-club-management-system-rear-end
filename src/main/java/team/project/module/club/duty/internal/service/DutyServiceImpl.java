@@ -56,7 +56,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
+    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
