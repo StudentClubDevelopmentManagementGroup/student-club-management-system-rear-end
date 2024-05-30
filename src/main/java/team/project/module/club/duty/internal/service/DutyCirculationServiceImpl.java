@@ -3,6 +3,8 @@ package team.project.module.club.duty.internal.service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import team.project.base.service.exception.ServiceException;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
 
@@ -15,7 +17,7 @@ public class DutyCirculationServiceImpl extends ServiceImpl<TblDutyCirculationMa
     public TblDutyCirculation selectCirculationByClubId(Long clubId) {
         TblDutyCirculation tblDutyCirculation = tblDutyCirculationMapper.selectCirculationByClubId(clubId);
         if(tblDutyCirculation == null){
-            throw new RuntimeException("查无此社团");
+            throw new ServiceException(ServiceStatus.CONFLICT, "查无数据");
         }
         return tblDutyCirculation;
     }

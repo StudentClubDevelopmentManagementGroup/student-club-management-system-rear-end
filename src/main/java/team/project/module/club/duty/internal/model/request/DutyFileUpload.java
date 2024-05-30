@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -20,7 +21,8 @@ public class DutyFileUpload {
     @JsonProperty("member_id")
     String                memberId;
 
-    @NotBlank
+    @NotNull
+    @ClubIdConstraint
     @JsonProperty("club_id")
     Long                  clubId;
 
