@@ -188,6 +188,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         for(TblDuty tblDuty : page.getRecords()){
             DutyInfoVO dutyInfoVO = new DutyInfoVO();
             dutyInfoVO.setId(tblDuty.getId());
+            dutyInfoVO.setClubId(tblDuty.getClubId());
+            dutyInfoVO.setUpdateTime(tblDuty.getUpdateTime());
+            dutyInfoVO.setDeleted(tblDuty.getDeleted());
             dutyInfoVO.setNumber(tblDuty.getNumber());
             dutyInfoVO.setArea(tblDuty.getArea());
             dutyInfoVO.setDateTime(tblDuty.getDutyTime());

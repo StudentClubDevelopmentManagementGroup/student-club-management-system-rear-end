@@ -33,7 +33,7 @@
 
     <select id="selectGroupByName"
             resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
-        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{member_id} club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{memberId} club_id = #{clubId}
     </select>
 
     <select id="selectGroupByGroupName"
@@ -43,7 +43,7 @@
 
     <select id="selectGroupByNameAndGroupName"
             resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
-        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{member_id} AND name = #{name} AND club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{memberId} AND name = #{name} AND club_id = #{clubId}
     </select>
 
 
