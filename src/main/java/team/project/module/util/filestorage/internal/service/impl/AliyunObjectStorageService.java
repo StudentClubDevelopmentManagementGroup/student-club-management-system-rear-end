@@ -1,5 +1,6 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
+import com.aliyun.oss.OSSException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,15 +73,20 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
                                   ? toUploadFile.getOriginalFilename()
                                   : uploadFileQO.getTargetFilename();
 
-        String fileId = generateFileId(targetFolder, targetFilename);
+        String fileId  = generateFileId(targetFolder, targetFilename);
         String fileKey = parseFileIdToFileKey(fileId);
-        if ( ! uploadFileQO.isOverwrite() && aliyunOssDAO.isFileExist(fileKey)) {
-            throw new FileStorageException("文件已存在，且无法覆盖");
-        }
 
         try {
-            aliyunOssDAO.uploadFile(toUploadFile, fileKey);
+            aliyunOssDAO.uploadFile(toUploadFile, fileKey, uploadFileQO.isOverwrite());
             return fileId;
+        }
+        catch (OSSException e) {
+            if ("FileAlreadyExists".equals(e.getErrorCode())) {
+                throw new FileStorageException("文件已存在，且无法覆盖");
+            } else {
+               log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
+               throw new FileStorageException("上传文件失败");
+            }
         }
         catch (Exception e) {
             log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
@@ -142,13 +148,17 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
 
         String fileId = generateFileId(targetFolder, targetFilename);
         String fileKey = parseFileIdToFileKey(fileId);
-        if ( ! uploadFileQO.isOverwrite() && aliyunOssDAO.isFileExist(fileKey)) {
-            throw new FileStorageException("文件已存在，且无法覆盖");
-        }
-
         try {
-            aliyunOssDAO.uploadTextToFile(text, fileKey);
+            aliyunOssDAO.uploadTextToFile(text, fileKey, uploadFileQO.isOverwrite());
             return fileId;
+        }
+        catch (OSSException e) {
+            if ("FileAlreadyExists".equals(e.getErrorCode())) {
+                throw new FileStorageException("文件已存在，且无法覆盖");
+            } else {
+               log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);
+               throw new FileStorageException("上传文件失败");
+            }
         }
         catch (Exception e) {
             log.error("上传文件到阿里云 OSS 的存储空间时出现异常", e);

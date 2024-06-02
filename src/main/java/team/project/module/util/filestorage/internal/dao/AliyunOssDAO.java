@@ -3,10 +3,7 @@ package team.project.module.util.filestorage.internal.dao;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.GeneratePresignedUrlRequest;
-import com.aliyun.oss.model.OSSObject;
-import com.aliyun.oss.model.PutObjectRequest;
-import com.aliyun.oss.model.PutObjectResult;
+import com.aliyun.oss.model.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.util.filestorage.internal.config.AliyunOssConfig;
@@ -50,8 +47,16 @@ public class AliyunOssDAO {
     /**
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
      * */
-    public void uploadFile(MultipartFile file, String key) throws IOException {
+    public void uploadFile(MultipartFile file, String key, boolean overwrite) throws IOException {
+
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
+
+        if ( ! overwrite) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setHeader("x-oss-forbid-overwrite", "true");
+            putObjectRequest.setMetadata(metadata);
+        }
+
         PutObjectResult result = ossClient.putObject(putObjectRequest);
     }
 
@@ -85,9 +90,16 @@ public class AliyunOssDAO {
     /**
      * 上传一段以 UTF8 编码的文本，以文本文件的形式保存
      * */
-    public void uploadTextToFile(String text, String key) {
+    public void uploadTextToFile(String text, String key, boolean overwrite) {
         InputStream inputStream = new ByteArrayInputStream(text.getBytes(UTF_8));
         PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream);
+
+        if ( ! overwrite) {
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setHeader("x-oss-forbid-overwrite", "true");
+            putObjectRequest.setMetadata(metadata);
+        }
+
         ossClient.putObject(putObjectRequest);
     }
 
