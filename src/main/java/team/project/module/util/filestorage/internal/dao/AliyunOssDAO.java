@@ -42,7 +42,10 @@ public class AliyunOssDAO {
         this.bucketName      = cfg.bucketName;
     }
 
+    /* --- OSS 客户端 --- */
+
     private OSS newOssClient() {
+        /* 2024-06-02 TODO: 使用对象池技术减少频繁构建和销毁 oss 实例 */
         return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 
