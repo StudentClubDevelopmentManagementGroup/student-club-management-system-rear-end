@@ -140,7 +140,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "值日信息为空");
         } else {
             return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
@@ -150,7 +150,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     public PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -160,7 +160,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
@@ -169,7 +169,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     public PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -179,7 +179,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }

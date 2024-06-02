@@ -52,7 +52,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         Page<TblClubDO> page = cMapper.selectByCriteria(new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName());
 
         if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
         } else {
             return new PageVO<>(page);
         }
@@ -62,10 +62,10 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         int result = cMapper.deleteClub(departmentId, name);
         int result2 = tblDutyCirculationMapper.deleteCirculation(cMapper.selectByNameAndDepartmentId(name, departmentId).getId());
         if (result == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
         }
         if (result2 == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "基地值日循环表数据删除失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "基地值日循环表数据删除失败");
         }
         TblClubDO club = cMapper.selectByNameAndDepartmentId(name, departmentId);
         return pceIService.deleteClubAllMember(club.getId());
@@ -74,7 +74,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void reuseClub(Long departmentId, String name) {
         int result = cMapper.reuseClub(departmentId, name);
         if (result == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "修改失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "修改失败");
         }
     }
 
@@ -82,7 +82,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void deactivateClub(Long departmentId, String name) {
         int result = cMapper.deactivateClub(departmentId, name);
         if (result == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
         }
     }
 
@@ -90,7 +90,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     public void recoverClub(Long departmentId, String name) {
         int result = cMapper.recoverClub(departmentId, name);
         if (result == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "未找到该社团");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
         }
     }
 

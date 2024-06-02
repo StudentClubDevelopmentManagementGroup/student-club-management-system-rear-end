@@ -17,7 +17,7 @@ public class DutyCirculationServiceImpl extends ServiceImpl<TblDutyCirculationMa
     public TblDutyCirculation selectCirculationByClubId(Long clubId) {
         TblDutyCirculation tblDutyCirculation = tblDutyCirculationMapper.selectCirculationByClubId(clubId);
         if(tblDutyCirculation == null){
-            throw new ServiceException(ServiceStatus.CONFLICT, "查无数据");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无数据");
         }
         return tblDutyCirculation;
     }
