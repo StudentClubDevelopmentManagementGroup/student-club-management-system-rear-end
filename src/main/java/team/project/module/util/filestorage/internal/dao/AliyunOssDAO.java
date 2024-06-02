@@ -4,6 +4,7 @@ import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.model.*;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.util.filestorage.internal.config.AliyunOssConfig;
@@ -45,7 +46,6 @@ public class AliyunOssDAO {
     /* --- OSS 客户端 --- */
 
     private OSS newOssClient() {
-        /* 2024-06-02 TODO: 使用对象池技术减少频繁构建和销毁 oss 实例 */
         return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
     }
 
@@ -60,22 +60,19 @@ public class AliyunOssDAO {
      * 上传文件（采用简单上传的方式，上传不超过5 GB大小的文件）
      * */
     public void uploadFile(MultipartFile file, String key, boolean overwrite) throws IOException {
-
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
-
-        if ( ! overwrite) {
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setHeader("x-oss-forbid-overwrite", "true");
-            putObjectRequest.setMetadata(metadata);
-        }
-
         OSS ossClient = newOssClient();
         try {
-            PutObjectResult result = ossClient.putObject(putObjectRequest);
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
+
+            if ( ! overwrite) {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setHeader("x-oss-forbid-overwrite", "true");
+                putObjectRequest.setMetadata(metadata);
+            }
+
+            ossClient.putObject(putObjectRequest);
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 
     /**
@@ -86,26 +83,22 @@ public class AliyunOssDAO {
         try {
             return ossClient.doesObjectExist(bucketName, key);
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 
     /**
      * 获取访问文件的 URL（fileId 指向的文件不存在也会返回 URL，访问这个 URL 会响应文件不存在）
      * */
     public String getFileUrl(String key) {
-        GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
-        request.setExpiration(new Date(System.currentTimeMillis() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
-
         OSS ossClient = newOssClient();
         try {
+            GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
+            request.setExpiration(new Date(System.currentTimeMillis() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
+
             URL url = ossClient.generatePresignedUrl(request);
             return url.toString();
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 
     /**
@@ -116,9 +109,7 @@ public class AliyunOssDAO {
         try {
             ossClient.deleteObject(bucketName, key); /* <- 无论要删除的文件是否存在，删除成功后均会返回 204 状态码 */
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 
     /* -- 读写纯文本文件 -- */
@@ -127,22 +118,20 @@ public class AliyunOssDAO {
      * 上传一段以 UTF8 编码的文本，以文本文件的形式保存
      * */
     public void uploadTextToFile(String text, String key, boolean overwrite) {
-        InputStream inputStream = new ByteArrayInputStream(text.getBytes(UTF_8));
-        PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream);
-
-        if ( ! overwrite) {
-            ObjectMetadata metadata = new ObjectMetadata();
-            metadata.setHeader("x-oss-forbid-overwrite", "true");
-            putObjectRequest.setMetadata(metadata);
-        }
-
         OSS ossClient = newOssClient();
         try {
+            InputStream inputStream = new ByteArrayInputStream(text.getBytes(UTF_8));
+            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream);
+
+            if ( ! overwrite) {
+                ObjectMetadata metadata = new ObjectMetadata();
+                metadata.setHeader("x-oss-forbid-overwrite", "true");
+                putObjectRequest.setMetadata(metadata);
+            }
+
             ossClient.putObject(putObjectRequest);
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 
     /**
@@ -150,12 +139,9 @@ public class AliyunOssDAO {
      * <br> 如果文件不是纯文本文件，或者编码不匹配，则结果可能呈现乱码
      * */
     public String readTextFromFile(String key) throws IOException {
-
-        OSS ossClient = newOssClient();
-
-        OSSObject ossObject = ossClient.getObject(bucketName, key);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent(), UTF_8));
-
+        OSS            ossClient = newOssClient();
+        OSSObject      ossObject = ossClient.getObject(bucketName, key);
+        BufferedReader reader    = new BufferedReader(new InputStreamReader(ossObject.getObjectContent(), UTF_8));
         try (ossObject; reader) {
 
             StringBuilder result = new StringBuilder();
@@ -167,8 +153,6 @@ public class AliyunOssDAO {
             }
             return result.toString();
         }
-        finally {
-            closeOssClient(ossClient);
-        }
+        finally { closeOssClient(ossClient); }
     }
 }
