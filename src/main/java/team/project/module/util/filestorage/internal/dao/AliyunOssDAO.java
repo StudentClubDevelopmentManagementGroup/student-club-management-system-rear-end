@@ -31,15 +31,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class AliyunOssDAO {
 
     private final String bucketName;
-    private final OSS    ossClient;
+    private final String endpoint;
+    private final String accessKeyId;
+    private final String accessKeySecret;
 
     AliyunOssDAO(AliyunOssConfig cfg) {
-        String endpoint        = cfg.endpoint;
-        String accessKeyId     = cfg.accessKeyId;
-        String accessKeySecret = cfg.accessKeySecret;
-        this.bucketName        = cfg.bucketName;
+        this.endpoint        = cfg.endpoint;
+        this.accessKeyId     = cfg.accessKeyId;
+        this.accessKeySecret = cfg.accessKeySecret;
+        this.bucketName      = cfg.bucketName;
+    }
 
-        ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    private OSS newOssClient() {
+        return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+    }
+
+    private void closeOssClient(OSS ossClient) {
+        if (ossClient != null)
+            ossClient.shutdown();
     }
 
     /* -- 基本操作（上传、获取 url、删除） -- */
@@ -57,14 +66,26 @@ public class AliyunOssDAO {
             putObjectRequest.setMetadata(metadata);
         }
 
-        PutObjectResult result = ossClient.putObject(putObjectRequest);
+        OSS ossClient = newOssClient();
+        try {
+            PutObjectResult result = ossClient.putObject(putObjectRequest);
+        }
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 
     /**
      * 判断文件是否存在
      * */
     public boolean isFileExist(String key) {
-        return ossClient.doesObjectExist(bucketName, key);
+        OSS ossClient = newOssClient();
+        try {
+            return ossClient.doesObjectExist(bucketName, key);
+        }
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 
     /**
@@ -74,15 +95,27 @@ public class AliyunOssDAO {
         GeneratePresignedUrlRequest request = new GeneratePresignedUrlRequest(bucketName, key, HttpMethod.GET);
         request.setExpiration(new Date(System.currentTimeMillis() + 60 * 1000L)); /* 设置过期时间 1 分钟 */
 
-        URL url = ossClient.generatePresignedUrl(request);
-        return url.toString();
+        OSS ossClient = newOssClient();
+        try {
+            URL url = ossClient.generatePresignedUrl(request);
+            return url.toString();
+        }
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 
     /**
      * 删除单个文件
      * */
     public void deleteFile(String key) {
-        ossClient.deleteObject(bucketName, key); /* <- 无论要删除的文件是否存在，删除成功后均会返回 204 状态码 */
+        OSS ossClient = newOssClient();
+        try {
+            ossClient.deleteObject(bucketName, key); /* <- 无论要删除的文件是否存在，删除成功后均会返回 204 状态码 */
+        }
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 
     /* -- 读写纯文本文件 -- */
@@ -100,7 +133,13 @@ public class AliyunOssDAO {
             putObjectRequest.setMetadata(metadata);
         }
 
-        ossClient.putObject(putObjectRequest);
+        OSS ossClient = newOssClient();
+        try {
+            ossClient.putObject(putObjectRequest);
+        }
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 
     /**
@@ -109,20 +148,24 @@ public class AliyunOssDAO {
      * */
     public String readTextFromFile(String key) throws IOException {
 
+        OSS ossClient = newOssClient();
+
         OSSObject ossObject = ossClient.getObject(bucketName, key);
         BufferedReader reader = new BufferedReader(new InputStreamReader(ossObject.getObjectContent(), UTF_8));
 
-        StringBuilder result = new StringBuilder();
         try (ossObject; reader) {
 
+            StringBuilder result = new StringBuilder();
             int readBufLen = 2048;
             char[] buffer = new char[readBufLen];
             int numCharRead;
             while (-1 != (numCharRead = reader.read(buffer, 0, readBufLen))) {
                 result.append(buffer, 0, numCharRead);
             }
+            return result.toString();
         }
-
-        return result.toString();
+        finally {
+            closeOssClient(ossClient);
+        }
     }
 }
