@@ -83,7 +83,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.error("上传文件到本地文件系统时出现异常", e);
+            log.error("保存文件失败", e);
             throw new FileStorageException("上传文件失败");
         }
     }
@@ -114,7 +114,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return true;
         }
         catch (Exception e) {
-            log.error("从本地文件系统中删除文件时出现异常", e);
+            log.error("删除文件失败", e);
             return false;
         }
     }
@@ -145,7 +145,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.error("上传文件到本地文件系统时出现异常", e);
+            log.error("保存文件失败", e);
             throw new FileStorageException("上传文件失败");
         }
     }
@@ -162,7 +162,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             String filePath = parseFileIdToFilePath(fileId);
             return localFileStorageDAO.readTextFromFile(filePath);
         } catch (Exception e) {
-            log.error("从本地文件系统中读取文件时出现异常", e);
+            log.error("读取文件失败（读取纯文本文件）", e);
             return null;
         }
     }
