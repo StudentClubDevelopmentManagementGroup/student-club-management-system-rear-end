@@ -45,7 +45,7 @@ public class AliyunOssDAO {
         this.bucketName      = cfg.bucketName;
     }
 
-    /* --- OSS 客户端 --- */
+    /* -- OSS 客户端 -- */
 
     /* 2024-06-03 ljh
        ---------
@@ -81,15 +81,15 @@ public class AliyunOssDAO {
     public void uploadFile(MultipartFile file, String key, boolean overwrite) throws IOException {
         OSS ossClient = newOssClient();
         try {
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, file.getInputStream());
+            PutObjectRequest request = new PutObjectRequest(bucketName, key, file.getInputStream());
 
             if ( ! overwrite) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setHeader("x-oss-forbid-overwrite", "true");
-                putObjectRequest.setMetadata(metadata);
+                request.setMetadata(metadata);
             }
 
-            ossClient.putObject(putObjectRequest);
+            ossClient.putObject(request);
         }
         finally { closeOssClient(ossClient); }
     }
@@ -140,15 +140,15 @@ public class AliyunOssDAO {
         OSS ossClient = newOssClient();
         try {
             InputStream inputStream = new ByteArrayInputStream(text.getBytes(UTF_8));
-            PutObjectRequest putObjectRequest = new PutObjectRequest(bucketName, key, inputStream);
+            PutObjectRequest request = new PutObjectRequest(bucketName, key, inputStream);
 
             if ( ! overwrite) {
                 ObjectMetadata metadata = new ObjectMetadata();
                 metadata.setHeader("x-oss-forbid-overwrite", "true");
-                putObjectRequest.setMetadata(metadata);
+                request.setMetadata(metadata);
             }
 
-            ossClient.putObject(putObjectRequest);
+            ossClient.putObject(request);
         }
         finally { closeOssClient(ossClient); }
     }

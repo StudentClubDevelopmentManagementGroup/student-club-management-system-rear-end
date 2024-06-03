@@ -84,7 +84,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         }
         catch (Exception e) {
             log.error("保存文件失败", e);
-            throw new FileStorageException("上传文件失败");
+            throw new FileStorageException(e, "上传文件失败");
         }
     }
 
@@ -146,7 +146,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         }
         catch (Exception e) {
             log.error("保存文件失败", e);
-            throw new FileStorageException("上传文件失败");
+            throw new FileStorageException(e, "上传文件失败");
         }
     }
 

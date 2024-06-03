@@ -61,7 +61,7 @@ public class QueryParamResolver implements WebMvcConfigurer, HandlerMethodArgume
         try {
             result = processFiledValue(webRequest, parameter.getParameterType());
         } catch (Exception e) {
-            log.error("@QueryParam 参数解析失败：{}", e.getMessage());
+            log.warn("@QueryParam 参数解析失败", e);
             throw new InvalidParamException("参数解析失败，请求参数的类型与所需的类型不匹配");
         }
 

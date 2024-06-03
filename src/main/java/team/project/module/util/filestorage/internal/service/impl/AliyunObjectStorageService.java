@@ -84,12 +84,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
                 throw new FileStorageException("文件已存在，且无法覆盖");
             } else {
                log.error("上传文件失败", e);
-               throw new FileStorageException("上传文件失败");
+               throw new FileStorageException(e, "上传文件失败");
             }
         }
         catch (Exception e) {
             log.error("上传文件失败", e);
-            throw new FileStorageException("上传文件失败");
+            throw new FileStorageException(e, "上传文件失败");
         }
     }
 
@@ -156,12 +156,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
                 throw new FileStorageException("文件已存在，且无法覆盖");
             } else {
                log.error("上传文件失败", e);
-               throw new FileStorageException("上传文件失败");
+               throw new FileStorageException(e, "上传文件失败");
             }
         }
         catch (Exception e) {
             log.error("上传文件失败", e);
-            throw new FileStorageException("上传文件失败");
+            throw new FileStorageException(e, "上传文件失败");
         }
     }
 
