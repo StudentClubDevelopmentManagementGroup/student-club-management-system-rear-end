@@ -3,8 +3,10 @@ package team.project.module.util.filestorage.internal.dao;
 import com.aliyun.oss.HttpMethod;
 import com.aliyun.oss.OSS;
 import com.aliyun.oss.OSSClientBuilder;
-import com.aliyun.oss.model.*;
-import lombok.extern.slf4j.Slf4j;
+import com.aliyun.oss.model.GeneratePresignedUrlRequest;
+import com.aliyun.oss.model.OSSObject;
+import com.aliyun.oss.model.ObjectMetadata;
+import com.aliyun.oss.model.PutObjectRequest;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.module.util.filestorage.internal.config.AliyunOssConfig;
@@ -44,6 +46,23 @@ public class AliyunOssDAO {
     }
 
     /* --- OSS 客户端 --- */
+
+    /* 2024-06-03 ljh
+       ---------
+        原先设计是，将 ossClient 作为类成员（单例），即每次发起请求都用同一个 ossClient
+
+        当短时间内发送多个请求时，大概率有个别请求会失败，如果开启 com.aliyun.oss 日志输出会看到如下内容：
+        ```
+        WARN com.aliyun.oss:
+            Failed to reset the request input stream: Resetting to invalid mark
+        WARN com.aliyun.oss:
+            [Client]Unable to execute HTTP request: Failed to reset the request input stream:
+            [ErrorCode]: Unknown
+            [RequestId]: Unknown
+        ```
+
+        现改成，每次发请求都创建新的 ossClient，上述问题得以解决
+    */
 
     private OSS newOssClient() {
         return new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
