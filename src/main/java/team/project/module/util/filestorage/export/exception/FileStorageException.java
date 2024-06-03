@@ -14,8 +14,4 @@ public class FileStorageException extends ServiceException {
     public FileStorageException(Throwable cause, String message) {
         super(cause, ServiceStatus.INTERNAL_SERVER_ERROR, message);
     }
-
-    public FileStorageException(Throwable cause) {
-        super(cause, ServiceStatus.INTERNAL_SERVER_ERROR, cause.getMessage());
-    }
 }
