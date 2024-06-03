@@ -83,7 +83,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.error("保存文件失败", e);
+            log.warn("保存文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -93,9 +93,9 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public String getFileUrl(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return null;
-        }
+
         String filePath = parseFileIdToFilePath(fileId);
         return localFileStorageDAO.getFileUrl(filePath);
     }
@@ -105,16 +105,16 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public boolean deleteFile(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return true;
-        }
+
         try {
             String filePath = parseFileIdToFilePath(fileId);
             boolean ignored = localFileStorageDAO.deleteFile(filePath);
             return true;
         }
         catch (Exception e) {
-            log.error("删除文件失败", e);
+            log.warn("删除文件失败", e);
             return false;
         }
     }
@@ -127,9 +127,8 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
     @Override
     public String uploadTextToFile(String text, UploadFileQO uploadFileQO) {
 
-        if (StringUtils.isBlank(uploadFileQO.getTargetFilename())) {
+        if (StringUtils.isBlank(uploadFileQO.getTargetFilename()))
             throw new FileStorageException("未指定文件名");
-        }
 
         String targetFolder   = StringUtils.isBlank(uploadFileQO.getTargetFolder()) ? "/" : uploadFileQO.getTargetFolder();
         String targetFilename = uploadFileQO.getTargetFilename();
@@ -145,7 +144,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.error("保存文件失败", e);
+            log.warn("保存文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -155,14 +154,14 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public String getTextFromFile(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return null;
-        }
+
         try {
             String filePath = parseFileIdToFilePath(fileId);
             return localFileStorageDAO.readTextFromFile(filePath);
         } catch (Exception e) {
-            log.error("读取文件失败（读取纯文本文件）", e);
+            log.warn("读取文件失败（读取纯文本文件）", e);
             return null;
         }
     }

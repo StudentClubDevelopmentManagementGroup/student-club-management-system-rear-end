@@ -81,14 +81,15 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
         }
         catch (com.aliyun.oss.ServiceException e) {
             if ("FileAlreadyExists".equals(e.getErrorCode())) {
+                log.warn("上传文件失败，文件已存在，且无法覆盖", e);
                 throw new FileStorageException("文件已存在，且无法覆盖");
             } else {
-               log.error("上传文件失败", e);
-               throw new FileStorageException(e, "上传文件失败");
+                log.warn("上传文件失败", e);
+                throw new FileStorageException(e, "上传文件失败");
             }
         }
         catch (Exception e) {
-            log.error("上传文件失败", e);
+            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -98,15 +99,15 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
      * */
     @Override
     public String getFileUrl(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return null;
-        }
+
         try {
             String fileKey = parseFileIdToFileKey(fileId);
             return aliyunOssDAO.getFileUrl(fileKey);
         }
         catch (Exception e) {
-            log.error("获取文件 url 失败", e);
+            log.warn("获取文件 url 失败", e);
             return null;
         }
     }
@@ -116,16 +117,16 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
      * */
     @Override
     public boolean deleteFile(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return true;
-        }
+
         try {
             String fileKey = parseFileIdToFileKey(fileId);
             aliyunOssDAO.deleteFile(fileKey);
             return true;
         }
         catch (Exception e) {
-            log.error("删除文件失败", e);
+            log.warn("删除文件失败", e);
             return false;
         }
     }
@@ -153,14 +154,15 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
         }
         catch (com.aliyun.oss.ServiceException e) {
             if ("FileAlreadyExists".equals(e.getErrorCode())) {
+                log.warn("上传文件失败，文件已存在，且无法覆盖", e);
                 throw new FileStorageException("文件已存在，且无法覆盖");
             } else {
-               log.error("上传文件失败", e);
-               throw new FileStorageException(e, "上传文件失败");
+                log.warn("上传文件失败", e);
+                throw new FileStorageException(e, "上传文件失败");
             }
         }
         catch (Exception e) {
-            log.error("上传文件失败", e);
+            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -171,15 +173,15 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
      * */
     @Override
     public String getTextFromFile(String fileId) {
-        if (isIncorrectFormat(fileId)) {
+        if (isIncorrectFormat(fileId))
             return null;
-        }
+
         try {
             String fileKey = parseFileIdToFileKey(fileId);
             return aliyunOssDAO.readTextFromFile(fileKey);
         }
         catch (Exception e) {
-            log.error("读取文件失败（读取纯文本文件）", e);
+            log.warn("读取文件失败（读取纯文本文件）", e);
             return null;
         }
     }
