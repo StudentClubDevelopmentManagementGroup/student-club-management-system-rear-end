@@ -14,4 +14,9 @@ public class ServiceException extends RuntimeException {
         super(message);
         this.status = status;
     }
+
+    public ServiceException(Throwable cause, ServiceStatus status, String message) {
+        super(message, cause);
+        this.status = status;
+    }
 }
