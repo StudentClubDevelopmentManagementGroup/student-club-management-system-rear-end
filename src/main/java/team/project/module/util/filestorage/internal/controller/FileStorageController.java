@@ -109,7 +109,7 @@ public class FileStorageController {
 
         String fileId = fileStorageService.uploadTextToFile(toEnum(storageType), text, uploadFileQO);
 
-        return new Response<>(ServiceStatus.SUCCESS).data(fileId);
+        return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
     }
 
     @Operation(summary="读取文本文件里的文本", description=DESC)

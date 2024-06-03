@@ -11,7 +11,7 @@ import team.project.module.util.filestorage.internal.config.AliyunOssConfig;
 import team.project.module.util.filestorage.internal.dao.AliyunOssDAO;
 import team.project.module.util.filestorage.internal.service.FileStorageBasicServiceI;
 import team.project.module.util.filestorage.internal.service.TextFileStorageServiceI;
-import team.project.module.util.filestorage.internal.util.Util;
+import team.project.module.util.filestorage.internal.util.FilepathUtil;
 
 @Service
 @Slf4j
@@ -35,16 +35,16 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
      * 判断 fileId 格式是否错误（若格式错误，则认为文件不存在，不必再进行后续操作）
      * */
     private boolean isIncorrectFormat(String fileId) {
-        return ! mayBeStored(fileId) || Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId);
+        return ! mayBeStored(fileId) || FilepathUtil.hasInvalidChar(fileId) || FilepathUtil.hasRelativePathPart(fileId);
     }
 
     /**
      * 依据文件路径生成 fileId
      * */
     private String generateFileId(String folderPath, String filename) {
-        String fileId = Util.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
+        String fileId = FilepathUtil.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
 
-        if (Util.hasInvalidChar(fileId) || Util.hasRelativePathPart(fileId))
+        if (FilepathUtil.hasInvalidChar(fileId) || FilepathUtil.hasRelativePathPart(fileId))
             throw new FileStorageException("目标目录路径或目标文件名不合约束");
 
         return fileId;
