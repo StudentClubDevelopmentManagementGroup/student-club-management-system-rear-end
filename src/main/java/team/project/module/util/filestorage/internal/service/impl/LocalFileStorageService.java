@@ -75,6 +75,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
+            log.warn("上传文件失败，文件已存在，且无法覆盖");
             throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
@@ -83,7 +84,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.warn("保存文件失败", e);
+            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -136,6 +137,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
+            log.warn("上传文件失败，文件已存在，且无法覆盖");
             throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
@@ -144,7 +146,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.warn("保存文件失败", e);
+            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
