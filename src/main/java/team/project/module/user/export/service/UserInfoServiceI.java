@@ -32,8 +32,11 @@ public interface UserInfoServiceI {
     String getUserName(String userId);
 
     /**
-     * 从 tbl_user 表中搜索相关用户的基本信息（模糊查询）
-     * @param userName 用户的姓名
+     * <p> 从 tbl_user 表中搜索相关用户的基本信息（模糊查询）
+     * <p style="color: yellow;">
+     *     注意：即使 userName 是空字符串（或只含有空白字符的字符串）也会执行 SQL 查询操作，
+     *     如果你心疼这点性能开销，调用前请确保 userName.isBlank() == false </p>
+     * @param userName 用户的姓名（查询关键字）
      * @return 搜索到的用户基本信息（如果搜索不出结果则返回空列表，不会返回 null）
      * */
     List<UserBasicInfoDTO> searchUser(String userName);
