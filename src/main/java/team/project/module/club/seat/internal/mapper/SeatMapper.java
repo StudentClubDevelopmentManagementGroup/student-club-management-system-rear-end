@@ -73,15 +73,15 @@ public interface SeatMapper extends BaseMapper<SeatDO> {
      * */
     @CrossModuleSQL({"tbl_user_club"})
     @Select("""
-        SELECT user_id
-        FROM   tbl_user_club
-        WHERE  is_deleted = 0
-        AND    club_id = #{ clubId }
-        AND    user_id NOT IN (
-            SELECT owner_id AS user_id
-            FROM   tbl_user_club_seat
-            WHERE  club_id = #{ clubId }
-            AND    owner_id IS NOT NULL
+        SELECT user.user_id
+        FROM   tbl_user_club AS user
+        WHERE  user.is_deleted = 0
+        AND    user.club_id = #{ clubId }
+        AND    user.user_id NOT IN (
+            SELECT seat.owner_id AS user_id
+            FROM   tbl_user_club_seat AS seat
+            WHERE  seat.club_id = #{ clubId }
+            AND    seat.owner_id IS NOT NULL
         )
     """)
     List<String> selectNoSeatMemberId(Page<Object> page, Long clubId);

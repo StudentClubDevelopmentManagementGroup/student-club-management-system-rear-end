@@ -9,6 +9,7 @@ import team.project.module.user.internal.dao.UserDAO;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.query.SearchUserInfoQO;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
@@ -100,14 +101,13 @@ public interface UserMapper extends BaseMapper<UserDO> {
      * 查询指定用户的基本信息（只查询姓名和角色，其他属性为 null）
      * */
     default List<UserDO> searchUserBasicInfo(String userName) {
-        String userNameLike = (userName != null) ? userName.replace("%", "") : "";
         return selectList(new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getName,
                 UserDO::getRole
             )
-            .like(userName != null, UserDO::getName, userNameLike)
+            .like(UserDO::getName, userName.replace("%", ""))
         );
     }
 
