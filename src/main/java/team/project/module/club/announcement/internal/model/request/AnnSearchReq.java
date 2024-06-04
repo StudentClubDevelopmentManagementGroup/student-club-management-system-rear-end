@@ -16,6 +16,9 @@ import static team.project.module.club.announcement.internal.model.entity.AnnDO.
 @Setter
 public class AnnSearchReq {
 
+    @JsonProperty("club_name")
+    private String clubName;
+
     @ClubIdConstraint
     @JsonProperty("club_id")
     private Long clubId;
@@ -24,7 +27,6 @@ public class AnnSearchReq {
     @JsonProperty("author_id")
     private String authorId;
 
-    @UserIdConstraint
     @JsonProperty("author_name")
     private String authorName;
 

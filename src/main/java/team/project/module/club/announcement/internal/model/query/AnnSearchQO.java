@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 @Setter
 public class AnnSearchQO {
-    private Long         clubId;
+    private List<Long>   clubIdList;
     private List<String> authorIdList;
     private String       titleKeyword;
     private LocalDate    fromDate;

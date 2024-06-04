@@ -152,27 +152,9 @@ public class AnnService {
     }
 
     public PageVO<AnnDetailVO> searchAnn(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+
         Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
-
-        String titleKeyword = searchReq.getTitleKeyword();
-
-        List<String> authorIdList = new ArrayList<>();
-        if (null != searchReq.getAuthorName()) {
-            List<UserBasicInfoDTO> authors = userInfoService.searchUser(searchReq.getAuthorName());
-            for (UserBasicInfoDTO author : authors) {
-                authorIdList.add(author.getUserId());
-            }
-        }
-        if (null != searchReq.getAuthorId()) {
-            authorIdList.add(searchReq.getAuthorId());
-        }
-
-        AnnSearchQO searchQO = new AnnSearchQO();
-        searchQO.setClubId(searchReq.getClubId());
-        searchQO.setAuthorIdList(authorIdList);
-        searchQO.setTitleKeyword(titleKeyword == null || titleKeyword.isBlank() ? null : titleKeyword);
-        searchQO.setFromDate(searchReq.getFromDate());
-        searchQO.setToDate(searchReq.getToDate());
+        AnnSearchQO searchQO = modelConverter.toAnnSearchQO(searchReq);
         List<AnnDO> announcementList = announcementMapper.searchAnn(page, searchQO);
 
         List<AnnDetailVO> result = new ArrayList<>();

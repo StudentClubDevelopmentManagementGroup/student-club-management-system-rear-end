@@ -39,23 +39,25 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             AnnDO::getSummary
         );
 
-        if (null != searchQO.getClubId())
-            wrapper.eq(AnnDO::getClubId, searchQO.getClubId());
+        List<Long> clubIdList = searchQO.getClubIdList();
+        if (1 == clubIdList.size()) /* <- size() 是 O(1) 时间复杂度 */
+            wrapper.eq(AnnDO::getClubId, clubIdList.get(0));
+        else if (1 < clubIdList.size())
+            wrapper.in(AnnDO::getClubId, clubIdList); /* <- 如果只有一个则使用 eq 语句；如果有多个则使用 in 语句 */
+
+        List<String> authorIdList = searchQO.getAuthorIdList();
+        if (1 == authorIdList.size())
+            wrapper.eq(AnnDO::getAuthorId, authorIdList.get(0));
+        else if (1 < authorIdList.size())
+            wrapper.in(AnnDO::getAuthorId, authorIdList);
+
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())
             wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
-        if (null != searchQO.getToDate()) {
-            /* 按日期查询 [from_date, to_date] 限定的区间为左闭右闭，故 to_date 多增加一天，以包含 to_date 当天 */
-            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1));
-        }
+        if (null != searchQO.getToDate())
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1)); /* <- 多增一天，以包含 to_date 当天 */
 
-        int authorIdNum; /* 如果只有一个 authorId，则使用 eq 语句；如果有多个，则使用 in 语句 */
-
-        if (1 == (authorIdNum = searchQO.getAuthorIdList().size()))
-            wrapper.eq(AnnDO::getAuthorId, searchQO.getAuthorIdList().get(0));
-        else if (1 < authorIdNum)
-            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdList());
 
         wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
 
