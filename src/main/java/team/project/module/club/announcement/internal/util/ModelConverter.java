@@ -33,6 +33,7 @@ public class ModelConverter {
     public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
         assert announcementDO != null;
 
+        /* TODO ljh_TODO selectClubBasicMsg 会抛异常 */
         ClubBasicMsgDTO clubInfo = clubInfoService.selectClubBasicMsg(announcementDO.getClubId());
 
         AnnDetailVO result = new AnnDetailVO();
