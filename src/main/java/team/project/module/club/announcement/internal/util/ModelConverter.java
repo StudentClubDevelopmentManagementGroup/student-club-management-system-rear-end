@@ -1,6 +1,6 @@
 package team.project.module.club.announcement.internal.util;
 
-import org.checkerframework.checker.units.qual.A;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
@@ -68,26 +68,29 @@ public class ModelConverter {
         assert searchReq != null;
 
         List<Long> clubIdList = new ArrayList<>();
-        if (null != searchReq.getClubId())
-            clubIdList.add(searchReq.getClubId());       /* <- 一旦指定 club_id，则忽略 club_name */
-        else if (null != searchReq.getClubName() && ! searchReq.getClubName().isBlank())
-            clubIdList.addAll( clubIdMapper.searchClub(searchReq.getClubName()) );
+        if (null != searchReq.getClubId()) {
+            clubIdList.add(searchReq.getClubId());
+        } else { /*  一旦指定 club_id，则忽略 club_name 和 department_id */
+            if ( ! StringUtils.isBlank(searchReq.getClubName()))
+                clubIdList.addAll( clubIdMapper.searchClubByName( searchReq.getClubName() ) );
+            if (null != searchReq.getDepartmentId())
+                clubIdList.addAll( clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId()) );
+        }
 
         List<String> authorIdList = new ArrayList<>();
         if (null != searchReq.getAuthorId())
-            authorIdList.add(searchReq.getAuthorId());   /* <- 一旦指定 author_id，则忽略 author_name */
-        else if (null != searchReq.getAuthorName() && ! searchReq.getAuthorName().isBlank()) {
-            for (UserBasicInfoDTO author : userInfoService.searchUser(searchReq.getAuthorName()))
+            authorIdList.add(searchReq.getAuthorId());   /* 一旦指定 author_id，则忽略 author_name */
+        else if ( ! StringUtils.isBlank(searchReq.getAuthorName())) {
+            for (UserBasicInfoDTO author : userInfoService.searchUser( searchReq.getAuthorName() ))
                 authorIdList.add(author.getUserId());
         }
 
-        String titleKeyword = searchReq.getTitleKeyword() == null || searchReq.getTitleKeyword().isBlank()
-                                ? null : searchReq.getTitleKeyword();
+        String titleKeyword = searchReq.getTitleKeyword();
 
         AnnSearchQO searchQO = new AnnSearchQO();
         searchQO.setClubIdList(clubIdList);
-        searchQO.setAuthorIdList(authorIdList);
-        searchQO.setTitleKeyword(titleKeyword);
+        searchQO.setAuthorIdList(authorIdList);;
+        searchQO.setTitleKeyword(StringUtils.trimToNull(searchReq.getTitleKeyword()));
         searchQO.setFromDate(searchReq.getFromDate());
         searchQO.setToDate(searchReq.getToDate());
 

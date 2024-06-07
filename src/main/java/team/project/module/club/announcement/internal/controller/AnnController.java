@@ -60,13 +60,16 @@ public class AnnController {
         | club_id       | 社团编号，查询指定社团发布的公告                 | 传 null 表示全匹配       | 用于查询“指定社团内公告” |
         | author_id     | 作者学号/工号，查询指定作者发布的公告             | 传 null 或 "" 表示全匹配 | 用于查询“我发的公告”    |
         | author_name   | 作者姓名检索关键字，查询作者名字包含该关键字的公告   | 传 null 或 "" 表示全匹配 | 用于首页搜索公告       |
+        | department_id | 院系编号，查询指定院系下的社团所发布的公告         | 传 null 或 0 表示全匹配   | 用于首页搜索公告       |
         | title_keyword | 标题检索关键字，查询标题中包含该关键字的公告       | 传 null 或 "" 表示全匹配  | 用于首页搜索公告       |
         | from_date     | 检索发布时间不早于指定日期的公告                 | 传 null 则不限定时间范围  |                     |
         | to_date       | 检索发布时间不晚于指定日期的公告                 | 传 null 则不限定时间范围  |                     |
         | page_num      | 分页查询，当前页码                            |                        |                     |
         | page_size     | 分页查询，页大小                              |                        |                     |
 
-        **注意**：一旦指定 author_id，则忽略 author_name，club_id 和 club_name 同理
+        **注意**：
+         - 一旦指定 author_id，则忽略 author_name
+         - 一旦指定 club_id，则忽略 club_name 和 department_id
         """)
     @GetMapping("/search")
     Object search(

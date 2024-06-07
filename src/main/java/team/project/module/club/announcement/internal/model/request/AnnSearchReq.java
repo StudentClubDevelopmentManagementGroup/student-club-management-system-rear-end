@@ -16,6 +16,7 @@ import static team.project.module.club.announcement.internal.model.entity.AnnDO.
 @Setter
 public class AnnSearchReq {
 
+    @Size(max=10, message="社团名检索关键字长度过长")
     @JsonProperty("club_name")
     private String clubName;
 
@@ -27,8 +28,13 @@ public class AnnSearchReq {
     @JsonProperty("author_id")
     private String authorId;
 
+    @Size(max=6, message="作者姓名检索关键字长度过长")
     @JsonProperty("author_name")
     private String authorName;
+
+    /* TODO ljh_TODO 院系编号的校验 */
+    @JsonProperty("department_id")
+    private Long departmentId;
 
     @Size(max=TITLE_MAX_LENGTH, message="标题检索关键字长度过长")
     @JsonProperty("title_keyword")

@@ -16,5 +16,14 @@ public interface ClubIdMapper {
         WHERE  is_deleted = 0
         AND    tbl_club.name LIKE CONCAT('%', #{ clubName }, '%')
     """)
-    List<Long> searchClub(String clubName);
+    List<Long> searchClubByName(String clubName);
+
+    @CrossModuleSQL("tbl_club")
+    @Select("""
+        SELECT tbl_club.id
+        FROM   tbl_club
+        WHERE  is_deleted = 0
+        AND    tbl_club.department_id = #{ departmentId }
+    """)
+    List<Long> searchClubByDepartmentId(long departmentId);
 }

@@ -58,7 +58,6 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         if (null != searchQO.getToDate())
             wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1)); /* <- 多增一天，以包含 to_date 当天 */
 
-
         wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
 
         return selectList(page, wrapper);
