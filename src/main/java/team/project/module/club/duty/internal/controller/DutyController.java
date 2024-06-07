@@ -1,5 +1,6 @@
 package team.project.module.club.duty.internal.controller;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -7,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
@@ -50,7 +52,7 @@ public class DutyController {
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
-        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
+        dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
@@ -116,7 +118,7 @@ public class DutyController {
 
     @Operation(summary = "查询自动值日")
     @PostMapping("/club/duty/auto_duty")
-    Object selectAutoDuty(@Valid @NotNull @RequestBody Long clubId) {
+    Object selectAutoDuty(@Valid @NotNull @RequestParam @JsonProperty("club_id") Long clubId) {
         TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(clubId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }

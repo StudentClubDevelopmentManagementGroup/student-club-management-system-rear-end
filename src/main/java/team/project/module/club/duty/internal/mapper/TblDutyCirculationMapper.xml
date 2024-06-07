@@ -6,23 +6,23 @@
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
         <result column="id"                 property="id" />
         <result column="club_id"            property="clubId" />
-        <result column="is_circulation"    property="isCirculation" />
+        <result column="is_circulation"     property="isCirculation" />
     </resultMap>
 
     <insert id="createCirculation" parameterType="java.lang.Long">
-        INSERT INTO tbl_user_club_duty_circulation (club_id, is_circulation) VALUES (#{club_id}, 0)
+        INSERT INTO tbl_user_club_duty_circulation (club_id, is_circulation) VALUES (#{clubId}, 0)
     </insert>
 
     <update id="setCirculationByClubId">
-        UPDATE tbl_user_club_duty_circulation SET is_circulation = #{is_circulation} WHERE club_id = #{club_id}
+        UPDATE tbl_user_club_duty_circulation SET is_circulation = #{circulation} WHERE club_id = #{clubId}
     </update>
 
     <delete id="deleteCirculation" parameterType="java.lang.Long">
-        DELETE FROM tbl_user_club_duty_circulation WHERE club_id = #{club_id}
+        DELETE FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
     </delete>
 
     <select id="selectCirculationByClubId" resultMap="tbl_club_duty_circulation" parameterType="java.lang.Long">
-        SELECT is_circulation FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_circulation WHERE club_id = #{clubId}
     </select>
 
     <select id="selectAutoDutyClubId"

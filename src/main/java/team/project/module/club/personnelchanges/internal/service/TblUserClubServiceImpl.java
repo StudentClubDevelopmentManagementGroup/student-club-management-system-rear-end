@@ -67,7 +67,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     public void quashClubManager(String userId, Long clubId) {
         TblUserClubDO user = ucMapper.selectOne(userId, clubId);
         if (user == null) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有对象");
         } else {
             try {
                 ucMapper.quashManager(userId, clubId);
@@ -76,7 +76,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 }
             } catch (Exception e) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
-                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
             }
         }
     }
@@ -91,10 +91,10 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 uiService.addRoleToUser(userId, CLUB_MEMBER);
             } catch (Exception a) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
-                throw new ServiceException(ServiceStatus.SUCCESS, "创建失败");
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "创建失败");
             }
         } else {
-            throw new ServiceException(ServiceStatus.SUCCESS, "已经存在");
+            throw new ServiceException(ServiceStatus.CONFLICT, "已经存在");
         }
     }
 
@@ -103,7 +103,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     public void quashMember(String userId, Long clubId) {
         TblUserClubDO user = ucMapper.selectOne(userId, clubId);
         if (user == null) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "没有对象");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有对象");
         } else {
             try {
                 ucMapper.quashMember(userId, clubId);
@@ -112,7 +112,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 }
             } catch (Exception a) {
                 // FIXME 待修改状态码422 UNPROCESSABLE_ENTITY
-                throw new ServiceException(ServiceStatus.SUCCESS, "删除失败");
+                throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
             }
         }
     }
@@ -137,7 +137,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
     public List<UserClubInfoVO> selectMemberAllClubInfo(String userId) {
         List<TblUserClubDO> list = ucMapper.selectOneAllClubInfo(userId);
         if (list.isEmpty()) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无对象");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无对象");
         }
         List<UserClubInfoVO> result = new ArrayList<>();
         for (TblUserClubDO tblUserClubDO : list) {

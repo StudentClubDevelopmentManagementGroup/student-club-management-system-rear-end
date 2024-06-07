@@ -22,7 +22,7 @@ public class ManagementIServiceImpl implements ManagementIService {
     public ClubBasicMsgDTO selectClubBasicMsg(long clubId) {
         TblClubDO tblClubDO = tblClubMapper.selectById(clubId);
         if(tblClubDO==null){
-            throw new ServiceException(ServiceStatus.BAD_REQUEST, "没有该社团");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该社团");
         }
         ClubBasicMsgDTO clubBasicMsgDTO = new ClubBasicMsgDTO();
         clubBasicMsgDTO.setName(tblClubDO.getName());
@@ -34,7 +34,7 @@ public class ManagementIServiceImpl implements ManagementIService {
     public   Long selectClubIdByName(String clubName){
         Long clubId = tblClubMapper.selectClubIdByName(clubName);
         if (clubId == null) {
-            throw new ServiceException(ServiceStatus.BAD_REQUEST, "没有该社团");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该社团");
         }
         return clubId;
     }

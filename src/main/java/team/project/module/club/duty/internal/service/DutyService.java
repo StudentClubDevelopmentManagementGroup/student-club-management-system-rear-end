@@ -16,7 +16,7 @@ public interface DutyService extends IService<TblDuty> {
             , String cleanerId, Long clubId, Boolean isMixed);
 
     void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId
-            , String cleanerId, Long clubId, Boolean isMixed, String groupName);
+            , Long clubId, Boolean isMixed, String groupName);
 
     void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId);
 

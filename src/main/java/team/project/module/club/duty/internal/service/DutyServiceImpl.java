@@ -56,7 +56,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed, String groupName) {
+    public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
@@ -128,7 +128,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
         } else {
-            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
     }
 
@@ -140,9 +140,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "值日信息为空");
         } else {
-            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize()));
+            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
     }
 
@@ -150,7 +150,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     public PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -160,16 +160,16 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
 
     @Override
     public PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -179,15 +179,18 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             selectUserName(dutyList, page);
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
 
     private void selectUserName(List<DutyInfoVO> dutyList, Page<TblDuty> page) {
         for(TblDuty tblDuty : page.getRecords()){
             DutyInfoVO dutyInfoVO = new DutyInfoVO();
             dutyInfoVO.setId(tblDuty.getId());
+            dutyInfoVO.setClubId(tblDuty.getClubId());
+            dutyInfoVO.setUpdateTime(tblDuty.getUpdateTime());
+            dutyInfoVO.setDeleted(tblDuty.getDeleted());
             dutyInfoVO.setNumber(tblDuty.getNumber());
             dutyInfoVO.setArea(tblDuty.getArea());
             dutyInfoVO.setDateTime(tblDuty.getDutyTime());

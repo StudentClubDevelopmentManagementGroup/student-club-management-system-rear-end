@@ -44,7 +44,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     @Override
     public void deleteDutyGroup(Long clubId, String memberId, String name) {
         if (tblDutyGroupMapper.selectByClubIdAndMemberIdAndName(clubId, memberId, name) == null) {
-            throw new ServiceException(ServiceStatus.CONFLICT, "找不到目标");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到目标");
         } else {
             tblDutyGroupMapper.deleteDutyGroup(clubId, memberId, name);
             tblDutyCirculationMapper.setCirculationByClubId(clubId, 1);
@@ -64,7 +64,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     public PageVO<TblDutyGroup> selectDutyGroupByName(DutyGroupQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<TblDutyGroup> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -72,7 +72,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
             dutyList.addAll(page.getRecords());
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }
@@ -90,7 +90,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     public PageVO<TblDutyGroup> selectDutyGroupByGroupNameAndName(DutyGroupQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         List<TblDutyGroup> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
@@ -98,7 +98,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
             dutyList.addAll(page.getRecords());
         }
         if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "查无此人");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }

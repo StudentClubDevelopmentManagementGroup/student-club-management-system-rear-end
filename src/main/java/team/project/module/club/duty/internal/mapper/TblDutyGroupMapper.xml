@@ -20,30 +20,30 @@
     </delete>
 
     <select id="selectByClubIdAndMemberIdAndName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+            resultMap="tbl_club_Group">
     </select>
 
     <select id="selectUserIdByGroupName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+            resultMap="tbl_club_Group">
     </select>
 
-    <select id="selectGroup" resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+    <select id="selectGroup" resultMap="tbl_club_Group">
         SELECT * FROM tbl_user_club_duty_group WHERE club_id = #{clubId}
     </select>
 
     <select id="selectGroupByName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
-        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{member_id} club_id = #{clubId}
+            resultMap="tbl_club_Group">
+        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{memberId} AND club_id = #{clubId}
     </select>
 
     <select id="selectGroupByGroupName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
+            resultMap="tbl_club_Group">
         SELECT * FROM tbl_user_club_duty_group WHERE name = #{name} AND club_id = #{clubId}
     </select>
 
     <select id="selectGroupByNameAndGroupName"
-            resultType="team.project.module.club.duty.internal.model.entity.TblDutyGroup">
-        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{member_id} AND name = #{name} AND club_id = #{clubId}
+            resultMap="tbl_club_Group">
+        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{memberId} AND name = #{name} AND club_id = #{clubId}
     </select>
 
 

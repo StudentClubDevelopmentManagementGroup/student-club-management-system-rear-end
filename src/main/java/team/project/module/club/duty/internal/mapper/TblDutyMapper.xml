@@ -7,6 +7,8 @@
         <result column="is_deleted"         property="deleted" />
         <result column="create_time"        property="createTime" />
         <result column="update_time"        property="updateTime" />
+        <result column="number"             property="number" />
+        <result column="area"               property="area" />
         <result column="duty_time"          property="dutyTime" />
         <result column="arranger_id"        property="arrangerId" />
         <result column="cleaner_id"         property="cleanerId" />
@@ -17,45 +19,45 @@
 
     <insert id="createDuty">
         insert into tbl_user_club_duty (number,area,duty_time,arranger_id,cleaner_id,club_id,is_mixed)
-        values (#{number},#{area},#{duty_time},#{arranger_id},#{cleaner_id},#{club_id},#{is_mixed})
+        values (#{number},#{area},#{dateTime},#{arrangerId},#{cleanerId},#{clubId},#{isMixed})
     </insert>
 
     <update id="setDutyPicture">
-        update tbl_user_club_duty set image_file = #{fileId} where duty_time = #{duty_time}
-        and cleaner_id = #{member_id} and club_id = #{club_id} and is_deleted = 0
+        update tbl_user_club_duty set image_file = #{fileId} where duty_time = #{dateTime}
+        and cleaner_id = #{memberId} and club_id = #{clubId} and is_deleted = 0
     </update>
 
     <delete id="deleteDuty">
-        update tbl_user_club_duty set is_deleted = 1 where duty_time = #{duty_time}
-        and cleaner_id = #{cleaner_id} and club_id = #{club_id} and is_deleted = 0
+        update tbl_user_club_duty set is_deleted = 1 where duty_time = #{dateTime}
+        and cleaner_id = #{cleanerId} and club_id = #{clubId} and is_deleted = 0
     </delete>
 
     <select id="selectOne" resultMap ="tbl_club_Duty">
     </select>
 
     <select id="selectLastWeek" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) and club_id = #{club_id};
+        SELECT * FROM tbl_user_club_duty WHERE duty_time >= DATE_SUB(NOW(), INTERVAL 7 DAY) and club_id = #{clubId}
     </select>
 
     <select id="selectDuty" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty
-        WHERE club_id = #{club_id} AND is_deleted = 0
+        WHERE club_id = #{clubId} AND is_deleted = 0
     </select>
 
     <select id="selectDutyByNumber" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and is_deleted = 0;
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and is_deleted = 0
     </select>
 
     <select id="selectDutyByName" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleaner_id} and is_deleted = 0;
+        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{cleanerId} and is_deleted = 0
     </select>
 
     <select id="selectDutyByNumberAndName" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleaner_id} and is_deleted = 0;
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and cleaner_id = #{cleanerId} and is_deleted = 0
     </select>
 
     <select id="selectNextWeek" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{club_id};
+        SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{clubId}
     </select>
 
 </mapper>

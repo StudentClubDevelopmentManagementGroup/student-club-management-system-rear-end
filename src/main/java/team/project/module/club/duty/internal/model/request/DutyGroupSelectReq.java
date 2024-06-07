@@ -24,5 +24,6 @@ public class DutyGroupSelectReq {
     Integer   pageNum = 1;
 
     @Min(value = 1, message="每页大小不合法")
+    @JsonProperty("page_size")
     Integer   size = 20;
 }

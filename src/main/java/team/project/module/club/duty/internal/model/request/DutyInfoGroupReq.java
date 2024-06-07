@@ -26,9 +26,6 @@ public class DutyInfoGroupReq {
     @JsonProperty("arranger_id")
     String        arrangerId;
 
-    @UserIdConstraint
-    @JsonProperty("cleaner_id")
-    String        cleanerId;
 
     @ClubIdConstraint
     @NotNull
