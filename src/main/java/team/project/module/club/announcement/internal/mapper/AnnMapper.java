@@ -39,16 +39,16 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             AnnDO::getSummary
         );
 
-        if ( ! searchQO.getClubIdColl().isEmpty())
-            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
-        if ( ! searchQO.getAuthorIdColl().isEmpty())
-            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
-        if (null != searchQO.getTitleKeyword())
-            wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())
             wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
         if (null != searchQO.getToDate())
             wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1)); /* <- 多增一天，以包含 to_date 当天 */
+        if (null != searchQO.getTitleKeyword())
+            wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
+        if ( ! searchQO.getClubIdColl().isEmpty())
+            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
+        if ( ! searchQO.getAuthorIdColl().isEmpty())
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
 
         wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
 
