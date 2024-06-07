@@ -1,5 +1,6 @@
 package team.project.module.user.export.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
@@ -60,7 +61,10 @@ public class UserInfoIServiceImpl implements UserInfoServiceI {
      */
     @Override
     public List<UserBasicInfoDTO> searchUser(String userName) {
-        assert userName != null;
+
+        String name = StringUtils.trimToNull(userName);
+        if (name == null)
+            return new ArrayList<>();
 
         List<UserBasicInfoDTO> result = new ArrayList<>();
         for (UserDO userBasicInfo : userDAO.searchUserBasicInfo(userName)) {
