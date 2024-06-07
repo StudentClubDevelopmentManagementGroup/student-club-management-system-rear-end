@@ -141,7 +141,7 @@ public class UserDAO {
            2024-05-13 ljh
            ---------
             使用缓存优化查询 sql
-            原先此注释位于 mapper 层，先移至 DAO 层
+            原先此注释位于 mapper 层，现移至 DAO 层
         */
 
         Integer role = selectRoleCode(userId);
