@@ -39,18 +39,10 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             AnnDO::getSummary
         );
 
-        List<Long> clubIdList = searchQO.getClubIdList();
-        if (1 == clubIdList.size()) /* <- size() 是 O(1) 时间复杂度 */
-            wrapper.eq(AnnDO::getClubId, clubIdList.get(0));
-        else if (1 < clubIdList.size())
-            wrapper.in(AnnDO::getClubId, clubIdList); /* <- 如果只有一个则使用 eq 语句；如果有多个则使用 in 语句 */
-
-        List<String> authorIdList = searchQO.getAuthorIdList();
-        if (1 == authorIdList.size())
-            wrapper.eq(AnnDO::getAuthorId, authorIdList.get(0));
-        else if (1 < authorIdList.size())
-            wrapper.in(AnnDO::getAuthorId, authorIdList);
-
+        if ( ! searchQO.getClubIdColl().isEmpty())
+            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
+        if ( ! searchQO.getAuthorIdColl().isEmpty())
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
         if (null != searchQO.getFromDate())

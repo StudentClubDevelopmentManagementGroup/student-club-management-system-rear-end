@@ -4,14 +4,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Collection;
+import java.util.HashSet;
 
 @Getter
 @Setter
 public class AnnSearchQO {
-    private List<Long>   clubIdList;
-    private List<String> authorIdList;
-    private String       titleKeyword;
-    private LocalDate    fromDate;
-    private LocalDate    toDate;
+    private Collection<Long>   clubIdColl;
+    private Collection<String> authorIdColl;
+    private String             titleKeyword;
+    private LocalDate          fromDate;
+    private LocalDate          toDate;
 }

@@ -15,8 +15,7 @@ import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 
 @Component("club-announcement-util-ModelConverter")
 public class ModelConverter {
@@ -40,7 +39,6 @@ public class ModelConverter {
         result.setAnnouncementId(announcementDO.getAnnouncementId());
         result.setDepartmentName(clubInfo.getDepartmentName());
         result.setClubName(clubInfo.getName());
-        result.setAuthorId(announcementDO.getAuthorId());
         result.setAuthorName(userInfoService.getUserName(announcementDO.getAuthorId()));
         result.setPublishTime(announcementDO.getPublishTime());
         result.setTitle(announcementDO.getTitle());
@@ -67,29 +65,27 @@ public class ModelConverter {
     public AnnSearchQO toAnnSearchQO(AnnSearchReq searchReq) {
         assert searchReq != null;
 
-        List<Long> clubIdList = new ArrayList<>();
+        HashSet<Long> clubIdColl = new HashSet<>();
         if (null != searchReq.getClubId()) {
-            clubIdList.add(searchReq.getClubId());
+            clubIdColl.add(searchReq.getClubId());
         } else { /*  一旦指定 club_id，则忽略 club_name 和 department_id */
             if ( ! StringUtils.isBlank(searchReq.getClubName()))
-                clubIdList.addAll( clubIdMapper.searchClubByName( searchReq.getClubName() ) );
+                clubIdColl.addAll( clubIdMapper.searchClubByName( searchReq.getClubName() ) );
             if (null != searchReq.getDepartmentId())
-                clubIdList.addAll( clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId()) );
+                clubIdColl.addAll( clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId()) );
         }
 
-        List<String> authorIdList = new ArrayList<>();
+        HashSet<String> authorIdColl = new HashSet<>();
         if (null != searchReq.getAuthorId())
-            authorIdList.add(searchReq.getAuthorId());   /* 一旦指定 author_id，则忽略 author_name */
+            authorIdColl.add(searchReq.getAuthorId()); /* 一旦指定 author_id，则忽略 author_name */
         else if ( ! StringUtils.isBlank(searchReq.getAuthorName())) {
             for (UserBasicInfoDTO author : userInfoService.searchUser( searchReq.getAuthorName() ))
-                authorIdList.add(author.getUserId());
+                authorIdColl.add(author.getUserId());
         }
 
-        String titleKeyword = searchReq.getTitleKeyword();
-
         AnnSearchQO searchQO = new AnnSearchQO();
-        searchQO.setClubIdList(clubIdList);
-        searchQO.setAuthorIdList(authorIdList);;
+        searchQO.setClubIdColl(clubIdColl);
+        searchQO.setAuthorIdColl(authorIdColl);
         searchQO.setTitleKeyword(StringUtils.trimToNull(searchReq.getTitleKeyword()));
         searchQO.setFromDate(searchReq.getFromDate());
         searchQO.setToDate(searchReq.getToDate());
