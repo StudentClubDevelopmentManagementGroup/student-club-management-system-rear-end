@@ -18,6 +18,24 @@ public class AuthServiceImpl implements AuthServiceI {
     PceIService clubMemberRoleService;
 
     /**
+     * 详见：{@link AuthServiceI#requireClubMember}
+     */
+    @Override
+    public void requireClubMember(String userId, long clubId, String message) {
+        if (null == userId)
+            throw new AuthenticationFailureException(message);
+
+        if (clubMemberRoleService.isClubMember(userId, clubId))
+            return;
+
+        Integer userRole = userInfoService.selectUserRole(userId);
+        if (null != userRole && UserRole.hasRole(userRole, UserRole.SUPER_ADMIN))
+            return;
+
+        throw new AuthenticationFailureException(message);
+    }
+
+    /**
      * 详见：{@link AuthServiceI#requireClubManager}
      * */
     @Override
