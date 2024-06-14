@@ -103,7 +103,7 @@ public class TblClubController {
     @PostMapping("/club/select_all")
     Object selectAll(@Valid @RequestBody ListClubInfoReq req) {
         String arrangerId = (String)( StpUtil.getLoginId() );
-        authService.requireSuperAdmin(arrangerId, "只有超级管理员能查询基地总信息，包括人数、负责人以及是否开放招新");
+        authService.requireSuperAdmin(arrangerId, "只有超级管理员能查询1.基地总信息，包括人数、负责人以及是否开放招新");
 
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<ClubMsgDTO> result;

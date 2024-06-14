@@ -18,10 +18,10 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
-import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.request.*;
+import team.project.module.club.duty.internal.model.view.DutyGroupSelectVO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
@@ -126,7 +126,6 @@ public class DutyController {
     Object selectDuty(@Valid @RequestBody DutySelectReq req) {
         String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日情况");
-
         DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
                 (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
@@ -147,12 +146,12 @@ public class DutyController {
         authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日小组");
 
         DutyGroupQO newQO = new DutyGroupQO(req.getClubId(), req.getGroupName(), req.getName(), req.getPageNum(), req.getSize());
-        PageVO<TblDutyGroup> result = req.getName().isEmpty() ?
+        PageVO<DutyGroupSelectVO> result = req.getName().isEmpty() ?
                 (req.getGroupName().isBlank() || req.getGroupName().isEmpty() ?
                         dutyGroupService.selectDutyGroup(newQO) :
-                        dutyGroupService.selectDutyGroupByName(newQO)) :
+                        dutyGroupService.selectDutyGroupByGroupName(newQO)) :
                 (req.getGroupName().isBlank() || req.getGroupName().isEmpty() ?
-                        dutyGroupService.selectDutyGroupByGroupName(newQO) :
+                        dutyGroupService.selectDutyGroupByName(newQO) :
                         dutyGroupService.selectDutyGroupByGroupNameAndName(newQO));
         //todo 合并
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
