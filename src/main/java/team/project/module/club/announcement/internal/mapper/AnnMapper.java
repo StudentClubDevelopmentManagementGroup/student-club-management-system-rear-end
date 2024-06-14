@@ -50,7 +50,7 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         if ( ! searchQO.getAuthorIdColl().isEmpty())
             wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
 
-        wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按修改时间排序，新发布的在前面 */
+        wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按发布时间排序，新发布的在前面 */
 
         return selectList(page, wrapper);
     }

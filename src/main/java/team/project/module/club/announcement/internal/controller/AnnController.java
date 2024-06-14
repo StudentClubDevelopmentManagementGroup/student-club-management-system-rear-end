@@ -70,6 +70,7 @@ public class AnnController {
         **注意**：
          - 一旦指定 author_id，则忽略 author_name
          - 一旦指定 club_id，则忽略 club_name 和 department_id
+         - 查询结果按发布时间排序，新发布的在前面
         """)
     @GetMapping("/search")
     Object search(
