@@ -49,6 +49,10 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     public void createDuty(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed) {
+        TblDuty tblDuty = tblDutyMapper.selectOne(number, area, dateTime, arrangerId, cleanerId, clubId);
+        if (tblDuty != null) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
+        }
         if (tblDutyMapper.createDuty(number, area, dateTime, arrangerId, cleanerId, clubId, isMixed) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
         }
@@ -58,7 +62,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Transactional
     public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
+        if (dutyGroupList == null || dutyGroupList.isEmpty()) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "查询到的值为空或小组成员列表不存在");
+        }
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
+            TblDuty tblDuty = tblDutyMapper.selectOne(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId);
+            if (tblDuty != null) {
+                throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
+            }
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
             tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
             if (result == 0) {
@@ -70,6 +81,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Override
     public void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
+        if (dutyGroupList == null || dutyGroupList.isEmpty()) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "查询到的值为空或小组成员列表不存在");
+        }
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMemberId(), clubId) != 1) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
