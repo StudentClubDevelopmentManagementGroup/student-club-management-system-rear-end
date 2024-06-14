@@ -1,6 +1,5 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import team.project.module.util.filestorage.internal.service.TextFileStorageServ
 import team.project.module.util.filestorage.internal.util.FilepathUtil;
 
 @Service
-@Slf4j
 public class AliyunObjectStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
 
     private static final String uploadedFilesFolder  = AliyunOssConfig.uploadedFilesFolder;
@@ -80,16 +78,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
             return fileId;
         }
         catch (com.aliyun.oss.ServiceException e) {
-            if ("FileAlreadyExists".equals(e.getErrorCode())) {
-                log.warn("上传文件失败，文件已存在，且无法覆盖", e);
+            if ("FileAlreadyExists".equals(e.getErrorCode()))
                 throw new FileStorageException("文件已存在，且无法覆盖");
-            } else {
-                log.warn("上传文件失败", e);
+            else
                 throw new FileStorageException(e, "上传文件失败");
-            }
         }
         catch (Exception e) {
-            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -107,7 +101,6 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
             return aliyunOssDAO.getFileUrl(fileKey);
         }
         catch (Exception e) {
-            log.warn("获取文件 url 失败", e);
             return null;
         }
     }
@@ -126,7 +119,6 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
             return true;
         }
         catch (Exception e) {
-            log.warn("删除文件失败", e);
             return false;
         }
     }
@@ -153,16 +145,12 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
             return fileId;
         }
         catch (com.aliyun.oss.ServiceException e) {
-            if ("FileAlreadyExists".equals(e.getErrorCode())) {
-                log.warn("上传文件失败，文件已存在，且无法覆盖", e);
+            if ("FileAlreadyExists".equals(e.getErrorCode()))
                 throw new FileStorageException("文件已存在，且无法覆盖");
-            } else {
-                log.warn("上传文件失败", e);
+            else
                 throw new FileStorageException(e, "上传文件失败");
-            }
         }
         catch (Exception e) {
-            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -181,7 +169,6 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
             return aliyunOssDAO.readTextFromFile(fileKey);
         }
         catch (Exception e) {
-            log.warn("读取文件失败（读取纯文本文件）", e);
             return null;
         }
     }

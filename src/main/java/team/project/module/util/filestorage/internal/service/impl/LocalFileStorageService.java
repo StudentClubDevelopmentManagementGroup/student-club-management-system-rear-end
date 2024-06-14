@@ -1,6 +1,5 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
-import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,7 +13,6 @@ import team.project.module.util.filestorage.internal.service.TextFileStorageServ
 import team.project.module.util.filestorage.internal.util.FilepathUtil;
 
 @Service
-@Slf4j
 public class LocalFileStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
 
     private static final String uploadedFilesFolder  = LocalFileStorageConfig.uploadedFilesFolder;
@@ -75,7 +73,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
-            log.warn("上传文件失败，文件已存在，且无法覆盖");
             throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
@@ -84,7 +81,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -115,7 +111,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return true;
         }
         catch (Exception e) {
-            log.warn("删除文件失败", e);
             return false;
         }
     }
@@ -137,7 +132,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
         if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
-            log.warn("上传文件失败，文件已存在，且无法覆盖");
             throw new FileStorageException("文件已存在，且无法覆盖");
         }
 
@@ -146,7 +140,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return fileId;
         }
         catch (Exception e) {
-            log.warn("上传文件失败", e);
             throw new FileStorageException(e, "上传文件失败");
         }
     }
@@ -163,7 +156,6 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             String filePath = parseFileIdToFilePath(fileId);
             return localFileStorageDAO.readTextFromFile(filePath);
         } catch (Exception e) {
-            log.warn("读取文件失败（读取纯文本文件）", e);
             return null;
         }
     }
