@@ -80,10 +80,10 @@ public class AnnService {
 
     public void publishAnn(AnnPublishReq req) {
 
-        Long      deleteDraft  = req.getDraftId();
-        AnnDetail announcement = req.getAnnouncement();
-        String    authorId     = announcement.getAuthorId();
-        Long      clubId       = announcement.getClubId();
+        Long      deleteDraft = req.getDraftId();
+        AnnDetail annDetail   = req.getAnnouncement();
+        String    authorId    = annDetail.getAuthorId();
+        Long      clubId      = annDetail.getClubId();
 
         /* 校验权限 */
 
@@ -109,20 +109,20 @@ public class AnnService {
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, announcement.getContent(), uploadFileQO);
+        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, annDetail.getContent(), uploadFileQO);
 
         /* 更新数据库 */
 
-        AnnDO announcementDO = new AnnDO();
-     /* announcementDO.setPublishTime(new Timestamp(System.currentTimeMillis())); */
-        announcementDO.setAuthorId(authorId);
-        announcementDO.setClubId(clubId);
-        announcementDO.setTitle(announcement.getTitle());
-        announcementDO.setSummary(announcement.getSummary());
-        announcementDO.setTextFile(textFileId);
+        AnnDO annDO = new AnnDO();
+     /* annDO.setPublishTime(new Timestamp(System.currentTimeMillis())); */
+        annDO.setAuthorId(authorId);
+        annDO.setClubId(clubId);
+        annDO.setTitle(annDetail.getTitle());
+        annDO.setSummary(annDetail.getSummary());
+        annDO.setTextFile(textFileId);
 
         try {
-            announcementMapper.insert(announcementDO);
+            announcementMapper.insert(annDO);
         }
         catch (Exception e) {
             fileStorageService.deleteFile(textFileId); /* <- 保存公告失败，删除文件 */
@@ -151,12 +151,12 @@ public class AnnService {
     @Transactional
     public void deleteAnn(String userId, Long announcementId) {
 
-        AnnDO announcement = announcementMapper.selectAnnBasicInfo(announcementId);
-        if (null == announcement) {
+        AnnDO annDO = announcementMapper.selectAnnBasicInfo(announcementId);
+        if (null == annDO) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
         }
-        String authorId = announcement.getAuthorId();
-        Long   clubId   = announcement.getClubId();
+        String authorId = annDO.getAuthorId();
+        Long   clubId   = annDO.getClubId();
 
         /* 校验权限 */
 
@@ -183,7 +183,7 @@ public class AnnService {
         }
 
         /* 不删除文件，因为数据库的记录是逻辑删除，而不是真的删除
-            String textFileId = announcement.getTextFile(); <- 此处 textFileId 可能为 null，可能 SQL 没查
+            String textFileId = annDO.getTextFile(); <- 此处 textFileId 可能为 null，可能 SQL 没查
             fileStorageService.deleteFile(textFileId);
         */
     }
@@ -192,27 +192,27 @@ public class AnnService {
 
     public void toDraft(String userId, Long announcementId) {
 
-        AnnDO announcement = announcementMapper.selectById(announcementId);
-        if (null == announcement)
+        AnnDO annDO = announcementMapper.selectById(announcementId);
+        if (null == annDO)
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
 
-        authService.requireClubManager(userId, announcement.getClubId(), "需要社团负责人才能编辑公告");
+        authService.requireClubManager(userId, annDO.getClubId(), "需要社团负责人才能编辑公告");
 
-        if ( ! Objects.equals(userId, announcement.getAuthorId()))
+        if ( ! Objects.equals(userId, annDO.getAuthorId()))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是公告作者");
 
-        String content = fileStorageService.getTextFromFile(announcement.getTextFile());
+        String content = fileStorageService.getTextFromFile(annDO.getTextFile());
         if (content == null) {
             log.error("将公告转为草稿失败（数据库中存有记录，但是依据 fileId 找不到指定文件）");
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "找不到公告");
         }
 
         AnnDetail draft = new AnnDetail();
-        draft.setClubId(announcement.getClubId());
-        draft.setAuthorId(announcement.getAuthorId());
-        draft.setTitle(announcement.getTitle());
+        draft.setClubId(annDO.getClubId());
+        draft.setAuthorId(annDO.getAuthorId());
+        draft.setTitle(annDO.getTitle());
         draft.setContent(content);
-        draft.setSummary(announcement.getSummary());
+        draft.setSummary(annDO.getSummary());
 
         draftService.createDraft(draft);
     }
@@ -243,10 +243,9 @@ public class AnnService {
 
         Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
         AnnSearchQO searchQO = modelConverter.toAnnSearchQO(searchReq);
-        List<AnnDO> announcementList = announcementMapper.searchAnn(page, searchQO);
 
         List<AnnDetailVO> result = new ArrayList<>();
-        for (AnnDO annDO : announcementList) {
+        for (AnnDO annDO : announcementMapper.searchAnn(page, searchQO)) {
             result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
         }
 
