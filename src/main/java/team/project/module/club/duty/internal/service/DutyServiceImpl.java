@@ -101,7 +101,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
+    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] filelist) {
         List<String> fileIdList = new ArrayList<>();
         for (MultipartFile file : filelist) {
 
