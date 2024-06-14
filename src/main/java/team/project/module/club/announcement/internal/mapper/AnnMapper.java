@@ -50,8 +50,23 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         if ( ! searchQO.getAuthorIdColl().isEmpty())
             wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
 
-        wrapper.orderByDesc(true, AnnDO::getPublishTime); /* 按发布时间排序，新发布的在前面 */
+        wrapper.orderByDesc(AnnDO::getPublishTime); /* 按发布时间排序，新发布的在前面 */
 
         return selectList(page, wrapper);
+    }
+
+    default AnnDO selectLatestOne(Long clubId) {
+        return selectOne(new LambdaQueryWrapper<AnnDO>().select(
+                AnnDO::getAnnouncementId,
+                AnnDO::getPublishTime,
+                AnnDO::getAuthorId,
+                AnnDO::getClubId,
+                AnnDO::getTitle,
+                AnnDO::getTextFile
+            )
+            .eq(AnnDO::getClubId, clubId)
+            .orderByDesc(AnnDO::getPublishTime)
+            .last("limit 1")
+        );
     }
 }

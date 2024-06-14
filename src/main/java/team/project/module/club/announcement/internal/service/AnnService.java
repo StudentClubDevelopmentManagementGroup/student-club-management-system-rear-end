@@ -22,7 +22,6 @@ import team.project.module.club.announcement.internal.model.request.AnnSearchReq
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.personnelchanges.export.service.PceIService;
-import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
@@ -65,6 +64,19 @@ public class AnnService {
     private static final String ANNOUNCEMENT_FOLDER = "/club/announcement/announcement";
 
     private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
+
+    private String loadAnnContent(String fileId) {
+        assert fileId != null;
+
+        String content = fileStorageService.getTextFromFile(fileId);
+        if (content == null) {
+            log.error("读取公告内容失败（数据库中存有记录，但是依据 fileId 无法读取公告内容）");
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "读取公告内容失败");
+        }
+        return content;
+    }
+
+    /* --------- */
 
     public void publishAnn(AnnPublishReq req) {
 
@@ -134,36 +146,7 @@ public class AnnService {
         }
     }
 
-    public AnnDetailVO readAnn(Long announcementId) {
-
-        /* ljh_TODO: 设置公告的可见性
-            查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
-
-        AnnDO announcementDO = announcementMapper.selectById(announcementId);
-
-        String fileId = announcementDO.getTextFile();
-        String content = fileStorageService.getTextFromFile(fileId);
-        if (content == null) {
-            log.error("读取公告失败（数据库中存有记录，但是依据 fileId 无法读取公告内容）");
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "读取公告内容失败");
-        }
-
-        return modelConverter.toAnnDetailVO(announcementDO, content, null);
-    }
-
-    public PageVO<AnnDetailVO> searchAnn(PagingQueryReq pageReq, AnnSearchReq searchReq) {
-
-        Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
-        AnnSearchQO searchQO = modelConverter.toAnnSearchQO(searchReq);
-        List<AnnDO> announcementList = announcementMapper.searchAnn(page, searchQO);
-
-        List<AnnDetailVO> result = new ArrayList<>();
-        for (AnnDO annDO : announcementList) {
-            result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
-        }
-
-        return new PageVO<>(result, page);
-    }
+    /* --------- */
 
     @Transactional
     public void deleteAnn(String userId, Long announcementId) {
@@ -205,18 +188,18 @@ public class AnnService {
         */
     }
 
+    /* --------- */
+
     public void toDraft(String userId, Long announcementId) {
 
         AnnDO announcement = announcementMapper.selectById(announcementId);
-        if (null == announcement) {
+        if (null == announcement)
             throw new ServiceException(ServiceStatus.NOT_FOUND, "找不到公告");
-        }
 
         authService.requireClubManager(userId, announcement.getClubId(), "需要社团负责人才能编辑公告");
 
-        if ( ! Objects.equals(userId, announcement.getAuthorId())) {
+        if ( ! Objects.equals(userId, announcement.getAuthorId()))
             throw new ServiceException(ServiceStatus.FORBIDDEN, "不是公告作者");
-        }
 
         String content = fileStorageService.getTextFromFile(announcement.getTextFile());
         if (content == null) {
@@ -232,5 +215,41 @@ public class AnnService {
         draft.setSummary(announcement.getSummary());
 
         draftService.createDraft(draft);
+    }
+
+    /* --------- */
+
+    public AnnDetailVO readAnn(Long announcementId) {
+
+        /* TODO ljh_TODO: 设置公告的可见性
+            查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
+
+        AnnDO annDO = announcementMapper.selectById(announcementId);
+        if (null == annDO)
+            return null;
+
+        return modelConverter.toAnnDetailVO(annDO, loadAnnContent(annDO.getTextFile()), null);
+    }
+
+    public AnnDetailVO getLatestAnn(Long clubId) {
+        AnnDO annDO = announcementMapper.selectLatestOne(clubId);
+        if (null == annDO)
+            return null;
+
+        return modelConverter.toAnnDetailVO(annDO, loadAnnContent(annDO.getTextFile()), null);
+    }
+
+    public PageVO<AnnDetailVO> searchAnn(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+
+        Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+        AnnSearchQO searchQO = modelConverter.toAnnSearchQO(searchReq);
+        List<AnnDO> announcementList = announcementMapper.searchAnn(page, searchQO);
+
+        List<AnnDetailVO> result = new ArrayList<>();
+        for (AnnDO annDO : announcementList) {
+            result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
+        }
+
+        return new PageVO<>(result, page);
     }
 }

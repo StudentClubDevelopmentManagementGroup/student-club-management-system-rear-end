@@ -18,6 +18,7 @@ import team.project.module.club.announcement.internal.model.request.AnnPublishRe
 import team.project.module.club.announcement.internal.model.request.AnnSearchReq;
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.service.AnnService;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 @Tag(name="公告")
 @RestController
@@ -45,6 +46,30 @@ public class AnnController {
         announcementService.publishAnn(req);
         return new Response<>(ServiceStatus.CREATED).statusText("发布成功");
     }
+
+    /* --------- */
+
+    @Operation(summary="删除公告")
+    @PostMapping("/del")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object del(@NotNull(message="未指定公告id") Long announcementId) {
+        String userId = (String) (StpUtil.getLoginId());
+
+        announcementService.deleteAnn(userId, announcementId);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
+    }
+
+    @Operation(summary="移入草稿箱")
+    @PostMapping("/to_draft")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
+        String userId = (String) (StpUtil.getLoginId());
+
+        announcementService.toDraft(userId, announcementId);
+        return new Response<>(ServiceStatus.SUCCESS);
+    }
+
+    /* --------- */
 
     @Operation(summary="获取某篇公告的内容")
     @GetMapping("/read")
@@ -81,23 +106,10 @@ public class AnnController {
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
-    @Operation(summary="删除公告")
-    @PostMapping("/del")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object del(@NotNull(message="未指定公告id") Long announcementId) {
-        String userId = (String) (StpUtil.getLoginId());
-
-        announcementService.deleteAnn(userId, announcementId);
-        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
-    }
-
-    @Operation(summary="移入草稿箱")
-    @PostMapping("/to_draft")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
-    Object toDraft(@NotNull(message="未指定公告id") Long announcementId) {
-        String userId = (String) (StpUtil.getLoginId());
-
-        announcementService.toDraft(userId, announcementId);
-        return new Response<>(ServiceStatus.SUCCESS);
+    @Operation(summary="获取社团的最新一篇公告，包含其内容")
+    @GetMapping("/latest")
+    Object getLatestAnn(@ClubIdConstraint Long clubId) {
+        AnnDetailVO result = announcementService.getLatestAnn(clubId);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 }
