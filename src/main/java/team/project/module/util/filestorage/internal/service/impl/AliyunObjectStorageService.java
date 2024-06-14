@@ -28,7 +28,7 @@ public class AliyunObjectStorageService implements FileStorageBasicServiceI, Tex
      * */
     @Override
     public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/");
+        return fileId != null && fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
     /**

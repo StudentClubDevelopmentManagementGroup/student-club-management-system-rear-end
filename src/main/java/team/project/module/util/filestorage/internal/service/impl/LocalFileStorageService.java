@@ -28,7 +28,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
      * */
     @Override
     public boolean mayBeStored(String fileId) {
-        return fileId.startsWith(uploadedFileIdPrefix + "/");
+        return fileId != null && fileId.startsWith(uploadedFileIdPrefix + "/");
     }
 
     /**
