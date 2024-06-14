@@ -10,6 +10,7 @@ import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
+import team.project.module.club.announcement.config.AnnConfig;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.DraftDO;
 import team.project.module.club.announcement.internal.model.request.AnnDetail;
@@ -29,21 +30,10 @@ import java.util.Objects;
 @Slf4j
 public class DraftService {
 
-    @Autowired
-    AuthServiceI authService;
-
-    @Autowired
-    FileStorageServiceI fileStorageService;
-
-    @Autowired
-    DraftMapper draftMapper;
-
-    @Autowired
-    ModelConverter modelConverter;
-
-    private static final String DRAFT_FOLDER = "/club/announcement/draft";
-
-    private static final FileStorageType STORAGE_TYPE = FileStorageType.LOCAL;
+    @Autowired private AuthServiceI         authService;
+    @Autowired private FileStorageServiceI  fileStorageService;
+    @Autowired private DraftMapper          draftMapper;
+    @Autowired private ModelConverter       modelConverter;
 
     /**
      * 创建一篇新的草稿
@@ -54,11 +44,11 @@ public class DraftService {
         /* 将草稿的内容保存到文件，获取 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setTargetFolder(DRAFT_FOLDER);
+        uploadFileQO.setTargetFolder(AnnConfig.FOLDER_DRAFT);
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, draft.getContent(), uploadFileQO);
+        String textFileId = fileStorageService.uploadTextToFile(AnnConfig.STORAGE_TYPE_DRAFT, draft.getContent(), uploadFileQO);
 
         /* 将 fileId 和其他信息保存到数据库 */
 
@@ -111,11 +101,11 @@ public class DraftService {
         /* 将新草稿的内容保存到新文件，获取新文件的 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setTargetFolder(DRAFT_FOLDER);
+        uploadFileQO.setTargetFolder(AnnConfig.FOLDER_DRAFT);
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String newTextFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, draft.getContent(), uploadFileQO);
+        String newTextFileId = fileStorageService.uploadTextToFile(AnnConfig.STORAGE_TYPE_DRAFT, draft.getContent(), uploadFileQO);
 
         /* 更新数据库 */
 

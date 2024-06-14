@@ -11,8 +11,8 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
+import team.project.module.club.announcement.config.AnnConfig;
 import team.project.module.util.filestorage.export.exception.FileStorageException;
-import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 import team.project.module.util.filestorage.export.util.FileStorageUtil;
@@ -24,10 +24,6 @@ public class FileUploadController {
 
     @Autowired
     FileStorageServiceI fileStorageService;
-
-    private static final String UPLOAD_FILE_FOLDER = "/club/announcement/file";
-
-    private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
 
     @Operation(summary="上传文件")
     @PostMapping("/upload")
@@ -41,11 +37,11 @@ public class FileUploadController {
 
         try {
             UploadFileQO uploadFileQO = new UploadFileQO();
-            uploadFileQO.setTargetFolder(UPLOAD_FILE_FOLDER);
+            uploadFileQO.setTargetFolder(AnnConfig.FOLDER_FILE);
             uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(file));
             uploadFileQO.setOverwrite(false);
 
-            String fileId = fileStorageService.uploadFile(file, STORAGE_TYPE, uploadFileQO);
+            String fileId = fileStorageService.uploadFile(file, AnnConfig.STORAGE_TYPE_FILE, uploadFileQO);
 
             return new Response<>(ServiceStatus.CREATED).statusText("上传成功").data(fileId);
         }

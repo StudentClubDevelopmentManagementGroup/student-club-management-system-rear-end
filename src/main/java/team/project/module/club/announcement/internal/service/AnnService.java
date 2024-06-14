@@ -11,6 +11,7 @@ import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
+import team.project.module.club.announcement.config.AnnConfig;
 import team.project.module.club.announcement.internal.mapper.AnnMapper;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
@@ -24,7 +25,6 @@ import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.export.service.UserInfoServiceI;
-import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 import team.project.module.util.filestorage.export.util.FileStorageUtil;
@@ -37,33 +37,14 @@ import java.util.Objects;
 @Slf4j
 public class AnnService {
 
-    @Autowired
-    AuthServiceI authService;
-
-    @Autowired
-    UserInfoServiceI userInfoService;
-
-    @Autowired
-    PceIService clubMemberRoleService;
-
-    @Autowired
-    FileStorageServiceI fileStorageService;
-
-    @Autowired
-    DraftService draftService;
-
-    @Autowired
-    DraftMapper draftMapper;
-
-    @Autowired
-    AnnMapper announcementMapper;
-
-    @Autowired
-    ModelConverter modelConverter;
-
-    private static final String ANNOUNCEMENT_FOLDER = "/club/announcement/announcement";
-
-    private static final FileStorageType STORAGE_TYPE = FileStorageType.LOCAL;
+    @Autowired private AuthServiceI        authService;
+    @Autowired private UserInfoServiceI    userInfoService;
+    @Autowired private PceIService         clubMemberRoleService;
+    @Autowired private FileStorageServiceI fileStorageService;
+    @Autowired private DraftService        draftService;
+    @Autowired private DraftMapper         draftMapper;
+    @Autowired private AnnMapper           announcementMapper;
+    @Autowired private ModelConverter      modelConverter;
 
     private String loadAnnContent(String fileId) {
         assert fileId != null;
@@ -105,11 +86,11 @@ public class AnnService {
         /* 将公告的内容保存到文件，获取文件的 fileId */
 
         UploadFileQO uploadFileQO = new UploadFileQO();
-        uploadFileQO.setTargetFolder(ANNOUNCEMENT_FOLDER);
+        uploadFileQO.setTargetFolder(AnnConfig.FOLDER_ANN);
         uploadFileQO.setTargetFilename(FileStorageUtil.randomFilename(".html"));
         uploadFileQO.setOverwrite(false);
 
-        String textFileId = fileStorageService.uploadTextToFile(STORAGE_TYPE, annDetail.getContent(), uploadFileQO);
+        String textFileId = fileStorageService.uploadTextToFile(AnnConfig.STORAGE_TYPE_ANN, annDetail.getContent(), uploadFileQO);
 
         /* 更新数据库 */
 
