@@ -23,7 +23,7 @@
     </insert>
 
     <update id="setDutyPicture">
-        update tbl_user_club_duty set image_file = #{fileId} where duty_time = #{dateTime}
+        update tbl_user_club_duty set image_id = #{fileId} where duty_time = #{dateTime}
         and cleaner_id = #{memberId} and club_id = #{clubId} and is_deleted = 0
     </update>
 

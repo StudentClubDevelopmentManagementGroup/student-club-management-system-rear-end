@@ -6,13 +6,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
@@ -28,7 +25,6 @@ import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
-import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 import java.time.LocalDateTime;
 
@@ -116,15 +112,15 @@ public class DutyController {
 
     @Operation(summary = "上传值日照片")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
+
     @PostMapping("/club/duty/report_result")
-    Object uploadDutyPicture(    @NotNull @JsonProperty("date_time")
-                                 LocalDateTime         dateTime,
-                                 @NotBlank @JsonProperty("member_id")
-                                 String                memberId,
-                                 @NotNull @ClubIdConstraint @JsonProperty("club_id")
-                                 Long                  clubId,
-                                 @NotNull
-                                 MultipartFile       file) {
+    Object uploadDutyPicture(
+        @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+        @RequestParam("date_time")    LocalDateTime         dateTime,
+        @RequestParam("member_id")    String                memberId,
+        @RequestParam("club_id")      Long                  clubId,
+        @RequestParam("file")          MultipartFile         file)
+    {
         String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能上传值日照片");
 

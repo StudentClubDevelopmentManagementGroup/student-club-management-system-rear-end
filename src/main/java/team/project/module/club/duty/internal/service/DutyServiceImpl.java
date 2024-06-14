@@ -23,10 +23,11 @@ import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
+import static team.project.module.util.filestorage.export.model.enums.FileStorageType.LOCAL;
 
 @Service
 @Slf4j
@@ -102,19 +103,24 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Override
     @Transactional
     public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file) {
-
-            String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
-            String fileName = memberId + dutyTime;
+            String filename = file.getOriginalFilename();
+            String fileType = null;
+            if (filename != null) {
+                fileType = filename.substring(filename.lastIndexOf("."));
+            }
+            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+            String uploadFile = "/duty/" + memberId + "/" + dutyTime.format(fmt);
+            String fileName = memberId + fileType;
 
             UploadFileQO uploadFileQO = new UploadFileQO();
             uploadFileQO.setOverwrite(true);
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
-            String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
+            String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
             StringBuilder files = new StringBuilder();
             files.append(fileId);
             if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
-                log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
+                log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
                     fileStorageServiceI.deleteFile(fileId);
                 throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
