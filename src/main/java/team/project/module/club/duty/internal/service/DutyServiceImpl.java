@@ -101,9 +101,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] filelist) {
-        List<String> fileIdList = new ArrayList<>();
-        for (MultipartFile file : filelist) {
+    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file) {
 
             String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
             String fileName = memberId + dutyTime;
@@ -112,23 +110,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setOverwrite(true);
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
-
             String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
-
-            fileIdList.add(fileId);
-        }
-        StringBuilder files = new StringBuilder();
-        for (String fileId : fileIdList) {
-            files.append(fileId).append(",");
-        }
-
-        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
-            log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
-            for (String fileId : fileIdList) {
-                fileStorageServiceI.deleteFile(fileId);
+            StringBuilder files = new StringBuilder();
+            files.append(fileId);
+            if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
+                log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
+                    fileStorageServiceI.deleteFile(fileId);
+                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
-            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
-        }
     }
 
     @Override

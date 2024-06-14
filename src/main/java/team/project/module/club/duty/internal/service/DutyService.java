@@ -21,7 +21,7 @@ public interface DutyService extends IService<TblDuty> {
 
     void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long clubId);
 
-    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] file);
+    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file);
 
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
