@@ -61,35 +61,4 @@ public class ModelConverter {
 
         return result;
     }
-
-    public AnnSearchQO toAnnSearchQO(AnnSearchReq searchReq) {
-        assert searchReq != null;
-
-        HashSet<Long> clubIdColl = new HashSet<>();
-        if (null != searchReq.getClubId()) {
-            clubIdColl.add(searchReq.getClubId());
-        } else { /*  一旦指定 club_id，则忽略 club_name 和 department_id */
-            if ( ! StringUtils.isBlank(searchReq.getClubName()))
-                clubIdColl.addAll( clubIdMapper.searchClubByName( searchReq.getClubName() ) );
-            if (null != searchReq.getDepartmentId())
-                clubIdColl.addAll( clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId()) );
-        }
-
-        HashSet<String> authorIdColl = new HashSet<>();
-        if (null != searchReq.getAuthorId())
-            authorIdColl.add(searchReq.getAuthorId()); /* 一旦指定 author_id，则忽略 author_name */
-        else if ( ! StringUtils.isBlank(searchReq.getAuthorName())) {
-            for (UserBasicInfoDTO author : userInfoService.searchUser( searchReq.getAuthorName() ))
-                authorIdColl.add(author.getUserId());
-        }
-
-        AnnSearchQO searchQO = new AnnSearchQO();
-        searchQO.setClubIdColl(clubIdColl);
-        searchQO.setAuthorIdColl(authorIdColl);
-        searchQO.setTitleKeyword(StringUtils.trimToNull(searchReq.getTitleKeyword()));
-        searchQO.setFromDate(searchReq.getFromDate());
-        searchQO.setToDate(searchReq.getToDate());
-
-        return searchQO;
-    }
 }
