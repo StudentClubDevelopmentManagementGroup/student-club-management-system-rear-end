@@ -63,7 +63,7 @@ public class AnnService {
 
     private static final String ANNOUNCEMENT_FOLDER = "/club/announcement/announcement";
 
-    private static final FileStorageType STORAGE_TYPE = FileStorageType.CLOUD;
+    private static final FileStorageType STORAGE_TYPE = FileStorageType.LOCAL;
 
     private String loadAnnContent(String fileId) {
         assert fileId != null;
