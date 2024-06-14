@@ -45,10 +45,11 @@ public class AutoDeployDutyScheduledTasks {
                 LocalDateTime timestamp0 = duty.getDutyTime();
                 // 使用java.time进行日期操作
                 LocalDateTime nextWeekDateTime = timestamp0.plusWeeks(1);
-                dutyService.createDuty(duty.getNumber(), duty.getArea(), nextWeekDateTime, duty.getArrangerId(), duty.getCleanerId(), duty.getClubId(), duty.getIsMixed());
+                dutyService.createDuty(duty.getNumber(), duty.getArea(), nextWeekDateTime,
+                        duty.getArrangerId(), duty.getCleanerId(), duty.getClubId(), duty.getIsMixed());
             }
         } catch (Exception e) {
-            log.error("自动部署职责任务时发生异常: " + e.getMessage());
+            log.error("自动部署职责任务时发生异常: " , e);
         }
     }
 }
