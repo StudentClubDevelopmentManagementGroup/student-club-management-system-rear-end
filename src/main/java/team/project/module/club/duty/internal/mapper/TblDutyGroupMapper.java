@@ -22,7 +22,7 @@ public interface TblDutyGroupMapper extends BaseMapper<TblDutyGroup> {
 
     default List<TblDutyGroup> selectUserIdByGroupName(Long clubId, String name) {
         List<TblDutyGroup> userList = this.selectList(new LambdaQueryWrapper<TblDutyGroup>().eq(TblDutyGroup::getClubId, clubId).eq(TblDutyGroup::getName, name));
-        return userList.size() == 1 ? userList : null;
+        return userList.size() >= 1 ? userList : null;
     }
 
 

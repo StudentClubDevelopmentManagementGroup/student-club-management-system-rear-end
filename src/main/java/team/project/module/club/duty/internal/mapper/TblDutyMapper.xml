@@ -33,6 +33,9 @@
     </delete>
 
     <select id="selectOne" resultMap ="tbl_club_Duty">
+        SELECT * FROM tbl_user_club_duty WHERE number = #{number} and area = #{area}
+        and duty_time = #{dateTime} and arranger_id = #{arrangerId} and cleaner_id = #{cleanerId}
+        and club_id = #{clubId} and is_deleted = 0
     </select>
 
     <select id="selectLastWeek" resultMap ="tbl_club_Duty">

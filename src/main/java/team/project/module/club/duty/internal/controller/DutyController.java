@@ -1,27 +1,36 @@
 package team.project.module.club.duty.internal.controller;
 
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.stp.StpUtil;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.response.Response;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.model.enums.AuthRole;
+import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
-import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.request.*;
+import team.project.module.club.duty.internal.model.view.DutyGroupSelectVO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.club.duty.internal.service.DutyCirculationService;
 import team.project.module.club.duty.internal.service.DutyGroupService;
 import team.project.module.club.duty.internal.service.DutyService;
+import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
+
+import java.time.LocalDateTime;
 
 @Tag(name = "值日")
 @RestController
@@ -35,66 +44,106 @@ public class DutyController {
     @Autowired
     DutyCirculationService dutyCirculationService;
 
+    @Autowired
+    AuthServiceI authService;
+
     @Operation(summary = "添加小组成员")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/group/add")
     Object addDutyGroup(@Valid @RequestBody GroupMemberReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能添加小组成员");
+
         dutyGroupService.createDutyGroup(req.getClubId(), req.getMemberId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
     @Operation(summary = "删除小组成员")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/group/delete")
     Object deleteDutyGroup(@Valid @RequestBody GroupMemberReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能删除小组成员");
+
         dutyGroupService.deleteDutyGroup(req.getClubId(), req.getMemberId(), req.getName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "根据小组名称以及社团id，添加值日信息")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/create_by_group")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoGroupReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能添加值日信息");
+
         dutyService.createDutyByGroup(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getClubId(), req.getIsMixed(), req.getGroupName());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
 
     @Operation(summary = "根据userid，添加值日信息")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/create")
     Object createDutyByNameAndClubId(@Valid @RequestBody DutyInfoReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能添加值日信息");
+
         dutyService.createDuty(req.getNumber(), req.getArea(), req.getDateTime(), req.getArrangerId(), req.getCleanerId(), req.getClubId(), req.getIsMixed());
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功");
     }
 
     @Operation(summary = "根据小组名称以及社团id，删除值日信息")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/delete_by_group")
     Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteGroupReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能删除值日信息");
+
         dutyService.deleteDutyAllByGroup(req.getDateTime(), req.getGroupName(), req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "根据userid，删除值日信息")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/duty/delete")
     Object deleteDutyByNameAndClubId(@Valid @RequestBody DutyDeleteReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能删除值日信息");
+
         dutyService.deleteDutyByUser(req.getDateTime(), req.getCleanerId(), req.getClubId());
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功");
     }
 
     @Operation(summary = "上传值日照片")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/report_result")
-    Object uploadDutyPicture(@Valid @RequestBody DutyFileUpload req) {
-        dutyService.uploadDutyPicture(req.getDateTime(), req.getMemberId(), req.getClubId(), req.getFile());
+    Object uploadDutyPicture(    @NotNull @JsonProperty("date_time")
+                                 LocalDateTime         dateTime,
+                                 @NotBlank @JsonProperty("member_id")
+                                 String                memberId,
+                                 @NotNull @ClubIdConstraint @JsonProperty("club_id")
+                                 Long                  clubId,
+                                 @NotNull
+                                 MultipartFile       file) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, clubId, "只有社团成员能上传值日照片");
+
+        dutyService.uploadDutyPicture(dateTime, memberId, clubId, file);
         return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
     }
 
     @Operation(summary = "查询社团值日情况")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/select")
     Object selectDuty(@Valid @RequestBody DutySelectReq req) {
-
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日情况");
         DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPageNum(), req.getSize());
         PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
-                (req.getNumber() == null || req.getNumber().isEmpty() ?
+                (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
                         dutyService.selectDuty(newQO) :
                         dutyService.selectDutyByName(newQO)) :
-                (req.getNumber() == null || req.getNumber().isEmpty() ?
+                (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
                         dutyService.selectDutyByNumber(newQO) :
                         dutyService.selectDutyByNumberAndName(newQO));
         //todo 合并
@@ -102,23 +151,31 @@ public class DutyController {
     }
 
     @Operation(summary = "查询社团值日小组")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/group/select")
     Object selectDutyGroup(@Valid @RequestBody DutyGroupSelectReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日小组");
+
         DutyGroupQO newQO = new DutyGroupQO(req.getClubId(), req.getGroupName(), req.getName(), req.getPageNum(), req.getSize());
-        PageVO<TblDutyGroup> result = req.getName().isEmpty() ?
-                (req.getGroupName() == null || req.getGroupName().isEmpty() ?
+        PageVO<DutyGroupSelectVO> result = req.getName().isEmpty() ?
+                (req.getGroupName().isBlank() || req.getGroupName().isEmpty() ?
                         dutyGroupService.selectDutyGroup(newQO) :
-                        dutyGroupService.selectDutyGroupByName(newQO)) :
-                (req.getGroupName() == null || req.getGroupName().isEmpty() ?
-                        dutyGroupService.selectDutyGroupByGroupName(newQO) :
+                        dutyGroupService.selectDutyGroupByGroupName(newQO)) :
+                (req.getGroupName().isBlank() || req.getGroupName().isEmpty() ?
+                        dutyGroupService.selectDutyGroupByName(newQO) :
                         dutyGroupService.selectDutyGroupByGroupNameAndName(newQO));
         //todo 合并
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 
-    @Operation(summary = "查询自动值日")
+    @Operation(summary = "查询是否开启自动安排值日功能")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/auto_duty")
     Object selectAutoDuty(@Valid @NotNull @RequestParam @JsonProperty("club_id") Long clubId) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, clubId, "只有社团成员能是否开启自动安排值日功能");
+
         TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(clubId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }

@@ -8,7 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.module.club.management.export.model.annotation.ClubIdConstraint;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Data
 public class DutyFileUpload {
@@ -27,5 +26,5 @@ public class DutyFileUpload {
     Long                  clubId;
 
     @NotNull
-    List<MultipartFile>   file;
+    MultipartFile[]       file;
 }

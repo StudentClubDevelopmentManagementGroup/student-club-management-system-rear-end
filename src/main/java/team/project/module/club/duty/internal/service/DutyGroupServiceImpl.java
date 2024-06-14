@@ -12,6 +12,7 @@ import team.project.module.club.duty.internal.mapper.TblDutyCirculationMapper;
 import team.project.module.club.duty.internal.mapper.TblDutyGroupMapper;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
+import team.project.module.club.duty.internal.model.view.DutyGroupSelectVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
 
@@ -52,24 +53,29 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     }
 
     @Override
-    public PageVO<TblDutyGroup> selectDutyGroup(DutyGroupQO qo) {
+    public PageVO<DutyGroupSelectVO> selectDutyGroup(DutyGroupQO qo) {
         Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroup(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId());
         if (page.getRecords().size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此社团");
         }
-        return new PageVO<>(page);
+        List<DutyGroupSelectVO> dutyList = new ArrayList<>();
+        getDutyGroupSelectVO(dutyList, page);
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
     }
 
     @Override
-    public PageVO<TblDutyGroup> selectDutyGroupByName(DutyGroupQO qo) {
+    public PageVO<DutyGroupSelectVO> selectDutyGroupByName(DutyGroupQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        List<TblDutyGroup> dutyList = new ArrayList<>();
+        List<DutyGroupSelectVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
             Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId());
-            dutyList.addAll(page.getRecords());
+            if (page.getRecords().size() == 0) {
+                continue;
+            }
+            getDutyGroupSelectVO(dutyList, page);
         }
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
@@ -78,29 +84,46 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
     }
 
     @Override
-    public PageVO<TblDutyGroup> selectDutyGroupByGroupName(DutyGroupQO qo) {
-        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), qo.getName());
+    public PageVO<DutyGroupSelectVO> selectDutyGroupByGroupName(DutyGroupQO qo) {
+        Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), qo.getGroupName());
         if (page.getRecords().size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此社团");
         }
-        return null;
+        List<DutyGroupSelectVO> dutyList = new ArrayList<>();
+        getDutyGroupSelectVO(dutyList, page);
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), page.getSize()));
     }
 
     @Override
-    public PageVO<TblDutyGroup> selectDutyGroupByGroupNameAndName(DutyGroupQO qo) {
+    public PageVO<DutyGroupSelectVO> selectDutyGroupByGroupNameAndName(DutyGroupQO qo) {
         List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
         if (nameList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        List<TblDutyGroup> dutyList = new ArrayList<>();
+        List<DutyGroupSelectVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByNameAndGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName());
-            dutyList.addAll(page.getRecords());
+            Page<TblDutyGroup> page = tblDutyGroupMapper.selectGroupByNameAndGroupName(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getGroupName());
+            if (page.getRecords().size() == 0) {
+                continue;
+            }
+            getDutyGroupSelectVO(dutyList, page);
         }
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+    }
+
+    private void getDutyGroupSelectVO(List<DutyGroupSelectVO> dutyList, Page<TblDutyGroup> page) {
+        page.getRecords().forEach(tblDutyGroup -> {
+            DutyGroupSelectVO dutyGroupSelectVO = new DutyGroupSelectVO();
+            dutyGroupSelectVO.setId(tblDutyGroup.getId());
+            dutyGroupSelectVO.setClubId(tblDutyGroup.getClubId());
+            dutyGroupSelectVO.setMemberId(tblDutyGroup.getMemberId());
+            dutyGroupSelectVO.setName(tblDutyGroup.getName());
+            dutyGroupSelectVO.setUserName(userInfoServiceI.getUserName(tblDutyGroup.getMemberId()));
+            dutyList.add(dutyGroupSelectVO);
+        });
     }
 
 

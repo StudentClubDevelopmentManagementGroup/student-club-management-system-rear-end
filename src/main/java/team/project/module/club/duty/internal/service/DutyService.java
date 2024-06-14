@@ -8,7 +8,6 @@ import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 
 public interface DutyService extends IService<TblDuty> {
@@ -22,7 +21,7 @@ public interface DutyService extends IService<TblDuty> {
 
     void deleteDutyByUser(LocalDateTime dutyTime, String arrangerId, Long clubId);
 
-    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> file);
+    void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file);
 
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 

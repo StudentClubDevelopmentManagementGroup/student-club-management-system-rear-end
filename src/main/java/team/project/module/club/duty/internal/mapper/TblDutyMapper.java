@@ -12,7 +12,7 @@ import java.util.List;
 public interface TblDutyMapper extends BaseMapper<TblDuty> {
     int createDuty(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed);
 
-    TblDuty selectOne(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubIde);
+    TblDuty selectOne(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId);
 
     int deleteDuty(LocalDateTime dateTime, String cleanerId, Long clubId);
 

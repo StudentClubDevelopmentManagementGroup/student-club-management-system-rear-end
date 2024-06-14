@@ -49,6 +49,10 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     public void createDuty(String number, String area, LocalDateTime dateTime, String arrangerId, String cleanerId, Long clubId, Boolean isMixed) {
+        TblDuty tblDuty = tblDutyMapper.selectOne(number, area, dateTime, arrangerId, cleanerId, clubId);
+        if (tblDuty != null) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
+        }
         if (tblDutyMapper.createDuty(number, area, dateTime, arrangerId, cleanerId, clubId, isMixed) != 1) {
             throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
         }
@@ -58,7 +62,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Transactional
     public void createDutyByGroup(String number, String area, LocalDateTime dutyTime, String arrangerId, Long clubId, Boolean isMixed, String groupName) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
+        if (dutyGroupList == null || dutyGroupList.isEmpty()) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "查询到的值为空或小组成员列表不存在");
+        }
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
+            TblDuty tblDuty = tblDutyMapper.selectOne(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId);
+            if (tblDuty != null) {
+                throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
+            }
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
             tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
             if (result == 0) {
@@ -70,6 +81,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     @Override
     public void deleteDutyAllByGroup(LocalDateTime dutyTime, String groupName, Long clubId) {
         List<TblDutyGroup> dutyGroupList = tblDutyGroupMapper.selectUserIdByGroupName(clubId, groupName);
+        if (dutyGroupList == null || dutyGroupList.isEmpty()) {
+            throw new ServiceException(ServiceStatus.CONFLICT, "查询到的值为空或小组成员列表不存在");
+        }
         for (TblDutyGroup tblDutyGroup : dutyGroupList) {
             if (tblDutyMapper.deleteDuty(dutyTime, tblDutyGroup.getMemberId(), clubId) != 1) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "删除失败");
@@ -87,9 +101,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, List<MultipartFile> filelist) {
-        List<String> fileIdList = new ArrayList<>();
-        for (MultipartFile file : filelist) {
+    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file) {
 
             String uploadFile = "/duty/" + memberId + "/" + dutyTime.toString();
             String fileName = memberId + dutyTime;
@@ -98,23 +110,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setOverwrite(true);
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
-
             String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
-
-            fileIdList.add(fileId);
-        }
-        StringBuilder files = new StringBuilder();
-        for (String fileId : fileIdList) {
-            files.append(fileId).append(",");
-        }
-
-        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
-            log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
-            for (String fileId : fileIdList) {
-                fileStorageServiceI.deleteFile(fileId);
+            StringBuilder files = new StringBuilder();
+            files.append(fileId);
+            if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
+                log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将fileId 保存到数据库失败");
+                    fileStorageServiceI.deleteFile(fileId);
+                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
-            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
-        }
     }
 
     @Override
