@@ -15,10 +15,10 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
-import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.query.ClubInfoQO;
 import team.project.module.club.management.internal.model.request.ListClubInfoReq;
 import team.project.module.club.management.internal.model.request.OneClubInfoReq;
+import team.project.module.club.management.internal.model.view.selectClubVO;
 import team.project.module.club.management.internal.service.TblClubService;
 
 @Tag(name = "社团管理")
@@ -45,7 +45,7 @@ public class TblClubController {
     @PostMapping("/club/select")
     Object selectClub(@Valid @RequestBody ListClubInfoReq req) {
         ClubInfoQO newQO = new ClubInfoQO(req.getDepartmentId(), req.getName(), req.getPageNum(), req.getSize());
-        PageVO<TblClubDO> result;
+        PageVO<selectClubVO> result;
         result = service.selectByCriteria(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
