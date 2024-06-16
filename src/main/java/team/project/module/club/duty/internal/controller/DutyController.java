@@ -119,12 +119,27 @@ public class DutyController {
         @RequestParam("date_time")    LocalDateTime         dateTime,
         @RequestParam("member_id")    String                memberId,
         @RequestParam("club_id")      Long                  clubId,
-        @RequestParam("file")          MultipartFile         file)
+        @RequestPart("file")          MultipartFile         file)
     {
         String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能上传值日照片");
 
         dutyService.uploadDutyPicture(dateTime, memberId, clubId, file);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
+    }
+    @Operation(summary = "上传多张值日照片")
+    @PostMapping("/club/duty/report_results")
+    Object uploadDutyPicture2(
+            @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+            @RequestParam("date_time")    LocalDateTime         dateTime,
+            @RequestParam("member_id")    String                memberId,
+            @RequestParam("club_id")      Long                  clubId,
+            @RequestPart("file")          MultipartFile[]         file)
+    {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, clubId, "只有社团成员能上传值日照片");
+
+        dutyService.uploadDutyPictures(dateTime, memberId, clubId, file);
         return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
     }
 

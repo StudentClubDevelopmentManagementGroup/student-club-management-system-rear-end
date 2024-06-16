@@ -19,6 +19,7 @@ import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
+import team.project.module.util.filestorage.export.exception.FileStorageException;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
@@ -116,7 +117,13 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             uploadFileQO.setOverwrite(true);
             uploadFileQO.setTargetFilename(fileName);
             uploadFileQO.setTargetFolder(uploadFile);
-            String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
+            String fileId;
+            try {
+                fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
+            } catch (FileStorageException e) {
+                log.error("上传文件失败", e);
+                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+            }
             StringBuilder files = new StringBuilder();
             files.append(fileId);
             if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
@@ -124,6 +131,48 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                     fileStorageServiceI.deleteFile(fileId);
                 throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
+    }
+
+    @Override
+    @Transactional
+    public void uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
+        String uploadFileBasePath = "/duty/" + memberId + "/" + dutyTime.format(fmt);
+
+        List<String> fileIds = new ArrayList<>();
+        for (MultipartFile file : files) {
+            if (!file.isEmpty()) {
+                String originalFilename = file.getOriginalFilename();
+                String fileType = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
+                String fileName = memberId + "_" + System.currentTimeMillis() + fileType; // 使用时间戳避免文件名重复
+
+                UploadFileQO uploadFileQO = new UploadFileQO();
+                uploadFileQO.setOverwrite(true);
+                uploadFileQO.setTargetFilename(fileName);
+                uploadFileQO.setTargetFolder(uploadFileBasePath);
+
+                try {
+                    String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
+                    fileIds.add(fileId);
+                } catch (FileStorageException e) {
+                    log.error("上传文件失败", e);
+                    // 如果之前有文件上传成功，则需要删除
+                    fileIds.forEach(fileStorageServiceI::deleteFile);
+                    throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+                }
+            } else {
+                log.warn("跳过空文件");
+            }
+        }
+
+        // 将所有文件ID以逗号分隔后存储
+        String allFileIds = String.join(",", fileIds);
+        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
+            log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
+            // 清理已上传的文件
+            fileIds.forEach(fileStorageServiceI::deleteFile);
+            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+        }
     }
 
     @Override

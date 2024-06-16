@@ -23,6 +23,8 @@ public interface DutyService extends IService<TblDuty> {
 
     void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file);
 
+    void uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] file);
+
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
     PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo);
