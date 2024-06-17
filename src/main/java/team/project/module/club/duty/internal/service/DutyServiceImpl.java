@@ -124,13 +124,11 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             try {
                 fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
             } catch (FileStorageException e) {
-                log.error("上传文件失败", e);
                 throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
             StringBuilder files = new StringBuilder();
             files.append(fileId);
             if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
-                log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
                     fileStorageServiceI.deleteFile(fileId);
                 throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
             }
@@ -158,8 +156,6 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                     String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
                     fileIds.add(fileId);
                 } catch (FileStorageException e) {
-                    log.error("上传文件失败", e);
-                    // 如果之前有文件上传成功，则需要删除
                     fileIds.forEach(fileStorageServiceI::deleteFile);
                     throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
                 }
@@ -171,8 +167,6 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         // 将所有文件ID以逗号分隔后存储
         String allFileIds = String.join(",", fileIds);
         if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
-            log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
-            // 清理已上传的文件
             fileIds.forEach(fileStorageServiceI::deleteFile);
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
         }
