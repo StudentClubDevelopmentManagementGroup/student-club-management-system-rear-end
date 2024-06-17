@@ -67,4 +67,23 @@ public class ModelConverter {
 
         return result;
     }
+
+    public UserDO toUserBasicInfoDO(UserDO userDO) {
+        /* UserBasicInfoDO 仍是 UserDO
+           但 UserBasicInfoDO 只存储部分字段，其余字段为 null */
+
+        if (null == userDO)
+            return null;
+
+        assert null != userDO.getUserId();
+        assert null != userDO.getName();
+        assert null != userDO.getRole();
+
+        UserDO result = new UserDO();
+        result.setUserId(userDO.getUserId());
+        result.setName(userDO.getName());
+        result.setRole(userDO.getRole());
+
+        return result;
+    }
 }

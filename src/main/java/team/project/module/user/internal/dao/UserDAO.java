@@ -1,5 +1,7 @@
 package team.project.module.user.internal.dao;
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.LoadingCache;
@@ -9,6 +11,7 @@ import team.project.module.user.export.model.enums.UserRole;
 import team.project.module.user.internal.mapper.UserMapper;
 import team.project.module.user.internal.model.entity.UserDO;
 import team.project.module.user.internal.model.query.SearchUserInfoQO;
+import team.project.module.user.internal.util.ModelConverter;
 
 import java.util.List;
 
@@ -18,14 +21,23 @@ public class UserDAO {
     @Autowired
     private UserMapper userMapper;
 
+    @Autowired
+    private ModelConverter modelConverter;
+
     /**
      * 缓存，只缓存用户的基本信息
      * */
     private final LoadingCache<String, UserDO> userBasicInfoCache = Caffeine.newBuilder().build(
-        userId -> userMapper.selectUserBasicInfo(userId)
+        userId -> modelConverter.toUserBasicInfoDO(
+            userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(
+                UserDO::getUserId,
+                UserDO::getName,
+                UserDO::getRole
+            )
+            .eq(UserDO::getUserId, userId)
+        ))
     );
-
-    /* -- 封装自定义 sql -- */
 
     /* -- 查单个 -- */
 
@@ -33,24 +45,23 @@ public class UserDAO {
      * 查询指定用户的账号信息
      * */
     public UserDO selectUserInfo(String userId) {
-        UserDO result = userMapper.selectUserInfo(userId);
+        UserDO userDO = userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(
+                UserDO::getUserId,
+                UserDO::getDepartmentId,
+             /* TblUserDO::getPassword, <- 不查询密码*/
+                UserDO::getName,
+                UserDO::getTel,
+                UserDO::getEmail,
+                UserDO::getRole
+            )
+            .eq(UserDO::getUserId, userId)
+        );
 
-        if (result != null)
-            userBasicInfoCache.put(userId, result);
+        if (userDO != null)
+            userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
 
-        return result;
-    }
-
-    /**
-     * 查询指定用户的账号信息
-     * */
-    public UserDO selectUserInfo(String userId, String password) {
-        UserDO result = userMapper.selectUserInfo(userId, password);
-
-        if (result != null)
-            userBasicInfoCache.put(userId, result);
-
-        return result;
+        return userDO;
     }
 
     /**
@@ -61,17 +72,48 @@ public class UserDAO {
     }
 
     /**
+     * 查询指定用户的密码
+     * */
+    public String selectPassword(String userId) {
+        UserDO userDO = userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(UserDO::getPassword)
+            .eq(UserDO::getUserId, userId)
+        );
+
+        if (userDO == null)
+            return null;
+
+        return userDO.getPassword();
+    }
+
+    /**
      * 查询指定用户的角色码
      * */
     public Integer selectRoleCode(String userId) {
-        return selectUserBasicInfo(userId).getRole();
+        UserDO userDO = selectUserBasicInfo(userId);
+        return userDO == null ? null : userDO.getRole();
     }
 
     /**
      * 查询指定用户的邮箱
      * */
     public String selectEmail(String userId) {
-        return userMapper.selectEmail(userId);
+        UserDO userDO = userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
+            .select(
+                UserDO::getUserId,
+                UserDO::getName,
+                UserDO::getRole,
+                UserDO::getEmail
+            )
+            .eq(UserDO::getUserId, userId)
+        );
+
+        if (userDO == null)
+            return null;
+
+        userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
+
+        return  userDO.getEmail();
     }
 
     /* -- 查多个 -- */
@@ -80,14 +122,38 @@ public class UserDAO {
      * 搜索相关用户的账号信息（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
      * */
     public List<UserDO> searchUserInfo(Page<UserDO> page, SearchUserInfoQO searchQO) {
-        return userMapper.searchUserInfo(page, searchQO);
+        LambdaQueryWrapper<UserDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(
+            UserDO::getUserId,
+            UserDO::getDepartmentId,
+            UserDO::getName,
+            UserDO::getTel,
+            UserDO::getEmail,
+            UserDO::getRole
+        );
+
+        if (null != searchQO.getDepartmentId())
+            wrapper.eq(UserDO::getDepartmentId, searchQO.getDepartmentId());
+        if (null != searchQO.getUserId())
+            wrapper.like(UserDO::getUserId, searchQO.getUserId().replace("%", ""));
+        if (null != searchQO.getUserName())
+            wrapper.like(UserDO::getName, searchQO.getUserName().replace("%", ""));
+
+        return userMapper.selectList(page, wrapper);
     }
 
     /**
      * 搜索相关用户的基本信息（模糊查询）
      * */
     public List<UserDO> searchUserBasicInfo(String userName) {
-        return userMapper.searchUserBasicInfo(userName);
+        return userMapper.selectList(new LambdaQueryWrapper<UserDO>()
+            .select(
+                UserDO::getUserId,
+                UserDO::getName,
+                UserDO::getRole
+            )
+            .like(UserDO::getName, userName.replace("%", ""))
+        );
     }
 
     /* -- 增删改 -- */
@@ -98,14 +164,17 @@ public class UserDAO {
      * */
     public int logicalDelete(String userId, String password) {
         userBasicInfoCache.invalidate(userId);
-        return userMapper.logicalDelete(userId, password);
+        return userMapper.update(new LambdaUpdateWrapper<UserDO>()
+            .set(UserDO::getDeleted, true)
+            .eq(UserDO::getUserId, userId)
+            .eq(UserDO::getPassword, password)
+        );
     }
 
     /**
-     * 给指定用户增添角色
+     * 给用户设定角色码
      * */
-    public int addRoleToUser(String userId, UserRole roleToAdd) {
-
+    private int setRoleToUser(String userId, int newRole) {
         /* 2024-03-26 ljh
            ---------
 
@@ -141,16 +210,24 @@ public class UserDAO {
            2024-05-13 ljh
            ---------
             使用缓存优化查询 sql
-            原先此注释位于 mapper 层，现移至 DAO 层
         */
+        return userMapper.update(new LambdaUpdateWrapper<UserDO>()
+            .set(UserDO::getRole, newRole)
+            .eq(UserDO::getUserId, userId)
+        );
+    }
 
+    /**
+     * 给指定用户增添角色
+     * */
+    public int addRoleToUser(String userId, UserRole roleToAdd) {
         Integer role = selectRoleCode(userId);
 
         if (role == null || UserRole.hasRole(role, roleToAdd))
             return 0;
 
         userBasicInfoCache.invalidate(userId);
-        return userMapper.setRole(userId, UserRole.addRole(role, roleToAdd));
+        return this.setRoleToUser(userId, UserRole.addRole(role, roleToAdd));
     }
 
     /**
@@ -163,14 +240,17 @@ public class UserDAO {
             return 0;
 
         userBasicInfoCache.invalidate(userId);
-        return userMapper.setRole(userId, UserRole.removeRole(role, roleToRemove));
+        return this.setRoleToUser(userId, UserRole.removeRole(role, roleToRemove));
     }
 
     /**
      * 设置用户密码
      * */
     public int setPassword(String userId, String password) {
-        return userMapper.setPassword(userId, password);
+        return userMapper.update(new LambdaUpdateWrapper<UserDO>()
+            .set(UserDO::getPassword, password)
+            .eq(UserDO::getUserId, userId)
+        );
     }
 
     /* -- 封装 mybatis-plus BaseMapper 的 CRUD 方法 -- */

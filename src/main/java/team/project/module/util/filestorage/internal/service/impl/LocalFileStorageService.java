@@ -1,5 +1,6 @@
 package team.project.module.util.filestorage.internal.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import team.project.module.util.filestorage.internal.service.TextFileStorageServ
 import team.project.module.util.filestorage.internal.util.FilepathUtil;
 
 @Service
+@Slf4j
 public class LocalFileStorageService implements FileStorageBasicServiceI, TextFileStorageServiceI {
 
     private static final String uploadedFilesFolder  = LocalFileStorageConfig.uploadedFilesFolder;
@@ -43,7 +45,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
         String fileId = FilepathUtil.fixSeparator(uploadedFileIdPrefix + "/" + folderPath + "/" + filename);
 
         if (FilepathUtil.hasInvalidChar(fileId) || FilepathUtil.hasRelativePathPart(fileId))
-            throw new FileStorageException("目标目录路径或目标文件名不合约束");
+            throw new FileStorageException("无法生成 fileId，目标目录路径或目标文件名不合约束");
 
         return fileId;
     }
@@ -72,9 +74,8 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
 
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
-        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
+        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath))
             throw new FileStorageException("文件已存在，且无法覆盖");
-        }
 
         try {
             localFileStorageDAO.saveFile(toUploadFile, filePath);
@@ -111,6 +112,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             return true;
         }
         catch (Exception e) {
+            log.warn("删除文件时出现异常", e);
             return false;
         }
     }
@@ -131,9 +133,8 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
 
         String fileId = generateFileId(targetFolder, targetFilename);
         String filePath = parseFileIdToFilePath(fileId);
-        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath)) {
+        if ( ! uploadFileQO.isOverwrite() && localFileStorageDAO.isFileExist(filePath))
             throw new FileStorageException("文件已存在，且无法覆盖");
-        }
 
         try {
             localFileStorageDAO.saveTextToFile(text, filePath);
@@ -156,6 +157,7 @@ public class LocalFileStorageService implements FileStorageBasicServiceI, TextFi
             String filePath = parseFileIdToFilePath(fileId);
             return localFileStorageDAO.readTextFromFile(filePath);
         } catch (Exception e) {
+            log.warn("读取文件时出现异常", e);
             return null;
         }
     }

@@ -1,6 +1,7 @@
 package team.project.module.user.internal.service;
 
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
@@ -16,6 +17,8 @@ import team.project.module.util.email.export.model.query.SendEmailQO;
 import team.project.module.util.email.export.service.EmailServiceI;
 import team.project.module.util.email.export.util.EmailUtil;
 import team.project.util.texttmpl.TextTemplate;
+
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -39,8 +42,12 @@ public class LoginService {
      * @return 登录成功返回用户信息，登录失败返回 null
      * */
     public UserInfoVO login(String userId, String password) {
-        UserDO userInfo = userDAO.selectUserInfo(userId, password);
-        return modelConverter.toUserInfoVO(userInfo);
+        String pwd = userDAO.selectPassword(userId);
+
+        if ( ! Objects.equals(pwd, password))
+            return null;
+
+        return modelConverter.toUserInfoVO(userDAO.selectUserInfo(userId));
     }
 
     /* -- 邮箱登录 -- */
