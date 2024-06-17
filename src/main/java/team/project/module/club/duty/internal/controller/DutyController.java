@@ -138,9 +138,8 @@ public class DutyController {
     {
         String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能上传值日照片");
-
-        dutyService.uploadDutyPictures(dateTime, memberId, clubId, file);
-        return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功");
+//        dutyService.uploadDutyPictures(dateTime, memberId, clubId, file);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("上传成功").data(dutyService.uploadDutyPictures(dateTime, memberId, clubId, file));
     }
 
     @Operation(summary = "查询社团值日情况")

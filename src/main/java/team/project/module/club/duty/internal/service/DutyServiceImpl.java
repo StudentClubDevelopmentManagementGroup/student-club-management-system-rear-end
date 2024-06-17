@@ -136,7 +136,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
+    public List<String> uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/duty/" + memberId + "/" + dutyTime.format(fmt);
 
@@ -168,11 +168,23 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
         // 将所有文件ID以逗号分隔后存储
         String allFileIds = String.join(",", fileIds);
-        if (1 == tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
+        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
             log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
             // 清理已上传的文件
             fileIds.forEach(fileStorageServiceI::deleteFile);
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+        }
+        else {
+            List<String> fileUrlList = new ArrayList<>();
+            for (String fileId : fileIds) {
+                // 确保fileId不为空或空白后调用服务方法
+                if (StringUtils.isNotBlank(fileId)) {
+                    String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                    // 使用获取到的fileUrl进行后续操作，比如打印、保存或进一步处理
+                    fileUrlList.add(fileUrl);
+                }
+            }
+            return fileUrlList;
         }
     }
 
