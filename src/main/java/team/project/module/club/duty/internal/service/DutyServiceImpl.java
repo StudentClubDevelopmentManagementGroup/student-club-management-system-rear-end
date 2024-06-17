@@ -292,12 +292,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 String[] fileIdArray = tblDuty.getImageFile().split(",");
                 List<String> fileUrlList = new ArrayList<>();
                 for (String fileId : fileIdArray) {
-                    // 确保fileId不为空或空白后调用服务方法
-                    if (StringUtils.isNotBlank(fileId)) {
                         String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
                         // 使用获取到的fileUrl进行后续操作，比如打印、保存或进一步处理
                         fileUrlList.add(fileUrl);
-                    }
                 }
                 dutyInfoVO.setImageFile(fileUrlList);
             }
