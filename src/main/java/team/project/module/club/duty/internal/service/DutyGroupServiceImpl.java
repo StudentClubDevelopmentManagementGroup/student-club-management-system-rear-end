@@ -60,7 +60,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
         }
         List<DutyGroupSelectVO> dutyList = new ArrayList<>();
         getDutyGroupSelectVO(dutyList, page);
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
     }
 
     @Override
@@ -80,7 +80,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(),dutyList.size()));
     }
 
     @Override
@@ -91,7 +91,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
         }
         List<DutyGroupSelectVO> dutyList = new ArrayList<>();
         getDutyGroupSelectVO(dutyList, page);
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), page.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), page.getSize(), page.getTotal()));
     }
 
     @Override
@@ -111,7 +111,7 @@ public class DutyGroupServiceImpl extends ServiceImpl<TblDutyGroupMapper, TblDut
         if (dutyList.size() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize()));
+        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(),dutyList.size()));
     }
 
     private void getDutyGroupSelectVO(List<DutyGroupSelectVO> dutyList, Page<TblDutyGroup> page) {

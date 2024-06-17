@@ -311,6 +311,27 @@
       </label>
     </form>
 
+    <form action="/club/duty/report_results" method="post" enctype="multipart/form-data" target="output" class="green_form" style="--color-primary: #6969d7">
+      <h1>值日模块，上传图片集合</h1>
+      <label><span class="required">日期</span>
+        <input type="datetime-local" name="date_time" required>
+      </label>
+      <label><span class="required">社员学号</span>
+        <input type="text" name="member_id" required>
+      </label>
+      <label><span class="required">社团编号</span>
+        <input type="text" name="club_id" required>
+      </label>
+      <!-- 修改input type="file"以支持多文件上传 -->
+      <label><span class="required">图片文件</span>
+        <input type="file" name="file" accept="image/*" multiple required>
+      </label>
+      <p>支持的格式：jpg, png, gif (每个文件最大10MB)</p>
+      <label for="">
+        <button type="submit">提交</button>
+      </label>
+    </form>
+
   </div>
 
   <div id="output" >

@@ -5,9 +5,11 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.model.view.PageVO;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 
 public interface DutyService extends IService<TblDuty> {
@@ -23,6 +25,8 @@ public interface DutyService extends IService<TblDuty> {
 
     void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file);
 
+    List<String> uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] file);
+
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
     PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo);
@@ -30,4 +34,6 @@ public interface DutyService extends IService<TblDuty> {
     PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo);
 
     PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo);
+
+    PageVO<DutyInfoVO> selectDutyByUserId(DutyInfoSelfQO qo, String userId);
 }

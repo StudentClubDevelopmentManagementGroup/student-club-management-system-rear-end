@@ -13,7 +13,7 @@
         <result column="arranger_id"        property="arrangerId" />
         <result column="cleaner_id"         property="cleanerId" />
         <result column="club_id"            property="clubId" />
-        <result column="image_file"         property="imageFile" />
+        <result column="image_id"         property="imageFile" />
         <result column="is_mixed"           property="isMixed" />
     </resultMap>
 
@@ -61,6 +61,9 @@
 
     <select id="selectNextWeek" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{clubId}
+    </select>
+    <select id="selectDutyByUserId" resultMap ="tbl_club_Duty">
+        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{userId} and is_deleted = 0
     </select>
 
 </mapper>

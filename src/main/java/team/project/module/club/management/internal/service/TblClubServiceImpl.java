@@ -12,7 +12,12 @@ import team.project.module.club.management.internal.mapper.TblClubMapper;
 import team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO;
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.club.management.internal.model.query.ClubInfoQO;
+import team.project.module.club.management.internal.model.view.selectClubVO;
 import team.project.module.club.personnelchanges.export.service.PceIService;
+import team.project.module.department.export.service.DepartmentExportService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p style="color: #f23215;">
@@ -33,6 +38,8 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
 
     @Autowired
     TblDutyCirculationMapper tblDutyCirculationMapper;
+    @Autowired
+    DepartmentExportService departmentExportService;
 
     public void createClub(Long departmentId, String name) {
         if (cMapper.findByNameAndDepartmentId(departmentId, name).isEmpty()) {
@@ -47,14 +54,25 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     @Override
-    public PageVO<TblClubDO> selectByCriteria(ClubInfoQO req) {
+    public PageVO<selectClubVO> selectByCriteria(ClubInfoQO req) {
 
         Page<TblClubDO> page = cMapper.selectByCriteria(new Page<>(req.getPageNum(), req.getSize()), req.getDepartmentId(), req.getName());
-
+        List<selectClubVO> list = new ArrayList<>();
+        page.getRecords().forEach(club -> {
+            selectClubVO vo = new selectClubVO();
+            vo.setId(club.getId());
+            vo.setIsDeleted(club.getIsDeleted());
+            vo.setUpdateTime(club.getUpdateTime());
+            vo.setName(club.getName());
+            vo.setDepartmentId(club.getDepartmentId());
+            vo.setDepartmentName(departmentExportService.getDepartmentName(club.getDepartmentId()));
+            vo.setState(club.getState());
+            list.add(vo);
+        });
         if (page.getTotal() == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
         } else {
-            return new PageVO<>(page);
+            return new PageVO<>(list, new Page<>(req.getPageNum(), req.getSize(), page.getTotal()));
         }
     }
 
