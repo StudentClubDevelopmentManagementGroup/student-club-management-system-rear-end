@@ -62,5 +62,8 @@
     <select id="selectNextWeek" resultMap ="tbl_club_Duty">
         SELECT * FROM tbl_user_club_duty WHERE duty_time BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 7 DAY) and club_id = #{clubId}
     </select>
+    <select id="selectDutyByUserId" resultMap ="tbl_club_Duty">
+        SELECT * FROM tbl_user_club_duty WHERE cleaner_id = #{userId} and is_deleted = 0
+    </select>
 
 </mapper>

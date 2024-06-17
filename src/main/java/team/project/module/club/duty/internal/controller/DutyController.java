@@ -19,6 +19,7 @@ import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
 import team.project.module.club.duty.internal.model.request.*;
 import team.project.module.club.duty.internal.model.view.DutyGroupSelectVO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
@@ -186,6 +187,17 @@ public class DutyController {
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能是否开启自动安排值日功能");
 
         TblDutyCirculation result = dutyCirculationService.selectCirculationByClubId(clubId);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
+    }
+
+    @Operation(summary = "查询自己值日的情况")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @PostMapping("/club/duty/selectself")
+    Object selectDutySelf(@Valid @RequestBody DutySelectSelfReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询自己值日情况");
+
+        PageVO<DutyInfoVO> result = dutyService.selectDutyByUserId(new DutyInfoSelfQO(req.getClubId(), req.getPageNum(), req.getSize()), arrangerId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 }

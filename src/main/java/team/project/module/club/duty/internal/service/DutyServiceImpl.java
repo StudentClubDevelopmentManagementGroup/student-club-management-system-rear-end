@@ -17,6 +17,7 @@ import team.project.module.club.duty.internal.mapper.TblDutyMapper;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
@@ -253,6 +254,20 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
         }
         return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
+    }
+
+    @Override
+    public PageVO<DutyInfoVO> selectDutyByUserId(DutyInfoSelfQO qo, String userId) {
+        Page<TblDuty> page = tblDutyMapper.selectDutyByUserId(
+                new Page<>(qo.getPageNum(), qo.getSize()), userId
+        );
+        List<DutyInfoVO> dutyList = new ArrayList<>();
+        selectUserName(dutyList, page);
+        if (page.getTotal() == 0) {
+            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+        } else {
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
+        }
     }
 
     private void selectUserName(List<DutyInfoVO> dutyList, Page<TblDuty> page) {

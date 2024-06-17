@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.model.view.PageVO;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
 import java.time.LocalDateTime;
@@ -33,4 +34,6 @@ public interface DutyService extends IService<TblDuty> {
     PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo);
 
     PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo);
+
+    PageVO<DutyInfoVO> selectDutyByUserId(DutyInfoSelfQO qo, String userId);
 }
