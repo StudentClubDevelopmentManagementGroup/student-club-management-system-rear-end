@@ -106,36 +106,6 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     @Transactional
-    public void uploadDutyPicture(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile file) {
-            String filename = file.getOriginalFilename();
-            String fileType = null;
-            if (filename != null) {
-                fileType = filename.substring(filename.lastIndexOf("."));
-            }
-            DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
-            String uploadFile = "/duty/" + memberId + "/" + dutyTime.format(fmt);
-            String fileName = memberId + fileType;
-
-            UploadFileQO uploadFileQO = new UploadFileQO();
-            uploadFileQO.setOverwrite(true);
-            uploadFileQO.setTargetFilename(fileName);
-            uploadFileQO.setTargetFolder(uploadFile);
-            String fileId;
-            try {
-                fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
-            } catch (FileStorageException e) {
-                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
-            }
-            StringBuilder files = new StringBuilder();
-            files.append(fileId);
-            if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, String.valueOf(files))) {
-                    fileStorageServiceI.deleteFile(fileId);
-                throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
-            }
-    }
-
-    @Override
-    @Transactional
     public List<String> uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/duty/" + memberId + "/" + dutyTime.format(fmt);
