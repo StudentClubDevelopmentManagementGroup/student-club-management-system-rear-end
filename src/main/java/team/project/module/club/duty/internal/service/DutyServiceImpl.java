@@ -30,6 +30,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
+import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.LOCAL;
 
 @Service
@@ -154,7 +155,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 uploadFileQO.setTargetFolder(uploadFileBasePath);
 
                 try {
-                    String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
+                    String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
                     fileIds.add(fileId);
                 } catch (FileStorageException e) {
                     log.error("上传文件失败", e);
