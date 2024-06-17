@@ -13,7 +13,7 @@
         <result column="arranger_id"        property="arrangerId" />
         <result column="cleaner_id"         property="cleanerId" />
         <result column="club_id"            property="clubId" />
-        <result column="image_file"         property="imageFile" />
+        <result column="image_id"         property="imageFile" />
         <result column="is_mixed"           property="isMixed" />
     </resultMap>
 

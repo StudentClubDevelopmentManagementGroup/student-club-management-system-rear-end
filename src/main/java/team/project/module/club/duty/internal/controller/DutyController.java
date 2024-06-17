@@ -153,9 +153,9 @@ public class DutyController {
         PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
                 (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
                         dutyService.selectDuty(newQO) :
-                        dutyService.selectDutyByName(newQO)) :
+                        dutyService.selectDutyByNumber(newQO)):
                 (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
-                        dutyService.selectDutyByNumber(newQO) :
+                        dutyService.selectDutyByName(newQO):
                         dutyService.selectDutyByNumberAndName(newQO));
         //todo 合并
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);

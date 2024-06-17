@@ -2,6 +2,7 @@ package team.project.module.club.duty.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import io.micrometer.common.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -167,7 +168,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
         // 将所有文件ID以逗号分隔后存储
         String allFileIds = String.join(",", fileIds);
-        if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
+        if (1 == tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
             log.error("上传值日结果反馈失败，反馈的图片已上传成功，但将 fileId 保存到数据库失败");
             // 清理已上传的文件
             fileIds.forEach(fileStorageServiceI::deleteFile);
@@ -256,7 +257,23 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             dutyInfoVO.setCleanerName(userInfoServiceI.getUserName(tblDuty.getCleanerId()));
             dutyInfoVO.setArrangerId(tblDuty.getArrangerId());
             dutyInfoVO.setArrangerName(userInfoServiceI.getUserName(tblDuty.getArrangerId()));
-            dutyInfoVO.setImageFile(tblDuty.getImageFile());
+            if(tblDuty.getImageFile() == null)
+            {
+                dutyInfoVO.setImageFile(null);
+            }
+            else{
+                String[] fileIdArray = tblDuty.getImageFile().split(",");
+                List<String> fileUrlList = new ArrayList<>();
+                for (String fileId : fileIdArray) {
+                    // 确保fileId不为空或空白后调用服务方法
+                    if (StringUtils.isNotBlank(fileId)) {
+                        String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                        // 使用获取到的fileUrl进行后续操作，比如打印、保存或进一步处理
+                        fileUrlList.add(fileUrl);
+                    }
+                }
+                dutyInfoVO.setImageFile(fileUrlList);
+            }
             dutyInfoVO.setIsMixed(tblDuty.getIsMixed());
             dutyList.add(dutyInfoVO);
         }
