@@ -12,7 +12,7 @@ import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
-import team.project.module.club.announcement.config.AnnConfig;
+import team.project.module.club.announcement.internal.config.AnnConfig;
 import team.project.module.club.announcement.internal.mapper.AnnMapper;
 import team.project.module.club.announcement.internal.mapper.DraftMapper;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
