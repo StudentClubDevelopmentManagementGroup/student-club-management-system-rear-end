@@ -17,19 +17,19 @@ sequenceDiagram
     box 数据库
         participant db as 数据库
     end
-    web ->> controller : Req
-    controller ->> controller : 角色鉴权、参数校验
+    web ->> controller : 发起请求，传递Req
+    controller ->> controller : 进行角色鉴权、参数校验
     controller ->> service : Req
     service ->> service : 拆解请求对象Req，组装查询对象QO
     service ->> dao : QO
     dao ->> mapper : QO
     mapper ->> db : 执行SQL
-    db -->> mapper : SQL执行结果
+    db -->> mapper : 返回SQL执行结果
     mapper -->> dao : DO
     dao -->> service : DO
     service ->> service : 拆解领域对象DO，组装视图对象VO
     service -->> controller : VO
-    controller -->> web : VO
+    controller -->> web : 返回VO，响应请求
 ```
 
 export包下所有内容是本模块对外公布的接口，模块间交流只能在出现在service层。各个模块间的交流遵循下图流程。

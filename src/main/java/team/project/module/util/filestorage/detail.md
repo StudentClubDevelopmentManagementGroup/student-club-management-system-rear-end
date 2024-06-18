@@ -79,7 +79,7 @@ sequenceDiagram
     else 如果存储类型是 CLOUD
         f_service ->> c_DAO : 上传文件
     end
-    f_service -->> x_service : file_id
+    f_service -->> x_service : 返回file_id
 ```
 
 ## 获取访问文件的 url
@@ -98,11 +98,11 @@ sequenceDiagram
     x_service ->> f_service : 给定 file_id，获取文件
     f_service ->> f_service : 依据 file_id 辨别存储类型，提取出文件路径
     alt  如果存储类型是 LOCAL
-        f_service ->> l_DAO : 文件路径
+        f_service ->> l_DAO : 给定文件路径，获取url
         l_DAO -->> f_service : 访问文件的 url
     else 如果存储类型是 CLOUD
-        f_service ->> c_DAO : 文件路径
-        c_DAO -->> f_service : 访问文件的 url
+        f_service ->> c_DAO : 给定文件路径，获取url
+        c_DAO -->> f_service : 返回访问文件的 url
     end
-    f_service -->> x_service : 访问文件的 url
+    f_service -->> x_service : 返回访问文件的 url
 ```
