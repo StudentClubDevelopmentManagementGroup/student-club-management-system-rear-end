@@ -112,6 +112,7 @@ public class DutyController {
     }
 
     @Operation(summary = "上传多张值日照片")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/report_results")
     Object uploadDutyPicture2(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
