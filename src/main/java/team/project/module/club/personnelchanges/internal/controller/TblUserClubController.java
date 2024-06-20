@@ -104,4 +104,13 @@ public class TblUserClubController {
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectMemberAllClubInfo(userId));
     }
+
+    @Operation(summary = "查询自己在所有社团的身份")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/member/select_member_all_club_info")
+    Object selectMyselfAllClubInfo() {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(ucService.selectMemberAllClubInfo(arrangerId));
+    }
 }
