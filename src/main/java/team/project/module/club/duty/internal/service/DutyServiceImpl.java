@@ -75,7 +75,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
             }
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
-            tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
+            tblDutyCirculationMapper.setCirculationByClubId(clubId, 1);
             if (result == 0) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
             }
