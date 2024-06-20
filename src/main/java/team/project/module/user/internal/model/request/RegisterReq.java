@@ -40,6 +40,9 @@ public class RegisterReq {
     @JsonProperty("mail")
     private String email;
 
+    @JsonProperty("register_code")
+    private String registerCode;
+
     @NotBlank(message="未选择用户角色")
     @Pattern(regexp="^(student|teacher)$", message="用户角色只能在“student”和“teacher”中二选一")
     @JsonProperty("role")

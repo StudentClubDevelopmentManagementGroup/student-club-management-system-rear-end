@@ -4,13 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckLogin;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.user.export.model.annotation.UserIdConstraint;
 import team.project.module.user.internal.model.request.RegisterReq;
 import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.service.RegisterService;
@@ -32,8 +32,12 @@ public class RegisterController {
 
     @Operation(summary="注册账号（发送验证码到邮箱，确保邮箱可用）")
     @PostMapping("/register/email/send_code")
-    Object sendCodeEmail() {
-        return new Response<>(ServiceStatus.NOT_IMPLEMENTED);
+    Object sendCodeEmail(
+        @Email(message="邮箱格式不正确")
+        @RequestParam("email") String email
+    ) {
+        registerService.sendCodeEmail(email);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="注销账号")
