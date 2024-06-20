@@ -47,7 +47,7 @@ public class TblUserClubController {
     @PostMapping("/club/member/unset_manager")
     Object quashManager(@Valid @RequestBody UserClubReq req) {
         String arrangerId = (String) (StpUtil.getLoginId());
-        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能基地撤销负责人");
+        authService.requireClubTeacherManager(arrangerId, req.getClubId(), "只有社团负责人能基地撤销负责人");
         if (arrangerId.equals(req.getUserId())) {
             return new Response<>(ServiceStatus.FORBIDDEN).statusText("不能撤销自己");
         }
