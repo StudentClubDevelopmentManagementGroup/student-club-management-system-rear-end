@@ -77,17 +77,24 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     public int deleteClub(Long departmentId, String name) {
+        TblClubDO clubDO = cMapper.selectByNameAndDepartmentId(name, departmentId);
+        if (clubDO == null) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到对应的社团信息");
+        }
         int result = cMapper.deleteClub(departmentId, name);
-        int result2 = tblDutyCirculationMapper.deleteCirculation(cMapper.selectByNameAndDepartmentId(name, departmentId).getId());
+
+        int result2 = tblDutyCirculationMapper.deleteCirculation(clubDO.getId());
+
         if (result == 0) {
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除社团失败");
         }
         if (result2 == 0) {
-            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "基地值日循环表数据删除失败");
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "删除社团流转记录失败");
         }
-        TblClubDO club = cMapper.selectByNameAndDepartmentId(name, departmentId);
-        return pceIService.deleteClubAllMember(club.getId());
+
+        return pceIService.deleteClubAllMember(clubDO.getId());
     }
+
 
     public void reuseClub(Long departmentId, String name) {
         int result = cMapper.reuseClub(departmentId, name);
