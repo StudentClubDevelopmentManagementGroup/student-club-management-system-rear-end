@@ -20,7 +20,7 @@ public class ManagementIServiceImpl implements ManagementIService {
 
     @Override
     public ClubBasicMsgDTO selectClubBasicMsg(long clubId) {
-        TblClubDO tblClubDO = tblClubMapper.selectById(clubId);
+        TblClubDO tblClubDO = tblClubMapper.mySelectById(clubId);
         if(tblClubDO==null){
             throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该社团");
         }

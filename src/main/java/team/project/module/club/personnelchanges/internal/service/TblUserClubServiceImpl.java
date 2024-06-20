@@ -147,7 +147,7 @@ public class TblUserClubServiceImpl extends ServiceImpl<TblUserClubMapper, TblUs
                 userClubInfoVO.setClubId(tblUserClubDO.getClubId());
                 switch (tblUserClubDO.getRole()) {
                     case 1 -> userClubInfoVO.setRole("成员");
-                    case 2, 3 -> userClubInfoVO.setRole("管理员");
+                    case 2, 3 -> userClubInfoVO.setRole("基地负责人");
                     default -> userClubInfoVO.setRole("未知");
                 }
                 userClubInfoVO.setClubName(clubBasicMsgDTO.getName());

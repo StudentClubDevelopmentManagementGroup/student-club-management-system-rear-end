@@ -20,11 +20,11 @@
         </encoder>
     </appender>
 
-    <root level="info">
+    <root level="warn">
         <appender-ref ref="console_log"/>
     </root>
 
-    <logger name="team.project" level="info">
+    <logger name="team.project" level="warn">
         <appender-ref ref="file_log"/>
     </logger>
 

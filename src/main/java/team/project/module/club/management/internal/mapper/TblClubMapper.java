@@ -33,7 +33,7 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
     @Select("SELECT id FROM tbl_club WHERE name = #{name}")
     Long selectClubIdByName(@Param("name") String name);
 
-    TblClubDO selectById(Long id);
+    TblClubDO mySelectById(Long id);
 
     default TblClubDO selectByNameAndDepartmentId(String name, Long departmentId) {
         return this.selectOne(new LambdaQueryWrapper<TblClubDO>()
