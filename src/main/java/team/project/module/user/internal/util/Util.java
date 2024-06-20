@@ -4,8 +4,8 @@ import java.util.Random;
 
 public class Util {
 
-    /* 校验码的字符池，剔除部分易混淆的数字和字母 */
-    private static final String VERIFICATION_CODE_CHAR_POOL = "23456789ABCDEFGHJKLMNPQRSTWXY";
+    /* 校验码的字符池 */
+    private static final String VERIFICATION_CODE_CHAR_POOL = "0123456789";
 
     /**
      * 生成指定长度的校验码

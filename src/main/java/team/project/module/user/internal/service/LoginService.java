@@ -1,7 +1,6 @@
 package team.project.module.user.internal.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
@@ -75,7 +74,7 @@ public class LoginService {
             return; /* 将“查询不到用户”视为发送成功 */
         }
 
-        String code = Util.randomVerificationCode(8);
+        String code = Util.randomVerificationCode(6);
 
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);

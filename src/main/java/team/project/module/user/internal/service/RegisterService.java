@@ -1,8 +1,6 @@
 package team.project.module.user.internal.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.DuplicateKeyException;
@@ -48,7 +46,7 @@ public class RegisterService {
         if (registerCodes.getRemainingTime(email) > TimeUnit.MINUTES.toMillis(4))
             throw new ServiceException(ServiceStatus.TOO_MANY_REQUESTS, "发送验证码过于频繁");
 
-        String code = Util.randomVerificationCode(8);
+        String code = Util.randomVerificationCode(6);
 
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(email);
