@@ -98,7 +98,7 @@
         GROUP BY c.id
     </select>
 
-    <select id="selectById" resultMap="tbl_club_DO">
+    <select id="mySelectById" resultMap="tbl_club_DO">
         select * from tbl_club where id = #{id} and is_deleted = 0
     </select>
 </mapper>

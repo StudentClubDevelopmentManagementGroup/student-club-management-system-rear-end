@@ -37,7 +37,7 @@ mybatis-plus:
     # 关闭下划线命名和驼峰命名的自动转换，必须使用注解指定数据库字段名
     map-underscore-to-camel-case: false
     # 输出执行的 sql
-    log-impl: team.project.config.mybatisplus.SqlLogConfig
+#    log-impl: team.project.config.mybatisplus.SqlLogConfig
 
 
 
@@ -57,7 +57,7 @@ sa-token:
   # 输出操作日志
   is-log: true
   # 日志等级
-  log-level: debug
+  log-level: error
   # 关闭 sa-token 启动时输出的命令行字符画
   is-print: false
 

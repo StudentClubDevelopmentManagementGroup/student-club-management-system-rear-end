@@ -58,8 +58,8 @@ public class UserDAO {
             .eq(UserDO::getUserId, userId)
         );
 
-        if (userDO != null)
-            userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
+        //if (userDO != null)
+        //    userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
 
         return userDO;
     }
