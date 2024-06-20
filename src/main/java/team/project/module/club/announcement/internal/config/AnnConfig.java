@@ -1,4 +1,4 @@
-package team.project.module.club.announcement.config;
+package team.project.module.club.announcement.internal.config;
 
 import team.project.module.util.filestorage.export.model.enums.FileStorageType;
 

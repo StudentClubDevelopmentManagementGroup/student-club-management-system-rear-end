@@ -4,19 +4,21 @@ import java.util.Random;
 
 public class Util {
 
-    /* 校验码的字符池，剔除数字 0、1 和字母 O、L */
-    private static final String VERIFICATION_CODE_CHAR_POOL = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
+    /* 校验码的字符池 */
+    private static final String VERIFICATION_CODE_CHAR_POOL = "0123456789";
 
     /**
      * 生成指定长度的校验码
      * */
     public static String randomVerificationCode(int length) {
+        assert length > 0;
+
         Random random = new Random();
-        StringBuilder randomString = new StringBuilder(length);
+        char[] result = new char[length];
         for (int i = 0; i < length; i++) {
-            int idx = random.nextInt(VERIFICATION_CODE_CHAR_POOL.length());
-            randomString.append(VERIFICATION_CODE_CHAR_POOL.charAt(idx));
+            int chrIdx = random.nextInt(VERIFICATION_CODE_CHAR_POOL.length());
+            result[i] = VERIFICATION_CODE_CHAR_POOL.charAt(chrIdx);
         }
-        return randomString.toString();
+        return new String(result);
     }
 }

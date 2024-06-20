@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
-import team.project.module.club.announcement.config.AnnConfig;
+import team.project.module.club.announcement.internal.config.AnnConfig;
 import team.project.module.util.filestorage.export.exception.FileStorageException;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
