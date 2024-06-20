@@ -210,7 +210,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
             Page<TblDuty> page = tblDutyMapper.selectDutyByNumberAndName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getNumber()
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber()
             );
             selectUserName(dutyList, page);
         }
