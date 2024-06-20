@@ -49,7 +49,7 @@ public class UserDAO {
             .select(
                 UserDO::getUserId,
                 UserDO::getDepartmentId,
-             /* TblUserDO::getPassword, <- 不查询密码*/
+             /* TblUserDO::getPassword, <- 不查询密码 */
                 UserDO::getName,
                 UserDO::getTel,
                 UserDO::getEmail,
@@ -58,8 +58,8 @@ public class UserDAO {
             .eq(UserDO::getUserId, userId)
         );
 
-        //if (userDO != null)
-        //    userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
+        if (userDO != null)
+            userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
 
         return userDO;
     }
