@@ -38,12 +38,15 @@
 
     <select id="selectGroupByGroupName"
             resultMap="tbl_club_Group">
-        SELECT * FROM tbl_user_club_duty_group WHERE name = #{groupName} AND club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_group
+        WHERE name like concat('%',#{groupName},'%')
+        AND club_id = #{clubId}
     </select>
 
     <select id="selectGroupByNameAndGroupName"
             resultMap="tbl_club_Group">
-        SELECT * FROM tbl_user_club_duty_group WHERE member_id = #{memberId} AND name = #{groupName} AND club_id = #{clubId}
+        SELECT * FROM tbl_user_club_duty_group
+        WHERE member_id = #{memberId} AND name like concat('%',#{groupName},'%') AND club_id = #{clubId}
     </select>
 
 

@@ -21,4 +21,16 @@ public class DutyCirculationServiceImpl extends ServiceImpl<TblDutyCirculationMa
         }
         return tblDutyCirculation;
     }
+
+    @Override
+    public void setCirculationByClubId(Long clubId, int circulation) {
+        TblDutyCirculation tblDutyCirculation = tblDutyCirculationMapper.selectCirculationByClubId(clubId);
+        if(tblDutyCirculation == null){
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无数据");
+        }
+        int result = tblDutyCirculationMapper.setCirculationByClubId(clubId, circulation);
+        if(result == 0){
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "修改失败");
+        }
+    }
 }

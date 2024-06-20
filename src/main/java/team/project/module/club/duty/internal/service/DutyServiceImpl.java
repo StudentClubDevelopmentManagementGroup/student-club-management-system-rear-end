@@ -31,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
-import static team.project.module.util.filestorage.export.model.enums.FileStorageType.LOCAL;
 
 @Service
 @Slf4j
@@ -76,7 +75,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 throw new ServiceException(ServiceStatus.CONFLICT, "重复创建");
             }
             int result = tblDutyMapper.createDuty(number, area, dutyTime, arrangerId, tblDutyGroup.getMemberId(), clubId, isMixed);
-            tblDutyCirculationMapper.setCirculationByClubId(clubId, 0);
+            tblDutyCirculationMapper.setCirculationByClubId(clubId, 1);
             if (result == 0) {
                 throw new ServiceException(ServiceStatus.CONFLICT, "创建失败");
             }
@@ -211,7 +210,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
             Page<TblDuty> page = tblDutyMapper.selectDutyByNumberAndName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getNumber()
+                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber()
             );
             selectUserName(dutyList, page);
         }
@@ -257,9 +256,10 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 String[] fileIdArray = tblDuty.getImageFile().split(",");
                 List<String> fileUrlList = new ArrayList<>();
                 for (String fileId : fileIdArray) {
+                    if (StringUtils.isNotBlank(fileId)) {
                         String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
-                        // 使用获取到的fileUrl进行后续操作，比如打印、保存或进一步处理
                         fileUrlList.add(fileUrl);
+                    }
                 }
                 dutyInfoVO.setImageFile(fileUrlList);
             }

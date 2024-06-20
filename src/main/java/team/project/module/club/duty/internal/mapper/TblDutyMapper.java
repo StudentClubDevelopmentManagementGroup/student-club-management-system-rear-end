@@ -28,7 +28,7 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
 
     Page<TblDuty> selectDutyByName(Page<TblDuty> page, Long clubId, String cleanerId);
 
-    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String cleanerId, String name);
+    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String cleanerId, String name,String number);
 
     Page<TblDuty> selectDutyByUserId(Page<TblDuty> page, String userId);
 }

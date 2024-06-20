@@ -112,6 +112,7 @@ public class DutyController {
     }
 
     @Operation(summary = "上传多张值日照片")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/duty/report_results")
     Object uploadDutyPicture2(
             @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -183,4 +184,15 @@ public class DutyController {
         PageVO<DutyInfoVO> result = dutyService.selectDutyByUserId(new DutyInfoSelfQO(req.getClubId(), req.getPageNum(), req.getSize()), arrangerId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
+
+    @Operation(summary = "设置自动安排值日功能，0是开启，1是关闭")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/duty/auto_duty/set")
+    Object openAutoDuty(@Valid @RequestBody DutyCirculationReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能开启自动安排值日功能");
+
+        dutyCirculationService.setCirculationByClubId(req.getClubId(), req.getCirculation());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("设置成功");
+   }
 }
