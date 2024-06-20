@@ -107,7 +107,7 @@ public class TblUserClubController {
 
     @Operation(summary = "查询自己在所有社团的身份")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
-    @PostMapping("/club/member/select_member_all_club_info")
+    @PostMapping("/club/member/select_Myself_all_club_info")
     Object selectMyselfAllClubInfo() {
         String arrangerId = (String)( StpUtil.getLoginId() );
 
