@@ -2,7 +2,6 @@ package team.project.module.auth.internal.interceptor;
 
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.stp.StpInterface;
-import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -32,20 +31,17 @@ public class InterceptorConfig implements WebMvcConfigurer, StpInterface {
      * */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        return new ArrayList<>(); /* 目前系统设计只划分了角色，而没有划分权限，所以在这里返回空列表 */
+        return null; /* 目前系统设计只划分了角色，而没有划分权限，所以在这里返回空列表 */
     }
 
     @Autowired
     UserInfoServiceI userService;
 
-    private final List<String> allRoles = new ArrayList<>();
-
-    @PostConstruct
-    void initAllRoles() {
-        allRoles.add(AuthRole.CLUB_MEMBER);
-        allRoles.add(AuthRole.CLUB_MANAGER);
-        allRoles.add(AuthRole.SUPER_ADMIN);
-    }
+    private final List<String> allRoles = List.of(
+        AuthRole.CLUB_MEMBER,
+        AuthRole.CLUB_MANAGER,
+        AuthRole.SUPER_ADMIN
+    );
 
     /**
      * 返回指定账号 id 所拥有的角色码集合
