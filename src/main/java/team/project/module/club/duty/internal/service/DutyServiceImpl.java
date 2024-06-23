@@ -108,14 +108,14 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     public List<String> uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/duty/" + memberId + "/" + dutyTime.format(fmt);
-
+        int time=0;
         List<String> fileIds = new ArrayList<>();
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
                 String originalFilename = file.getOriginalFilename();
                 String fileType = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
-                String fileName = memberId + "_" + System.currentTimeMillis() + fileType; // 使用时间戳避免文件名重复
-
+                String fileName = memberId + "_" + time + fileType; // 使用时间戳避免文件名重复
+                time++;
                 UploadFileQO uploadFileQO = new UploadFileQO();
                 uploadFileQO.setOverwrite(true);
                 uploadFileQO.setTargetFilename(fileName);
