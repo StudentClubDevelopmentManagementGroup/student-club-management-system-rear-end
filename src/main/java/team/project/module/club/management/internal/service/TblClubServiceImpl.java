@@ -69,11 +69,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
             vo.setState(club.getState());
             list.add(vo);
         });
-        if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
-        } else {
-            return new PageVO<>(list, new Page<>(req.getPageNum(), req.getSize(), page.getTotal()));
-        }
+        return new PageVO<>(list, new Page<>(req.getPageNum(), req.getSize(), page.getTotal()));
     }
 
     public int deleteClub(Long departmentId, String name) {
