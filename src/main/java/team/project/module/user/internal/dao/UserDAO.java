@@ -25,7 +25,7 @@ public class UserDAO {
     private ModelConverter modelConverter;
 
     /**
-     * 缓存，只缓存用户的基本信息
+     * 缓存，只缓存用户的基本信息，主要是角色码
      * */
     private final LoadingCache<String, UserDO> userBasicInfoCache = Caffeine.newBuilder().build(
         userId -> modelConverter.toUserBasicInfoDO(
@@ -45,7 +45,7 @@ public class UserDAO {
      * 查询指定用户的账号信息
      * */
     public UserDO selectUserInfo(String userId) {
-        UserDO userDO = userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
+        return userMapper.selectOne(new LambdaQueryWrapper<UserDO>()
             .select(
                 UserDO::getUserId,
                 UserDO::getDepartmentId,
@@ -57,11 +57,6 @@ public class UserDAO {
             )
             .eq(UserDO::getUserId, userId)
         );
-
-        if (userDO != null)
-            userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
-
-        return userDO;
     }
 
     /**
@@ -79,11 +74,7 @@ public class UserDAO {
             .select(UserDO::getPassword)
             .eq(UserDO::getUserId, userId)
         );
-
-        if (userDO == null)
-            return null;
-
-        return userDO.getPassword();
+        return userDO == null ? null : userDO.getPassword();
     }
 
     /**
@@ -107,13 +98,7 @@ public class UserDAO {
             )
             .eq(UserDO::getUserId, userId)
         );
-
-        if (userDO == null)
-            return null;
-
-        userBasicInfoCache.put(userId, modelConverter.toUserBasicInfoDO(userDO));
-
-        return  userDO.getEmail();
+        return userDO == null ? null : userDO.getEmail();
     }
 
     /* -- 查多个 -- */
@@ -211,6 +196,7 @@ public class UserDAO {
            ---------
             使用缓存优化查询 sql
         */
+        userBasicInfoCache.invalidate(userId);
         return userMapper.update(new LambdaUpdateWrapper<UserDO>()
             .set(UserDO::getRole, newRole)
             .eq(UserDO::getUserId, userId)
@@ -226,7 +212,6 @@ public class UserDAO {
         if (role == null || UserRole.hasRole(role, roleToAdd))
             return 0;
 
-        userBasicInfoCache.invalidate(userId);
         return this.setRoleToUser(userId, UserRole.addRole(role, roleToAdd));
     }
 
@@ -239,7 +224,6 @@ public class UserDAO {
         if (role == null || ! UserRole.hasRole(role, roleToRemove))
             return 0;
 
-        userBasicInfoCache.invalidate(userId);
         return this.setRoleToUser(userId, UserRole.removeRole(role, roleToRemove));
     }
 
