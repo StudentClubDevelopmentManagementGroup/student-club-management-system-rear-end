@@ -82,6 +82,7 @@
         COUNT(uc.user_id) AS member_count,
         c.state AS state,
         c.is_deleted AS is_deleted,
+        c.introduction AS introduction,
         CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
         FROM tbl_club c
         LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
