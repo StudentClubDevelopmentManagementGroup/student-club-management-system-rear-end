@@ -23,4 +23,6 @@ public interface TblClubService extends IService<TblClubDO> {
     void recoverClub(Long departmentId, String name);
 
     PageVO<ClubMsgDTO> findAll(ClubInfoQO page);
+
+    void updateIntroduction(Long departmentId, String name, String introduction);
 }

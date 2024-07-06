@@ -28,6 +28,8 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     int recoverClub(Long departmentId, String name);
 
+    int updateIntroduction(Long departmentId, String name, String introduction);
+
     Page<ClubMsgDTO> findAll(Page<ClubMsgDTO> page, Long departmentId, String name);
 
     @Select("SELECT id FROM tbl_club WHERE name = #{name}")

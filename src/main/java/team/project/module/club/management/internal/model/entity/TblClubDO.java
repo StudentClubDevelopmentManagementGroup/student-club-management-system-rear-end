@@ -19,4 +19,5 @@ public class TblClubDO {
     @TableField(value="department_id") Long      departmentId;
     @TableField(value="name")          String    name;
     @TableField(value="state")         Integer   state;
+    @TableField(value="introduction")   String    introduction;
 }

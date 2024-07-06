@@ -21,4 +21,6 @@ public class selectClubVO {
     String    name;
     @JsonProperty("state")
     Integer   state;
+    @JsonProperty("introduction")
+    String    introduction;
 }

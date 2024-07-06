@@ -67,6 +67,7 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
             vo.setDepartmentId(club.getDepartmentId());
             vo.setDepartmentName(departmentExportService.getDepartmentName(club.getDepartmentId()));
             vo.setState(club.getState());
+            vo.setIntroduction(club.getIntroduction());
             list.add(vo);
         });
         return new PageVO<>(list, new Page<>(req.getPageNum(), req.getSize(), page.getTotal()));
@@ -119,6 +120,14 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
         Page<ClubMsgDTO> page1 = new Page<>(req.getPageNum(), req.getSize());
         page1 = cMapper.findAll(page1, req.getDepartmentId(), req.getName());
         return new PageVO<>(page1);
+    }
+
+    @Override
+    public void updateIntroduction(Long departmentId, String name, String introduction) {
+        int result =cMapper.updateIntroduction(departmentId, name,introduction);
+        if (result == 0) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
+        }
     }
 
 }
