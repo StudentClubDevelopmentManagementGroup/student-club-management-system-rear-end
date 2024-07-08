@@ -23,4 +23,5 @@ public class ClubMsgDTO {
     @JsonProperty("state")           Boolean  state;
     @JsonProperty("is_deleted")      Boolean  deleted;
     @JsonProperty("manager")         String   manager;
+    @JsonProperty("introduction")    String   introduction;
 }

@@ -31,4 +31,8 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
     Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String cleanerId, String name,String number);
 
     Page<TblDuty> selectDutyByUserId(Page<TblDuty> page, String userId);
+
+    List<TblDuty> selectDutyTomorrow();
+
+    List<TblDuty> selectDutyTodayNotFinished();
 }

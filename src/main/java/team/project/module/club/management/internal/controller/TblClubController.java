@@ -18,6 +18,7 @@ import team.project.module.club.management.internal.model.datatransfer.ClubMsgDT
 import team.project.module.club.management.internal.model.query.ClubInfoQO;
 import team.project.module.club.management.internal.model.request.ListClubInfoReq;
 import team.project.module.club.management.internal.model.request.OneClubInfoReq;
+import team.project.module.club.management.internal.model.request.TblClubIntroductionReq;
 import team.project.module.club.management.internal.model.view.selectClubVO;
 import team.project.module.club.management.internal.service.TblClubService;
 
@@ -95,7 +96,7 @@ public class TblClubController {
     }
 
     @Operation(summary = "基地总信息，包括人数、负责人以及是否开放招新", description = """
-            包括基地名称、院系名称、院系id、基地编号、基地人数、招新状态、负责人、是否删除
+            包括基地名称、院系名称、院系id、基地编号、基地人数、招新状态、负责人、是否删除、基地简介
             """)
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     @PostMapping("/club/select_all")
@@ -107,5 +108,16 @@ public class TblClubController {
         PageVO<ClubMsgDTO> result;
         result = service.findAll(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
+    }
+
+    @Operation(summary = "修改社团简介")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/update_introduction")
+    Object updateIntroduction(@Valid @RequestBody TblClubIntroductionReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireSuperAdmin(arrangerId, "只有社团负责人能修改社团简介");
+
+        service.updateIntroduction(req.getDepartmentId(), req.getName(), req.getIntroduction());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("修改成功");
     }
 }

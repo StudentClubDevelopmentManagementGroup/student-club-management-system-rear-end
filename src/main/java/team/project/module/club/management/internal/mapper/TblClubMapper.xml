@@ -11,6 +11,7 @@
         <result column="department_id"      property="departmentId" />
         <result column="name"               property="name" />
         <result column="state"              property="state" />
+        <result column="introduction"       property="introduction" />
     </resultMap>
 
     <resultMap id="clubmasVO" type="team.project.module.club.management.internal.model.datatransfer.ClubMsgDTO">
@@ -68,6 +69,9 @@
     <update id="recoverClub">
         update tbl_club set is_deleted = 0 where name = #{name} and department_id = #{departmentId} and is_deleted = 1
     </update>
+    <update id="updateIntroduction">
+        update tbl_club set introduction = #{introduction} where name = #{name} and department_id = #{departmentId} and is_deleted = 0
+    </update>
 
     <sql id="clubSummaryQuery">
         SELECT
@@ -78,6 +82,7 @@
         COUNT(uc.user_id) AS member_count,
         c.state AS state,
         c.is_deleted AS is_deleted,
+        c.introduction AS introduction,
         CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
         FROM tbl_club c
         LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
