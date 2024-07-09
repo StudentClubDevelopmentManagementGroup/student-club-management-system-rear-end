@@ -13,7 +13,7 @@ public class ReportReq {
     @JsonProperty("report_type")
     String reportType;
 
-
+    @NotNull
     @JsonProperty("club_id")
     Long clubId;
 

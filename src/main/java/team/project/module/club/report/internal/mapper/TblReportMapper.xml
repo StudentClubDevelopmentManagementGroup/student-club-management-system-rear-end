@@ -14,17 +14,13 @@
 
     <insert id="createReport">
         INSERT INTO tbl_club_report(
-                create_time,
-                update_time,
                 report_file_list,
                 report_type,
                 uploader,
                 club_id
             )
         VALUES(
-                #{createTime},
-                #{updateTime},
-                #{reportFileList},
+                #{reportFileListId},
                 #{reportType},
                 #{uploader},
                 #{clubId}
