@@ -53,7 +53,7 @@
         insert into tbl_club (name, state, department_id)
         values (#{name}, 1, #{departmentId})
     </update>
-
+    <!--TODO 改用id检索-->
     <update id="deleteClub">
         update tbl_club set is_deleted = 1 where name = #{name} and department_id = #{departmentId} and is_deleted = 0
     </update>

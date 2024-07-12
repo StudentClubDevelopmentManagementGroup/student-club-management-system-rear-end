@@ -30,7 +30,7 @@ public class TblClubController {
 
     @Autowired
     TblClubService service;
-
+    //TODO 简化service入参
     @Operation(summary = "创建基地")
     @SaCheckRole(AuthRole.SUPER_ADMIN)
     @PostMapping("/club/add")
