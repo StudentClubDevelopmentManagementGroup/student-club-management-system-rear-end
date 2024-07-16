@@ -1,6 +1,7 @@
 package team.project.module.user.internal.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -66,8 +67,9 @@ public class UserInfoService {
         Long   departmentId = searchReq.getDepartmentId();
 
         SearchUserInfoQO queryQO = new SearchUserInfoQO();
-        queryQO.setUserId(  userId   == null || userId.isBlank()   ? null : userId);
-        queryQO.setUserName(userName == null || userName.isBlank() ? null : userName );
+
+        queryQO.setUserId(  StringUtils.isBlank(userId)   ? null : userId);
+        queryQO.setUserName(StringUtils.isBlank(userName) ? null : userName );
         queryQO.setDepartmentId(departmentId == null || departmentId.equals(0L) ? null : departmentId);
 
         List<UserDO> userDOList = userDAO.searchUserInfo(page, queryQO);
