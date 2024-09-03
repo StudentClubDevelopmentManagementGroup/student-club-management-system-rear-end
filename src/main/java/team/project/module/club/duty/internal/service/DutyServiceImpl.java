@@ -162,7 +162,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.SUCCESS, "值日信息");
+            return null;
         } else {
             return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }
@@ -176,7 +176,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         List<DutyInfoVO> dutyList = new ArrayList<>();
         selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "值日信息为空");
+            return null;
         } else {
             return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
         }

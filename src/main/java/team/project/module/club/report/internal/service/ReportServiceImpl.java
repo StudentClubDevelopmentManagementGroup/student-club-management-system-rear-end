@@ -3,6 +3,7 @@ package team.project.module.club.report.internal.service;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
@@ -17,8 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
-
-public class RepoetServiceImpl extends ServiceImpl<TblReportMapper, TblReport> implements ReportService {
+@Service
+public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> implements ReportService {
     @Autowired
     TblReportMapper reportMapper;
 

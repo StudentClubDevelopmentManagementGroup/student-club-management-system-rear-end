@@ -43,8 +43,7 @@
     </select>
 
     <select id="selectDuty" resultMap ="tbl_club_Duty">
-        SELECT * FROM tbl_user_club_duty
-        WHERE club_id = #{clubId} AND is_deleted = 0
+        SELECT * FROM tbl_user_club_duty WHERE club_id = #{clubId} AND is_deleted = 0
     </select>
 
     <select id="selectDutyByNumber" resultMap ="tbl_club_Duty">
