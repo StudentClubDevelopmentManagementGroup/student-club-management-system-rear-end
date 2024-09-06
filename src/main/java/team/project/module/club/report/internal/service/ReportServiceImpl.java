@@ -1,6 +1,10 @@
 package team.project.module.club.report.internal.service;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import io.micrometer.common.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +32,9 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
     @Override
     public List<String> createReport(String uploader, Long clubId, MultipartFile[] reportFileList, String reportType) {
+
+        JsonObject jsonObjects = new JsonObject();
+
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/" ;
         int time = 0;
@@ -43,9 +50,16 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
                 uploadFileQO.setTargetFilename(fileName);
                 uploadFileQO.setTargetFolder(uploadFileBasePath);
 
+
                 try {
                     String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
                     fileIds.add(fileId);
+                    // 添加到 JSON 数组
+                    JsonObject jsonObject = new JsonObject();
+                    jsonObject.addProperty("file_name", fileName);
+                    jsonObject.addProperty("fileId", fileId);
+
+                    jsonObjects.add("file"+ time,jsonObject);
                 } catch (FileStorageException e) {
                     fileIds.forEach(fileStorageServiceI::deleteFile);
                     throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
@@ -57,7 +71,9 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
         // 将所有文件ID以逗号分隔后存储
         String allFileIds = String.join(",", fileIds);
-        if (1 != reportMapper.createReport(uploader, clubId, allFileIds, reportType)) {
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(jsonObjects);
+        if (1 != reportMapper.createReport(uploader, clubId, jsonString, reportType)) {
             fileIds.forEach(fileStorageServiceI::deleteFile);
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
         } else {
@@ -79,5 +95,17 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
     @Override
     public int deleteReport(Long id) {
         return baseMapper.deleteReport(id);
+    }
+
+
+
+    public boolean isValidJson(String json) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.readTree(json);
+            return true;
+        } catch (JsonProcessingException e) {
+            return false;
+        }
     }
 }

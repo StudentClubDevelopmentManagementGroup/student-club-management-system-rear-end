@@ -13,7 +13,7 @@
     </resultMap>
 
     <insert id="createReport">
-        INSERT INTO tbl_club_report(
+        INSERT INTO tbl_user_club_report (
                 report_file_list,
                 report_type,
                 uploader,
@@ -26,9 +26,11 @@
                 #{clubId}
             )
     </insert>
+
     <update id="deleteReport">
-        UPDATE tbl_club_report
+        UPDATE tbl_user_club_report
         SET is_deleted = 1
         WHERE id = #{id}
     </update>
+
 </mapper>
