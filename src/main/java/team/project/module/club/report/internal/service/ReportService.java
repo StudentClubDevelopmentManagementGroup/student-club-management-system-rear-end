@@ -10,5 +10,5 @@ import java.util.List;
 @Service
 public interface ReportService extends IService<TblReport> {
     List<String> createReport(String uploader, Long clubId, MultipartFile[] reportFileList, String reportType);
-    int deleteReport(Long id);
+    int deleteReport(Long uploaderId, Long clubId);
 }

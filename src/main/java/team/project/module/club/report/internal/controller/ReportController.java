@@ -44,4 +44,21 @@ public class ReportController {
         List<String> result = reportService.createReport(arrangerId, clubId, file, reportType);
         return new Response<>(ServiceStatus.SUCCESS).statusText("创建成功").data(result);
     }
+
+    @Operation(summary = "删除成果汇报")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/report/del")
+    Object delReport
+    (
+    @NotNull
+    @RequestParam("report_id")  Long reportId,
+    @NotNull
+    @RequestParam("club_id")    Long clubId
+    ){
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, clubId, "只有社团成员能删除自己的成果汇报");
+
+        int result = reportService.deleteReport(reportId, clubId);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功").data(result);
+    }
 }

@@ -30,7 +30,13 @@
     <update id="deleteReport">
         UPDATE tbl_user_club_report
         SET is_deleted = 1
-        WHERE id = #{id}
+        WHERE id = #{reportId}
     </update>
+
+    <select id="getReportUploader" resultType="java.lang.String">
+        SELECT uploader
+        FROM tbl_user_club_report
+        WHERE id = #{reportId}
+    </select>
 
 </mapper>

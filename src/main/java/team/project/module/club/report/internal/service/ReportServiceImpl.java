@@ -1,5 +1,6 @@
 package team.project.module.club.report.internal.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
+import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.report.internal.mapper.TblReportMapper;
 import team.project.module.club.report.internal.model.entity.TblReport;
 import team.project.module.util.filestorage.export.exception.FileStorageException;
@@ -29,6 +31,9 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
     @Autowired
     FileStorageServiceI fileStorageServiceI;
+
+    @Autowired
+    AuthServiceI authService;
 
     @Override
     public List<String> createReport(String uploader, Long clubId, MultipartFile[] reportFileList, String reportType) {
@@ -93,8 +98,12 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
 
     @Override
-    public int deleteReport(Long id) {
-        return baseMapper.deleteReport(id);
+    public int deleteReport(Long reportId, Long clubId) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        if(!reportMapper.getReportUploader(reportId).equals(arrangerId)){
+            authService.requireSuperAdmin(arrangerId, "除了超级管理员，只有社团成员能删除自己的成果汇报");
+        }
+        return baseMapper.deleteReport(reportId,clubId);
     }
 
 
