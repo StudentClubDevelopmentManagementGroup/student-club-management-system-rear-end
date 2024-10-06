@@ -8,5 +8,7 @@ import team.project.module.club.report.internal.model.entity.TblReport;
 public interface TblReportMapper extends BaseMapper<TblReport> {
     int createReport(String uploader, Long clubId, String reportFileListId, String reportType);
     int deleteReport(Long reportId, Long clubId);
+    int updateReport(Long reportId, Long clubId, String reportFileListId, String reportType);
+
     String getReportUploader(Long reportId);
 }

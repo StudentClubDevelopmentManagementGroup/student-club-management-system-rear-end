@@ -33,6 +33,14 @@
         WHERE id = #{reportId}
     </update>
 
+    <update id="updateReport">
+        UPDATE tbl_user_club_report
+        SET report_file_list = #{reportFileListId},
+            report_type = #{reportType},
+            club_id = #{clubId}
+        WHERE id = #{reportId}
+    </update>
+
     <select id="getReportUploader" resultType="java.lang.String">
         SELECT uploader
         FROM tbl_user_club_report

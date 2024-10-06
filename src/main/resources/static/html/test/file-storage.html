@@ -350,6 +350,28 @@
         <button type="submit">提交</button>
       </label>
     </form>
+
+    <form action="/club/report/update" method="post" enctype="multipart/form-data" target="output" class="green_form" style="--color-primary: #6969d7">
+      <h1>成果模块，修改上传文件集合</h1>
+      <label><span class="required">社团编号</span>
+        <input type="text" name="club_id" required>
+      </label>
+      <label><span class="required">成果编号</span>
+        <input type="text" name="report_id" required>
+      </label>
+      <!-- 修改input type="file"以支持多文件上传 -->
+      <label><span class="required">成果文件</span>
+        <input type="file" name="file" accept="report/*" multiple required>
+      </label>
+      <label><span class="required">成果类型</span>
+        <input type="text" name="report_type" required>
+      </label>
+      <p>支持的格式：jpg, png, gif (每个文件最大10MB)</p>
+      <label for="">
+        <button type="submit">提交</button>
+      </label>
+    </form>
+
   </div>
 
   <div id="output" >

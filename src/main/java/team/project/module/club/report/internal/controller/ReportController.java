@@ -27,18 +27,12 @@ public class ReportController {
 
     @Autowired
     AuthServiceI authService;
+
     @Operation(summary = "添加成果汇报")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/report/add")
-    Object addReport
-    (
-    @NotNull
-    @RequestParam("report_type")  String             reportType,
-    @NotNull
-    @RequestParam("club_id")      Long               clubId,
-    @NotNull
-    @RequestPart("file")          MultipartFile[]    file){
-        String arrangerId = (String)( StpUtil.getLoginId() );
+    Object addReport(@NotNull @RequestParam("report_type") String reportType, @NotNull @RequestParam("club_id") Long clubId, @NotNull @RequestPart("file") MultipartFile[] file) {
+        String arrangerId = (String) (StpUtil.getLoginId());
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能进行成果汇报");
 
         List<String> result = reportService.createReport(arrangerId, clubId, file, reportType);
@@ -48,17 +42,30 @@ public class ReportController {
     @Operation(summary = "删除成果汇报")
     @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/report/del")
-    Object delReport
-    (
-    @NotNull
-    @RequestParam("report_id")  Long reportId,
-    @NotNull
-    @RequestParam("club_id")    Long clubId
-    ){
-        String arrangerId = (String)( StpUtil.getLoginId() );
+    Object delReport(@NotNull @RequestParam("report_id") Long reportId, @NotNull @RequestParam("club_id") Long clubId) {
+        String arrangerId = (String) (StpUtil.getLoginId());
         authService.requireClubMember(arrangerId, clubId, "只有社团成员能删除自己的成果汇报");
 
         int result = reportService.deleteReport(reportId, clubId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("删除成功").data(result);
+    }
+
+    @Operation(summary = "修改成果汇报")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/report/update")
+    Object updateReport(
+            @NotNull @RequestParam("report_id")
+            Long reportId,
+            @NotNull
+            @RequestParam("report_type")
+            String reportType,
+            @NotNull @RequestParam("club_id")
+            Long clubId,
+            @NotNull @RequestPart("file") MultipartFile[] file) {
+        String arrangerId = (String) (StpUtil.getLoginId());
+        authService.requireClubMember(arrangerId, clubId, "只有社团成员能修改自己的成果汇报");
+
+        List<String> result = reportService.updateReport(arrangerId,reportId, clubId, file, reportType);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("修改成功").data(result);
     }
 }
