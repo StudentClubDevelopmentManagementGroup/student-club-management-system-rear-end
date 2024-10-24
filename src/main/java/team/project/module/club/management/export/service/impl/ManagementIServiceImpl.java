@@ -17,7 +17,7 @@ public class ManagementIServiceImpl implements ManagementIService {
 
     @Autowired
     DepartmentService departmentService;
-
+    //TODO 优化空返回异常
     @Override
     public ClubBasicMsgDTO selectClubBasicMsg(long clubId) {
         TblClubDO tblClubDO = tblClubMapper.mySelectById(clubId);
@@ -30,12 +30,4 @@ public class ManagementIServiceImpl implements ManagementIService {
         return clubBasicMsgDTO;
     }
 
-    @Override
-    public   Long selectClubIdByName(String clubName){
-        Long clubId = tblClubMapper.selectClubIdByName(clubName);
-        if (clubId == null) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "没有该社团");
-        }
-        return clubId;
-    }
 }

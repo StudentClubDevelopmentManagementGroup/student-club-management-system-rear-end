@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="team.project.module.club.report.internal.mapper.TblReportMapper">
+    <resultMap id="tbl_club_Report" type="team.project.module.club.report.internal.model.entity.TblReport">
+            <result column="id"                 property="id" />
+            <result column="is_deleted"         property="deleted" />
+            <result column="create_time"        property="createTime" />
+            <result column="update_time"        property="updateTime" />
+            <result column="report_file_list"   property="reportFileList" />
+            <result column="report_type"        property="reportType" />
+            <result column="uploader"           property="uploader" />
+            <result column="club_id"            property="clubId" />
+    </resultMap>
+
+    <insert id="createReport">
+        INSERT INTO tbl_user_club_report (
+                report_file_list,
+                report_type,
+                uploader,
+                club_id
+            )
+        VALUES(
+                #{reportFileListId},
+                #{reportType},
+                #{uploader},
+                #{clubId}
+            )
+    </insert>
+
+    <update id="deleteReport">
+        UPDATE tbl_user_club_report
+        SET is_deleted = 1
+        WHERE id = #{reportId}
+    </update>
+
+    <select id="getReportUploader" resultType="java.lang.String">
+        SELECT uploader
+        FROM tbl_user_club_report
+        WHERE id = #{reportId}
+    </select>
+
+</mapper>

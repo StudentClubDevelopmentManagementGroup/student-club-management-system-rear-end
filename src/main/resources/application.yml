@@ -1,7 +1,7 @@
 
 server:
   # 服务端口
-  port: 3333
+  port: 8888
 
 
 
