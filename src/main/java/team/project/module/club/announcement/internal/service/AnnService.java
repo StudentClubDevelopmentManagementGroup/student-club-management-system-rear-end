@@ -217,6 +217,20 @@ public class AnnService {
         return modelConverter.toAnnDetailVO(annDO, loadAnnContent(annDO.getTextFile()), null);
     }
 
+    public AnnDetailVO readAnnV2(Long announcementId) {
+
+        /* TODO ljh_TODO: 设置公告的可见性（同上一个函数 `readAnn()` 的 TODO）
+            查询数据库获取公告的基本信息，如何判断公告对该用户是否可见，之后从文件中读出公告内容一并返回 */
+
+        AnnDO annDO = announcementMapper.selectById(announcementId);
+        if (null == annDO)
+            return null;
+
+        AnnDetailVO annDetailVO = modelConverter.toAnnDetailVO(annDO, null, null);
+        annDetailVO.setContentFileId(annDO.getTextFile());
+        return annDetailVO;
+    }
+
     public AnnDetailVO getLatestAnn(Long clubId) {
         AnnDO annDO = announcementMapper.selectLatestOne(clubId);
         if (null == annDO)

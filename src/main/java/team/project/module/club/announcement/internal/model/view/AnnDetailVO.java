@@ -31,6 +31,9 @@ public class AnnDetailVO {
     @JsonProperty("content")
     private String content;
 
+    @JsonProperty("content_file_id")
+    private String contentFileId;
+
     @JsonProperty("summary")
     private String summary;
 }
