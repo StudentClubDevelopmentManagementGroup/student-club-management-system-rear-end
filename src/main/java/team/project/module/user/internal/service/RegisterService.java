@@ -87,7 +87,7 @@ public class RegisterService {
         UserDO user = new UserDO();
         user.setUserId(req.getUserId());
         user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- ljh_TODO: 待加密 */
+        user.setPassword(req.getPassword()); /* <- TODO ljh_TODO: 待加密 */
         user.setName(req.getName());
         user.setTel(req.getTel());
         user.setEmail(req.getEmail());

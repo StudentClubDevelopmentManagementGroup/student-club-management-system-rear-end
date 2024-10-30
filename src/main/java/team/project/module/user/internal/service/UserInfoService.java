@@ -89,7 +89,7 @@ public class UserInfoService {
      * */
     @Transactional
     public void setPassword(UserIdAndPasswordReq req) {
-        if (1 != userDAO.setPassword(req.getUserId(), req.getPassword())) { /* ljh_TODO 密码待加密 */
+        if (1 != userDAO.setPassword(req.getUserId(), req.getPassword())) { /* TODO ljh_TODO 密码待加密 */
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "修改失败");
         }
     }

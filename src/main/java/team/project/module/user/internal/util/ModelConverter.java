@@ -13,7 +13,7 @@ import team.project.module.user.tmp.service.TmpDepartmentService;
 public class ModelConverter {
 
     @Autowired
-    TmpDepartmentService departmentService; /* ljh_TODO：取消对 tmp 模块的依赖 */
+    TmpDepartmentService departmentService; /* TODO ljh_TODO：取消对 tmp 模块的依赖 */
 
     public UserInfoVO toUserInfoVO(UserDO userDO) {
         if (null == userDO)
