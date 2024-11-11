@@ -32,8 +32,19 @@ public class ModelConverter {
     public AnnDetailVO toAnnDetailVO(AnnDO announcementDO, String content, String summary) {
         assert announcementDO != null;
 
-        /* TODO ljh_TODO selectClubBasicMsg 会抛异常 */
-        ClubBasicMsgDTO clubInfo = clubInfoService.selectClubBasicMsg(announcementDO.getClubId());
+        /*  2024-10-3
+            如果依 club_id 找不到社团（已删社），`selectClubBasicMsg()` 会抛异常
+            那删社后公告还能不能看呢？如果希望公告能正常显示，则需要手动设置社团的基本信息
+        */
+        ClubBasicMsgDTO clubInfo;
+        try {
+            clubInfo = clubInfoService.selectClubBasicMsg(announcementDO.getClubId());
+        }
+        catch (Exception ignored) {
+            clubInfo = new ClubBasicMsgDTO();
+            clubInfo.setDepartmentName("");
+            clubInfo.setName("");
+        }
 
         AnnDetailVO result = new AnnDetailVO();
         result.setAnnouncementId(announcementDO.getAnnouncementId());
@@ -43,6 +54,7 @@ public class ModelConverter {
         result.setPublishTime(announcementDO.getPublishTime());
         result.setTitle(announcementDO.getTitle());
         result.setContent(content);
+        result.setContentFileId(null);
         result.setSummary(summary);
 
         return result;

@@ -19,6 +19,8 @@ import team.project.module.user.internal.service.LoginService;
 import java.util.HashMap;
 import java.util.Map;
 
+/* TODO ljh_TODO: 配置 sa-token 多段登录，以免登录小程序后将 PC 顶下线 */
+
 @Tag(name="登录")
 @RestController
 @RequestMapping("/user")

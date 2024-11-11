@@ -71,10 +71,17 @@ public class AnnController {
 
     /* --------- */
 
-    @Operation(summary="获取某篇公告的内容")
+    @Operation(summary="获取某篇公告的内容（返回完整的公告内容）")
     @GetMapping("/read")
     Object read(@NotNull(message="未指定公告id") Long announcementId) {
         AnnDetailVO result = announcementService.readAnn(announcementId);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
+
+    @Operation(summary="获取某篇公告的内容（返回公告的文件 id，你需要再通过文件 id 获取公告内容）")
+    @GetMapping("/read/v2")
+    Object readV2(@NotNull(message="未指定公告id") Long announcementId) {
+        AnnDetailVO result = announcementService.readAnnV2(announcementId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
