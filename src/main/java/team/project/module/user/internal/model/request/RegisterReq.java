@@ -31,7 +31,7 @@ public class RegisterReq {
     private String name;
 
     @NotBlank(message="电话号码不能为空")
-    @Size(min=1, max=16, message="电话号码的长度不合约束")
+    @Size(min=11, max=11, message="电话号码的长度不合约束")
     @JsonProperty("tel")
     private String tel;
 
