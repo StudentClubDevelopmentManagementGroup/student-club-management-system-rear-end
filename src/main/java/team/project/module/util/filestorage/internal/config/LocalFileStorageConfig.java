@@ -28,7 +28,7 @@ public class LocalFileStorageConfig implements WebMvcConfigurer {
 
     @PostConstruct
     private void postConstruct() throws UnknownHostException {
-        baseUrl = "http://" +  InetAddress.getLocalHost().getHostAddress() + ":" + port;
+        baseUrl = "http://" + InetAddress.getLocalHost().getHostAddress() + ":" + port;
     }
 
     @Override
