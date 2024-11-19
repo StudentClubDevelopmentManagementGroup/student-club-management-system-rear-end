@@ -49,6 +49,7 @@ public class ToolMethods {
         // 如果 t2 为 null，则使用当前时间作为 t2
         if (t2 == null) {
             t2 = LocalDateTime.now();
+            return 0L;
         }
 
         // 计算 t1 和 t2 之间的时长
