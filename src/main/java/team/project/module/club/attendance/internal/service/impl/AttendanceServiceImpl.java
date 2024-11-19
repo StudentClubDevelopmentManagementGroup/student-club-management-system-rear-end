@@ -56,7 +56,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 校验签到时间是否为今天的日期且大于等于当前时间
         LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
         if ( checkInTime.toLocalDate().isEqual(now.toLocalDate())
-                && checkInTime.isBefore(now)
+                && !checkInTime.isAfter(now)  // 检查 checkInTime 是否小于等于当前时间
                 && checkInTime.isAfter(oneMinuteAgo)) {
             Long clubId = userCheckinReq.getClubId();
             if(!pceIService.isClubMember(userCheckinReq.getUserId(),clubId)) {
@@ -84,7 +84,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
 
     }
 
-
+    //签退返回签退信息
     @Override
     public AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq) {
         //获取签退时间
@@ -94,7 +94,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         // 校验签到时间是否为今天的日期且大于等于当前时间
         LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
         if (checkoutTime.toLocalDate().isEqual(now.toLocalDate())
-                && checkoutTime.isBefore(now)
+                && !checkoutTime.isAfter(now)  // 检查 checkoutTime 是否小于等于当前时间
                 && checkoutTime.isAfter(oneMinuteAgo)) {
             Long clubId = userCheckoutReq.getClubId();
             if(!pceIService.isClubMember(userCheckoutReq.getUserId(),clubId)) {
@@ -125,6 +125,21 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         }else  {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "该学生今天未签到");
         }
+    }
+
+    //获取用户未签退记录
+    @Override
+    public List<AttendanceInfoVO> getUnCheckOutRecord(String userId, Long clubId) {
+        if(attendanceMapper.getUnCheckOutRecord(userId,clubId) != null) {
+            List<AttendanceInfoVO> result = new ArrayList<>();
+            for (AttendanceDO attendanceDO : attendanceMapper.getUnCheckOutRecord(userId,clubId)) {
+            result.add(toolMethods.convert(attendanceDO));
+        }
+            return result;
+        }else  {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "该学生无未签退记录");
+        }
+
     }
 
 

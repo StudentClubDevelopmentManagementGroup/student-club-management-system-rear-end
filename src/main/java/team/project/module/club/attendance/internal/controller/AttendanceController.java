@@ -49,6 +49,20 @@ public class AttendanceController {
                 .data(attendanceInfoVO);
     }
 
+    @Operation(summary="查询社团成员未签退记录")
+    @GetMapping("/getUnCheckOutRecord")
+    public Object getUnCheckOutRecord(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId) {
+        // 调用服务层方法执行查询社团成员未签退记录
+        List<AttendanceInfoVO> attendanceInfoVO = attendanceService.getUnCheckOutRecord(userId,clubId);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(attendanceInfoVO);
+    }
+
+
+
 
 
     @Operation(summary="签退",
