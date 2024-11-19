@@ -20,6 +20,9 @@ public interface AttendanceService {
     //查询社团成员当天最新的签到记录
     AttendanceInfoVO getLatestCheckInRecord(String userId, Long clubId);
 
+    //查询社团成员未签退记录
+    List<AttendanceInfoVO> getUnCheckOutRecord(String userId, Long clubId);
+
 
     //签退返回签到信息
     AttendanceInfoVO userCheckOut(UserCheckoutReq userCheckoutReq);

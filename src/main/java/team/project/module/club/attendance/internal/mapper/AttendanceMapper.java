@@ -89,6 +89,21 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     }
 
+    //查询未签退记录
+
+    default List<AttendanceDO>  getUnCheckOutRecord(String userId, Long clubId) {
+        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId)
+                .eq("club_id", clubId)
+                .eq("is_deleted", 1)
+                .orderByDesc("checkin_time");
+        // 使用 selectList 查询多个记录
+        List<AttendanceDO> attendanceDOList = this.selectList(queryWrapper);
+
+        return attendanceDOList;
+
+    }
+
 
 
 
