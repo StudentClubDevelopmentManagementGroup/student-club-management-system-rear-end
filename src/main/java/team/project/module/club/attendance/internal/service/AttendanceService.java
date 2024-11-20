@@ -1,5 +1,6 @@
 package team.project.module.club.attendance.internal.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import team.project.base.model.view.PageVO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.AttendanceInfoVO;
@@ -22,6 +23,10 @@ public interface AttendanceService {
 
     //查询社团成员未签退记录
     List<AttendanceInfoVO> getUnCheckOutRecord(String userId, Long clubId);
+
+
+        //查打卡记录
+    Page<AttendanceInfoVO> getUnCheckOutRecordTest(String userId, Long clubId, int currentPage, int pageSize);
 
 
     //签退返回签到信息

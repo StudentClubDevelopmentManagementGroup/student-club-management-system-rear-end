@@ -105,6 +105,24 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
+    default Page<AttendanceDO> getUnCheckOutRecordTest(String userId, Long clubId, int currentPage, int pageSize) {
+        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId)
+                .eq("club_id", clubId)
+                .eq("is_deleted", 1)
+                .orderByDesc("checkin_time");
+
+        // 创建分页对象
+        Page<AttendanceDO> page = new Page<>(currentPage, pageSize);
+
+        // 使用 selectPage 进行分页查询
+        Page<AttendanceDO> attendancePage = this.selectPage(page, queryWrapper);
+
+        return attendancePage; // 返回分页结果
+    }
+
+
+
 
 
 

@@ -1,5 +1,6 @@
 package team.project.module.club.attendance.internal.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -56,6 +57,20 @@ public class AttendanceController {
             @RequestParam("clubId") Long clubId) {
         // 调用服务层方法执行查询社团成员未签退记录
         List<AttendanceInfoVO> attendanceInfoVO = attendanceService.getUnCheckOutRecord(userId,clubId);
+        return new Response<>(ServiceStatus.SUCCESS)
+                .statusText("查询成功")
+                .data(attendanceInfoVO);
+    }
+
+    @Operation(summary = "分页查询社团成员未签退记录")
+    @GetMapping("/getUnCheckOutRecordT")
+    public Object getUnCheckOutRecordT(
+            @RequestParam("userId") String userId,
+            @RequestParam("clubId") Long clubId,
+            @RequestParam("currentPage") int currentPage,
+            @RequestParam("pageSize") int pageSize) {
+        // 调用服务层方法执行查询社团成员未签退记录
+        Page<AttendanceInfoVO> attendanceInfoVO = attendanceService.getUnCheckOutRecordTest(userId, clubId, currentPage, pageSize);
         return new Response<>(ServiceStatus.SUCCESS)
                 .statusText("查询成功")
                 .data(attendanceInfoVO);
