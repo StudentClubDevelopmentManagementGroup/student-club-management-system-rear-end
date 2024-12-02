@@ -20,6 +20,7 @@ import team.project.module.club.duty.internal.model.entity.TblDutyCirculation;
 import team.project.module.club.duty.internal.model.query.DutyGroupQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoWithTimeQO;
 import team.project.module.club.duty.internal.model.request.*;
 import team.project.module.club.duty.internal.model.view.DutyGroupSelectVO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
@@ -133,14 +134,18 @@ public class DutyController {
         String arrangerId = (String)( StpUtil.getLoginId() );
         authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日情况");
         DutyInfoQO newQO = new DutyInfoQO(req.getClubId(), req.getNumber(), req.getName(), req.getPageNum(), req.getSize());
-        PageVO<DutyInfoVO> result = req.getName().isEmpty() ?
-                (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
-                        dutyService.selectDuty(newQO) :
-                        dutyService.selectDutyByNumber(newQO)):
-                (req.getNumber().isBlank() || req.getNumber().isEmpty() ?
-                        dutyService.selectDutyByName(newQO):
-                        dutyService.selectDutyByNumberAndName(newQO));
-        //todo 合并
+        PageVO<DutyInfoVO> result = dutyService.selectDuty(newQO);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
+    }
+
+    @Operation(summary = "查询社团值日情况(带时间查询)")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @PostMapping("/club/duty/select_by_time")
+    Object selectDutyByTime(@Valid @RequestBody DutySelectByTimeReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查询社团值日情况");
+        DutyInfoWithTimeQO newQO = new DutyInfoWithTimeQO(req.getClubId(), req.getNumber(), req.getName(), req.getDutyTime(), req.getPageNum(), req.getSize());
+        PageVO<DutyInfoVO> result = dutyService.selectDutyByTime(newQO);
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(result);
     }
 

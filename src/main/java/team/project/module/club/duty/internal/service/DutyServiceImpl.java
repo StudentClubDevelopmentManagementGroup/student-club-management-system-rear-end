@@ -18,6 +18,7 @@ import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.entity.TblDutyGroup;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoWithTimeQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.service.UserInfoServiceI;
@@ -108,7 +109,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     public List<String> uploadDutyPictures(LocalDateTime dutyTime, String memberId, Long clubId, MultipartFile[] files) {
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/duty/" + memberId + "/" + dutyTime.format(fmt);
-        int time=0;
+        int time = 0;
         List<String> fileIds = new ArrayList<>();
         for (MultipartFile file : files) {
             if (!file.isEmpty()) {
@@ -138,8 +139,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
         if (1 != tblDutyMapper.setDutyPicture(dutyTime, memberId, clubId, allFileIds)) {
             fileIds.forEach(fileStorageServiceI::deleteFile);
             throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
-        }
-        else {
+        } else {
             List<String> fileUrlList = new ArrayList<>();
             for (String fileId : fileIds) {
                 // 确保fileId不为空或空白后调用服务方法
@@ -155,76 +155,69 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
 
     @Override
     public PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo) {
-
-        Page<TblDuty> page = tblDutyMapper.selectDuty(
-                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId()
-        );
         List<DutyInfoVO> dutyList = new ArrayList<>();
-        selectUserName(dutyList, page);
-        if (page.getTotal() == 0) {
-            return null;
+
+        // 如果名字不为空，按名字查询
+        if (qo.getName() != null && !qo.getName().isEmpty()) {
+            // 按名字查询
+            List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
+            if (nameList.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
+            }
+            for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
+                Page<TblDuty> page = tblDutyMapper.selectDutyWithConditions(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber());
+                selectUserName(dutyList, page);
+            }
+            if (dutyList.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
+            }
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
         } else {
-            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
+            // 按条件查询
+            Page<TblDuty> page = tblDutyMapper.selectDutyWithConditions(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), null, qo.getName(), qo.getNumber());
+            selectUserName(dutyList, page);
+            if (page.getTotal() == 0) {
+                return null;
+            } else {
+                return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
+            }
         }
     }
 
     @Override
-    public PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo) {
-        Page<TblDuty> page = tblDutyMapper.selectDutyByNumber(
-                new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), qo.getNumber()
-        );
+    public PageVO<DutyInfoVO> selectDutyByTime(DutyInfoWithTimeQO qo) {
         List<DutyInfoVO> dutyList = new ArrayList<>();
-        selectUserName(dutyList, page);
-        if (page.getTotal() == 0) {
-            return null;
+
+        // 如果名字不为空，按名字查询
+        if (qo.getName() != null && !qo.getName().isEmpty()) {
+            // 按名字查询
+            List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
+            if (nameList.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
+            }
+            for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
+                Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber(),qo.getDutyTime());
+                selectUserName(dutyList, page);
+            }
+            if (dutyList.isEmpty()) {
+                throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
+            }
+            return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
         } else {
-            return new PageVO<>(dutyList,new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
-        }
-    }
-
-    @Override
-    public PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo) {
-        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
-        if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
-        }
-        List<DutyInfoVO> dutyList = new ArrayList<>();
-        for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-            Page<TblDuty> page = tblDutyMapper.selectDutyByName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId()
-            );
+            // 按条件查询
+            Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), null, qo.getName(), qo.getNumber(),qo.getDutyTime());
             selectUserName(dutyList, page);
+            if (page.getTotal() == 0) {
+                return null;
+            } else {
+                return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), page.getTotal()));
+            }
         }
-        if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
-        }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
-    }
-
-    @Override
-    public PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo) {
-        List<UserBasicInfoDTO> nameList = userInfoServiceI.searchUser(qo.getName());
-        if (nameList.size() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
-        }
-        List<DutyInfoVO> dutyList = new ArrayList<>();
-        for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-            Page<TblDuty> page = tblDutyMapper.selectDutyByNumberAndName(
-                    new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber()
-            );
-            selectUserName(dutyList, page);
-        }
-        if (dutyList.size() == 0) {
-            throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
-        }
-        return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
     }
 
     @Override
     public PageVO<DutyInfoVO> selectDutyByUserId(DutyInfoSelfQO qo, String userId) {
-        Page<TblDuty> page = tblDutyMapper.selectDutyByUserId(
-                new Page<>(qo.getPageNum(), qo.getSize()), userId
-        );
+        Page<TblDuty> page = tblDutyMapper.selectDutyByUserId(new Page<>(qo.getPageNum(), qo.getSize()), userId);
         List<DutyInfoVO> dutyList = new ArrayList<>();
         selectUserName(dutyList, page);
         if (page.getTotal() == 0) {
@@ -235,7 +228,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
     }
 
     private void selectUserName(List<DutyInfoVO> dutyList, Page<TblDuty> page) {
-        for(TblDuty tblDuty : page.getRecords()){
+        for (TblDuty tblDuty : page.getRecords()) {
             DutyInfoVO dutyInfoVO = new DutyInfoVO();
             dutyInfoVO.setId(tblDuty.getId());
             dutyInfoVO.setClubId(tblDuty.getClubId());
@@ -248,11 +241,9 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             dutyInfoVO.setCleanerName(userInfoServiceI.getUserName(tblDuty.getCleanerId()));
             dutyInfoVO.setArrangerId(tblDuty.getArrangerId());
             dutyInfoVO.setArrangerName(userInfoServiceI.getUserName(tblDuty.getArrangerId()));
-            if(tblDuty.getImageFile() == null)
-            {
+            if (tblDuty.getImageFile() == null) {
                 dutyInfoVO.setImageFile(null);
-            }
-            else{
+            } else {
                 String[] fileIdArray = tblDuty.getImageFile().split(",");
                 List<String> fileUrlList = new ArrayList<>();
                 for (String fileId : fileIdArray) {

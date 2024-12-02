@@ -6,6 +6,7 @@ import team.project.base.model.view.PageVO;
 import team.project.module.club.duty.internal.model.entity.TblDuty;
 import team.project.module.club.duty.internal.model.query.DutyInfoQO;
 import team.project.module.club.duty.internal.model.query.DutyInfoSelfQO;
+import team.project.module.club.duty.internal.model.query.DutyInfoWithTimeQO;
 import team.project.module.club.duty.internal.model.view.DutyInfoVO;
 
 import java.time.LocalDateTime;
@@ -27,11 +28,8 @@ public interface DutyService extends IService<TblDuty> {
 
     PageVO<DutyInfoVO> selectDuty(DutyInfoQO qo);
 
-    PageVO<DutyInfoVO> selectDutyByNumber(DutyInfoQO qo);
-
-    PageVO<DutyInfoVO> selectDutyByName(DutyInfoQO qo);
-
-    PageVO<DutyInfoVO> selectDutyByNumberAndName(DutyInfoQO qo);
+    PageVO<DutyInfoVO> selectDutyByTime(DutyInfoWithTimeQO qo);
 
     PageVO<DutyInfoVO> selectDutyByUserId(DutyInfoSelfQO qo, String userId);
+
 }

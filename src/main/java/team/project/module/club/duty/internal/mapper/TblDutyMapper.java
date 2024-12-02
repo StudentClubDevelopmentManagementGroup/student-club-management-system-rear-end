@@ -22,17 +22,13 @@ public interface TblDutyMapper extends BaseMapper<TblDuty> {
 
     int setDutyPicture(LocalDateTime dateTime, String memberId, Long clubId, String fileId);
 
-    Page<TblDuty> selectDuty(Page<TblDuty> page, Long clubId);
-
-    Page<TblDuty> selectDutyByNumber(Page<TblDuty> page, Long clubId, String number);
-
-    Page<TblDuty> selectDutyByName(Page<TblDuty> page, Long clubId, String cleanerId);
-
-    Page<TblDuty> selectDutyByNumberAndName(Page<TblDuty> page, Long clubId, String cleanerId, String name,String number);
-
     Page<TblDuty> selectDutyByUserId(Page<TblDuty> page, String userId);
 
     List<TblDuty> selectDutyTomorrow();
 
     List<TblDuty> selectDutyTodayNotFinished();
+
+    Page<TblDuty> selectDutyWithConditions(Page<TblDuty> page, Long clubId, String cleanerId, String name,String number);
+
+    Page<TblDuty> selectDutyByTime(Page<TblDuty> page, Long clubId, String cleanerId, String name,String number, LocalDateTime dateTime);
 }
