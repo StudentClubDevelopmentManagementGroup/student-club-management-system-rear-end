@@ -45,7 +45,7 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
     @Autowired
     private PceIService pceIService;
 
-
+    // 本地成功版本
     @Override
     //签到返回签到信息
     public AttendanceInfoVO userCheckIn(UserCheckInReq userCheckinReq) {
