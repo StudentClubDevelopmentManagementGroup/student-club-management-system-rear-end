@@ -56,7 +56,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
         if (checkInTime.toLocalDate().isEqual(now.toLocalDate())
                 && !checkInTime.isAfter(now)  // 检查 checkInTime 是否小于等于当前时间
-                && checkInTime.isAfter(oneMinuteAgo)) {
+                && checkInTime.isAfter(oneMinuteAgo)
+        ) {
             Long clubId = userCheckinReq.getClubId();
             if (!pceIService.isClubMember(userCheckinReq.getUserId(), clubId)) {
                 throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
@@ -94,7 +95,8 @@ public class AttendanceServiceImpl extends ServiceImpl<AttendanceMapper, Attenda
         LocalDateTime oneMinuteAgo = now.minus(Duration.ofMinutes(1));
         if (checkoutTime.toLocalDate().isEqual(now.toLocalDate())
                 && !checkoutTime.isAfter(now)  // 检查 checkoutTime 是否小于等于当前时间
-                && checkoutTime.isAfter(oneMinuteAgo)) {
+                && checkoutTime.isAfter(oneMinuteAgo)
+        ) {
             Long clubId = userCheckoutReq.getClubId();
             if (!pceIService.isClubMember(userCheckoutReq.getUserId(), clubId)) {
                 throw new ServiceException(ServiceStatus.BAD_REQUEST, "该社团没有这个成员");
