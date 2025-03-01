@@ -22,6 +22,8 @@
         <result column="department_name"    property="departmentName" />
         <result column="name"               property="clubName" />
         <result column="state"              property="state" />
+        <result column="managers"           property="manager"/> <!-- 注意 SQL 别名与 Java 属性对应 -->
+        <result column="member_count"       property="number"/>
     </resultMap>
 
     <select id="findByNameAndDepartmentId"
@@ -73,22 +75,50 @@
         update tbl_club set introduction = #{introduction} where name = #{name} and department_id = #{departmentId} and is_deleted = 0
     </update>
 
+<!--    <sql id="clubSummaryQuery">-->
+<!--        SELECT-->
+<!--        c.name AS name,-->
+<!--        d.full_name AS department_name,-->
+<!--        c.department_id AS department_id,-->
+<!--        c.id AS club_id,-->
+<!--        COUNT(uc.user_id) AS member_count,-->
+<!--        c.state AS state,-->
+<!--        c.is_deleted AS is_deleted,-->
+<!--        c.introduction AS introduction,-->
+<!--        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager-->
+<!--        FROM tbl_club c-->
+<!--        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id-->
+<!--        LEFT JOIN tbl_user u ON uc.user_id = u.user_id-->
+<!--        LEFT JOIN tbl_department d ON c.department_id = d.id-->
+<!--    </sql>-->
+
     <sql id="clubSummaryQuery">
         SELECT
-        c.name AS name,
-        d.full_name AS department_name,
-        c.department_id AS department_id,
+        ANY_VALUE(c.name) AS name,
+        ANY_VALUE(d.full_name) AS department_name,
+        ANY_VALUE(c.department_id) AS department_id,
         c.id AS club_id,
-        COUNT(uc.user_id) AS member_count,
-        c.state AS state,
-        c.is_deleted AS is_deleted,
-        c.introduction AS introduction,
-        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager
+        COUNT(DISTINCT CASE WHEN uc.is_deleted = 0 THEN uc.user_id END) AS member_count,  -- 只统计未删除的成员
+        ANY_VALUE(c.state) AS state,
+        ANY_VALUE(c.is_deleted) AS is_deleted,
+        ANY_VALUE(c.introduction) AS introduction,
+        COALESCE(
+        GROUP_CONCAT(
+        DISTINCT
+        CASE
+        WHEN (uc.role &amp; 2) != 0 AND uc.is_deleted = 0 THEN u.name  -- 只保留未删除的管理员
+        END
+        SEPARATOR ','
+        ), ''
+        ) AS managers
         FROM tbl_club c
-        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id
+        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id AND uc.is_deleted = 0  -- 关键过滤条件
         LEFT JOIN tbl_user u ON uc.user_id = u.user_id
         LEFT JOIN tbl_department d ON c.department_id = d.id
     </sql>
+
+
+
 
     <select id="findAll" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
