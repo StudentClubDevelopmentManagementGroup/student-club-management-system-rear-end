@@ -26,6 +26,8 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
 
     int deactivateClub(Long departmentId, String name);
 
+    int changeClubStatus(Long departmentId, String name);
+
     int recoverClub(Long departmentId, String name);
 
     int updateIntroduction(Long departmentId, String name, String introduction);
@@ -43,4 +45,5 @@ public interface TblClubMapper extends BaseMapper<TblClubDO> {
                 .eq(TblClubDO::getDepartmentId, departmentId)
         );
     }
+
 }

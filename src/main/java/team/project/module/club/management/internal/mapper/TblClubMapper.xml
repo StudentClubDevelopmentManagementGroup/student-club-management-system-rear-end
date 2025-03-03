@@ -68,6 +68,10 @@
         update tbl_club set  state = 1 where name = #{name} and department_id = #{departmentId} and state = 0
     </update>
 
+    <update id="changeClubStatus">
+        update tbl_club set  state = 1-state where name = #{name} and department_id = #{departmentId}
+    </update>
+
     <update id="recoverClub">
         update tbl_club set is_deleted = 0 where name = #{name} and department_id = #{departmentId} and is_deleted = 1
     </update>

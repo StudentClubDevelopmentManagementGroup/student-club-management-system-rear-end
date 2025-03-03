@@ -109,6 +109,14 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     @Override
+    public void changeClubStatus(Long departmentId, String name) {
+        int result = cMapper.changeClubStatus(departmentId, name);
+        if (result == 0) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
+        }
+    }
+
+    @Override
     public void recoverClub(Long departmentId, String name) {
         int result = cMapper.recoverClub(departmentId, name);
         if (result == 0) {

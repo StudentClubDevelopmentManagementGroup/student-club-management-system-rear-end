@@ -20,6 +20,8 @@ public interface TblClubService extends IService<TblClubDO> {
 
     void deactivateClub(Long departmentId, String name);
 
+    void changeClubStatus(Long departmentId, String name);
+
     void recoverClub(Long departmentId, String name);
 
     PageVO<ClubMsgDTO> findAll(ClubInfoQO page);
