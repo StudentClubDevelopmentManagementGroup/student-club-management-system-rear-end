@@ -119,4 +119,14 @@ public class AnnController {
         AnnDetailVO result = announcementService.getLatestAnn(clubId);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
+
+    @Operation(summary="获取社团的招新公告，包含其内容")
+    @GetMapping("/recruitment")
+    Object recruitment(
+            @Valid @QueryParam AnnSearchReq searchReq,
+            @Valid @QueryParam PagingQueryReq pageReq
+    ) {
+        PageVO<AnnDetailVO> result = announcementService.searchRecruitment(pageReq, searchReq);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
 }
