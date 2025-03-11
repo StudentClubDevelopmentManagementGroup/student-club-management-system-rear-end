@@ -107,8 +107,48 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         );
     }
 
+    default List<AnnDO> searchActivity(Page<AnnDO> page, AnnSearchQO searchQO) {
+        LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(
+                AnnDO::getAnnouncementId,
+                AnnDO::getPublishTime,
+                AnnDO::getAuthorId,
+                AnnDO::getClubId,
+                AnnDO::getTitle,
+                AnnDO::getSummary
+        );
 
-    /**
-     * 搜索招新公告（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
-     * */
+        // 用户输入的关键词查询
+        if (null != searchQO.getTitleKeyword()) {
+            String sanitizedKeyword = searchQO.getTitleKeyword().replace("%", "");
+            wrapper.like(AnnDO::getTitle, sanitizedKeyword);
+        }
+
+        // 强制要求标题包含 "比赛" 或 "活动" 或 "大赛"
+        wrapper.and(wq -> wq
+                .like(AnnDO::getTitle, "比赛")
+                .or()
+                .like(AnnDO::getTitle, "活动")
+                .or()
+                .like(AnnDO::getTitle, "大赛")
+                .or()
+                .like(AnnDO::getTitle, "竞赛")
+        );
+
+        // 其他条件
+        if (null != searchQO.getFromDate())
+            wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
+        if (null != searchQO.getToDate())
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1));
+        if (!searchQO.getClubIdColl().isEmpty())
+            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
+        if (!searchQO.getAuthorIdColl().isEmpty())
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
+
+        wrapper.orderByDesc(AnnDO::getPublishTime);
+
+        return selectList(page, wrapper);
+    }
+
+
 }

@@ -129,4 +129,14 @@ public class AnnController {
         PageVO<AnnDetailVO> result = announcementService.searchRecruitment(pageReq, searchReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
+
+    @Operation(summary="获取社团的招新公告，包含其内容")
+    @GetMapping("/activity")
+    Object Activity(
+            @Valid @QueryParam AnnSearchReq searchReq,
+            @Valid @QueryParam PagingQueryReq pageReq
+    ) {
+        PageVO<AnnDetailVO> result = announcementService.searchActivity(pageReq, searchReq);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
 }
