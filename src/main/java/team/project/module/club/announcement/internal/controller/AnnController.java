@@ -130,7 +130,7 @@ public class AnnController {
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
-    @Operation(summary="获取社团的招新公告，包含其内容")
+    @Operation(summary="获取社团的活动公告，包含其内容")
     @GetMapping("/activity")
     Object Activity(
             @Valid @QueryParam AnnSearchReq searchReq,
