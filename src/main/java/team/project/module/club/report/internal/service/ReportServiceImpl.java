@@ -40,7 +40,6 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
         JsonObject jsonObjects = new JsonObject();
 
-//        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
         String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/" ;
         int time = 0;
         List<String> fileIds = new ArrayList<>();
@@ -92,14 +91,63 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
     }
 
 
+//    @Override
+//    public int deleteReport(Long reportId, Long clubId) {
+//        String arrangerId = (String)( StpUtil.getLoginId() );
+//        if(!reportMapper.getReportUploader(reportId).equals(arrangerId)){
+//            authService.requireSuperAdmin(arrangerId, "除了超级管理员，只有社团成员能删除自己的成果汇报");
+//        }
+//        return baseMapper.deleteReport(reportId,clubId);
+//    }
+
     @Override
     public int deleteReport(Long reportId, Long clubId) {
-        String arrangerId = (String)( StpUtil.getLoginId() );
-        if(!reportMapper.getReportUploader(reportId).equals(arrangerId)){
+        String arrangerId = (String) StpUtil.getLoginId();
+        String uploader = reportMapper.getReportUploader(reportId);
+        if (!uploader.equals(arrangerId)) {
             authService.requireSuperAdmin(arrangerId, "除了超级管理员，只有社团成员能删除自己的成果汇报");
         }
-        return baseMapper.deleteReport(reportId,clubId);
+
+        // 获取报告信息以提取文件ID
+        TblReport report = reportMapper.getReportById(reportId);
+        if (report == null) {
+            throw new ServiceException(ServiceStatus.NOT_FOUND, "报告不存在");
+        }
+
+        // 解析报告中的文件信息
+        String reportFileListJson = (String) report.getReportFileList();
+        if (StringUtils.isNotBlank(reportFileListJson)) {
+            Gson gson = new Gson();
+            JsonObject jsonObject = gson.fromJson(reportFileListJson, JsonObject.class);
+            List<String> fileIds = new ArrayList<>();
+
+            // 提取所有fileId
+            for (String key : jsonObject.keySet()) {
+                JsonObject fileInfo = jsonObject.getAsJsonObject(key);
+                if (fileInfo.has("fileId")) {
+                    String fileId = fileInfo.get("fileId").getAsString();
+                    fileIds.add(fileId);
+                }
+            }
+
+            // 删除所有关联的文件
+            fileIds.forEach(fileId -> {
+                try {
+                    boolean isDeleted = fileStorageServiceI.deleteFile(fileId);
+                    if (!isDeleted) {
+                        log.error("文件删除失败，fileId: {fileId}");
+                    }
+                } catch (Exception e) {
+                    log.error("删除文件时发生异常，fileId: {}");
+                    throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "文件删除失败");
+                }
+            });
+        }
+
+        // 删除数据库中的报告记录
+        return baseMapper.deleteReport(reportId, clubId);
     }
+
 
     @Override
     public List<String> updateReport(String uploader,Long reportId, Long clubId, MultipartFile[] reportFileList, String reportType) {

@@ -13,5 +13,7 @@ public interface TblReportMapper extends BaseMapper<TblReport> {
 
     String getReportUploader(Long reportId);
 
+    TblReport getReportById(Long reportId);
+
     Page<TblReport> getReportList(Page<Object> Page, Long clubId);
 }

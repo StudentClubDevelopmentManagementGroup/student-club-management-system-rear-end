@@ -46,10 +46,17 @@
         FROM tbl_user_club_report
         WHERE id = #{reportId}
     </select>
+
     <select id="getReportList" resultType="team.project.module.club.report.internal.model.entity.TblReport">
         SELECT *
         FROM tbl_user_club_report
         WHERE club_id = #{clubId} AND is_deleted = 0
+    </select>
+
+    <select id="getReportById" resultType="team.project.module.club.report.internal.model.entity.TblReport">
+        SELECT *
+        FROM tbl_user_club_report
+        WHERE id = #{reportId} AND is_deleted = 0
     </select>
 
 </mapper>
