@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -17,6 +18,6 @@ public class TblReport {
     private String uploader;
     private Long clubId;
     @TableField(value = "report_file_list", typeHandler = FastjsonTypeHandler.class)
-    private Object reportFileList;
+    private Map<String, Map<String, String>> reportFileList;
     private String reportType;
 }

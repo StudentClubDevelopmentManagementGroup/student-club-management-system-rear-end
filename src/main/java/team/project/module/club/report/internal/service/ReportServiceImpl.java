@@ -22,8 +22,11 @@ import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
+import static team.project.module.util.filestorage.export.model.enums.FileStorageType.LOCAL;
+
 @Service
 public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> implements ReportService {
     @Autowired
@@ -40,7 +43,7 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
         JsonObject jsonObjects = new JsonObject();
 
-        String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/" ;
+        String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/";
         int time = 0;
         List<String> fileIds = new ArrayList<>();
         for (MultipartFile file : reportFileList) {
@@ -54,14 +57,14 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
                 uploadFileQO.setTargetFilename(fileName);
                 uploadFileQO.setTargetFolder(uploadFileBasePath);
                 try {
-                    String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
+                    String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
                     fileIds.add(fileId);
                     // 添加到 JSON 数组
                     JsonObject jsonObject = new JsonObject();
                     jsonObject.addProperty("file_name", fileName);
                     jsonObject.addProperty("fileId", fileId);
 
-                    jsonObjects.add("file"+ time,jsonObject);
+                    jsonObjects.add("file" + time, jsonObject);
                 } catch (FileStorageException e) {
                     fileIds.forEach(fileStorageServiceI::deleteFile);
                     throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
@@ -115,7 +118,7 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
         }
 
         // 解析报告中的文件信息
-        String reportFileListJson = (String) report.getReportFileList();
+        String reportFileListJson = report.getReportFileList().toString();
         if (StringUtils.isNotBlank(reportFileListJson)) {
             Gson gson = new Gson();
             JsonObject jsonObject = gson.fromJson(reportFileListJson, JsonObject.class);
@@ -150,13 +153,13 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
 
     @Override
-    public List<String> updateReport(String uploader,Long reportId, Long clubId, MultipartFile[] reportFileList, String reportType) {
-        String arrangerId = (String)( StpUtil.getLoginId() );
-        if(!reportMapper.getReportUploader(reportId).equals(arrangerId)){
+    public List<String> updateReport(String uploader, Long reportId, Long clubId, MultipartFile[] reportFileList, String reportType) {
+        String arrangerId = (String) (StpUtil.getLoginId());
+        if (!reportMapper.getReportUploader(reportId).equals(arrangerId)) {
             authService.requireSuperAdmin(arrangerId, "除了超级管理员，只有社团成员能删除自己的成果汇报");
         }
         JsonObject jsonObjects = new JsonObject();
-        String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/" ;
+        String uploadFileBasePath = "/report/" + uploader + "/" + reportType + "/";
         int time = 0;
         List<String> fileIds = new ArrayList<>();
         for (MultipartFile file : reportFileList) {
@@ -177,7 +180,7 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
                     jsonObject.addProperty("file_name", fileName);
                     jsonObject.addProperty("fileId", fileId);
 
-                    jsonObjects.add("file"+ time,jsonObject);
+                    jsonObjects.add("file" + time, jsonObject);
                 } catch (FileStorageException e) {
                     fileIds.forEach(fileStorageServiceI::deleteFile);
                     throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
@@ -206,39 +209,76 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
         }
     }
 
+    //    @Override
+//    public PageVO<ReportInfoVO> getReportList(Page<Object> Page, Long clubId) {
+//        Page<TblReport> page = reportMapper.getReportList(Page, clubId);
+//        List<ReportInfoVO> reportInfoVOList = new ArrayList<>();
+//        for(TblReport tblReport : page.getRecords()){
+//            ReportInfoVO reportInfoVO = new ReportInfoVO();
+//            reportInfoVO.setId(tblReport.getId());
+//            reportInfoVO.setReportType(tblReport.getReportType());
+//            reportInfoVO.setUploader(tblReport.getUploader());
+//            reportInfoVO.setCreateTime(tblReport.getCreateTime());
+//            reportInfoVO.setUpdateTime(tblReport.getUpdateTime());
+//            reportInfoVO.setDeleted(tblReport.getDeleted());
+//            reportInfoVO.setClubId(tblReport.getClubId());
+//            if(tblReport.getReportFileList() == null)
+//            {
+//                reportInfoVO.setReportFile(null);
+//            }
+//            else{
+//                String[] fileIdArray = tblReport.getReportFileList().toString().split(",");
+//                List<String> fileUrlList = new ArrayList<>();
+//                for (String fileId : fileIdArray) {
+//                    if (StringUtils.isNotBlank(fileId)) {
+//                        String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+//                        fileUrlList.add(fileUrl);
+//                    }
+//                }
+//                reportInfoVO.setReportFile(fileUrlList);
+//            }
+//            reportInfoVOList.add(reportInfoVO);
+//        }
+//        if (page.getTotal() == 0) {
+//            return null;
+//        } else {
+//            return new PageVO<>(reportInfoVOList, new Page<>(Page.getPages(), Page.getSize(), page.getTotal()));
+//        }
+//    }
     @Override
-    public PageVO<ReportInfoVO> getReportList(Page<Object> Page, Long clubId) {
-        Page<TblReport> page = reportMapper.getReportList(Page, clubId);
+    public PageVO<ReportInfoVO> getReportList(Page<Object> page, Long clubId) {
+        Page<TblReport> reportPage = reportMapper.getReportList(page, clubId);
         List<ReportInfoVO> reportInfoVOList = new ArrayList<>();
-        for(TblReport tblReport : page.getRecords()){
+
+        for (TblReport tblReport : reportPage.getRecords()) {
             ReportInfoVO reportInfoVO = new ReportInfoVO();
+            // 设置基本字段...
             reportInfoVO.setId(tblReport.getId());
             reportInfoVO.setReportType(tblReport.getReportType());
             reportInfoVO.setUploader(tblReport.getUploader());
             reportInfoVO.setCreateTime(tblReport.getCreateTime());
             reportInfoVO.setUpdateTime(tblReport.getUpdateTime());
             reportInfoVO.setDeleted(tblReport.getDeleted());
-            if(tblReport.getReportFileList() == null)
-            {
-                reportInfoVO.setReportFile(null);
-            }
-            else{
-                String[] fileIdArray = tblReport.getReportFileList().toString().split(",");
-                List<String> fileUrlList = new ArrayList<>();
-                for (String fileId : fileIdArray) {
+            reportInfoVO.setClubId(tblReport.getClubId());
+            // 处理文件列表
+            List<String> fileUrlList = new ArrayList<>();
+            Map<String, Map<String, String>> fileMap = tblReport.getReportFileList();
+            if (fileMap != null) {
+                for (Map<String, String> fileInfo : fileMap.values()) {
+                    String fileId = fileInfo.get("fileId");
                     if (StringUtils.isNotBlank(fileId)) {
                         String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
                         fileUrlList.add(fileUrl);
                     }
                 }
-                reportInfoVO.setReportFile(fileUrlList);
             }
+            reportInfoVO.setReportFile(fileUrlList);
+
             reportInfoVOList.add(reportInfoVO);
         }
-        if (page.getTotal() == 0) {
-            return null;
-        } else {
-            return new PageVO<>(reportInfoVOList, new Page<>(Page.getPages(), Page.getSize(), page.getTotal()));
-        }
+
+        return reportPage.getTotal() == 0 ?
+                null :
+                new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
     }
 }

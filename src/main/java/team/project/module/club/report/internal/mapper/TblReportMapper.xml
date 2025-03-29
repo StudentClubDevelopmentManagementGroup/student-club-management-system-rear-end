@@ -6,7 +6,8 @@
             <result column="is_deleted"         property="deleted" />
             <result column="create_time"        property="createTime" />
             <result column="update_time"        property="updateTime" />
-            <result column="report_file_list"   property="reportFileList" />
+        <result column="report_file_list" property="reportFileList"
+                typeHandler="team.project.module.club.report.internal.handler.JsonTypeHandler"/>
             <result column="report_type"        property="reportType" />
             <result column="uploader"           property="uploader" />
             <result column="club_id"            property="clubId" />
@@ -47,13 +48,13 @@
         WHERE id = #{reportId}
     </select>
 
-    <select id="getReportList" resultType="team.project.module.club.report.internal.model.entity.TblReport">
+    <select id="getReportList" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
         WHERE club_id = #{clubId} AND is_deleted = 0
     </select>
 
-    <select id="getReportById" resultType="team.project.module.club.report.internal.model.entity.TblReport">
+    <select id="getReportById" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
         WHERE id = #{reportId} AND is_deleted = 0

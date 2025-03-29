@@ -61,4 +61,8 @@ sa-token:
   # 关闭 sa-token 启动时输出的命令行字符画
   is-print: false
 
+mybatis:
+  type-handlers-package: com.yourcompany.yourproject.handler # 指定处理器包
+  configuration:
+    map-underscore-to-camel-case: true
 
