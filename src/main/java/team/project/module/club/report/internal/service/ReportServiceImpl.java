@@ -254,6 +254,9 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
     @Override
     @Transactional
     public String getReportSummary(Long clubId, LocalDateTime startTime, LocalDateTime endTime) {
+        JsonObject jsonObjects = new JsonObject();
+
+        String fileId;
         try {
             // 1. 获取基础信息
             ClubBasicMsgDTO clubInfo = managementIService.selectClubBasicMsg(clubId);
@@ -311,9 +314,10 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
             doc.write(out);
             byte[] docBytes = out.toByteArray();
             out.close();
+            LocalDateTime date = LocalDateTime.now();
             String fileName = String.format("%s-成果统计-%s.docx",
                     clubName,
-                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+                    date.format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
             );
             MultipartFile multipartFile = new ByteArrayMultipartFile(
                     docBytes,
@@ -327,9 +331,30 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
             uploadQO.setTargetFilename(fileName);
             uploadQO.setTargetFolder("/report/summary/" + clubId + "/");
 
-            return fileStorageServiceI.uploadFile(multipartFile, LOCAL, uploadQO);
+            fileId =fileStorageServiceI.uploadFile(multipartFile, LOCAL, uploadQO);
+
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("file_name", fileName);
+            jsonObject.addProperty("fileId", fileId);
+            jsonObjects.add("file" + date, jsonObject);
         } catch (Exception e) {
             throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "生成报告失败: " + e.getMessage());
+        }
+
+        Gson gson = new Gson();
+        String jsonString = gson.toJson(jsonObjects);
+        String uploader = (String)( StpUtil.getLoginId() );
+        if (1 != reportMapper.createReport(uploader, clubId, jsonString, "总结")) {
+            fileStorageServiceI.deleteFile(fileId);
+            throw new ServiceException(ServiceStatus.CONFLICT, "上传失败");
+        } else {
+            List<String> fileUrlList = new ArrayList<>();
+                if (StringUtils.isNotBlank(fileId)) {
+                    String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                    // 使用获取到的fileUrl进行后续操作，比如打印、保存或进一步处理
+                    fileUrlList.add(fileUrl);
+            }
+            return fileStorageServiceI.getFileUrl(fileId);
         }
     }
     // 辅助方法：添加键值对段落

@@ -52,6 +52,7 @@
         SELECT *
         FROM tbl_user_club_report
         WHERE club_id = #{clubId} AND is_deleted = 0
+        ORDER BY create_time DESC  <!-- 新增排序条件 -->
     </select>
 
     <select id="getReportById" resultMap="tbl_club_Report">
@@ -59,6 +60,7 @@
         FROM tbl_user_club_report
         WHERE id = #{reportId} AND is_deleted = 0
     </select>
+
     <select id="getReportSummaryList" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
