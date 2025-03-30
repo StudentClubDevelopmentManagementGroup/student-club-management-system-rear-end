@@ -6,28 +6,37 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import io.micrometer.common.util.StringUtils;
+import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import team.project.base.model.view.PageVO;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.service.AuthServiceI;
+import team.project.module.club.management.export.model.datatransfer.ClubBasicMsgDTO;
+import team.project.module.club.management.export.service.ManagementIService;
+import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.report.internal.mapper.TblReportMapper;
 import team.project.module.club.report.internal.model.entity.TblReport;
 import team.project.module.club.report.internal.model.view.ReportInfoVO;
 import team.project.module.util.filestorage.export.exception.FileStorageException;
 import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
-import team.project.util.fileutils.FileUtils;
+import team.project.module.util.fileutils.ByteArrayMultipartFile;
+import team.project.module.util.fileutils.FileUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import static team.project.module.util.filestorage.export.model.enums.FileStorageType.CLOUD;
 import static team.project.module.util.filestorage.export.model.enums.FileStorageType.LOCAL;
 
 @Service
@@ -40,6 +49,13 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
 
     @Autowired
     AuthServiceI authService;
+
+    @Autowired
+    ManagementIService managementIService;
+
+    @Autowired
+    PceIService pceIService;
+
 
     @Override
     public List<String> createReport(String uploader, Long clubId, MultipartFile[] reportFileList, String reportType) {
@@ -162,7 +178,7 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
                 uploadFileQO.setTargetFilename(fileName);
                 uploadFileQO.setTargetFolder(uploadFileBasePath);
                 try {
-                    String fileId = fileStorageServiceI.uploadFile(file, CLOUD, uploadFileQO);
+                    String fileId = fileStorageServiceI.uploadFile(file, LOCAL, uploadFileQO);
                     fileIds.add(fileId);
                     // 添加到 JSON 数组
                     JsonObject jsonObject = new JsonObject();
@@ -233,5 +249,119 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
         return reportPage.getTotal() == 0 ?
                 null :
                 new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
+    }
+
+    @Override
+    @Transactional
+    public String getReportSummary(Long clubId, LocalDateTime startTime, LocalDateTime endTime) {
+        try {
+            // 1. 获取基础信息
+            ClubBasicMsgDTO clubInfo = managementIService.selectClubBasicMsg(clubId);
+            String clubName = clubInfo.getName();
+
+            // 获取负责人信息
+            String managerNames = pceIService.getAllClubManagers(clubId);
+            // 2. 获取成果数据
+            List<TblReport> reports = reportMapper.getReportSummaryList(clubId, startTime, endTime);
+            // 3. 分类统计（与之前相同）
+            Map<String, Long> stats = reports.stream()
+                    .collect(Collectors.groupingBy(
+                            TblReport::getReportType,
+                            Collectors.counting()
+                    ));
+            String[] categories = {"奖项", "论文", "学习情况", "参加的比赛", "采访", "软著", "其他"};
+            for (String category : categories) {
+                stats.putIfAbsent(category, 0L);
+            }
+            // 4. 生成Word文档
+            XWPFDocument doc = new XWPFDocument();
+
+            // 标题
+            XWPFParagraph titlePara = doc.createParagraph();
+            titlePara.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun titleRun = titlePara.createRun();
+            titleRun.setText("计算机与信息安全学院基地成果汇报");
+            titleRun.setBold(true);
+            titleRun.setFontSize(16);
+            // 基本信息
+            addKeyValue(doc, "基地名称：", clubName);
+            addKeyValue(doc, "基地负责人：", managerNames);
+
+            // 成果概述
+            XWPFParagraph overviewPara = doc.createParagraph();
+            XWPFRun overviewRun = overviewPara.createRun();
+            overviewRun.setText("成果汇报概述：");
+            overviewRun.setBold(true);
+            // 成果统计表格
+            XWPFTable table = doc.createTable(8, 2); // 7分类+标题
+            table.setWidth("100%");
+
+            // 表头
+            setTableHeader(table.getRow(0), "分类", "数量");
+
+            // 填充数据
+            int rowIndex = 1;
+            for (String category : categories) {
+                setTableCell(table.getRow(rowIndex), category, stats.get(category).toString());
+                rowIndex++;
+            }
+
+            // 原方法片段修改
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            doc.write(out);
+            byte[] docBytes = out.toByteArray();
+            out.close();
+            String fileName = String.format("%s-成果统计-%s.docx",
+                    clubName,
+                    LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"))
+            );
+            MultipartFile multipartFile = new ByteArrayMultipartFile(
+                    docBytes,
+                    "file",
+                    fileName,
+                    "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            );
+            // 6. 上传文件
+            UploadFileQO uploadQO = new UploadFileQO();
+            uploadQO.setOverwrite(true);
+            uploadQO.setTargetFilename(fileName);
+            uploadQO.setTargetFolder("/report/summary/" + clubId + "/");
+
+            return fileStorageServiceI.uploadFile(multipartFile, LOCAL, uploadQO);
+        } catch (Exception e) {
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "生成报告失败: " + e.getMessage());
+        }
+    }
+    // 辅助方法：添加键值对段落
+    private void addKeyValue(XWPFDocument doc, String key, String value) {
+        XWPFParagraph para = doc.createParagraph();
+        XWPFRun run = para.createRun();
+        run.setText(key);
+        run.setBold(true);
+        run = para.createRun();
+        run.setText(value);
+    }
+    // 辅助方法：设置表格表头
+    private void setTableHeader(XWPFTableRow row, String... headers) {
+        for (int i = 0; i < headers.length; i++) {
+            XWPFTableCell cell = row.getCell(i);
+            cell.removeParagraph(0);
+            XWPFParagraph para = cell.addParagraph();
+            para.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun run = para.createRun();
+            run.setText(headers[i]);
+            run.setBold(true);
+        }
+    }
+    // 辅助方法：填充表格单元格
+    private void setTableCell(XWPFTableRow row, String... values) {
+        for (int i = 0; i < values.length; i++) {
+            XWPFTableCell cell = row.getCell(i);
+            cell.removeParagraph(0);
+            XWPFParagraph para = cell.addParagraph();
+            para.setAlignment(ParagraphAlignment.CENTER);
+            XWPFRun run = para.createRun();
+            run.setText(values[i]);
+        }
     }
 }

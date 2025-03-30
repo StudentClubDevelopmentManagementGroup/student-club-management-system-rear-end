@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import team.project.module.club.report.internal.model.entity.TblReport;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Mapper
 public interface TblReportMapper extends BaseMapper<TblReport> {
     int createReport(String uploader, Long clubId, String reportFileListId, String reportType);
@@ -16,4 +19,6 @@ public interface TblReportMapper extends BaseMapper<TblReport> {
     TblReport getReportById(Long reportId);
 
     Page<TblReport> getReportList(Page<Object> Page, Long clubId);
+
+    List<TblReport> getReportSummaryList(Long clubId, LocalDateTime startTime, LocalDateTime endTime);
 }

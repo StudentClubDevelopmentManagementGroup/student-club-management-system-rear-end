@@ -8,6 +8,7 @@ import team.project.base.model.view.PageVO;
 import team.project.module.club.report.internal.model.entity.TblReport;
 import team.project.module.club.report.internal.model.view.ReportInfoVO;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -16,4 +17,6 @@ public interface ReportService extends IService<TblReport> {
     int deleteReport(Long uploaderId, Long clubId);
     List<String> updateReport(String uploader,Long uploaderId, Long clubId, MultipartFile[] reportFileList, String reportType);
     PageVO<ReportInfoVO> getReportList(Page<Object> page, Long clubId);
+
+    String getReportSummary(Long clubId , LocalDateTime startTime, LocalDateTime endTime);
 }

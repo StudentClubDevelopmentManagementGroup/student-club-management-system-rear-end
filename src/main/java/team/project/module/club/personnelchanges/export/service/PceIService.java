@@ -7,4 +7,6 @@ public interface PceIService {
     boolean isClubMember(String userId, Long clubId);
 
     int deleteClubAllMember(Long clubId);
+
+    String getAllClubManagers(Long clubId);
 }

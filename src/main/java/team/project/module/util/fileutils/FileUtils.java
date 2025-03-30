@@ -1,4 +1,4 @@
-package team.project.util.fileutils;
+package team.project.module.util.fileutils;
 
 import org.springframework.web.multipart.MultipartFile;
 

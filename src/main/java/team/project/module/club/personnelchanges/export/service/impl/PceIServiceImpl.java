@@ -5,6 +5,8 @@ import org.springframework.stereotype.Service;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.club.personnelchanges.internal.mapper.TblUserClubMapper;
 
+import java.util.List;
+
 @Service
 public class PceIServiceImpl implements PceIService {
 
@@ -21,5 +23,11 @@ public class PceIServiceImpl implements PceIService {
 
     public int deleteClubAllMember(Long clubId){
         return tblUserClubMapper.quashAllMember(clubId);
+    }
+
+    @Override
+    public String getAllClubManagers(Long clubId) {
+        List<String> managers = tblUserClubMapper.getAllClubManagers(clubId);
+        return managers.toString();
     }
 }

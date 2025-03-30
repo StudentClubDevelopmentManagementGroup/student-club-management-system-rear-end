@@ -63,4 +63,6 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
     int quashAllMember(Long clubId);
 
     List<TblUserClubDO> selectOneAllClubInfo(String userId) ;
+
+    List<String> getAllClubManagers(Long clubId);
 }

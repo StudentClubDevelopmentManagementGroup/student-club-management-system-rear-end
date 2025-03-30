@@ -18,9 +18,6 @@ spring:
       max-file-size: 10MB
       # 限制整个请求的大小
       max-request-size: 20MB
-
-
-
 logging:
   # 引入日志配置文件
   config: classpath:config/logback.xml
