@@ -83,6 +83,17 @@ public class ReportController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
     }
 
+    @Operation(summary = "获取成果汇报列表")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @PostMapping("/club/report/member/list")
+    Object getMemberReportList(@Valid @RequestBody ReportListReq req) {
+        String arrangerId = (String) (StpUtil.getLoginId());
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能查看自己的成果汇报");
+        Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
+        PageVO<ReportInfoVO> result = reportService.getMemberReportList(page,req.getClubId(),arrangerId);
+        return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
+    }
+
     @Operation(summary = "生成总结")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/report/summary")

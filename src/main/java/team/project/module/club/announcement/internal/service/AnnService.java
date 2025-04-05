@@ -24,6 +24,7 @@ import team.project.module.club.announcement.internal.model.request.AnnSearchReq
 import team.project.module.club.announcement.internal.model.view.AnnDetailVO;
 import team.project.module.club.announcement.internal.util.ModelConverter;
 import team.project.module.club.announcement.tmp.ClubIdMapper;
+import team.project.module.club.management.export.service.ManagementIService;
 import team.project.module.club.personnelchanges.export.service.PceIService;
 import team.project.module.user.export.model.datatransfer.UserBasicInfoDTO;
 import team.project.module.user.export.model.enums.UserRole;
@@ -32,10 +33,7 @@ import team.project.module.util.filestorage.export.model.query.UploadFileQO;
 import team.project.module.util.filestorage.export.service.FileStorageServiceI;
 import team.project.module.util.filestorage.export.util.FileStorageUtil;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -50,7 +48,7 @@ public class AnnService {
     @Autowired private AnnMapper           announcementMapper;
     @Autowired private ModelConverter      modelConverter;
     @Autowired private ClubIdMapper        clubIdMapper; /* <- tmp */
-
+    @Autowired private ManagementIService managementIService;
     private String loadAnnContent(String fileId) {
         assert fileId != null;
 
@@ -288,53 +286,62 @@ public class AnnService {
         return new PageVO<>(result, page);
     }
 
-    //社团招新测试
     public PageVO<AnnDetailVO> searchRecruitment(PagingQueryReq pageReq, AnnSearchReq searchReq) {
         Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
-
-        HashSet<Long> clubIdColl = new HashSet<>(); /* <- 将社团相关的参数统一转换成 club_id 的集合 */
-        if (null != searchReq.getClubId()) {        /* <- 一旦指定 club_id，则忽略 club_name 和 department_id */
+        HashSet<Long> clubIdColl = new HashSet<>();
+        if (null != searchReq.getClubId()) {
             clubIdColl.add(searchReq.getClubId());
-        }
-        else {
-            boolean selectByClub = false; /* <- 标记是否查询指定社团所发的公告 */
-            if ( ! StringUtils.isBlank(searchReq.getClubName())) {
+        } else {
+            boolean selectByClub = false;
+            if (!StringUtils.isBlank(searchReq.getClubName())) {
                 selectByClub = true;
                 List<Long> clubIds = clubIdMapper.searchClubByName(searchReq.getClubName());
-                clubIdColl.addAll(clubIds); /* <- 将 club_name 转化成 club_id 的集合 */
+                clubIdColl.addAll(clubIds);
             }
             if (null != searchReq.getDepartmentId()) {
                 selectByClub = true;
                 List<Long> clubIds = clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId());
-                clubIdColl.addAll(clubIds); /* <- 将 department_id 转化成 club_id 的集合 */
+                clubIdColl.addAll(clubIds);
             }
-            if (selectByClub && clubIdColl.isEmpty())
-                return new PageVO<>(List.of(), page); /* <- 要查询指定社团所发的公告，但社团集合为空，则不需要再查询公告 */
+            if (selectByClub && clubIdColl.isEmpty()) {
+                return new PageVO<>(List.of(), page);
+            }
         }
-
-        HashSet<String> authorIdColl = new HashSet<>(); /* <- 将作者相关的查询参数统一转化成 author_id 的集合 */
-        if (null != searchReq.getAuthorId()) {          /* <- 一旦指定 author_id，则忽略 author_name */
+        // 新增：获取开放招新的社团ID并过滤
+        List<Long> recruitmentClubs = managementIService.selectRecruitmentClub();
+        if (recruitmentClubs.isEmpty()) {
+            return new PageVO<>(List.of(), page); // 无开放招新社团，直接返回空
+        }
+        Set<Long> recruitmentClubSet = new HashSet<>(recruitmentClubs);
+        if (clubIdColl.isEmpty()) {
+            clubIdColl.addAll(recruitmentClubSet);
+        } else {
+            clubIdColl.retainAll(recruitmentClubSet); // 取交集
+            if (clubIdColl.isEmpty()) {
+                return new PageVO<>(List.of(), page); // 无匹配的开放社团，返回空
+            }
+        }
+        HashSet<String> authorIdColl = new HashSet<>();
+        if (null != searchReq.getAuthorId()) {
             authorIdColl.add(searchReq.getAuthorId());
+        } else if (!StringUtils.isBlank(searchReq.getAuthorName())) {
+            for (UserBasicInfoDTO author : userInfoService.searchUser(searchReq.getAuthorName())) {
+                authorIdColl.add(author.getUserId());
+            }
+            if (authorIdColl.isEmpty()) {
+                return new PageVO<>(List.of(), page);
+            }
         }
-        else if ( ! StringUtils.isBlank(searchReq.getAuthorName())) {
-            for (UserBasicInfoDTO author : userInfoService.searchUser( searchReq.getAuthorName() ))
-                authorIdColl.add(author.getUserId()); /* <- 将 author_name 统一转化成 author_id 的集合 */
-            if (authorIdColl.isEmpty())
-                return new PageVO<>(List.of(), page);  /* <- 要查询指定作者所发的公告，但作者集合为空，则不需要再查询公告 */
-        }
-
         AnnSearchQO searchQO = new AnnSearchQO();
         searchQO.setClubIdColl(clubIdColl);
         searchQO.setAuthorIdColl(authorIdColl);
         searchQO.setTitleKeyword(StringUtils.trimToNull(searchReq.getTitleKeyword()));
         searchQO.setFromDate(searchReq.getFromDate());
         searchQO.setToDate(searchReq.getToDate());
-
         List<AnnDetailVO> result = new ArrayList<>();
         for (AnnDO annDO : announcementMapper.searchRecruitment(page, searchQO)) {
-            result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
+            result.add(modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()));
         }
-
         return new PageVO<>(result, page);
     }
 

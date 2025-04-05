@@ -79,23 +79,6 @@
         update tbl_club set introduction = #{introduction} where name = #{name} and department_id = #{departmentId} and is_deleted = 0
     </update>
 
-<!--    <sql id="clubSummaryQuery">-->
-<!--        SELECT-->
-<!--        c.name AS name,-->
-<!--        d.full_name AS department_name,-->
-<!--        c.department_id AS department_id,-->
-<!--        c.id AS club_id,-->
-<!--        COUNT(uc.user_id) AS member_count,-->
-<!--        c.state AS state,-->
-<!--        c.is_deleted AS is_deleted,-->
-<!--        c.introduction AS introduction,-->
-<!--        CASE WHEN uc.role &amp; 2 THEN u.name ELSE NULL END AS manager-->
-<!--        FROM tbl_club c-->
-<!--        LEFT JOIN tbl_user_club uc ON c.id = uc.club_id-->
-<!--        LEFT JOIN tbl_user u ON uc.user_id = u.user_id-->
-<!--        LEFT JOIN tbl_department d ON c.department_id = d.id-->
-<!--    </sql>-->
-
     <sql id="clubSummaryQuery">
         SELECT
         ANY_VALUE(c.name) AS name,
@@ -121,9 +104,6 @@
         LEFT JOIN tbl_department d ON c.department_id = d.id
     </sql>
 
-
-
-
     <select id="findAll" resultMap="clubmasVO">
         <include refid="clubSummaryQuery"/>
         <where>
@@ -139,5 +119,9 @@
 
     <select id="mySelectById" resultMap="tbl_club_DO">
         select * from tbl_club where id = #{id} and is_deleted = 0
+    </select>
+
+    <select id="selectRecruitmentClub" resultType="java.lang.Long">
+        select id from tbl_club where state = 0 and is_deleted = 0
     </select>
 </mapper>

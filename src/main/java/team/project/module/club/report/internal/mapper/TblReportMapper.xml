@@ -66,5 +66,12 @@
         FROM tbl_user_club_report
         WHERE club_id = #{clubId} AND is_deleted = 0 AND create_time BETWEEN #{startTime} AND #{endTime} and report_type != '总结'
     </select>
+    <select id="getMemberReportList" resultMap="tbl_club_Report">
+        SELECT *
+        FROM tbl_user_club_report
+        WHERE club_id = #{clubId} AND is_deleted = 0 AND uploader = #{arrangerId}
+        ORDER BY create_time DESC  <!-- 新增排序条件 -->
+
+    </select>
 
 </mapper>

@@ -18,5 +18,7 @@ public interface ReportService extends IService<TblReport> {
     List<String> updateReport(String uploader,Long uploaderId, Long clubId, MultipartFile[] reportFileList, String reportType);
     PageVO<ReportInfoVO> getReportList(Page<Object> page, Long clubId);
 
+    PageVO<ReportInfoVO> getMemberReportList(Page<Object> page, Long clubId, String arrangerId);
+
     String getReportSummary(Long clubId , LocalDateTime startTime, LocalDateTime endTime);
 }

@@ -252,6 +252,43 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
     }
 
     @Override
+    public PageVO<ReportInfoVO> getMemberReportList(Page<Object> page, Long clubId, String arrangerId) {
+        Page<TblReport> reportPage = reportMapper.getMemberReportList(page, clubId, arrangerId);
+        List<ReportInfoVO> reportInfoVOList = new ArrayList<>();
+
+        for (TblReport tblReport : reportPage.getRecords()) {
+            ReportInfoVO reportInfoVO = new ReportInfoVO();
+            // 设置基本字段...
+            reportInfoVO.setId(tblReport.getId());
+            reportInfoVO.setReportType(tblReport.getReportType());
+            reportInfoVO.setUploader(tblReport.getUploader());
+            reportInfoVO.setCreateTime(tblReport.getCreateTime());
+            reportInfoVO.setUpdateTime(tblReport.getUpdateTime());
+            reportInfoVO.setDeleted(tblReport.getDeleted());
+            reportInfoVO.setClubId(tblReport.getClubId());
+            // 处理文件列表
+            List<String> fileUrlList = new ArrayList<>();
+            Map<String, Map<String, String>> fileMap = tblReport.getReportFileList();
+            if (fileMap != null) {
+                for (Map<String, String> fileInfo : fileMap.values()) {
+                    String fileId = fileInfo.get("fileId");
+                    if (StringUtils.isNotBlank(fileId)) {
+                        String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                        fileUrlList.add(fileUrl);
+                    }
+                }
+            }
+            reportInfoVO.setReportFile(fileUrlList);
+
+            reportInfoVOList.add(reportInfoVO);
+        }
+
+        return reportPage.getTotal() == 0 ?
+                null :
+                new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
+    }
+
+    @Override
     @Transactional
     public String getReportSummary(Long clubId, LocalDateTime startTime, LocalDateTime endTime) {
         JsonObject jsonObjects = new JsonObject();

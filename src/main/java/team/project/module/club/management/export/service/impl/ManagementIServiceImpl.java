@@ -10,6 +10,8 @@ import team.project.module.club.management.export.model.datatransfer.ClubBasicMs
 import team.project.module.club.management.internal.model.entity.TblClubDO;
 import team.project.module.department.internal.service.DepartmentService;
 
+import java.util.List;
+
 @Service
 public class ManagementIServiceImpl implements ManagementIService {
     @Autowired
@@ -28,6 +30,11 @@ public class ManagementIServiceImpl implements ManagementIService {
         clubBasicMsgDTO.setName(tblClubDO.getName());
         clubBasicMsgDTO.setDepartmentName(departmentService.getDepartmentName(tblClubDO.getDepartmentId()));
         return clubBasicMsgDTO;
+    }
+
+    @Override
+    public List<Long> selectRecruitmentClub() {
+        return tblClubMapper.selectRecruitmentClub();
     }
 
 }
