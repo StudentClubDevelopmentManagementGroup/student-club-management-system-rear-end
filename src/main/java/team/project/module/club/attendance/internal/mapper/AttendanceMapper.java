@@ -4,21 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
-
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
 import team.project.module.club.attendance.internal.model.request.*;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
-
-
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,48 +24,27 @@ import java.util.List;
 public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
 
-    //签到返回签到信息
-    default AttendanceDO userCheckIn(UserCheckInReq userCheckinReq,Long clubId) {
-
-        // 插入签到信息到数据库中
+    default AttendanceDO userCheckIn(String userId, Long clubId, LocalDateTime checkInTime) {
         AttendanceDO attendanceDO = new AttendanceDO();
-        attendanceDO.setUserId(userCheckinReq.getUserId());
+        attendanceDO.setUserId(userId);
         attendanceDO.setClubId(clubId);
-        attendanceDO.setCheckInTime(userCheckinReq.getCheckInTime());
+        attendanceDO.setCheckInTime(checkInTime);
 
-        int insertSuccess = this.insert(attendanceDO); // 使用 MyBatis-Plus 提供的 save 方法插入数据
-        if(insertSuccess>0){
-            // 获取刚刚插入的记录的主键值
-            Long attendanceId = attendanceDO.getId(); // 假设 id 是自增主键
-            System.out.println("刚刚插入的记录的主键值"+attendanceId);
-            // 根据主键查询刚刚插入的记录
-            AttendanceDO attendanceDO1 = this.selectById(attendanceId); // 使用 MyBatis-Plus 提供的 getById 方法查询数据
-            return attendanceDO1;
-        }else return null;
-        // 返回签到信息
-
-    }
-
-
-
-
-    //签退,返回完整信息
-    default AttendanceDO userCheckOut(UserCheckoutReq userCheckoutReq,Long clubId){
-        //先查询今天最新的签到记录
-        AttendanceDO latestCheckInRecord =
-                getLatestCheckInRecord(userCheckoutReq.getUserId(), clubId);
-        if(latestCheckInRecord !=null && latestCheckInRecord.getCheckoutTime() == null){
-            // 补全签退字段
-            latestCheckInRecord.setCheckoutTime(userCheckoutReq.getCheckoutTime());
-            // 更新数据库中的签到记录的签退时间字段
-            updateById(latestCheckInRecord); // 更新数据库中的记录
-            // 返回签到信息
-            return latestCheckInRecord;
-        }else {
-            return null;
+        int insertSuccess = this.insert(attendanceDO);
+        if(insertSuccess > 0){
+            return this.selectById(attendanceDO.getId());
         }
+        return null;
     }
-
+    default AttendanceDO userCheckOut(String userId, Long clubId, LocalDateTime checkoutTime) {
+        AttendanceDO latestCheckInRecord = getLatestCheckInRecord(userId, clubId);
+        if(latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null){
+            latestCheckInRecord.setCheckoutTime(checkoutTime);
+            updateById(latestCheckInRecord);
+            return latestCheckInRecord;
+        }
+        return null;
+    }
 
 
     //查询社团成员当天最新的签到记录

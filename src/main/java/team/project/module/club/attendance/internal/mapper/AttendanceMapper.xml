@@ -12,6 +12,38 @@
     </resultMap>
 
 
+    <resultMap id="AttendanceResultMap" type="team.project.module.club.attendance.internal.model.entity.AttendanceDO">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="clubId" column="club_id"/>
+        <result property="checkInTime" column="checkin_time"/>
+        <result property="checkoutTime" column="checkout_time"/>
+        <result property="deleted" column="is_deleted"/>
+    </resultMap>
+    <!-- 添加签到插入SQL -->
+    <insert id="userCheckIn" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tbl_user_club_attendance
+            (user_id, club_id, checkin_time)
+        VALUES (#{userId}, #{clubId}, #{checkInTime})
+    </insert>
+    <!-- 添加签退更新SQL -->
+    <update id="userCheckOut">
+        UPDATE tbl_user_club_attendance
+        SET checkout_time = #{checkoutTime}
+        WHERE id = (
+            SELECT id FROM (
+                               SELECT id
+                               FROM tbl_user_club_attendance
+                               WHERE user_id = #{userId}
+                                 AND club_id = #{clubId}
+                                 AND checkout_time IS NULL
+                                 AND is_deleted = 0
+                               ORDER BY checkin_time DESC
+                                   LIMIT 1
+                           ) AS temp
+        )
+    </update>
+
 
     <select id="getEachAttendanceDurationTime"
             parameterType="map"
