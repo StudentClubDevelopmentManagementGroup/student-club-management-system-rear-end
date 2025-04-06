@@ -26,10 +26,14 @@
         <result column="member_count"       property="number"/>
     </resultMap>
 
-    <select id="findByNameAndDepartmentId"
-            resultMap="tbl_club_DO">
+    <select id="findByNameAndDepartmentId" resultMap="tbl_club_DO">
         select * from tbl_club
         where name LIKE CONCAT('%', #{name}, '%') and department_id = #{departmentId}
+    </select>
+
+    <select id="getByNameAndDepartmentId" resultMap="tbl_club_DO">
+        select * from tbl_club
+        where name = #{name} and department_id = #{departmentId}
     </select>
 
     <select id="selectByNameAndDepartmentId"
@@ -117,6 +121,12 @@
         GROUP BY c.id
     </select>
 
+    <select id="findOwn" resultMap="clubmasVO">
+        <include refid="clubSummaryQuery"/>
+        WHERE c.id = #{clubId}
+        GROUP BY c.id
+    </select>
+
     <select id="mySelectById" resultMap="tbl_club_DO">
         select * from tbl_club where id = #{id} and is_deleted = 0
     </select>
@@ -124,4 +134,6 @@
     <select id="selectRecruitmentClub" resultType="java.lang.Long">
         select id from tbl_club where state = 0 and is_deleted = 0
     </select>
+
+
 </mapper>

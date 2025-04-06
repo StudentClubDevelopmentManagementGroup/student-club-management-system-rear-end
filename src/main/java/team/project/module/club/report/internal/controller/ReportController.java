@@ -16,6 +16,7 @@ import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.auth.export.service.AuthServiceI;
 import team.project.module.club.report.internal.model.request.ReportListReq;
+import team.project.module.club.report.internal.model.request.ReportSearchReq;
 import team.project.module.club.report.internal.model.request.summaryReq;
 import team.project.module.club.report.internal.model.view.ReportInfoVO;
 import team.project.module.club.report.internal.service.ReportService;
@@ -92,6 +93,17 @@ public class ReportController {
         Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
         PageVO<ReportInfoVO> result = reportService.getMemberReportList(page,req.getClubId(),arrangerId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
+    }
+
+    @Operation(summary = "搜索成果汇报")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @PostMapping("/club/report/search")
+    Object searchReport(@Valid @RequestBody ReportSearchReq req) {
+        String arrangerId = (String) (StpUtil.getLoginId());
+        authService.requireClubMember(arrangerId, req.getClubId(), "只有社团成员能搜索自己的成果汇报");
+        Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
+        PageVO<ReportInfoVO> result = reportService.searchReport(page,req.getClubId(),req.getKeyword());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("搜索成功").data(result);
     }
 
     @Operation(summary = "生成总结")

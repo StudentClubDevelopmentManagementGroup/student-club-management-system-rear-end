@@ -131,11 +131,25 @@ public class TblClubServiceImpl extends ServiceImpl<TblClubMapper, TblClubDO> im
     }
 
     @Override
+    public PageVO<ClubMsgDTO> findOwn(Long clubId, Integer pageNum, Integer size) {
+        Page<ClubMsgDTO> page1 = new Page<>(pageNum, size);
+        page1 = cMapper.findOwn(page1, clubId);
+        return new PageVO<>(page1);
+    }
+
+    @Override
+    public TblClubDO getClubIdByNameAndDepartmentId(String name, Long departmentId) {
+        return cMapper.getByNameAndDepartmentId(name,departmentId);
+    }
+
+    @Override
     public void updateIntroduction(Long departmentId, String name, String introduction) {
         int result =cMapper.updateIntroduction(departmentId, name,introduction);
         if (result == 0) {
             throw new ServiceException(ServiceStatus.NOT_FOUND, "未找到该社团");
         }
     }
+
+
 
 }
