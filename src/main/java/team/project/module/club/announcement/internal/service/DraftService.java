@@ -169,6 +169,20 @@ public class DraftService {
         return new PageVO<>(result, page);
     }
 
+    public PageVO<DraftVO> listMyIntroduce(PagingQueryReq req, String authorId, Long clubId) {
+        authService.requireClubManager(authorId, clubId, "不是社团负责人");
+
+        Page<DraftDO> page = new Page<>(req.getPageNum(), req.getPageSize(), true);
+        List<DraftDO> draftList = draftMapper.selectListMyIntroduce(page, authorId, clubId);
+
+        List<DraftVO> result = new ArrayList<>();
+        for (DraftDO draftDO : draftList) {
+            result.add( modelConverter.toDraftVO(draftDO, null, draftDO.getSummary()) );
+        }
+
+        return new PageVO<>(result, page);
+    }
+
     /**
      * 删除某篇草稿
      * */

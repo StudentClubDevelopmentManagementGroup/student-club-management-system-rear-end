@@ -151,4 +151,32 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
     }
 
 
+    default List<AnnDO> searchIntroduce(Page<AnnDO> page, AnnSearchQO searchQO){
+        LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(
+                AnnDO::getAnnouncementId,
+                AnnDO::getPublishTime,
+                AnnDO::getAuthorId,
+                AnnDO::getClubId,
+                AnnDO::getTitle,
+                AnnDO::getSummary
+        );
+
+        // 2. 强制要求标题必须包含“招新”（新增逻辑）
+        wrapper.eq(AnnDO::getTitle, "简介"); // 自动添加通配符：title LIKE '%简介%'
+
+        // 其他原有条件保持不变
+        if (null != searchQO.getFromDate())
+            wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
+        if (null != searchQO.getToDate())
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1));
+        if (!searchQO.getClubIdColl().isEmpty())
+            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
+        if (!searchQO.getAuthorIdColl().isEmpty())
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
+
+        wrapper.orderByDesc(AnnDO::getPublishTime);
+
+        return selectList(page, wrapper);
+    }
 }

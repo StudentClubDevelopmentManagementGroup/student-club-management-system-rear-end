@@ -393,4 +393,53 @@ public class AnnService {
 
         return new PageVO<>(result, page);
     }
+
+    public PageVO<AnnDetailVO> searchIntroduce(PagingQueryReq pageReq, AnnSearchReq searchReq) {
+        Page<AnnDO> page = new Page<>(pageReq.getPageNum(), pageReq.getPageSize(), true);
+
+        HashSet<Long> clubIdColl = new HashSet<>(); /* <- 将社团相关的参数统一转换成 club_id 的集合 */
+        if (null != searchReq.getClubId()) {        /* <- 一旦指定 club_id，则忽略 club_name 和 department_id */
+            clubIdColl.add(searchReq.getClubId());
+        }
+        else {
+            boolean selectByClub = false; /* <- 标记是否查询指定社团所发的公告 */
+            if ( ! StringUtils.isBlank(searchReq.getClubName())) {
+                selectByClub = true;
+                List<Long> clubIds = clubIdMapper.searchClubByName(searchReq.getClubName());
+                clubIdColl.addAll(clubIds); /* <- 将 club_name 转化成 club_id 的集合 */
+            }
+            if (null != searchReq.getDepartmentId()) {
+                selectByClub = true;
+                List<Long> clubIds = clubIdMapper.searchClubByDepartmentId(searchReq.getDepartmentId());
+                clubIdColl.addAll(clubIds); /* <- 将 department_id 转化成 club_id 的集合 */
+            }
+            if (selectByClub && clubIdColl.isEmpty())
+                return new PageVO<>(List.of(), page); /* <- 要查询指定社团所发的公告，但社团集合为空，则不需要再查询公告 */
+        }
+
+        HashSet<String> authorIdColl = new HashSet<>(); /* <- 将作者相关的查询参数统一转化成 author_id 的集合 */
+        if (null != searchReq.getAuthorId()) {          /* <- 一旦指定 author_id，则忽略 author_name */
+            authorIdColl.add(searchReq.getAuthorId());
+        }
+        else if ( ! StringUtils.isBlank(searchReq.getAuthorName())) {
+            for (UserBasicInfoDTO author : userInfoService.searchUser( searchReq.getAuthorName() ))
+                authorIdColl.add(author.getUserId()); /* <- 将 author_name 统一转化成 author_id 的集合 */
+            if (authorIdColl.isEmpty())
+                return new PageVO<>(List.of(), page);  /* <- 要查询指定作者所发的公告，但作者集合为空，则不需要再查询公告 */
+        }
+
+        AnnSearchQO searchQO = new AnnSearchQO();
+        searchQO.setClubIdColl(clubIdColl);
+        searchQO.setAuthorIdColl(authorIdColl);
+        searchQO.setTitleKeyword(StringUtils.trimToNull(searchReq.getTitleKeyword()));
+        searchQO.setFromDate(searchReq.getFromDate());
+        searchQO.setToDate(searchReq.getToDate());
+
+        List<AnnDetailVO> result = new ArrayList<>();
+        for (AnnDO annDO : announcementMapper.searchIntroduce(page, searchQO)) {
+            result.add( modelConverter.toAnnDetailVO(annDO, null, annDO.getSummary()) );
+        }
+
+        return new PageVO<>(result, page);
+    }
 }

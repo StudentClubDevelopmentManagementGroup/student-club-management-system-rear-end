@@ -102,4 +102,21 @@ public class DraftController {
         draftService.delAllMyDraft(userId, clubId);
         return new Response<>(ServiceStatus.SUCCESS);
     }
+
+    @Operation(summary="查看简介草稿箱（分页查询）", description="""
+        数据量不大，暂不提供模糊查询
+    """)
+    @GetMapping("/introduce")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    Object IntroduceList(
+            @NotNull(message="未指定社团id") @ClubIdConstraint
+            @RequestParam("club_id") Long clubId,
+
+            @Valid @QueryParam PagingQueryReq pageReq
+    ) {
+        String authorId = (String)( StpUtil.getLoginId() );
+
+        PageVO<DraftVO> result = draftService.listMyIntroduce(pageReq, authorId, clubId);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
 }
