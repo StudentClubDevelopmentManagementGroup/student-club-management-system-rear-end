@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
+import team.project.module.club.announcement.export.model.datatransfer.AnnDTO;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
 import team.project.module.club.announcement.internal.model.query.AnnSearchQO;
 
@@ -14,29 +16,29 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
 
     /**
      * 查询单篇公告的基本信息，即只查询公告作者、所属社团
-     * */
+     */
     default AnnDO selectAnnBasicInfo(Long announcementId) {
         return selectOne(new LambdaQueryWrapper<AnnDO>()
-            .select(
-                AnnDO::getAuthorId,
-                AnnDO::getClubId
-            )
-            .eq(AnnDO::getAnnouncementId, announcementId)
+                .select(
+                        AnnDO::getAuthorId,
+                        AnnDO::getClubId
+                )
+                .eq(AnnDO::getAnnouncementId, announcementId)
         );
     }
 
     /**
      * 搜索公告（分页查询、模糊查询，QO 中不为 null 的字段添入查询条件）
-     * */
+     */
     default List<AnnDO> searchAnn(Page<AnnDO> page, AnnSearchQO searchQO) {
         LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(
-            AnnDO::getAnnouncementId,
-            AnnDO::getPublishTime,
-            AnnDO::getAuthorId,
-            AnnDO::getClubId,
-            AnnDO::getTitle,
-            AnnDO::getSummary
+                AnnDO::getAnnouncementId,
+                AnnDO::getPublishTime,
+                AnnDO::getAuthorId,
+                AnnDO::getClubId,
+                AnnDO::getTitle,
+                AnnDO::getSummary
         );
 
         if (null != searchQO.getFromDate())
@@ -45,9 +47,9 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
             wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1)); /* <- 多增一天，以包含 to_date 当天 */
         if (null != searchQO.getTitleKeyword())
             wrapper.like(AnnDO::getTitle, searchQO.getTitleKeyword().replace("%", ""));
-        if ( ! searchQO.getClubIdColl().isEmpty())
+        if (!searchQO.getClubIdColl().isEmpty())
             wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
-        if ( ! searchQO.getAuthorIdColl().isEmpty())
+        if (!searchQO.getAuthorIdColl().isEmpty())
             wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
 
         wrapper.orderByDesc(AnnDO::getPublishTime); /* 按发布时间排序，新发布的在前面 */
@@ -94,16 +96,16 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
 
     default AnnDO selectLatestOne(Long clubId) {
         return selectOne(new LambdaQueryWrapper<AnnDO>().select(
-                AnnDO::getAnnouncementId,
-                AnnDO::getPublishTime,
-                AnnDO::getAuthorId,
-                AnnDO::getClubId,
-                AnnDO::getTitle,
-                AnnDO::getTextFile
-            )
-            .eq(AnnDO::getClubId, clubId)
-            .orderByDesc(AnnDO::getPublishTime)
-            .last("limit 1")
+                                AnnDO::getAnnouncementId,
+                                AnnDO::getPublishTime,
+                                AnnDO::getAuthorId,
+                                AnnDO::getClubId,
+                                AnnDO::getTitle,
+                                AnnDO::getTextFile
+                        )
+                        .eq(AnnDO::getClubId, clubId)
+                        .orderByDesc(AnnDO::getPublishTime)
+                        .last("limit 1")
         );
     }
 
@@ -150,8 +152,30 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         return selectList(page, wrapper);
     }
 
+    // 新增统计方法（保持原有方法不变）
+    @Select("<script>" +
+            "SELECT " +
+            "  COUNT(CASE WHEN create_time BETWEEN " +
+            "    DATE_FORMAT(DATE_SUB(CURDATE(), INTERVAL 1 MONTH), '%Y-%m-01') AND " +
+            "    LAST_DAY(DATE_SUB(CURDATE(), INTERVAL 1 MONTH)) " +
+            "  THEN 1 END) AS lastMonthNum," +
+            "  COUNT(CASE WHEN create_time BETWEEN " +
+            "    DATE_FORMAT(CURDATE(), '%Y-%m-01') AND " +
+            "    CURDATE() " +
+            "  THEN 1 END) AS thisMonthNum " +
+            "FROM tbl_club_announcement " +
+            "WHERE club_id = #{clubId} " +
+            "AND (" +
+            "  title LIKE CONCAT('%','比赛','%') OR " +
+            "  title LIKE CONCAT('%','活动','%') OR " +
+            "  title LIKE CONCAT('%','大赛','%') OR " +
+            "  title LIKE CONCAT('%','竞赛','%')" +
+            ")" +
+            "</script>")
+    AnnDTO searchActivity(Long clubId);
 
-    default List<AnnDO> searchIntroduce(Page<AnnDO> page, AnnSearchQO searchQO){
+
+    default List<AnnDO> searchIntroduce(Page<AnnDO> page, AnnSearchQO searchQO) {
         LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
         wrapper.select(
                 AnnDO::getAnnouncementId,

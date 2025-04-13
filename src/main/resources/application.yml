@@ -12,12 +12,14 @@ spring:
       - classpath:config/database-config.yml      # 数据库
       - classpath:config/file-storage-config.yml  # 文件存储
       - classpath:config/email-config.yml         # 邮件
+      - classpath:config/ai-config.yml            # AI
   servlet:
     multipart:
       # 限制单个上传文件的大小
       max-file-size: 10MB
       # 限制整个请求的大小
       max-request-size: 20MB
+
 logging:
   # 引入日志配置文件
   config: classpath:config/logback.xml
@@ -62,4 +64,7 @@ mybatis:
   type-handlers-package: com.yourcompany.yourproject.handler # 指定处理器包
   configuration:
     map-underscore-to-camel-case: true
+
+
+
 

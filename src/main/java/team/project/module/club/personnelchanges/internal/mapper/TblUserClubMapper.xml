@@ -5,25 +5,26 @@
 
     <resultMap id="UserMsgDTO" type="team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
-        <result column="user_id"           property="userId" />
+        <result column="user_id" property="userId"/>
     </resultMap>
 
-    <resultMap id="clubMemberInfo" type="team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO">
+    <resultMap id="clubMemberInfo"
+               type="team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
-        <result column="user_id"           property="userId" />
-        <result column="department_id"     property="departmentId" />
-        <result column="mail"              property="email" />
+        <result column="user_id" property="userId"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="mail" property="email"/>
     </resultMap>
 
     <resultMap id="userClub" type="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
         <!-- 数据库字段 -->                  <!-- java 类属性 -->
-        <result column="user_id"           property="userId" />
-        <result column="is_deleted"        property="isDeleted" />
-        <result column="create_time"       property="createTime" />
-        <result column="update_time"       property="updateTime" />
-        <result column="user_id"           property="userId" />
-        <result column="club_id"           property="clubId" />
-        <result column="role"              property="role" />
+        <result column="user_id" property="userId"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="club_id" property="clubId"/>
+        <result column="role" property="role"/>
     </resultMap>
 
 
@@ -47,30 +48,35 @@
     </update>
 
     <update id="quashAllMember">
-        update tbl_user_club set is_deleted = 1 where  club_id = #{clubId} and is_deleted = 0
+        update tbl_user_club set is_deleted = 1 where club_id = #{clubId} and is_deleted = 0
     </update>
 
-    <select id="selectManagerRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
-        select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2 and is_deleted = 0
+    <select id="selectManagerRole"
+            resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
+        select * from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and role &amp; 2 and is_deleted =
+        0
     </select>
 
     <select id="isManagerRole" resultType="java.lang.Boolean">
-        select 1 from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp; 2 limit 1
+        select 1 from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 and role &amp;
+        2 limit 1
     </select>
 
     <select id="isMemberRole" resultType="java.lang.Boolean">
-        select 1 from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0  limit 1
+        select 1 from tbl_user_club where user_id = #{userId} and club_id = #{clubId} and is_deleted = 0 limit 1
     </select>
 
     <select id="selectOne"
             resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO">
     </select>
 
-    <select id="selectRootRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
+    <select id="selectRootRole"
+            resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
             parameterType="java.lang.String">
     </select>
 
-    <select id="selectMemberRole" resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
+    <select id="selectMemberRole"
+            resultType="team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO"
             parameterType="java.lang.String">
     </select>
 
@@ -100,6 +106,59 @@
         JOIN tbl_user_club uc ON u.user_id = uc.user_id
         WHERE uc.club_id = #{clubId} AND uc.is_deleted = 0 AND u.is_deleted = 0 AND uc.role &amp; 2
     </select>
+    <select id="getChangeInMembers" resultType="team.project.module.club.personnelchanges.export.model.datatransfer.UserYearlyDTO" parameterType="java.lang.Long">
+        SELECT
+        COUNT(DISTINCT CASE
+        WHEN YEAR(create_time) &lt;= YEAR(CURRENT_DATE) - 1
+        AND (is_deleted = 0 OR (is_deleted = 1 AND YEAR(update_time) = YEAR(CURRENT_DATE)))
+        THEN user_id
+        END) AS lNum,
+        COUNT(DISTINCT CASE
+        WHEN YEAR(create_time) >= YEAR(CURRENT_DATE) - 1
+        AND is_deleted = 0
+        THEN user_id
+        END) AS tNum
+        FROM tbl_user_club
+        WHERE club_id = #{clubId}
+    </select>
+
+
+    <select id="getChangeInMembersByWeek" resultType="team.project.module.club.personnelchanges.export.model.datatransfer.UserDTO">
+        WITH RECURSIVE date_range AS (
+        SELECT
+        DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY) AS date
+        UNION ALL
+        SELECT DATE_ADD(date, INTERVAL 1 DAY)
+        FROM date_range
+        WHERE date &lt; DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 6 DAY)
+        )
+        SELECT
+        (WEEKDAY(d.date) + 1) AS day_of_week,
+        MAX(CASE WHEN d.week_type = 'last' THEN cnt ELSE 0 END) AS lNum,
+        MAX(CASE WHEN d.week_type = 'current' THEN cnt ELSE 0 END) AS tNum
+        FROM (
+        SELECT
+        dr.date,
+        CASE
+        WHEN dr.date BETWEEN
+        DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 7 DAY)
+        AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL -1 DAY)
+        THEN 'last'
+        ELSE 'current'
+        END AS week_type,
+        (SELECT COUNT(DISTINCT user_id)  -- 关键修正：去重统计
+        FROM tbl_user_club
+        WHERE club_id = #{clubId}
+        AND is_deleted = 0
+        AND create_time &lt;= CONCAT(dr.date, ' 23:59:59')
+        ) AS cnt
+        FROM date_range dr
+        ) d
+        GROUP BY day_of_week
+        ORDER BY day_of_week;
+    </select>
+
+
 
     <insert id="createMember">
         insert into tbl_user_club (role, user_id, club_id)

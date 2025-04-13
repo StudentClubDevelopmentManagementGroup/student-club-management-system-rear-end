@@ -7,8 +7,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Update;
+import team.project.module.club.attendance.export.model.datatransfer.AttDTO;
 import team.project.module.club.attendance.internal.model.entity.AttendanceDO;
-import team.project.module.club.attendance.internal.model.request.*;
+import team.project.module.club.attendance.internal.model.request.ApplyAttendanceReq;
+import team.project.module.club.attendance.internal.model.request.GetAttendanceRecordReq;
+import team.project.module.club.attendance.internal.model.request.GetAttendanceTimeReq;
 import team.project.module.club.attendance.internal.model.view.ClubAttendanceDurationVO;
 
 import java.time.LocalDateTime;
@@ -31,14 +34,15 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
         attendanceDO.setCheckInTime(checkInTime);
 
         int insertSuccess = this.insert(attendanceDO);
-        if(insertSuccess > 0){
+        if (insertSuccess > 0) {
             return this.selectById(attendanceDO.getId());
         }
         return null;
     }
+
     default AttendanceDO userCheckOut(String userId, Long clubId, LocalDateTime checkoutTime) {
         AttendanceDO latestCheckInRecord = getLatestCheckInRecord(userId, clubId);
-        if(latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null){
+        if (latestCheckInRecord != null && latestCheckInRecord.getCheckoutTime() == null) {
             latestCheckInRecord.setCheckoutTime(checkoutTime);
             updateById(latestCheckInRecord);
             return latestCheckInRecord;
@@ -64,7 +68,7 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     //查询未签退记录
 
-    default List<AttendanceDO>  getUnCheckOutRecord(String userId, Long clubId) {
+    default List<AttendanceDO> getUnCheckOutRecord(String userId, Long clubId) {
         QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("user_id", userId)
                 .eq("club_id", clubId)
@@ -95,12 +99,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
-
-
-
-
     //查签到记录，返回分页查询对象，
-    default Page<AttendanceDO> findAttendanceInfoVOPage(GetAttendanceRecordReq getAttendanceRecordReq,Long clubId){
+    default Page<AttendanceDO> findAttendanceInfoVOPage(GetAttendanceRecordReq getAttendanceRecordReq, Long clubId) {
         // 构造分页对象
         Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
         // 构建查询条件
@@ -117,32 +117,31 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
-
     //查签到记录，返回分页查询对象,可以使用名字查询
-    default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq,Long clubId,List<String> userIds){
+    default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq, Long clubId, List<String> userIds) {
 
 
-            // 构造分页对象
-            Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
-            // 构建查询条件
+        // 构造分页对象
+        Page<AttendanceDO> page = new Page<>(getAttendanceRecordReq.getCurrentPage(), getAttendanceRecordReq.getPageSize(), true);
+        // 构建查询条件
 
-            QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
-            queryWrapper.eq("club_id", clubId)
+        QueryWrapper<AttendanceDO> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("club_id", clubId)
 //                .like(StringUtils.isNotBlank(getAttendanceRecordReq.getUserId()), "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
-                    .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
-                    .in( "user_id", userIds)
-                    .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
-                            "checkin_time", getAttendanceRecordReq.getStartTime(),
-                            getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
-                    .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
+                .like(getAttendanceRecordReq.getUserId() != "", "user_id", "%" + getAttendanceRecordReq.getUserId() + "%")
+                .in("user_id", userIds)
+                .between(getAttendanceRecordReq.getStartTime() != null && getAttendanceRecordReq.getEndTime() != null,
+                        "checkin_time", getAttendanceRecordReq.getStartTime(),
+                        getAttendanceRecordReq.getEndTime()) // 如果 startTime 和 endTime 都不为 null，则加入 BETWEEN 条件
+                .orderByDesc("checkin_time"); // 按照 checkin_time 字段降序排列
 
-            return this.selectPage(page, queryWrapper);
+        return this.selectPage(page, queryWrapper);
 
 
     }
 
     //用学号查询
-    default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq){
+    default Page<AttendanceDO> findAttendanceInfoVOPageTest(GetAttendanceRecordReq getAttendanceRecordReq) {
 
 
         // 构造分页对象
@@ -163,7 +162,6 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     }
 
 
-
     //查社团一个成员指定时间打卡时长
     Long getOneAttendanceDurationTime(GetAttendanceTimeReq getAttendanceTimeReq);
 
@@ -175,7 +173,6 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     );
 
 
-
     //查询社团每个成员指定时间段打卡时长
     List<ClubAttendanceDurationVO> getEachAttendanceDurationTimeByName(
             @Param("getAttendanceTimeReq") GetAttendanceTimeReq getAttendanceTimeReq,
@@ -184,23 +181,23 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
     );
 
     //社团成员申请补签
-    default AttendanceDO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq, Long clubId){
+    default AttendanceDO userReplenishAttendance(ApplyAttendanceReq applyAttendanceReq, Long clubId) {
 
         //创建更新条件
         UpdateWrapper<AttendanceDO> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("user_id", applyAttendanceReq.getUserId())
                 .eq("club_id", clubId)
-                .eq("checkin_time",applyAttendanceReq.getCheckInTime())
+                .eq("checkin_time", applyAttendanceReq.getCheckInTime())
                 //七天之内未签退的记录才能补签
                 .ge("checkin_time", LocalDateTime.now().minus(7, ChronoUnit.DAYS))
                 .eq("is_deleted", true)
                 .isNull("checkout_time");
         //创建要更新的字段
         AttendanceDO attendanceDO = this.selectOne(updateWrapper);
-        if (attendanceDO != null){
+        if (attendanceDO != null) {
             attendanceDO.setCheckoutTime(applyAttendanceReq.getCheckoutTime());
             attendanceDO.setDeleted(false);
-            int rowsAffected = this.update(attendanceDO,updateWrapper);
+            int rowsAffected = this.update(attendanceDO, updateWrapper);
             //获取并返回刚刚更新的数据
             return attendanceDO;
         }
@@ -208,8 +205,8 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
 
     }
 
-
-
+    //获取本周以及上周的签到记录
+    List<AttDTO> getWeeklyAttendanceRecord(Long clubId);
 
     //定时逻辑删除记录
     @Update("UPDATE tbl_user_club_attendance SET is_deleted = 1 " +
@@ -217,10 +214,6 @@ public interface AttendanceMapper extends BaseMapper<AttendanceDO> {
             "AND is_deleted = 0 " +
             "AND DATE(checkin_time) = CURDATE()")
     int timedDeleteRecord();
-
-
-
-
 }
 
 

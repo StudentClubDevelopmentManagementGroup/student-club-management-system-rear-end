@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import team.project.base.mapper.CrossModuleSQL;
+import team.project.module.club.personnelchanges.export.model.datatransfer.UserDTO;
+import team.project.module.club.personnelchanges.export.model.datatransfer.UserYearlyDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.ClubMemberInfoDTO;
 import team.project.module.club.personnelchanges.internal.model.datatransfer.UserMsgDTO;
 import team.project.module.club.personnelchanges.internal.model.entity.TblUserClubDO;
@@ -65,4 +67,8 @@ public interface TblUserClubMapper extends BaseMapper<TblUserClubDO> {
     List<TblUserClubDO> selectOneAllClubInfo(String userId) ;
 
     List<String> getAllClubManagers(Long clubId);
+
+    UserYearlyDTO getChangeInMembers(Long clubId);
+
+    List<UserDTO> getChangeInMembersByWeek(Long clubId);
 }

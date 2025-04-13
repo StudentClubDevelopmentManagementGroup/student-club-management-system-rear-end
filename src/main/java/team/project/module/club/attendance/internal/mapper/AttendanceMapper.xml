@@ -99,6 +99,40 @@
         user_id;
     </select>
 
+    <select id="getWeeklyAttendanceRecord" resultType="team.project.module.club.attendance.export.model.datatransfer.AttDTO">
+        <!-- 生成1-7的天数列，对应周一(1)到周日(7) -->
+        WITH days AS (
+        SELECT 1 AS day_num UNION SELECT 2 UNION SELECT 3 UNION SELECT 4
+        UNION SELECT 5 UNION SELECT 6 UNION SELECT 7
+        )
+        SELECT
+        days.day_num AS day_of_week,
+        COALESCE(SUM(CASE WHEN sub.week_label = '上周' THEN sub.user_count ELSE 0 END), 0) AS lNum,
+        COALESCE(SUM(CASE WHEN sub.week_label = '本周' THEN sub.user_count ELSE 0 END), 0) AS tNum
+        FROM days
+        LEFT JOIN (
+        SELECT
+        <!-- WEEKDAY返回0(周一)到6(周日)，+1转换为1-7 -->
+        WEEKDAY(checkin_time) + 1 AS day_of_week,
+        CASE
+        WHEN YEARWEEK(checkin_time, 1) = YEARWEEK(NOW(), 1) THEN '本周'
+        WHEN YEARWEEK(checkin_time, 1) = YEARWEEK(NOW(), 1) - 1 THEN '上周'
+        END AS week_label,
+        COUNT(DISTINCT user_id) AS user_count
+        FROM tbl_user_club_attendance
+        WHERE
+        club_id = #{clubId}
+        AND is_deleted = 0
+        AND checkout_time IS NOT NULL
+        <!-- 动态时间范围：精确匹配本周和上周的完整周 -->
+        AND checkin_time BETWEEN
+        DATE_SUB(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 1 WEEK)
+        AND DATE_ADD(DATE_SUB(CURDATE(), INTERVAL WEEKDAY(CURDATE()) DAY), INTERVAL 6 DAY)
+        GROUP BY day_of_week, week_label
+        ) sub ON days.day_num = sub.day_of_week
+        GROUP BY days.day_num
+        ORDER BY days.day_num
+    </select>
 
 
 

@@ -1,0 +1,13 @@
+
+# 修改此模板，并将修改后的文件 [剪切] 到 /config 目录
+
+spring:
+  ai:
+    openai:
+      api-key: "xxxxxxxxxxxxxxxxxxxxxxxx"  # 替换为你的 OpenAI API 密钥
+      base-url: "https://api.lkeap.cloud.tencent.com/v1/"    # 默认值，通常无需修改
+      chat:
+        options:
+          model: "deepseek-r1"                # 默认模型
+          temperature: 0.6                       # 生成文本的随机性控制
+          max-tokens: 500

@@ -12,6 +12,7 @@ spring:
       - classpath:config/database-config.yml      # 数据库
       - classpath:config/file-storage-config.yml  # 文件存储
       - classpath:config/email-config.yml         # 邮件
+      - classpath:config/ai-config.yml            # AI
   servlet:
     multipart:
       # 限制单个上传文件的大小
