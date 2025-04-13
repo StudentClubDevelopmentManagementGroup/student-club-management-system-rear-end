@@ -56,7 +56,7 @@ public class AIController {
         List<UserDTO> userDTOList = pceIService.getChangeInMembersByWeek(clubId);
         AnnDTO annDTO = annIServer.getNum(clubId);
         // 构建结构化提示词
-        StringBuilder prompt = new StringBuilder("请根据以下基地数据进行分析：\n\n")
+        StringBuilder prompt = new StringBuilder("请根据以下基地数据进行简要快速分析：\n\n")
                 .append("年度人数对比\n")
                 .append(String.format("今年总人数：%d人 | 去年总人数：%d人\n\n",
                         personnelChange.getTNum(), personnelChange.getLNum()))
@@ -85,15 +85,17 @@ public class AIController {
                 prompt.append(String.format("周%s（%d）: 上周总数 %d人 → 本周总数 %d人\n",
                         getChineseWeekday(day), day, dto.getLNum(), dto.getTNum())));
 
-        prompt.append("\n请基于以上数据，分析：\n"
+        prompt.append("\n请基于以上数据，简要快速分析：\n"
                 + "1. 周同比人数变化趋势\n"
                 + "2. 签到率变化情况\n"
                 + "3. 活动数量变化情况\n"
                 + "4. 给出改进建议");
-        aiVO.setMessage(chatClient.call(prompt.toString()));
+//        aiVO.setMessage(chatClient.call(prompt.toString()));
+        aiVO.setMessage("暂未开通AI功能");
         aiVO.setAnnDTO(annDTO);
         aiVO.setAttDTOList(attitude);
         aiVO.setUserDTOList(userDTOList);
+        aiVO.setUserYearlyDTO(personnelChange);
         return aiVO;
     }
 
