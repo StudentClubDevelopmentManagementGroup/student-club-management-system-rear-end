@@ -48,9 +48,27 @@ public class AIController {
     public AnnIServer annIServer;
 
     @SaCheckRole(AuthRole.CLUB_MEMBER)
-    @Operation(summary = "ai分析")
-    @PostMapping("/chat")
+    @Operation(summary = "数据获取")
+    @PostMapping("/data")
     Object generateText(@NotNull(message = "基地ID不能为空") @RequestParam("club_id") Long clubId) {
+        AiVO aiVO = new AiVO();
+        // 获取数据
+        UserYearlyDTO personnelChange = pceIService.getChangeInMembers(clubId);
+        List<AttDTO> attitude = attendanceIService.getAttendance(clubId);
+        List<UserDTO> userDTOList = pceIService.getChangeInMembersByWeek(clubId);
+        AnnDTO annDTO = annIServer.getNum(clubId);
+        aiVO.setMessage("暂未启动AI分析功能");
+        aiVO.setAnnDTO(annDTO);
+        aiVO.setAttDTOList(attitude);
+        aiVO.setUserDTOList(userDTOList);
+        aiVO.setUserYearlyDTO(personnelChange);
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(aiVO);
+    }
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @Operation(summary = "ai分析")
+    @PostMapping("/analyse")
+    Object generate(@NotNull(message = "基地ID不能为空") @RequestParam("club_id") Long clubId) {
         AiVO aiVO = new AiVO();
         // 获取数据
         UserYearlyDTO personnelChange = pceIService.getChangeInMembers(clubId);
@@ -87,13 +105,13 @@ public class AIController {
                 prompt.append(String.format("周%s（%d）: 上周总数 %d人 → 本周总数 %d人\n",
                         getChineseWeekday(day), day, dto.getLNum(), dto.getTNum())));
 
-        prompt.append("\n请基于以上数据，简要快速分析：\n"
+        prompt.append("\n请基于以上数据，简要快速分析：，回答的时候直接返回文本\n"
                 + "1. 周同比人数变化趋势\n"
                 + "2. 签到率变化情况\n"
                 + "3. 活动数量变化情况\n"
                 + "4. 给出改进建议");
-//        aiVO.setMessage(chatClient.call(prompt.toString()));
-        aiVO.setMessage("暂未开通AI功能");
+        aiVO.setMessage(chatClient.call(prompt.toString()));
+//        aiVO.setMessage("暂未开通AI功能");
         aiVO.setAnnDTO(annDTO);
         aiVO.setAttDTOList(attitude);
         aiVO.setUserDTOList(userDTOList);
