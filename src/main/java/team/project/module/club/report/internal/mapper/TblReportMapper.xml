@@ -69,15 +69,27 @@
     <select id="getMemberReportList" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
-        WHERE club_id = #{clubId} AND is_deleted = 0 AND uploader = #{arrangerId}
-        ORDER BY create_time DESC  <!-- 新增排序条件 -->
+        WHERE club_id = #{clubId} AND is_deleted = 0 AND uploader = #{arrangerId} and report_type != '总结'
+        ORDER BY create_time DESC
 
     </select>
     <select id="getReportListByKeyword" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
-        WHERE club_id = #{clubId} AND is_deleted = 0 AND report_file_list LIKE CONCAT('%',#{keyword},'%')
-        ORDER BY create_time DESC  <!-- 新增排序条件 -->
+        WHERE club_id = #{clubId} AND is_deleted = 0 AND report_file_list LIKE CONCAT('%',#{keyword},'%') and report_type != '总结'
+        ORDER BY create_time DESC
+    </select>
+
+    <select id="getSummaryList" resultMap="tbl_club_Report">
+        SELECT *
+        FROM tbl_user_club_report
+        WHERE club_id = #{clubId} AND is_deleted = 0  and report_type = '总结'
+    </select>
+    <select id="getSummaryListByKeyword" resultMap="tbl_club_Report">
+        SELECT *
+        FROM tbl_user_club_report
+        WHERE club_id = #{clubId} AND is_deleted = 0 AND report_file_list LIKE CONCAT('%',#{keyword},'%') and report_type = '总结'
+        ORDER BY create_time DESC
     </select>
 
 </mapper>

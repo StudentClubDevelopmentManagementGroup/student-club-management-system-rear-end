@@ -23,4 +23,8 @@ public interface ReportService extends IService<TblReport> {
     String getReportSummary(Long clubId , LocalDateTime startTime, LocalDateTime endTime);
 
     PageVO<ReportInfoVO> searchReport(Page<Object> page, Long clubId, String keyword);
+
+    PageVO<ReportInfoVO> getSummaryList(Page<Object> page, Long clubId);
+
+    PageVO<ReportInfoVO> searchSummary(Page<Object> page, Long clubId, String keyword);
 }

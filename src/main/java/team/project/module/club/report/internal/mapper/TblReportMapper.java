@@ -25,4 +25,8 @@ public interface TblReportMapper extends BaseMapper<TblReport> {
     List<TblReport> getReportSummaryList(Long clubId, LocalDateTime startTime, LocalDateTime endTime);
 
     Page<TblReport> getReportListByKeyword(Page<Object> page, Long clubId, String keyword);
+
+    Page<TblReport> getSummaryList(Page<Object> page, Long clubId);
+
+    Page<TblReport> getSummaryListByKeyword(Page<Object> page, Long clubId, String keyword);
 }

@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import team.project.base.controller.response.Response;
+import team.project.base.service.status.ServiceStatus;
 import team.project.module.auth.export.model.enums.AuthRole;
 import team.project.module.club.announcement.export.model.datatransfer.AnnDTO;
 import team.project.module.club.announcement.export.service.AnnIServer;
@@ -48,7 +50,7 @@ public class AIController {
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     @Operation(summary = "ai分析")
     @PostMapping("/chat")
-    public AiVO generateText(@NotNull(message = "基地ID不能为空") @RequestParam("club_id") Long clubId) {
+    Object generateText(@NotNull(message = "基地ID不能为空") @RequestParam("club_id") Long clubId) {
         AiVO aiVO = new AiVO();
         // 获取数据
         UserYearlyDTO personnelChange = pceIService.getChangeInMembers(clubId);
@@ -96,7 +98,8 @@ public class AIController {
         aiVO.setAttDTOList(attitude);
         aiVO.setUserDTOList(userDTOList);
         aiVO.setUserYearlyDTO(personnelChange);
-        return aiVO;
+
+        return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(aiVO);
     }
 
     // 数字转中文星期

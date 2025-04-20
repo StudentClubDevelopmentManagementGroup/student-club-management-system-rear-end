@@ -432,6 +432,80 @@ public class ReportServiceImpl extends ServiceImpl<TblReportMapper, TblReport> i
                 new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
     }
 
+    @Override
+    public PageVO<ReportInfoVO> getSummaryList(Page<Object> page, Long clubId) {
+        Page<TblReport> reportPage = reportMapper.getSummaryList(page, clubId);
+        List<ReportInfoVO> reportInfoVOList = new ArrayList<>();
+
+        for (TblReport tblReport : reportPage.getRecords()) {
+            ReportInfoVO reportInfoVO = new ReportInfoVO();
+            // 设置基本字段...
+            reportInfoVO.setId(tblReport.getId());
+            reportInfoVO.setReportType(tblReport.getReportType());
+            reportInfoVO.setUploader(tblReport.getUploader());
+            reportInfoVO.setCreateTime(tblReport.getCreateTime());
+            reportInfoVO.setUpdateTime(tblReport.getUpdateTime());
+            reportInfoVO.setDeleted(tblReport.getDeleted());
+            reportInfoVO.setClubId(tblReport.getClubId());
+            // 处理文件列表
+            List<String> fileUrlList = new ArrayList<>();
+            Map<String, Map<String, String>> fileMap = tblReport.getReportFileList();
+            if (fileMap != null) {
+                for (Map<String, String> fileInfo : fileMap.values()) {
+                    String fileId = fileInfo.get("fileId");
+                    if (StringUtils.isNotBlank(fileId)) {
+                        String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                        fileUrlList.add(fileUrl);
+                    }
+                }
+            }
+            reportInfoVO.setReportFile(fileUrlList);
+
+            reportInfoVOList.add(reportInfoVO);
+        }
+
+        return reportPage.getTotal() == 0 ?
+                null :
+                new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
+    }
+
+    @Override
+    public PageVO<ReportInfoVO> searchSummary(Page<Object> page, Long clubId, String keyword) {
+        Page<TblReport> reportPage = reportMapper.getSummaryListByKeyword(page, clubId, keyword);
+        List<ReportInfoVO> reportInfoVOList = new ArrayList<>();
+
+        for (TblReport tblReport : reportPage.getRecords()) {
+            ReportInfoVO reportInfoVO = new ReportInfoVO();
+            // 设置基本字段...
+            reportInfoVO.setId(tblReport.getId());
+            reportInfoVO.setReportType(tblReport.getReportType());
+            reportInfoVO.setUploader(tblReport.getUploader());
+            reportInfoVO.setCreateTime(tblReport.getCreateTime());
+            reportInfoVO.setUpdateTime(tblReport.getUpdateTime());
+            reportInfoVO.setDeleted(tblReport.getDeleted());
+            reportInfoVO.setClubId(tblReport.getClubId());
+            // 处理文件列表
+            List<String> fileUrlList = new ArrayList<>();
+            Map<String, Map<String, String>> fileMap = tblReport.getReportFileList();
+            if (fileMap != null) {
+                for (Map<String, String> fileInfo : fileMap.values()) {
+                    String fileId = fileInfo.get("fileId");
+                    if (StringUtils.isNotBlank(fileId)) {
+                        String fileUrl = fileStorageServiceI.getFileUrl(fileId.trim());
+                        fileUrlList.add(fileUrl);
+                    }
+                }
+            }
+            reportInfoVO.setReportFile(fileUrlList);
+
+            reportInfoVOList.add(reportInfoVO);
+        }
+
+        return reportPage.getTotal() == 0 ?
+                null :
+                new PageVO<>(reportInfoVOList, new Page<>(page.getPages(), page.getSize(), reportPage.getTotal()));
+    }
+
     // 辅助方法：添加键值对段落
     private void addKeyValue(XWPFDocument doc, String key, String value) {
         XWPFParagraph para = doc.createParagraph();

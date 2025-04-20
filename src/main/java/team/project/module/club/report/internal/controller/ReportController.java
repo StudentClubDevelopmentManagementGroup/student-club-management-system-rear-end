@@ -44,7 +44,7 @@ public class ReportController {
     }
 
     @Operation(summary = "删除成果汇报")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/report/del")
     Object delReport(@NotNull @RequestParam("report_id") Long reportId, @NotNull @RequestParam("club_id") Long clubId) {
         String arrangerId = (String) (StpUtil.getLoginId());
@@ -55,7 +55,7 @@ public class ReportController {
     }
 
     @Operation(summary = "修改成果汇报")
-    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/report/update")
     Object updateReport(
             @NotNull @RequestParam("report_id")
@@ -84,7 +84,7 @@ public class ReportController {
         return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
     }
 
-    @Operation(summary = "获取成果汇报列表")
+    @Operation(summary = "获取个人成果汇报列表")
     @SaCheckRole(AuthRole.CLUB_MEMBER)
     @PostMapping("/club/report/member/list")
     Object getMemberReportList(@Valid @RequestBody ReportListReq req) {
@@ -93,6 +93,30 @@ public class ReportController {
         Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
         PageVO<ReportInfoVO> result = reportService.getMemberReportList(page,req.getClubId(),arrangerId);
         return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
+    }
+
+    @Operation(summary = "获取年终汇报列表")
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
+    @PostMapping("/club/report/summary/list")
+    Object getSummaryList(@Valid @RequestBody ReportListReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能获取总结");
+        Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
+
+        PageVO<ReportInfoVO> result = reportService.getSummaryList(page,req.getClubId());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("获取成功").data(result);
+    }
+
+    @Operation(summary = "搜索年终汇报")
+    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @PostMapping("/club/report/summary/search")
+    Object searchSummary(@Valid @RequestBody ReportSearchReq req) {
+        String arrangerId = (String)( StpUtil.getLoginId() );
+        authService.requireClubManager(arrangerId, req.getClubId(), "只有社团负责人能搜索总结");
+
+        Page<Object> page = new Page<>(req.getPageNum(), req.getPageSize());
+        PageVO<ReportInfoVO> result = reportService.searchSummary(page,req.getClubId(),req.getKeyword());
+        return new Response<>(ServiceStatus.SUCCESS).statusText("搜索成功").data(result);
     }
 
     @Operation(summary = "搜索成果汇报")
@@ -107,7 +131,7 @@ public class ReportController {
     }
 
     @Operation(summary = "生成总结")
-    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @PostMapping("/club/report/summary")
     Object getReportSummary(@Valid @RequestBody summaryReq req) {
         String arrangerId = (String)( StpUtil.getLoginId() );
