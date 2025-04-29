@@ -65,7 +65,7 @@ public class AIController {
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("查询成功").data(aiVO);
     }
-    @SaCheckRole(AuthRole.CLUB_MEMBER)
+    @SaCheckRole(AuthRole.CLUB_MANAGER)
     @Operation(summary = "ai分析")
     @PostMapping("/analyse")
     Object generate(@NotNull(message = "基地ID不能为空") @RequestParam("club_id") Long clubId) {

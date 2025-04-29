@@ -196,6 +196,14 @@
             <version>1.0.0</version> <!-- 使用最新版本 -->
         </dependency>
 
+        <!--密码加密依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+            <version>3.2.0</version> <!-- 替换为你的版本 -->
+        </dependency>
+
+
 
     </dependencies>
 

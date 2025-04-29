@@ -147,12 +147,11 @@ public class UserDAO {
      *  将用户账号逻辑删除（注销账户）
      *  @return 如果用户不存在（已注销）或密码错误，则注销失败，返回 0；否则注销成功，返回 1
      * */
-    public int logicalDelete(String userId, String password) {
+    public int logicalDelete(String userId) {
         userBasicInfoCache.invalidate(userId);
         return userMapper.update(new LambdaUpdateWrapper<UserDO>()
             .set(UserDO::getDeleted, true)
             .eq(UserDO::getUserId, userId)
-            .eq(UserDO::getPassword, password)
         );
     }
 

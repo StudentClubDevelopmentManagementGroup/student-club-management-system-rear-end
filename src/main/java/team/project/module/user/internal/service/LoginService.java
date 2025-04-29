@@ -2,6 +2,7 @@ package team.project.module.user.internal.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import team.project.base.service.exception.ServiceException;
 import team.project.base.service.status.ServiceStatus;
@@ -17,7 +18,6 @@ import team.project.module.util.email.export.util.EmailUtil;
 import team.project.util.expiringmap.ExpiringMap;
 import team.project.util.texttmpl.TextTemplate;
 
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -32,6 +32,9 @@ public class LoginService {
     @Autowired
     ModelConverter modelConverter;
 
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder; // 注入Bean
+
     /* -- 密码登录 -- */
 
     /**
@@ -39,11 +42,11 @@ public class LoginService {
      * @return 登录成功返回用户信息，登录失败返回 null
      * */
     public UserInfoVO login(String userId, String password) {
-        String pwd = userDAO.selectPassword(userId);
-
-        if ( ! Objects.equals(pwd, password))
+        String storedHashedPassword = userDAO.selectPassword(userId);
+        // 使用matches方法验证密码
+        if (!passwordEncoder.matches(password, storedHashedPassword)) {
             return null;
-
+        }
         return modelConverter.toUserInfoVO(userDAO.selectUserInfo(userId));
     }
 

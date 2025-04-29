@@ -19,7 +19,8 @@ spring:
       max-file-size: 10MB
       # 限制整个请求的大小
       max-request-size: 20MB
-
+  autoconfigure:
+    exclude: org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration
 
 
 logging:

@@ -17,6 +17,7 @@ import team.project.module.util.email.export.service.EmailServiceI;
 import team.project.module.util.email.export.util.EmailUtil;
 import team.project.util.expiringmap.ExpiringMap;
 import team.project.util.texttmpl.TextTemplate;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.concurrent.TimeUnit;
 
@@ -29,6 +30,9 @@ public class RegisterService {
 
     @Autowired
     UserDAO userDAO;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder; // 注入Bean
 
     /* 存储验证码（暂时将验证码存储在内存而不是数据库），验证码的有效时长 5 分钟 */
     private final ExpiringMap<String, String> registerCodes = new ExpiringMap<>(TimeUnit.MINUTES.toMillis(5));
@@ -87,7 +91,9 @@ public class RegisterService {
         UserDO user = new UserDO();
         user.setUserId(req.getUserId());
         user.setDepartmentId(req.getDepartmentId());
-        user.setPassword(req.getPassword()); /* <- TODO ljh_TODO: 待加密 */
+//        user.setPassword(req.getPassword());
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
+        user.setPassword(encodedPassword);
         user.setName(req.getName());
         user.setTel(req.getTel());
         user.setEmail(req.getEmail());
@@ -114,9 +120,17 @@ public class RegisterService {
     }
 
     public void unregister(String userId, String password) {
-        int result = userDAO.logicalDelete(userId, password);
-        if (result == 0) {
+        // 1. 获取存储的哈希密码
+        String storedHashedPassword = userDAO.selectPassword(userId);
+
+        // 2. 验证输入的密码是否正确
+        if (storedHashedPassword == null || !passwordEncoder.matches(password, storedHashedPassword)) {
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "账号不存在或密码错误");
+        }
+        // 3. 执行逻辑删除（DAO层方法不再需要密码参数）
+        int result = userDAO.logicalDelete(userId);
+        if (result == 0) {
+            throw new ServiceException(ServiceStatus.INTERNAL_SERVER_ERROR, "注销失败");
         }
     }
 }
