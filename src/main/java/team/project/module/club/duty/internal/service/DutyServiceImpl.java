@@ -115,7 +115,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             if (!file.isEmpty()) {
                 String originalFilename = file.getOriginalFilename();
                 String fileType = originalFilename != null ? originalFilename.substring(originalFilename.lastIndexOf(".")) : "";
-                String fileName = memberId + "_" + time + fileType; // 使用时间戳避免文件名重复
+                String fileName = memberId + "_" + dutyTime.format(fmt) + "_" + time + fileType; // 使用时间戳避免文件名重复
                 time++;
                 UploadFileQO uploadFileQO = new UploadFileQO();
                 uploadFileQO.setOverwrite(true);
@@ -196,7 +196,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
                 throw new ServiceException(ServiceStatus.NOT_FOUND, "查无此人");
             }
             for (UserBasicInfoDTO userBasicInfoDTO : nameList) {
-                Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber(),qo.getDutyTime());
+                Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), userBasicInfoDTO.getUserId(), qo.getName(), qo.getNumber(), qo.getDutyTime());
                 selectUserName(dutyList, page);
             }
             if (dutyList.isEmpty()) {
@@ -205,7 +205,7 @@ public class DutyServiceImpl extends ServiceImpl<TblDutyMapper, TblDuty> impleme
             return new PageVO<>(dutyList, new Page<>(qo.getPageNum(), qo.getSize(), nameList.size()));
         } else {
             // 按条件查询
-            Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), null, qo.getName(), qo.getNumber(),qo.getDutyTime());
+            Page<TblDuty> page = tblDutyMapper.selectDutyByTime(new Page<>(qo.getPageNum(), qo.getSize()), qo.getClubId(), null, qo.getName(), qo.getNumber(), qo.getDutyTime());
             selectUserName(dutyList, page);
             if (page.getTotal() == 0) {
                 return null;
