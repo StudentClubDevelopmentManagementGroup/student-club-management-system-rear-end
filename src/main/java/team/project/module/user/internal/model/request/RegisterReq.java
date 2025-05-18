@@ -16,7 +16,7 @@ public class RegisterReq {
     @JsonProperty("user_id")
     private String userId;
 
-    @NotBlank(message="学号/工号不能为空")
+    @NotBlank(message="密码不能为空")
     @UserPasswordConstraint
     @JsonProperty("pwd")
     private String password;
