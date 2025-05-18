@@ -11,10 +11,12 @@ import org.springframework.web.bind.annotation.*;
 import team.project.base.controller.response.Response;
 import team.project.base.service.status.ServiceStatus;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.request.ResetReq;
 import team.project.module.user.internal.model.request.UserIdAndCodeReq;
 import team.project.module.user.internal.model.request.UserIdAndPasswordReq;
 import team.project.module.user.internal.model.view.UserInfoVO;
 import team.project.module.user.internal.service.LoginService;
+import team.project.module.user.internal.service.UserInfoService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +30,9 @@ public class LoginController {
 
     @Autowired
     LoginService loginService;
+
+    @Autowired
+    UserInfoService userInfoService;
 
     @Operation(summary="使用密码登录")
     @PostMapping("/login/password")
@@ -79,6 +84,23 @@ public class LoginController {
         loginResult.put("token", StpUtil.getTokenInfo().getTokenValue());
 
         return new Response<>(ServiceStatus.SUCCESS).statusText("登录成功").data(loginResult);
+    }
+
+    @Operation(summary="使用邮箱修改密码")
+    @PostMapping("/password/reset")
+    Object resetWithEmail(@Valid @RequestBody ResetReq req) {
+
+        UserIdAndCodeReq userIdAndCodeReq = new UserIdAndCodeReq(req.getUserId(),req.getCode());
+        UserInfoVO userInfo = loginService.login(userIdAndCodeReq);
+
+        if (userInfo == null) {
+            /* 依前端要求，登录失败返回 400 状态码 */
+            return new Response<>(ServiceStatus.BAD_REQUEST).statusText("验证码不正确");
+        }
+
+        UserIdAndPasswordReq userIdAndPasswordReq = new UserIdAndPasswordReq(req.getUserId(),req.getPwd());
+        userInfoService.setPassword(userIdAndPasswordReq);
+        return new Response<>(ServiceStatus.SUCCESS);
     }
 
     @Operation(summary="登出")

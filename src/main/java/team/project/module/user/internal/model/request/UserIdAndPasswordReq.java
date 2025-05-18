@@ -20,4 +20,9 @@ public class UserIdAndPasswordReq {
     @UserPasswordConstraint
     @JsonProperty("pwd")
     private String password;
+
+    public UserIdAndPasswordReq(String userId, String pwd) {
+        this.userId = userId;
+        this.password = pwd;
+    }
 }

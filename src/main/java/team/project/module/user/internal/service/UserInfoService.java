@@ -3,6 +3,7 @@ package team.project.module.user.internal.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.project.base.model.request.PagingQueryReq;
@@ -28,6 +29,9 @@ public class UserInfoService {
 
     @Autowired
     ModelConverter modelConverter;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder; // 注入Bean
 
     /* -- 查询操作 -- */
 
@@ -89,7 +93,8 @@ public class UserInfoService {
      * */
     @Transactional
     public void setPassword(UserIdAndPasswordReq req) {
-        if (1 != userDAO.setPassword(req.getUserId(), req.getPassword())) { /* TODO ljh_TODO 密码待加密 */
+        String encodedPassword = passwordEncoder.encode(req.getPassword());
+        if (1 != userDAO.setPassword(req.getUserId(), encodedPassword)) {
             throw new ServiceException(ServiceStatus.UNAUTHORIZED, "修改失败");
         }
     }

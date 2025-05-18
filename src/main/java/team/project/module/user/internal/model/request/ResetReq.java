@@ -5,10 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 import team.project.module.user.export.model.annotation.UserIdConstraint;
+import team.project.module.user.internal.model.annotation.UserPasswordConstraint;
 
 @Getter
 @Setter
-public class UserIdAndCodeReq {
+public class ResetReq {
 
     @NotBlank(message="学号/工号不能为空")
     @UserIdConstraint
@@ -19,8 +20,8 @@ public class UserIdAndCodeReq {
     @JsonProperty("code")
     private String code;
 
-    public UserIdAndCodeReq(String userId, String code) {
-        this.userId = userId;
-        this.code = code;
-    }
+    @NotBlank(message="密码不能为空")
+    @UserPasswordConstraint
+    @JsonProperty("pwd")
+    private String pwd;
 }
