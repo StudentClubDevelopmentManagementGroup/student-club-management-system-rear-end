@@ -81,7 +81,7 @@ public class LoginService {
 
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
-        sendEmailQO.setSubject("【GUET 社团管理系统】登录验证");
+        sendEmailQO.setSubject("【GUET 社团管理系统】邮箱验证");
         sendEmailQO.setContent(sendCodeTmpl.render(code));
         sendEmailQO.setHtml(true);
 
