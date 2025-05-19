@@ -140,6 +140,16 @@ public class AnnController {
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
 
+    @Operation(summary="获取社团的其他公告，包含其内容")
+    @GetMapping("/other")
+    Object other(
+            @Valid @QueryParam AnnSearchReq searchReq,
+            @Valid @QueryParam PagingQueryReq pageReq
+    ) {
+        PageVO<AnnDetailVO> result = announcementService.searchOther(pageReq, searchReq);
+        return new Response<>(ServiceStatus.SUCCESS).data(result);
+    }
+
     @Operation(summary="获取社团的简介，包含其内容")
     @GetMapping("/introduce")
     Object Introduce(
@@ -149,4 +159,6 @@ public class AnnController {
         PageVO<AnnDetailVO> result = announcementService.searchIntroduce(pageReq, searchReq);
         return new Response<>(ServiceStatus.SUCCESS).data(result);
     }
+
+
 }

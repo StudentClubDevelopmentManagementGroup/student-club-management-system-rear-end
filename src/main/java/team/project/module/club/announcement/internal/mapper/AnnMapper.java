@@ -9,6 +9,7 @@ import team.project.module.club.announcement.export.model.datatransfer.AnnDTO;
 import team.project.module.club.announcement.internal.model.entity.AnnDO;
 import team.project.module.club.announcement.internal.model.query.AnnSearchQO;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Mapper
@@ -190,6 +191,44 @@ public interface AnnMapper extends BaseMapper<AnnDO> {
         wrapper.eq(AnnDO::getTitle, "简介"); // 自动添加通配符：title LIKE '%简介%'
 
         // 其他原有条件保持不变
+        if (null != searchQO.getFromDate())
+            wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
+        if (null != searchQO.getToDate())
+            wrapper.le(AnnDO::getPublishTime, searchQO.getToDate().plusDays(1));
+        if (!searchQO.getClubIdColl().isEmpty())
+            wrapper.in(AnnDO::getClubId, searchQO.getClubIdColl());
+        if (!searchQO.getAuthorIdColl().isEmpty())
+            wrapper.in(AnnDO::getAuthorId, searchQO.getAuthorIdColl());
+
+        wrapper.orderByDesc(AnnDO::getPublishTime);
+
+        return selectList(page, wrapper);
+    }
+
+    default List<AnnDO>  searchOther(Page<AnnDO> page, AnnSearchQO searchQO){
+        LambdaQueryWrapper<AnnDO> wrapper = new LambdaQueryWrapper<>();
+        wrapper.select(
+                AnnDO::getAnnouncementId,
+                AnnDO::getPublishTime,
+                AnnDO::getAuthorId,
+                AnnDO::getClubId,
+                AnnDO::getTitle,
+                AnnDO::getSummary
+        );
+
+        // 用户输入的关键词查询
+        if (null != searchQO.getTitleKeyword()) {
+            String sanitizedKeyword = searchQO.getTitleKeyword().replace("%", "");
+            wrapper.like(AnnDO::getTitle, sanitizedKeyword);
+        }
+
+        wrapper.and(wq -> {
+            for (String keyword : Arrays.asList("比赛", "活动", "大赛", "竞赛", "招新")) {
+                wq.and(w -> w.notLike(AnnDO::getTitle, "%" + keyword + "%"));
+            }
+        });
+
+        // 其他条件
         if (null != searchQO.getFromDate())
             wrapper.ge(AnnDO::getPublishTime, searchQO.getFromDate());
         if (null != searchQO.getToDate())

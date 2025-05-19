@@ -58,7 +58,7 @@ public class LoginService {
     /* 邮件内容，使用 html 模板 */
     private final TextTemplate sendCodeTmpl = new TextTemplate(
         EmailUtil.formatAndWrapCSS("""
-        <h1> GUET 社团管理系统 邮箱验证 </h1>
+        <h1> GUET 基地管理系统 邮箱验证 </h1>
         <p>  您正在进行邮箱验证，验证码<em> <!--{{ code }}--> </em></p>
         <p>  该验证码 5 分钟内有效，请勿泄漏于他人 </p>
         """), "<!--{{", "}}-->"
@@ -81,7 +81,7 @@ public class LoginService {
 
         SendEmailQO sendEmailQO = new SendEmailQO();
         sendEmailQO.setSendTo(userEmail);
-        sendEmailQO.setSubject("【GUET 社团管理系统】邮箱验证");
+        sendEmailQO.setSubject("【GUET 基地管理系统】邮箱验证");
         sendEmailQO.setContent(sendCodeTmpl.render(code));
         sendEmailQO.setHtml(true);
 
