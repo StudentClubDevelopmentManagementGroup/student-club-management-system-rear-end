@@ -83,7 +83,7 @@
     <select id="getSummaryList" resultMap="tbl_club_Report">
         SELECT *
         FROM tbl_user_club_report
-        WHERE club_id = #{clubId} AND is_deleted = 0  and report_type = '总结'
+        WHERE club_id = #{clubId} AND is_deleted = 0
     </select>
     <select id="getSummaryListByKeyword" resultMap="tbl_club_Report">
         SELECT *
